@@ -1,0 +1,96 @@
+>>>
+Do you want to load a game in progress?
+How much time (max) do you want the program to take (seconds)?
+Do you want the computer to play black or white?
+------------------------
+|BR|BN|BB|BQ|BK|BB|BN|BR|
+------------------------
+|BP|BP|BP|BP|BP|BP|BP|BP|
+------------------------
+|  |  |  |  |  |  |  |  |
+------------------------
+|  |  |  |  |  |  |  |  |
+------------------------
+|  |  |  |  |  |  |  |  |
+------------------------
+|  |  |  |  |  |  |  |  |
+------------------------
+|WP|WP|WP|WP|WP|WP|WP|WP|
+------------------------
+|WR|WN|WB|WQ|WK|WB|WN|WR|
+------------------------
+Where do you move?
+------------------------
+|BR|BN|BB|BQ|BK|BB|BN|BR|
+------------------------
+|BP|BP|BP|BP|BP|BP|BP|BP|
+------------------------
+|  |  |  |  |  |  |  |  |
+------------------------
+|  |  |  |  |  |  |  |  |
+------------------------
+|  |  |  |  |  |  |  |  |
+------------------------
+|WN|  |  |  |  |  |  |  |
+------------------------
+|WP|WP|WP|WP|WP|WP|WP|WP|
+------------------------
+|WR|  |WB|WQ|WK|WB|WN|WR|
+------------------------
+HERUISTIC EVAL: 0.085
+Searching depth 1
+Best move is   on h1 to h1 (-1), EVAL = 0.085000
+0.000000 seconds taken, 1 nodes searched
+Speed = inf nodes per second
+Searching depth 2
+Best move is   on h1 to h1 (-1), EVAL = 0.085000
+0.000000 seconds taken, 1 nodes searched
+Speed = inf nodes per second
+Searching depth 3
+Best move is N on b8 to c6 (9345), EVAL = -0.928000
+0.000000 seconds taken, 21 nodes searched
+Speed = inf nodes per second
+Searching depth 4
+Best move is N on b8 to c6 (9345), EVAL = 0.085000
+0.000000 seconds taken, 107 nodes searched
+Speed = inf nodes per second
+Searching depth 5
+Best move is N on b8 to c6 (9345), EVAL = -0.928000
+0.016000 seconds taken, 2840 nodes searched
+Speed = 177500.000000 nodes per second
+Searching depth 6
+Best move is N on b8 to c6 (9345), EVAL = -0.360500
+0.156000 seconds taken, 24877 nodes searched
+Speed = 159467.948718 nodes per second
+Searching depth 7
+Best move is P on d7 to d5 (5835), EVAL = -0.928000
+3.735000 seconds taken, 693125 nodes searched
+Speed = 185575.635877 nodes per second
+Searching depth 8
+Best move is N on g8 to f6 (9542), EVAL = -0.357500
+41.390000 seconds taken, 7312346 nodes searched
+Speed = 176669.388741 nodes per second
+COMPUTER PLAYED N on g8 to f6 (9542)
+EVAL: -0.3575
+------------------------
+|BR|BN|BB|BQ|BK|BB|  |BR|
+------------------------
+|BP|BP|BP|BP|BP|BP|BP|BP|
+------------------------
+|  |  |  |  |  |BN|  |  |
+------------------------
+|  |  |  |  |  |  |  |  |
+------------------------
+|  |  |  |  |  |  |  |  |
+------------------------
+|WN|  |  |  |  |  |  |  |
+------------------------
+|WP|WP|WP|WP|WP|WP|WP|WP|
+------------------------
+|WR|  |WB|WQ|WK|WB|WN|WR|
+------------------------
+HERUISTIC EVAL: -0.928
+Where do you move?
+GAME STILL IN PROGRESS
+10809 9542 
+>>>

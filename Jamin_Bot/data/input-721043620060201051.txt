@@ -1,0 +1,7 @@
+play
+no
+60
+black
+Na3
+quit
+quit
