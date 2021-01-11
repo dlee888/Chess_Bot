@@ -96,7 +96,14 @@ class Beat_Jamin(commands.Cog):
 				continue
 			games[ctx.message.author.id].append(int(i))
 			#os.system(f'echo {i}')
-		push_games()			
+		push_games()
+		
+		log_channel = self.client.get_channel(798277701210341459)
+		msg = '```'
+		for o in out:
+			msg += o + '\n'
+		msg += '\n'
+		await ctx.send(msg)
 
 	@commands.command()
 	async def challenge(self, ctx, *flags):
@@ -160,6 +167,13 @@ class Beat_Jamin(commands.Cog):
 					continue
 				games[ctx.author.id].append(int(i))
 			push_games()
+
+			log_channel = self.client.get_channel(798277701210341459)
+			msg = '```'
+			for o in out:
+				msg += o + '\n'
+			msg += '\n'
+			await ctx.send(msg)
 	
 	@commands.command()
 	async def abort(self, ctx, user):
@@ -258,3 +272,4 @@ class Beat_Jamin(commands.Cog):
 			#os.system(f'echo "{msg1}"')
 		game += '```'
 		await ctx.send(game)
+

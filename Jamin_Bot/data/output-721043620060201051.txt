@@ -12,13 +12,13 @@ Do you want the computer to play black or white?
 ------------------------
 |  |  |BB|  |  |  |  |  |
 ------------------------
-|  |  |WP|  |WP|  |BN|  |
+|  |  |WP|  |WP|  |  |  |
 ------------------------
-|  |  |WN|  |  |WN|  |  |
+|  |WQ|WN|  |  |WN|  |  |
 ------------------------
-|WP|WP|  |WB|WB|WP|WP|WP|
+|WP|WP|  |WB|WB|BN|WP|WP|
 ------------------------
-|WR|  |  |WQ|WK|  |  |WR|
+|WR|  |  |  |WK|  |  |WR|
 ------------------------
 Where do you move?
 ------------------------
@@ -32,10 +32,58 @@ Where do you move?
 ------------------------
 |  |  |WP|  |WP|  |  |  |
 ------------------------
-|  |  |WN|  |  |WN|  |  |
+|  |WQ|WN|  |  |WN|  |  |
 ------------------------
-|WP|WP|  |WB|WB|BN|WP|WP|
+|WP|WP|  |WB|WB|  |WP|WP|
 ------------------------
-|WR|  |  |WQ|WK|  |  |WR|
+|WR|  |  |  |WK|  |  |BN|
 ------------------------
-HERUISTIC EVAL: 0.923
+HERUISTIC EVAL: -3.6945
+Searching depth 1
+Best move is   on h1 to h1 (-1), EVAL = -3.694500
+0.000000 seconds taken, 1 nodes searched
+Speed = inf nodes per second
+Searching depth 2
+Best move is   on h1 to h1 (-1), EVAL = -3.694500
+0.000000 seconds taken, 1 nodes searched
+Speed = inf nodes per second
+Searching depth 3
+Best move is O-O-O         (2883584), EVAL = -3.444500
+0.016000 seconds taken, 2191 nodes searched
+Speed = 136937.500000 nodes per second
+Searching depth 4
+Best move is B on d2 to g5 (14259), EVAL = -3.848000
+0.125000 seconds taken, 16960 nodes searched
+Speed = 135680.000000 nodes per second
+Searching depth 5
+Best move is Q on b3 to b5 (22121), EVAL = -3.629500
+2.859000 seconds taken, 500972 nodes searched
+Speed = 175226.302903 nodes per second
+Searching depth 6
+Best move is O-O-O         (2883584), EVAL = -4.141500
+26.891000 seconds taken, 4423383 nodes searched
+Speed = 164493.064594 nodes per second
+COMPUTER PLAYED O-O-O         (2883584)
+EVAL: -4.1415
+------------------------
+|BR|  |BB|BQ|BK|  |  |BR|
+------------------------
+|BP|BP|  |BP|  |BP|BP|BP|
+------------------------
+|  |  |BN|  |BP|  |  |  |
+------------------------
+|  |  |BB|  |  |  |  |  |
+------------------------
+|  |  |WP|  |WP|  |  |  |
+------------------------
+|  |WQ|WN|  |  |WN|  |  |
+------------------------
+|WP|WP|  |WB|WB|  |WP|WP|
+------------------------
+|  |  |WK|WR|  |  |  |BN|
+------------------------
+HERUISTIC EVAL: -3.4445
+Where do you move?
+GAME STILL IN PROGRESS
+6387 9542 6322 5388 10937 14405 15610 5770 11134 9345 38563 46753 6452 10645 15677 44390 23163 143349 2883584 
+>>>
