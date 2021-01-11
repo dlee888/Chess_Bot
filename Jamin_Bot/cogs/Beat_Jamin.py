@@ -99,10 +99,14 @@ class Beat_Jamin(commands.Cog):
 		push_games()
 		
 		log_channel = self.client.get_channel(798277701210341459)
-		msg = '```'
-		for o in out:
-			msg += o + '\n'
-		msg += '\n'
+		msg = '```\n'
+		for i in range(len(out)):
+			msg += out[i] + '\n'
+			if i%10 == 0:
+				msg += '```'
+				await ctx.send(msg)
+				msg = '```'
+		msg += '```'
 		await ctx.send(msg)
 
 	@commands.command()
@@ -169,10 +173,14 @@ class Beat_Jamin(commands.Cog):
 			push_games()
 
 			log_channel = self.client.get_channel(798277701210341459)
-			msg = '```'
-			for o in out:
-				msg += o + '\n'
-			msg += '\n'
+			msg = '```\n'
+			for i in range(len(out)):
+				msg += out[i] + '\n'
+				if i%10 == 0:
+					msg += '```'
+					await ctx.send(msg)
+					msg = '```'
+			msg += '```'
 			await ctx.send(msg)
 	
 	@commands.command()

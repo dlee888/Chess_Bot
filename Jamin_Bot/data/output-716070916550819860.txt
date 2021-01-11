@@ -1,93 +1,63 @@
 >>>
 Do you want to load a game in progress?
-Please enter the game:
 How much time (max) do you want the program to take (seconds)?
 Do you want the computer to play black or white?
 ------------------------
 |BR|BN|BB|BQ|BK|BB|BN|BR|
 ------------------------
-|BP|BP|  |BP|BP|BP|BP|BP|
+|BP|BP|BP|BP|BP|BP|BP|BP|
 ------------------------
 |  |  |  |  |  |  |  |  |
 ------------------------
-|  |  |BP|  |  |  |  |  |
+|  |  |  |  |  |  |  |  |
 ------------------------
-|  |  |  |  |WP|  |  |  |
+|  |  |  |  |  |  |  |  |
 ------------------------
-|  |  |  |WB|  |  |  |  |
+|  |  |  |  |  |  |  |  |
 ------------------------
-|WP|WP|WP|WP|  |WP|WP|WP|
+|WP|WP|WP|WP|WP|WP|WP|WP|
 ------------------------
-|WR|WN|WB|WQ|WK|  |WN|WR|
+|WR|WN|WB|WQ|WK|WB|WN|WR|
 ------------------------
 Where do you move?
 ------------------------
-|BR|  |BB|BQ|BK|BB|BN|BR|
+|BR|BN|BB|BQ|BK|BB|BN|BR|
 ------------------------
-|BP|BP|  |BP|BP|BP|BP|BP|
+|BP|BP|BP|BP|BP|BP|BP|BP|
 ------------------------
-|  |  |BN|  |  |  |  |  |
+|  |  |  |  |  |  |  |  |
 ------------------------
-|  |  |BP|  |  |  |  |  |
-------------------------
-|  |  |  |  |WP|  |  |  |
-------------------------
-|  |  |  |WB|  |  |  |  |
-------------------------
-|WP|WP|WP|WP|  |WP|WP|WP|
-------------------------
-|WR|WN|WB|WQ|WK|  |WN|WR|
-------------------------
-HERUISTIC EVAL: -0.573
-Searching depth 1
-Best move is   on h1 to h1 (-1), EVAL = -0.573000
-0.000000 seconds taken, 1 nodes searched
-Speed = inf nodes per second
-Searching depth 2
-Best move is   on h1 to h1 (-1), EVAL = -0.573000
-0.000000 seconds taken, 1 nodes searched
-Speed = inf nodes per second
-Searching depth 3
-Best move is N on b1 to c3 (10937), EVAL = 0.440000
-0.000000 seconds taken, 31 nodes searched
-Speed = inf nodes per second
-Searching depth 4
-Best move is N on g1 to f3 (11134), EVAL = -0.573000
-0.016000 seconds taken, 1545 nodes searched
-Speed = 96562.500000 nodes per second
-Searching depth 5
-Best move is N on b1 to c3 (10937), EVAL = 0.440000
-0.078000 seconds taken, 16765 nodes searched
-Speed = 214935.897436 nodes per second
-Searching depth 6
-Best move is N on b1 to c3 (10937), EVAL = -0.534500
-1.735000 seconds taken, 344405 nodes searched
-Speed = 198504.322767 nodes per second
-Searching depth 7
-Best move is N on g1 to f3 (11134), EVAL = 0.459800
-24.109000 seconds taken, 4745950 nodes searched
-Speed = 196853.871998 nodes per second
-COMPUTER PLAYED N on g1 to f3 (11134)
-EVAL: 0.4598
-------------------------
-|BR|  |BB|BQ|BK|BB|BN|BR|
-------------------------
-|BP|BP|  |BP|BP|BP|BP|BP|
-------------------------
-|  |  |BN|  |  |  |  |  |
-------------------------
-|  |  |BP|  |  |  |  |  |
+|  |  |  |  |  |  |  |  |
 ------------------------
 |  |  |  |  |WP|  |  |  |
 ------------------------
-|  |  |  |WB|  |WN|  |  |
+|  |  |  |  |  |  |  |  |
 ------------------------
 |WP|WP|WP|WP|  |WP|WP|WP|
 ------------------------
-|WR|WN|WB|WQ|WK|  |  |WR|
+|WR|WN|WB|WQ|WK|WB|WN|WR|
 ------------------------
-HERUISTIC EVAL: 0.44
+HERUISTIC EVAL: 0.555
+COMPUTER PLAYED P on e7 to e6 (5388)
+------------------------
+|BR|BN|BB|BQ|BK|BB|BN|BR|
+------------------------
+|BP|BP|BP|BP|  |BP|BP|BP|
+------------------------
+|  |  |  |  |BP|  |  |  |
+------------------------
+|  |  |  |  |  |  |  |  |
+------------------------
+|  |  |  |  |WP|  |  |  |
+------------------------
+|  |  |  |  |  |  |  |  |
+------------------------
+|WP|WP|WP|WP|  |WP|WP|WP|
+------------------------
+|WR|WN|WB|WQ|WK|WB|WN|WR|
+------------------------
+HERUISTIC EVAL: 0.37
 Where do you move?
 GAME STILL IN PROGRESS
-6452 5770 15101 9345 11134 
+6452 5388 
 >>>

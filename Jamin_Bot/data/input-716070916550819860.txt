@@ -1,8 +1,7 @@
 play
-yes2
-1. 6452 5770 2. 15101 *
+no
 60
-white
-Nc6
+black
+e4
 quit
 quit
