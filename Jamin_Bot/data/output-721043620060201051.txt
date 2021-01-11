@@ -4,98 +4,86 @@ Please enter the game:
 How much time (max) do you want the program to take (seconds)?
 Do you want the computer to play black or white?
 ------------------------
-|  |  |  |  |BK|  |BR|  |
+|BR|  |BB|BQ|BK|  |  |BR|
 ------------------------
-|  |  |  |  |  |  |  |  |
+|BP|BP|  |BP|  |BP|BP|BP|
 ------------------------
-|  |  |BP|  |BB|  |  |  |
+|  |  |BN|  |BP|BN|  |  |
 ------------------------
-|BP|  |  |  |  |BP|  |  |
+|  |  |BB|  |  |  |  |  |
 ------------------------
-|  |  |  |  |BP|  |  |  |
+|  |  |WP|  |WP|  |  |  |
 ------------------------
-|WP|  |  |  |WP|  |WP|  |
+|  |  |WN|  |  |WN|  |  |
 ------------------------
-|WP|  |  |  |  |WP|WB|WP|
+|WP|WP|  |WB|  |WP|WP|WP|
 ------------------------
-|  |  |  |  |WK|  |  |WR|
+|WR|  |  |WQ|WK|WB|  |WR|
 ------------------------
 Where do you move?
 ------------------------
-|  |  |  |  |BK|  |BR|  |
+|BR|  |BB|BQ|BK|  |  |BR|
 ------------------------
-|  |  |  |  |  |  |  |  |
+|BP|BP|  |BP|  |BP|BP|BP|
 ------------------------
-|  |  |BP|  |BB|  |  |  |
+|  |  |BN|  |BP|  |  |  |
 ------------------------
-|BP|  |  |  |  |BP|  |  |
+|  |  |BB|  |  |  |  |  |
 ------------------------
-|  |  |  |  |BP|  |  |  |
+|  |  |WP|  |WP|  |BN|  |
 ------------------------
-|WP|  |  |  |WP|  |WP|WB|
+|  |  |WN|  |  |WN|  |  |
 ------------------------
-|WP|  |  |  |  |WP|  |WP|
+|WP|WP|  |WB|  |WP|WP|WP|
 ------------------------
-|  |  |  |  |WK|  |  |WR|
+|WR|  |  |WQ|WK|WB|  |WR|
 ------------------------
-HERUISTIC EVAL: 0.55
+HERUISTIC EVAL: 1.413
 Searching depth 1
-Best move is   on h1 to h1 (-1), EVAL = 0.550000
+Best move is   on h1 to h1 (-1), EVAL = 1.413000
 0.000000 seconds taken, 1 nodes searched
 Speed = inf nodes per second
 Searching depth 2
-Best move is   on h1 to h1 (-1), EVAL = 0.550000
+Best move is   on h1 to h1 (-1), EVAL = 1.413000
 0.000000 seconds taken, 1 nodes searched
 Speed = inf nodes per second
 Searching depth 3
-Best move is B on e6 to a2 (48148), EVAL = -0.400000
-0.000000 seconds taken, 139 nodes searched
+Best move is B on f1 to e2 (15677), EVAL = 1.838000
+0.000000 seconds taken, 954 nodes searched
 Speed = inf nodes per second
 Searching depth 4
-Best move is R on g8 to g6 (17798), EVAL = 1.250000
-0.015000 seconds taken, 983 nodes searched
-Speed = 65533.333333 nodes per second
+Best move is B on f1 to d3 (15101), EVAL = 0.660500
+0.109000 seconds taken, 16463 nodes searched
+Speed = 151036.697248 nodes per second
 Searching depth 5
-Best move is R on g8 to h8 (16838), EVAL = -0.800000
-0.032000 seconds taken, 5975 nodes searched
-Speed = 186718.750000 nodes per second
+Best move is B on d2 to e3 (15155), EVAL = 0.800500
+2.422000 seconds taken, 423609 nodes searched
+Speed = 174900.495458 nodes per second
 Searching depth 6
-Best move is R on g8 to h8 (16838), EVAL = 0.300000
-0.078000 seconds taken, 16920 nodes searched
-Speed = 216923.076923 nodes per second
-Searching depth 7
-Best move is B on e6 to c8 (12436), EVAL = -0.400000
-1.047000 seconds taken, 222802 nodes searched
-Speed = 212800.382044 nodes per second
-Searching depth 8
-Best move is R on g8 to h8 (16838), EVAL = 0.650000
-4.109000 seconds taken, 907082 nodes searched
-Speed = 220754.928206 nodes per second
-Searching depth 9
-Best move is K on e8 to d7 (25284), EVAL = -0.200000
-52.578000 seconds taken, 11540665 nodes searched
-Speed = 219496.082011 nodes per second
-COMPUTER PLAYED K on e8 to d7 (25284)
-EVAL: -0.2
+Best move is B on f1 to e2 (15677), EVAL = 0.265000
+26.297000 seconds taken, 4415026 nodes searched
+Speed = 167890.862076 nodes per second
+COMPUTER PLAYED B on f1 to e2 (15677)
+EVAL: 0.265
 ------------------------
-|  |  |  |  |  |  |BR|  |
+|BR|  |BB|BQ|BK|  |  |BR|
 ------------------------
-|  |  |  |BK|  |  |  |  |
+|BP|BP|  |BP|  |BP|BP|BP|
 ------------------------
-|  |  |BP|  |BB|  |  |  |
+|  |  |BN|  |BP|  |  |  |
 ------------------------
-|BP|  |  |  |  |BP|  |  |
+|  |  |BB|  |  |  |  |  |
 ------------------------
-|  |  |  |  |BP|  |  |  |
+|  |  |WP|  |WP|  |BN|  |
 ------------------------
-|WP|  |  |  |WP|  |WP|WB|
+|  |  |WN|  |  |WN|  |  |
 ------------------------
-|WP|  |  |  |  |WP|  |WP|
+|WP|WP|  |WB|WB|WP|WP|WP|
 ------------------------
-|  |  |  |  |WK|  |  |WR|
+|WR|  |  |WQ|WK|  |  |WR|
 ------------------------
-HERUISTIC EVAL: 0.39
+HERUISTIC EVAL: 1.838
 Where do you move?
 GAME STILL IN PROGRESS
-10809 9542 6322 9345 6387 5388 11134 80389 105009 5583 20088 5835 38626 54979 15610 43218 76013 88283 14451 5770 186619 170202 2673 5640 13537 10517 14099 17408 45980 16775 47310 17552 15139 10916 20153 5908 46572 116178 84666 17559 148650 136329 7094 5965 15805 6428 6964 13570 15350 25284 
+6387 9542 6322 5388 10937 14405 15610 5770 11134 9345 38563 46753 6452 10645 15677 
 >>>
