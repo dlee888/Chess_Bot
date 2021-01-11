@@ -45,7 +45,7 @@ class Beat_Jamin(commands.Cog):
 				game_str += str(games[ctx.author.id][i]) + ' '
 			game_str += '*'
 			f.write(game_str + '\n')
-		f.write('60\n')
+		f.write(f'{time_control[ctx.author.id]}\n')
 		if colors[ctx.author.id] == 0:
 			f.write('white\n')
 		else:
@@ -99,7 +99,7 @@ class Beat_Jamin(commands.Cog):
 		push_games()			
 
 	@commands.command()
-	async def challenge(self, ctx):
+	async def challenge(self, ctx, *flags):
 		'''
 		Challenges Beat_Jamin
 		'''
@@ -107,6 +107,13 @@ class Beat_Jamin(commands.Cog):
 			await ctx.send('You already have a game in progress')
 			return
 		
+		time_control[ctx.author.id] = 60
+
+		for i in range(0, len(flags), 2):
+			os.system(f'echo {flags[i]}')
+			if flags[i] == '-t':
+				time_control[ctx.author.id] = int(flags[i+1])
+
 		games[ctx.author.id] = []
 		colors[ctx.author.id] = random.randint(0, 1) # 1 if white, 0 if black
 		
@@ -128,7 +135,7 @@ class Beat_Jamin(commands.Cog):
 				f.close()
 
 			f = open(file_in, 'w')
-			f.write('play\nno\n60\nwhite\nquit\nquit')
+			f.write(f'play\nno\n{time_control[ctx.author.id]}\nwhite\nquit\nquit')
 			f.close()
 			print('Starting Jamin')
 
@@ -212,7 +219,7 @@ class Beat_Jamin(commands.Cog):
 		file_out = f'data/output-{person}.txt'
 		#for asdf in os.listdir('data'):
 		#	os.system(f'echo {asdf}')
-		os.system(f'echo {file_in[5:]}')
+		#os.system(f'echo {file_in[5:]}')
 		if not file_in[5:] in os.listdir('data'):
 			f = open(file_in, 'x')
 			f.close()

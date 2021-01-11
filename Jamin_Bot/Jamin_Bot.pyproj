@@ -22,7 +22,11 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Beat_Jamin.py" />
     <Compile Include="Jamin_Bot.py" />
+    <Compile Include="Misc.py" />
+    <Compile Include="Ratings.py" />
+    <Compile Include="Utility.py" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env2\">

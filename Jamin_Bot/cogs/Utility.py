@@ -10,6 +10,7 @@ def is_mooderator(person):
 
 games = {}
 colors = {}
+time_control = {}
 
 ratings = {}
 jamin_rating = 1500
@@ -68,6 +69,9 @@ def push_games():
 	f = open('data/colors.txt', 'w')
 	for k in colors.keys():
 		f.write(f'{k} ----- {colors[k]}\n')
+	f = open('data/times.txt', 'w')
+	for k in time_control.keys():
+		f.write(f'{k} ----- {time_control[k]}\n')
 	
 def pull_games():
 	f = open('data/games.txt')
@@ -86,3 +90,10 @@ def pull_games():
 	for i in g:
 		p = i.split(' ----- ')
 		colors[int(p[0])] = int(p[1])
+
+	f = open('data/times.txt')
+	g = f.readlines()
+	for i in g:
+		p = i.split(' ----- ')
+		time_control[int(p[0])] = int(p[1])
+
