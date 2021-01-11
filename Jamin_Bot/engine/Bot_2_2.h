@@ -93,8 +93,8 @@ void play() {
 
 		if (curr_state.to_move == computer_is_white) {
 			if (openings.size()) {
-				std::cout << "COMPUTER PLAYED " << curr_state.move_to_string(openings[0].moves[num_move]) << std::endl
-					<< "OPENING: " << openings[0].name << std::endl;
+				std::cout << "COMPUTER PLAYED " << curr_state.move_to_string(openings[0].moves[num_move]) << std::endl;
+				if(openings.size() == 1) std::cout << "OPENING: " << openings[0].name << std::endl;
 				move_i = openings[0].moves[num_move];
 				curr_state.make_move(move_i);
 				game.push_back(move_i);
