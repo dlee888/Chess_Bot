@@ -69,6 +69,57 @@ int main() {
 		else if (cmnd == "help") {
 			instructions();
 		}
+		else if (cmnd == "fen") {
+			int num_move = 0;
+			std::string move;
+			std::cout << "Do you want to load a game in progress?\n";
+			std::cin >> move;
+			if (move == "yes") {
+				std::cout << "Please enter the game:\n";
+				//loading by typing in moves, such as 1. e4 e5 2. d4 ...
+				while (!(move == "*")) {
+					if (num_move % 2 == 0) std::cin >> move;
+					if (move == "*") break;
+					std::cin >> move;
+					if (move == "*") break;
+					int move_i = curr_state.parse_move(move);
+					curr_state.make_move(move_i);
+					num_move++;
+					for (int i = 0; i < openings.size(); i++) {
+						if (openings[i].moves[num_move - 1] != move_i) {
+							openings.erase(openings.begin() + i);
+							i--;
+						}
+					}
+				}
+			}
+			else if (move == "yes2") {
+				std::cout << "Please enter the game:\n";
+				//loading by typing in moves, such as 1. e4 e5 2. d4 ...
+				while (!(move == "*")) {
+					if (num_move % 2 == 0) std::cin >> move;
+					if (move == "*") break;
+					std::cin >> move;
+					if (move == "*") break;
+					int move_i = std::stoi(move);
+					curr_state.make_move(move_i);
+					num_move++;
+					for (int i = 0; i < openings.size(); i++) {
+						if (openings[i].moves[num_move - 1] != move_i) {
+							openings.erase(openings.begin() + i);
+							i--;
+						}
+					}
+				}
+			}
+			std::string res;
+			for (int i = 0; i < 8; i++) {
+				for (int j = 0; j < 8; j++) {
+					
+				}
+			}
+			std::cout << res << std::endl;
+		}
 		else if (cmnd == "quit") {
 			break;
 		}

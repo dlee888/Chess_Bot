@@ -102,10 +102,10 @@ void play() {
 			else {
 				int time_taken = 0, curr_depth = 1;
 				pdi best_move = std::make_pair(0.0, -1);
-				while ((double)time_taken / CLOCKS_PER_SEC * curr_state.list_moves().size() < 3 * time_limit) {
+				while ((double)time_taken / CLOCKS_PER_SEC * curr_state.list_moves().size() < 4 * time_limit) {
 					printf("Searching depth %d\n", curr_depth);
 					int start_time = clock();
-					best_move = find_best_move(curr_depth, -DINF, DINF, best_move.second);
+					best_move = find_best_move(curr_depth, -10, 10, best_move.second);
 					time_taken = clock() - start_time;
 					printf("Best move is %s, EVAL = %lf\n%lf seconds taken, %lld nodes searched\nSpeed = %lf nodes per second\n",
 						curr_state.move_to_string(best_move.second).c_str(),
@@ -114,9 +114,17 @@ void play() {
 					nodes = 0;
 					curr_depth++;
 				}
-				std::cout << "COMPUTER PLAYED " << curr_state.move_to_string(best_move.second) << std::endl << "EVAL: " << best_move.first << std::endl;
 				move_i = best_move.second;
-				curr_state.make_move(best_move.second);
+				if (move_i == -1) {
+					error_msg = "ILLEGAL MOVE PLAYED";
+					break;
+				}
+				if ((computer_is_white && best_move.first <= -10) || (!computer_is_white && best_move.first >= 10)) {
+					error_msg = "COMPUTER RESIGNED";
+					break;
+				}
+				std::cout << "COMPUTER PLAYED " << curr_state.move_to_string(move_i) << std::endl << "EVAL: " << best_move.first << std::endl;
+				curr_state.make_move(move_i);
 				game.push_back(move_i);
 			}
 		}

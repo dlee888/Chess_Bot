@@ -12,6 +12,7 @@ class Beat_Jamin(commands.Cog):
 		self.client = client
 	
 	@commands.command()
+	@commands.cooldown(1, 10, commands.BucketType.default)
 	async def move(self, ctx, move):
 		'''
 		Plays <move> against the computer
@@ -61,6 +62,10 @@ class Beat_Jamin(commands.Cog):
 			if out[-3] == 'ILLEGAL MOVE PLAYED\n':
 				await ctx.send('Haha, nice try')
 				return
+			if out[-3] == 'COMPUTER RESIGNED':
+				await ctx.send('Computer resigned')
+				update_rating(ctx.author.id, 1)
+				return
 			winner = 0
 			if out[-3] == 'DRAW\n':
 				update_rating(ctx.author.id, 1/2)
@@ -104,12 +109,13 @@ class Beat_Jamin(commands.Cog):
 			msg += out[i] + '\n'
 			if i%10 == 0:
 				msg += '```'
-				await ctx.send(msg)
+				await log_channel.send(msg)
 				msg = '```'
 		msg += '```'
-		await ctx.send(msg)
+		await log_channel.send(msg)
 
 	@commands.command()
+	@commands.cooldown(1, 3, commands.BucketType.default)
 	async def challenge(self, ctx, *flags):
 		'''
 		Challenges Beat_Jamin
@@ -178,12 +184,13 @@ class Beat_Jamin(commands.Cog):
 				msg += out[i] + '\n'
 				if i%10 == 0:
 					msg += '```'
-					await ctx.send(msg)
+					await log_channel.send(msg)
 					msg = '```'
 			msg += '```'
-			await ctx.send(msg)
+			await log_channel.send(msg)
 	
 	@commands.command()
+	@commands.cooldown(1, 3, commands.BucketType.default)
 	async def abort(self, ctx, user):
 		'''
 		Aborts a game
@@ -204,6 +211,7 @@ class Beat_Jamin(commands.Cog):
 		
 	
 	@commands.command()
+	@commands.cooldown(1, 3, commands.BucketType.default)
 	async def resign(self, ctx):
 		'''
 		Resigns the game
@@ -218,6 +226,7 @@ class Beat_Jamin(commands.Cog):
 		push_games()
 		
 	@commands.command()
+	@commands.cooldown(1, 10, commands.BucketType.default)
 	async def view(self, ctx, *user):
 		'''
 		Views your current game
@@ -281,3 +290,57 @@ class Beat_Jamin(commands.Cog):
 		game += '```'
 		await ctx.send(game)
 
+	@commands.command()
+	@commands.cooldown(1, 10, commands.BucketType.default)
+	async def fen(self, ctx, *user):
+		'''
+		Sends current game in FEN format
+		'''
+		
+		person = -1
+		if len(user) == 1:
+			person = int(user[0][3:-1])
+		else:
+			person = ctx.author.id
+		
+		if not person in games.keys():
+			if len(user)==1:
+				await ctx.send(f'{user[0]} does not have a game in progress')
+			else:
+				await ctx.send('You do not have a game in progress')
+			return
+		
+		person = ctx.author.id
+		file_in = f'data/input-{person}.txt'
+		file_out = f'data/output-{person}.txt'
+		#for asdf in os.listdir('data'):
+		#	os.system(f'echo {asdf}')
+		#os.system(f'echo {file_in[5:]}')
+		if not file_in[5:] in os.listdir('data'):
+			f = open(file_in, 'x')
+			f.close()
+		if not file_out[5:] in os.listdir('data'):
+			f = open(file_out, 'x')
+			f.close()
+
+		f = open(file_in, 'w')
+		f.write('fen\n')
+		if len(games[person]) == 0:
+			f.write('no\n')
+		else:
+			f.write('yes2\n')
+			game_str = ''
+			for i in range(len(games[person])):
+				if i%2==0:
+					game_str += str(i//2+1) + '. '
+				game_str += str(games[person][i]) + ' '
+			game_str += '*'
+			f.write(game_str + '\n')
+		f.write('quit\n')
+		f.close()
+		subprocess.call(['./jamin'], stdin=open(file_in), stdout=open(file_out, 'w'))
+		f = open(file_out)
+		out = f.readlines()
+		f.close()
+
+		await ctx.send(out[-2])

@@ -16,6 +16,7 @@ class Misc(commands.Cog):
 		print('Bot is ready')
 		
 	@commands.command()
+	@commands.cooldown(1, 3, commands.BucketType.default)
 	async def ping(self, ctx):
 		'''
 		Sends "Pong!"
@@ -23,6 +24,7 @@ class Misc(commands.Cog):
 		await ctx.send('Pong!')
 		
 	@commands.command()
+	@commands.cooldown(1, 15, commands.BucketType.default)
 	async def update(self, ctx):
 		'''
 		Compiles the latest version of Beat Jamin
@@ -43,8 +45,11 @@ class Misc(commands.Cog):
 		await ctx.send(f'Updated\nCompile Message: {out}')
 
 	@commands.command()
+	@commands.cooldown(1, 3, commands.BucketType.default)
 	async def rating(self, ctx):
 		'''
 		Tells you your rating
 		'''
 		await ctx.send(f'Your rating is {get_rating(ctx.message.author.id)}')
+
+
