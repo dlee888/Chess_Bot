@@ -27,46 +27,58 @@
 extern int default_board[8][8];
 
 extern int dr_knight[8], dc_knight[8], dr_bishop[4], dc_bishop[4], dr_rook[4],
-dc_rook[4], dr_queen[8], dc_queen[8], dr_king[8], dc_king[8];
+	dc_rook[4], dr_queen[8], dc_queen[8], dr_king[8], dc_king[8];
 
-class state {
+class state
+{
 public:
-	bool out_of_bounds(int row, int column) {
-		if (row < 0) return true;
-		if (column < 0) return true;
-		if (row >= n) return true;
-		if (column >= n) return true;
+	bool out_of_bounds(int row, int column)
+	{
+		if (row < 0)
+			return true;
+		if (column < 0)
+			return true;
+		if (row >= n)
+			return true;
+		if (column >= n)
+			return true;
 		return false;
 	}
 
 	int board[8][8];
 	long long board_hash;
 
-	void replace_board(int row, int col, int piece) {
+	void replace_board(int row, int col, int piece)
+	{
 		board_hash = (board_hash - f_exp2(8 * row + col) * (board[row][col] + 6) + SAFETY) % MOD;
 		board[row][col] = piece;
 		board_hash = (board_hash + f_exp2(8 * row + col) * (board[row][col] + 6) + SAFETY) % MOD;
 	}
 
-	std::stack <bool> wq_rights, bq_rights, wk_rights, bk_rights; // Castling rights
-	std::stack <int> en_passant_target; // En passant target square
+	std::stack<bool> wq_rights, bq_rights, wk_rights, bk_rights; // Castling rights
+	std::stack<int> en_passant_target;							 // En passant target square
 	bool white_castled = false, black_castled = false;
 	int fifty_move;
 	bool to_move; // true if white to move
 
-	state() {
+	state()
+	{
 		fifty_move = 0;
 		doubled_black = 0;
 		doubled_white = 0;
 		to_move = true;
-		for (int i = 0; i < 8; i++) {
-			for (int j = 0; j < 8; j++) {
+		for (int i = 0; i < 8; i++)
+		{
+			for (int j = 0; j < 8; j++)
+			{
 				board[i][j] = default_board[i][j];
 			}
 		}
 		board_hash = 0;
-		for (int i = 0; i < 8; i++) {
-			for (int j = 0; j < 8; j++) {
+		for (int i = 0; i < 8; i++)
+		{
+			for (int j = 0; j < 8; j++)
+			{
 				board_hash = (board_hash + f_exp2(8 * i + j) * (board[i][j] + 6)) % MOD;
 			}
 		}
@@ -76,11 +88,16 @@ public:
 	int piece_to_int(char c);
 	std::string move_to_string(int move);
 
-	bool operator==(state s) {
-		if (s.to_move != to_move) return false;
-		for (int i = 0; i < 8; i++) {
-			for (int j = 0; j < 8; j++) {
-				if (s.board[i][j] != board[i][j]) return false;
+	bool operator==(state s)
+	{
+		if (s.to_move != to_move)
+			return false;
+		for (int i = 0; i < 8; i++)
+		{
+			for (int j = 0; j < 8; j++)
+			{
+				if (s.board[i][j] != board[i][j])
+					return false;
 			}
 		}
 		return true;
@@ -95,7 +112,7 @@ public:
 
 	int attacking(int row, int col, bool color);
 
-	std::vector <int> list_moves();
+	std::vector<int> list_moves();
 
 	bool quiescent();
 
