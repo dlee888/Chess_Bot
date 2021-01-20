@@ -12,6 +12,11 @@ void state::unmake_move(int move) {
 	int color = 1;
 	if (to_move) color = -1;
 
+	wk_rights.pop();
+	bk_rights.pop();
+	wq_rights.pop();
+	bq_rights.pop();
+	
 	if (((move >> 18) & 3) == 3) {
 		if ((move >> 20) == 1) {
 			if (!to_move) {
@@ -20,8 +25,6 @@ void state::unmake_move(int move) {
 				replace_board(7, 5, 0);
 				replace_board(7, 4, WK);
 				replace_board(7, 7, WR);
-				white_king_moved--;
-				white_rrook_moved = false;
 				whitekings[0].second = 4;
 				for (int i = 0; i < whiterooks.size(); i++) {
 					if (whiterooks[i].first == 7 && whiterooks[i].second == 5) {
@@ -36,8 +39,6 @@ void state::unmake_move(int move) {
 				replace_board(0, 5, 0);
 				replace_board(0, 4, BK);
 				replace_board(0, 7, BR);
-				black_king_moved--;
-				black_rrook_moved = false;
 				blackkings[0].second = 4;
 				for (int i = 0; i < blackrooks.size(); i++) {
 					if (blackrooks[i].first == 0 && blackrooks[i].second == 5) {
@@ -54,8 +55,6 @@ void state::unmake_move(int move) {
 				replace_board(7, 3, 0);
 				replace_board(7, 4, WK);
 				replace_board(7, 0, WR);
-				white_king_moved--;
-				white_lrook_moved = false;
 				whitekings[0].second = 4;
 				for (int i = 0; i < whiterooks.size(); i++) {
 					if (whiterooks[i].first == 7 && whiterooks[i].second == 3) {
@@ -70,8 +69,6 @@ void state::unmake_move(int move) {
 				replace_board(0, 3, 0);
 				replace_board(0, 4, BK);
 				replace_board(0, 0, BR);
-				black_king_moved--;
-				black_lrook_moved = false;
 				blackkings[0].second = 4;
 				for (int i = 0; i < blackrooks.size(); i++) {
 					if (blackrooks[i].first == 0 && blackrooks[i].second == 3) {
@@ -352,7 +349,6 @@ void state::unmake_move(int move) {
 		}
 		else if (piece == WK) {
 			if (!to_move) {
-				white_king_moved--;
 				for (int i = 0; i < whitekings.size(); i++) {
 					if (whitekings[i].first == row_final && whitekings[i].second == col_final) {
 						whitekings[i].first = row_init; whitekings[i].second = col_init;
@@ -361,7 +357,6 @@ void state::unmake_move(int move) {
 				}
 			}
 			else {
-				black_king_moved--;
 				for (int i = 0; i < blackkings.size(); i++) {
 					if (blackkings[i].first == row_final && blackkings[i].second == col_final) {
 						blackkings[i].first = row_init; blackkings[i].second = col_init;

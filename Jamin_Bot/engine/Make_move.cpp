@@ -399,7 +399,10 @@ void state::make_move(int move) {
 		}
 		else if (piece == WK) {
 			if (to_move) {
-				white_king_moved++;
+				wq_rights.push(false);
+				wq_pushed = true;
+				wk_rights.push(false);
+				wk_pushed = true;
 				for (int i = 0; i < whitekings.size(); i++) {
 					if (whitekings[i].first == row_init && whitekings[i].second == col_init) {
 						whitekings[i].first = row_final; whitekings[i].second = col_final;
@@ -408,7 +411,10 @@ void state::make_move(int move) {
 				}
 			}
 			else {
-				black_king_moved++;
+				bq_rights.push(false);
+				bq_pushed = true;
+				bk_rights.push(false);
+				bk_pushed = true;
 				for (int i = 0; i < blackkings.size(); i++) {
 					if (blackkings[i].first == row_init && blackkings[i].second == col_init) {
 						blackkings[i].first = row_final; blackkings[i].second = col_final;
@@ -490,6 +496,14 @@ void state::make_move(int move) {
 		}
 		else if (piece_captured == WR) {
 			if (to_move) {
+				if (row_final == 0 && col_final == 0) {
+					bq_rights.push(false);
+					bq_pushed = true;
+				}
+				if (row_final == 0 && col_final == 7) {
+					bk_rights.push(false);
+					bk_pushed = true;
+				}
 				for (int i = 0; i < blackrooks.size(); i++) {
 					if (blackrooks[i].first == row_final && blackrooks[i].second == col_final) {
 						blackrooks.erase(blackrooks.begin() + i);
@@ -498,6 +512,14 @@ void state::make_move(int move) {
 				}
 			}
 			else {
+				if (row_final == 7 && col_final == 0) {
+					wq_rights.push(false);
+					wq_pushed = true;
+				}
+				if (row_final == 7 && col_final == 7) {
+					wk_rights.push(false);
+					wk_pushed = true;
+				}
 				for (int i = 0; i < whiterooks.size(); i++) {
 					if (whiterooks[i].first == row_final && whiterooks[i].second == col_final) {
 						whiterooks.erase(whiterooks.begin() + i);
@@ -525,5 +547,9 @@ void state::make_move(int move) {
 			}
 		}
 	}
+	if (!wk_pushed) wk_rights.push(wk_rights.top());
+	if (!wq_pushed) wq_rights.push(wq_rights.top());
+	if (!bk_pushed) bk_rights.push(bk_rights.top());
+	if (!bq_pushed) bq_rights.push(bq_rights.top());
 	to_move = !to_move;
 }

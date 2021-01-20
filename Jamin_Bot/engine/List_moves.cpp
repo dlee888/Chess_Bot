@@ -4,11 +4,11 @@
 std::vector <int> state::list_moves() {
 	std::vector <int> res;
 	if (to_move) {
-		if (!white_king_moved && board[7][7] == WR && !board[7][5] && !board[7][6] &&
+		if (wk_rights.top() && !board[7][5] && !board[7][6] &&
 			attacking(7, 4, true) == 7 && attacking(7, 5, true) == 7 && attacking(7, 6, true) == 7) {
 			res.push_back(1835008);
 		}
-		if (!white_king_moved && board[7][0] == WR && !board[7][2] && !board[7][3] && !board[7][1] &&
+		if (wq_rights.top() && !board[7][2] && !board[7][3] && !board[7][1] &&
 			attacking(7, 4, true) == 7 && attacking(7, 3, true) == 7 && attacking(7, 2, true) == 7) {
 			res.push_back(2883584);
 		}
@@ -171,11 +171,11 @@ std::vector <int> state::list_moves() {
 		}
 	}
 	else {
-		if (!black_king_moved && board[0][7] == BR && !board[0][5] && !board[0][6] &&
+		if (bk_rights.top() && !board[0][5] && !board[0][6] &&
 			attacking(0, 4, false) == 7 && attacking(0, 5, false) == 7 && attacking(0, 6, false) == 7) {
 			res.push_back(1835008);
 		}
-		if (!black_king_moved && board[0][0] == BR && !board[0][2] && !board[0][3] && !board[0][1] &&
+		if (bq_rights.top() && !board[0][2] && !board[0][3] && !board[0][1] &&
 			attacking(0, 4, false) == 7 && attacking(0, 3, false) == 7 && attacking(0, 2, false) == 7) {
 			res.push_back(2883584);
 		}
