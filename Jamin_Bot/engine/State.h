@@ -5,6 +5,7 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include <stack>
 
 #include "Eval_info.h"
 #include "Transpose_info.h"
@@ -47,12 +48,8 @@ public:
 		board_hash = (board_hash + f_exp2(8 * row + col) * (board[row][col] + 6) + SAFETY) % MOD;
 	}
 
-	int black_king_moved = false;
-	int black_lrook_moved = false;
-	int black_rrook_moved = false;
-	int white_king_moved = false;
-	int white_lrook_moved = false;
-	int white_rrook_moved = false;
+	std::stack <bool> wq_rights, bq_rights, wk_rights, bk_rights; // Castling rights
+	std::stack <int> en_passant_target; // En passant target square
 	bool white_castled = false, black_castled = false;
 	int fifty_move;
 	bool to_move; // true if white to move

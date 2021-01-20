@@ -16,10 +16,11 @@ void state::make_move(int move) {
 	int color = -1;
 	if (to_move) color = 1;
 
+	bool wk_pushed = false, bk_pushed = false, wq_pushed = false, bq_pushed = false;
+
 	if (((move >> 18) & 3) == 3) {
 		if (to_move) {
 			white_castled = true;
-			white_king_moved++;
 			if ((move >> 20) == 1) { //kingside castle
 				replace_board(7, 6, WK);
 				replace_board(7, 5, WR);
@@ -32,7 +33,8 @@ void state::make_move(int move) {
 					}
 				}
 				whitekings[0].second = 6;
-				white_rrook_moved = true;
+				wk_rights.push(false);
+				wk_pushed = true;
 			}
 			else {
 				replace_board(7, 3, WR);
@@ -46,12 +48,12 @@ void state::make_move(int move) {
 						break;
 					}
 				}
-				white_lrook_moved = true;
+				wq_rights.push(false);
+				wq_pushed = true;
 			}
 		}
 		else {
 			black_castled = true;
-			black_king_moved++;
 			if ((move >> 20) == 1) { //kingside castle
 				replace_board(0, 6, BK);
 				replace_board(0, 5, BR);
@@ -64,7 +66,8 @@ void state::make_move(int move) {
 					}
 				}
 				blackkings[0].second = 6;
-				black_rrook_moved = true;
+				bk_rights.push(false);
+				bk_pushed = true;
 			}
 			else {
 				replace_board(0, 3, BR);
@@ -78,7 +81,8 @@ void state::make_move(int move) {
 					}
 				}
 				blackkings[0].second = 2;
-				black_lrook_moved = true;
+				bq_rights.push(false);
+				bq_pushed = true;
 			}
 		}
 	}
@@ -201,6 +205,14 @@ void state::make_move(int move) {
 		}
 		else if (piece_captured == WR) {
 			if (to_move) {
+				if (row_final == 0 && col_final == 0) {
+					bq_rights.push(false);
+					bq_pushed = true;
+				}
+				if (row_final == 0 && col_final == 7) {
+					bk_rights.push(false);
+					bk_pushed = true;
+				}
 				for (int i = 0; i < blackrooks.size(); i++) {
 					if (blackrooks[i].first == row_final && blackrooks[i].second == col_final) {
 						blackrooks.erase(blackrooks.begin() + i);
@@ -209,6 +221,14 @@ void state::make_move(int move) {
 				}
 			}
 			else {
+				if (row_final == 7 && col_final == 0) {
+					wq_rights.push(false);
+					wq_pushed = true;
+				}
+				if (row_final == 7 && col_final == 7) {
+					wk_rights.push(false);
+					wk_pushed = true;
+				}
 				for (int i = 0; i < whiterooks.size(); i++) {
 					if (whiterooks[i].first == row_final && whiterooks[i].second == col_final) {
 						whiterooks.erase(whiterooks.begin() + i);
@@ -327,6 +347,14 @@ void state::make_move(int move) {
 		}
 		else if (piece == WR) {
 			if (to_move) {
+				if (row_init == 7 && col_init == 0) {
+					wq_rights.push(false);
+					wq_pushed = true;
+				}
+				if (row_init == 7 && col_init == 7) {
+					wk_rights.push(false);
+					wk_pushed = true;
+				}
 				for (int i = 0; i < whiterooks.size(); i++) {
 					if (whiterooks[i].first == row_init && whiterooks[i].second == col_init) {
 						whiterooks[i].first = row_final; whiterooks[i].second = col_final;
@@ -335,6 +363,14 @@ void state::make_move(int move) {
 				}
 			}
 			else {
+				if (row_init == 0 && col_init == 0) {
+					bq_rights.push(false);
+					bq_pushed = true;
+				}
+				if (row_init == 0 && col_init == 7) {
+					bk_rights.push(false);
+					bk_pushed = true;
+				}
 				for (int i = 0; i < blackrooks.size(); i++) {
 					if (blackrooks[i].first == row_init && blackrooks[i].second == col_init) {
 						blackrooks[i].first = row_final; blackrooks[i].second = col_final;

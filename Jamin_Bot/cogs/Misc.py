@@ -52,4 +52,16 @@ class Misc(commands.Cog):
 		'''
 		await ctx.send(f'Your rating is {get_rating(ctx.message.author.id)}')
 
+	@commands.command()
+	@commands.cooldown(1, 4, commands.BucketType.default)
+	async def botinfo(self, ctx):
+		embed=discord.Embed(title="Bot Info", color=0xff0000)
+		embed.add_field(name="Links", 
+			value="[https://github.com/jeffarjeffar/Jamin_Bot_bruh](Github) | [https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=1610088278&scope=bot](Invite)",
+			inline=True)
+		embed.add_field(name="Info",
+			value='Chess Bot is a bot that plays chess.')
+		embed.set_footer(text="Made by Farmer John#3907")
+		await ctx.send(embed=embed)
+
 
