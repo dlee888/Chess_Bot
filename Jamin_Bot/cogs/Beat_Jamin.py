@@ -55,7 +55,7 @@ class Beat_Jamin(commands.Cog):
         f.write(move + '\nquit\nquit\n')
         f.close()
         await ctx.send('Chess Bot is thinking...')
-        subprocess.call(['./jamin'], stdin=open(file_in),
+        subprocess.call(['./a'], stdin=open(file_in),
                         stdout=open(file_out, 'w'))
         f = open(file_out)
         out = f.readlines()
@@ -160,9 +160,9 @@ class Beat_Jamin(commands.Cog):
             f.write(
                 f'play\nno\n{time_control[ctx.author.id]}\nwhite\nquit\nquit')
             f.close()
-            #print('Starting Jamin')
+            #print('Starting a')
 
-            subprocess.call(['./jamin'], stdin=open(file_in),
+            subprocess.call(['./a'], stdin=open(file_in),
                             stdout=open(file_out, 'w'))
             f = open(file_out)
             out = f.readlines()
@@ -284,7 +284,7 @@ class Beat_Jamin(commands.Cog):
             f.write('black\n')
         f.write('\nquit\nquit\n')
         f.close()
-        subprocess.call(['./jamin'], stdin=open(file_in),
+        subprocess.call(['./a'], stdin=open(file_in),
                         stdout=open(file_out, 'w'))
         f = open(file_out)
         out = f.readlines()
@@ -345,7 +345,7 @@ class Beat_Jamin(commands.Cog):
             f.write(game_str + '\n')
         f.write('quit\n')
         f.close()
-        subprocess.call(['./jamin'], stdin=open(file_in),
+        subprocess.call(['./a'], stdin=open(file_in),
                         stdout=open(file_out, 'w'))
         f = open(file_out)
         out = f.readlines()

@@ -13,14 +13,23 @@
 int quiescent_prune;
 
 long long nodes;
+long long tb_hits, collisions;
 
 pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 {
 	nodes++;
 
-	if (exists[curr_state.board_hash] && depth <= depths[curr_state.board_hash] && curr_state == positions[curr_state.board_hash])
+	if (exists[curr_state.board_hash] && depth <= depths[curr_state.board_hash])
 	{
-		return best_moves[curr_state.board_hash];
+		if (curr_state == positions[curr_state.board_hash])
+		{
+			tb_hits++;
+			return best_moves[curr_state.board_hash];
+		}
+		else
+		{
+			collisions++;
+		}
 	}
 
 	if (!curr_state.to_move)

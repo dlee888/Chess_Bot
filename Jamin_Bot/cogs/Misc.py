@@ -41,8 +41,9 @@ class Misc(commands.Cog):
             #print(filename, filename[-4:], filename[-2:])
             if filename[-4:] == '.cpp' or filename[-2:] == '.h':
                 compile_cmd += f'engine/{filename} '
-        compile_cmd += '-o jamin'
-        #os.system(f'echo {compile_cmd}')
+        
+        print(compile_cmd)
+
         out = os.system(compile_cmd)
 
         await ctx.send(f'Updated\nCompile Message: {out}')
@@ -60,7 +61,7 @@ class Misc(commands.Cog):
     async def botinfo(self, ctx):
         embed = discord.Embed(title="Bot Info", color=0xff0000)
         embed.add_field(name="Links",
-                        value="[Github](https://github.com/jeffarjeffar/Jamin_Bot_bruh) | [Invite](https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=1610088278&scope=bot)",
+                        value="[Github](https://github.com/jeffarjeffar/Jamin_Bot_bruh) | [Invite](https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=2113928439&scope=bot)",
                         inline=False)
         embed.add_field(name="Info",
                         value='Chess Bot is a bot that plays chess.', inline=True)

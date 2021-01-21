@@ -133,15 +133,17 @@ void play()
 				while ((double)time_taken / CLOCKS_PER_SEC * curr_state.list_moves().size() < 4 * time_limit)
 				{
 					printf("Searching depth %d\n", curr_depth);
+					nodes = 0;
+					collisions = 0;
+					tb_hits = 0;
 					int start_time = clock();
 					best_move = find_best_move(curr_depth, -10, 10, best_move.second);
 					time_taken = clock() - start_time;
-					printf("Best move is %s, EVAL = %lf\n%lf seconds taken, %lld nodes searched\nSpeed = %lf nodes per second\n",
+					printf("Best move is %s, EVAL = %lf\n%lf seconds taken, %lld nodes searched\nSpeed = %lf nodes per second. %lld TB hits, %lld collisions\n",
 						   curr_state.move_to_string(best_move.second).c_str(),
-						   best_move.first, (double)time_taken / CLOCKS_PER_SEC, nodes, (double)nodes * CLOCKS_PER_SEC / time_taken);
+						   best_move.first, (double)time_taken / CLOCKS_PER_SEC, nodes, (double)nodes * CLOCKS_PER_SEC / time_taken, tb_hits, collisions);
 					if (abs(best_move.first) > 300)
 						break;
-					nodes = 0;
 					curr_depth++;
 				}
 				move_i = best_move.second;

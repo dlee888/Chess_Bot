@@ -82,6 +82,12 @@ public:
 				board_hash = (board_hash + f_exp2(8 * i + j) * (board[i][j] + 6)) % MOD;
 			}
 		}
+		wq_rights.push(true);
+		wk_rights.push(true);
+		bq_rights.push(true);
+		bk_rights.push(true);
+
+		en_passant_target.push(-1);
 	}
 
 	std::string to_piece(int x);

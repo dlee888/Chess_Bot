@@ -62,9 +62,9 @@ void load_openings()
 
 void scramble_openings()
 {
-	for (int iter = 0; iter < openings.size(); iter++)
+	for (int iter = 0; iter < (int)openings.size(); iter++)
 	{
-		for (int ind = iter; ind < openings.size() - 1; ind++)
+		for (int ind = iter; ind < (int)openings.size() - 1; ind++)
 		{
 			if (rand() % 2 == 1)
 			{
