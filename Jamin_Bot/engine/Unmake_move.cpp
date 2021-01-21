@@ -291,7 +291,92 @@ void state::unmake_move(int move)
 	}
 	else if (((move >> 18) & 3) == 1)
 	{
-		//throw std::exception("En passant is not ready yet");
+		if (!to_move)
+		{
+			replace_board(row_final, col_final, 0);
+			replace_board(row_init, col_init, WP);
+			replace_board(row_final, col_final - 1, BP);
+
+			fifty_move = 0;
+
+			white_center -= pawn_center[row_final][col_final] - pawn_center[row_init][col_init];
+			whitepawn_row_sum += row_final - row_init;
+
+			if (white_pawn_counts[col_final] >= 2)
+				doubled_white -= white_pawn_counts[col_final];
+			if (white_pawn_counts[col_init] >= 2)
+				doubled_white -= white_pawn_counts[col_init];
+			white_pawn_counts[col_final]--;
+			white_pawn_counts[col_init]++;
+			if (white_pawn_counts[col_final] >= 2)
+				doubled_white += white_pawn_counts[col_final];
+			if (white_pawn_counts[col_init] >= 2)
+				doubled_white += white_pawn_counts[col_init];
+
+			for (int i = 0; i < whitepawns.size(); i++)
+			{
+				if (whitepawns[i].first == row_final && whitepawns[i].second == col_final)
+				{
+					whitepawns[i].first = row_init;
+					whitepawns[i].second = col_init;
+					break;
+				}
+			}
+
+			blackpawn_row_sum += row_final + 1;
+			black_center += pawn_center[6 - row_final][col_final];
+
+			if (black_pawn_counts[col_final] >= 2)
+				doubled_black -= black_pawn_counts[col_final];
+			black_pawn_counts[col_final]++;
+			if (black_pawn_counts[col_final] >= 2)
+				doubled_black += black_pawn_counts[col_final];
+
+			blackpawns.push_back({row_final + 1, col_final});
+		}
+		else
+		{
+			replace_board(row_final, col_final, 0);
+			replace_board(row_init, col_init, BP);
+			replace_board(row_final, col_final + 1, WP);
+
+			fifty_move = 0;
+
+			black_center -= pawn_center[7 - row_final][col_final] - pawn_center[7 - row_init][col_init];
+			blackpawn_row_sum -= row_final - row_init;
+
+			if (black_pawn_counts[col_final] >= 2)
+				doubled_black -= black_pawn_counts[col_final];
+			if (black_pawn_counts[col_init] >= 2)
+				doubled_black -= black_pawn_counts[col_init];
+			black_pawn_counts[col_final]--;
+			black_pawn_counts[col_init]++;
+			if (black_pawn_counts[col_final] >= 2)
+				doubled_black += black_pawn_counts[col_final];
+			if (black_pawn_counts[col_init] >= 2)
+				doubled_black += black_pawn_counts[col_init];
+
+			for (int i = 0; i < blackpawns.size(); i++)
+			{
+				if (blackpawns[i].first == row_final && blackpawns[i].second == col_final)
+				{
+					blackpawns[i].first = row_init;
+					blackpawns[i].second = col_init;
+					break;
+				}
+			}
+
+			whitepawn_row_sum += 8 - row_final;
+			white_center += pawn_center[row_final - 1][col_final];
+
+			if (white_pawn_counts[col_final] >= 2)
+				doubled_white -= white_pawn_counts[col_final];
+			white_pawn_counts[col_final]++;
+			if (white_pawn_counts[col_final] >= 2)
+				doubled_white += white_pawn_counts[col_final];
+
+			whitepawns.push_back({row_final - 1, col_final});
+		}
 	}
 	else
 	{

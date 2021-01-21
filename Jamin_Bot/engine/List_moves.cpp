@@ -69,6 +69,13 @@ std::vector<int> state::list_moves()
 							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first - 1][p.second - 1]) << 15));
 					}
 				}
+				else if ((p.first - 1) << 3 + p.second - 1 == en_passant_target.top())
+				{
+					res.push_back(
+						(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second - 1) << 6) +
+							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first - 1][p.second - 1]) << 15) + 1
+						<< 18);
+				}
 			}
 			if (!out_of_bounds(p.first - 1, p.second + 1))
 			{
@@ -95,6 +102,13 @@ std::vector<int> state::list_moves()
 							(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second + 1) << 6) +
 							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first - 1][p.second + 1]) << 15));
 					}
+				}
+				else if ((p.first - 1) << 3 + p.second + 1 == en_passant_target.top())
+				{
+					res.push_back(
+						(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second + 1) << 6) +
+							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first - 1][p.second + 1]) << 15) + 1
+						<< 18);
 				}
 			}
 		}
@@ -249,6 +263,13 @@ std::vector<int> state::list_moves()
 							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first + 1][p.second - 1]) << 15));
 					}
 				}
+				else if ((p.first + 1) << 3 + p.second - 1 == en_passant_target.top())
+				{
+					res.push_back(
+						(p.first << 3) + p.second + ((((p.first + 1) << 3) + p.second - 1) << 6) +
+							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first + 1][p.second - 1]) << 15) + 1
+						<< 18);
+				}
 			}
 			if (!out_of_bounds(p.first + 1, p.second + 1))
 			{
@@ -275,6 +296,13 @@ std::vector<int> state::list_moves()
 							(p.first << 3) + p.second + ((((p.first + 1) << 3) + p.second + 1) << 6) +
 							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first + 1][p.second + 1]) << 15));
 					}
+				}
+				else if ((p.first + 1) << 3 + p.second + 1 == en_passant_target.top())
+				{
+					res.push_back(
+						(p.first << 3) + p.second + ((((p.first + 1) << 3) + p.second + 1) << 6) +
+							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first + 1][p.second + 1]) << 15) + 1
+						<< 18);
 				}
 			}
 		}
