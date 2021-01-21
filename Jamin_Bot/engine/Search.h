@@ -122,10 +122,15 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 				break;
 			}
 		}
-		exists[curr_state.board_hash] = true;
-		depths[curr_state.board_hash] = depth;
-		positions[curr_state.board_hash] = curr_state;
-		best_moves[curr_state.board_hash] = pdi(alpha, best_move);
+
+		if (!(exists[curr_state.board_hash] && positions[curr_state.board_hash].full_move + depths[curr_state.board_hash] > curr_state.full_move + depth))
+		{
+			exists[curr_state.board_hash] = true;
+			depths[curr_state.board_hash] = depth;
+			positions[curr_state.board_hash] = curr_state;
+			best_moves[curr_state.board_hash] = pdi(alpha, best_move);
+		}
+
 		if (depth == 1 && alpha != 1000 && alpha != -1000)
 		{
 			return pdi((9 * curr_eval + 11 * alpha) / 20, best_move);
@@ -180,10 +185,15 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 				break;
 			}
 		}
-		exists[curr_state.board_hash] = true;
-		depths[curr_state.board_hash] = depth;
-		positions[curr_state.board_hash] = curr_state;
-		best_moves[curr_state.board_hash] = pdi(beta, best_move);
+
+		if (!(exists[curr_state.board_hash] && positions[curr_state.board_hash].full_move + depths[curr_state.board_hash] > curr_state.full_move + depth))
+		{
+			exists[curr_state.board_hash] = true;
+			depths[curr_state.board_hash] = depth;
+			positions[curr_state.board_hash] = curr_state;
+			best_moves[curr_state.board_hash] = pdi(beta, best_move);
+		}
+
 		if (depth == 1 && beta != 1000 && beta != -1000)
 		{
 			return pdi((9 * curr_eval + 11 * beta) / 20, best_move);

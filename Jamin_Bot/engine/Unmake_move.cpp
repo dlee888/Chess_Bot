@@ -21,6 +21,8 @@ void state::unmake_move(int move)
 	bq_rights.pop();
 	en_passant_target.pop();
 
+	if (!to_move) full_move--;
+
 	if (((move >> 18) & 3) == 3)
 	{
 		if ((move >> 20) == 1)

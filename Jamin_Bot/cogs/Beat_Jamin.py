@@ -3,9 +3,12 @@ import os
 import subprocess
 from discord.ext import commands
 import random
+import asyncio
 
 from cogs.Utility import *
 
+
+thonking = []
 
 class Beat_Jamin(commands.Cog):
 
@@ -24,7 +27,17 @@ class Beat_Jamin(commands.Cog):
             await ctx.send('You do not have a game in progress with Chess Bot')
             return
 
+        if ctx.author.id in thonking:
+            await ctx.send('Chess Bot is already thinking')
+            return
+
+        if len(thonking) > 3:
+            await ctx.send('Resources overloaded. Please wait...')
+            while len(thonking) > 3:
+                await asyncio.sleep(5)
+        
         person = ctx.author.id
+        thonking.append(person)
         file_in = f'data/input-{person}.txt'
         file_out = f'data/output-{person}.txt'
         if not file_in[5:] in os.listdir('data'):
@@ -85,6 +98,7 @@ class Beat_Jamin(commands.Cog):
             await ctx.send(f'Your new rating is {get_rating(ctx.author.id)}')
             games.pop(ctx.author.id)
             push_games()
+            thonking.remove(person)
             return
         move = int(out[-24][31:-2])
         await ctx.send(out[-24])
@@ -104,6 +118,7 @@ class Beat_Jamin(commands.Cog):
             games[ctx.message.author.id].append(int(i))
             #os.system(f'echo {i}')
         push_games()
+        thonking.remove(person)
 
         log_channel = self.client.get_channel(798277701210341459)
         msg = '```\n'

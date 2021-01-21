@@ -24,6 +24,8 @@ void state::make_move(int move)
 
 	en_passant_target.push(-1);
 
+	if (!to_move) full_move++;
+
 	if (((move >> 18) & 3) == 3)
 	{
 		if (to_move)

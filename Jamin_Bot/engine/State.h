@@ -60,6 +60,7 @@ public:
 	bool white_castled = false, black_castled = false;
 	int fifty_move;
 	bool to_move; // true if white to move
+	int full_move;
 
 	state()
 	{
