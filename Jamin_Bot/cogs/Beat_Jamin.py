@@ -15,7 +15,7 @@ class Beat_Jamin(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command()
+    @commands.command(aliases = ['play'])
     @commands.cooldown(1, 10, commands.BucketType.default)
     async def move(self, ctx, move):
         '''
@@ -74,13 +74,17 @@ class Beat_Jamin(commands.Cog):
         out = f.readlines()
         f.close()
         if out[-3] != 'GAME STILL IN PROGRESS\n':
+            thonking.remove(person)
+            print(out[-3])
             if out[-3] == 'ILLEGAL MOVE PLAYED\n':
                 await ctx.send('Haha, nice try')
                 return
-            if out[-3] == 'COMPUTER RESIGNED':
-                await ctx.send('Computer resigned')
+            if out[-3] == 'COMPUTER RESIGNED\n':
+                await ctx.send('Chess Bot resigned')
                 update_rating(ctx.author.id, 1)
+                await ctx.send(f'Your new rating is {get_rating(ctx.author.id)}')
                 return
+
             winner = 0
             if out[-3] == 'DRAW\n':
                 update_rating(ctx.author.id, 1/2)
@@ -98,11 +102,11 @@ class Beat_Jamin(commands.Cog):
             await ctx.send(f'Your new rating is {get_rating(ctx.author.id)}')
             games.pop(ctx.author.id)
             push_games()
-            thonking.remove(person)
             return
         move = int(out[-24][31:-2])
+        await ctx.send(f'<@{person}>')
         await ctx.send(out[-24])
-        await ctx.send(out[-23])
+        #await ctx.send(out[-23])
         msg1 = '```\n'
         for i in range(-21, -4, 2):
             #os.system(f'echo {i}')
@@ -121,7 +125,7 @@ class Beat_Jamin(commands.Cog):
         thonking.remove(person)
 
         log_channel = self.client.get_channel(798277701210341459)
-        msg = '```\n'
+        msg = f'<{person}>\n```\n'
         for i in range(len(out)):
             msg += out[i] + '\n'
             if i % 10 == 0:
@@ -304,7 +308,7 @@ class Beat_Jamin(commands.Cog):
         f = open(file_out)
         out = f.readlines()
         f.close()
-        game = '```\n'
+        game = f'<@{ctx.author.id}>\n```\n'
         for i in range(-20, -4, 2):
             #os.system(f'echo {i}')
             game += out[i] + '\n'
@@ -317,6 +321,7 @@ class Beat_Jamin(commands.Cog):
     async def fen(self, ctx, *user):
         '''
         Sends current game in FEN format
+        TODO: Implement this
         '''
 
         person = -1

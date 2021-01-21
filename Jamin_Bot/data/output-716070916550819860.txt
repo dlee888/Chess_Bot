@@ -4,86 +4,65 @@ Please enter the game:
 How much time (max) do you want the program to take (seconds)?
 Do you want the computer to play black or white?
 ------------------------
-|BR|  |BB|  |BK|BB|  |BR|
+|  |  |  |  |  |BK|  |  |
 ------------------------
-|BP|BP|BP|  |  |BP|BP|BP|
+|BP|BP|  |WQ|  |BP|  |BR|
 ------------------------
-|  |  |  |  |  |BN|  |  |
+|  |BB|  |  |  |  |  |BP|
 ------------------------
-|  |  |  |BQ|BP|  |  |  |
+|  |  |BP|WB|  |  |BP|  |
 ------------------------
-|  |  |  |BN|  |  |  |  |
+|  |  |WP|  |  |  |  |  |
 ------------------------
-|  |  |WN|WP|  |WN|  |  |
+|WP|  |  |  |  |  |  |  |
 ------------------------
-|WP|WP|WP|  |WK|WP|WP|WP|
+|  |WP|  |  |  |WK|  |WP|
 ------------------------
-|WR|  |WB|WQ|  |WB|  |WR|
+|  |  |  |WR|  |  |  |  |
 ------------------------
 Where do you move?
 ------------------------
-|BR|  |BB|  |BK|BB|  |BR|
+|  |  |  |  |  |BK|  |  |
 ------------------------
-|BP|BP|BP|  |  |BP|BP|BP|
+|BP|BP|  |WQ|  |BP|  |BR|
 ------------------------
-|  |  |  |  |  |BN|  |  |
+|  |BB|  |  |  |  |  |BP|
 ------------------------
-|  |  |  |BQ|BP|  |  |  |
+|  |  |BP|WB|  |  |BP|  |
 ------------------------
-|  |  |  |WN|  |  |  |  |
+|  |  |WP|  |  |  |  |  |
 ------------------------
-|  |  |WN|WP|  |  |  |  |
+|WP|  |  |  |  |  |  |  |
 ------------------------
-|WP|WP|WP|  |WK|WP|WP|WP|
+|  |WP|  |  |  |WK|  |WP|
 ------------------------
-|WR|  |WB|WQ|  |WB|  |WR|
+|  |  |  |  |WR|  |  |  |
 ------------------------
-HERUISTIC EVAL: 3.04
+HERUISTIC EVAL: 6.06
 Searching depth 1
-Best move is P on e5 to d4 (71900), EVAL = 0.999500
-0.000000 seconds taken, 48 nodes searched
+Best move is P on a7 to a5 (5640), EVAL = 5.675000
+0.000000 seconds taken, 16 nodes searched
 Speed = 1.#INF00 nodes per second. 0 TB hits, 0 collisions
 Searching depth 2
-Best move is Q on d5 to d4 (88283), EVAL = -0.670000
-0.004000 seconds taken, 386 nodes searched
-Speed = 96500.000000 nodes per second. 1 TB hits, 0 collisions
+Best move is K on f8 to g7 (25477), EVAL = 6.092500
+0.001000 seconds taken, 99 nodes searched
+Speed = 99000.000000 nodes per second. 1 TB hits, 0 collisions
 Searching depth 3
-Best move is Q on d5 to d4 (88283), EVAL = -0.670000
-0.024000 seconds taken, 2306 nodes searched
-Speed = 96083.333333 nodes per second. 0 TB hits, 20 collisions
+Best move is B on b6 to a5 (13841), EVAL = 6.107500
+0.024000 seconds taken, 2048 nodes searched
+Speed = 85333.333333 nodes per second. 1 TB hits, 15 collisions
 Searching depth 4
-Best move is Q on d5 to d4 (88283), EVAL = -0.160000
-0.365000 seconds taken, 34447 nodes searched
-Speed = 94375.342466 nodes per second. 2967 TB hits, 941 collisions
+Best move is P on h6 to h5 (6103), EVAL = 7.445000
+0.302000 seconds taken, 26946 nodes searched
+Speed = 89225.165563 nodes per second. 450 TB hits, 1302 collisions
 Searching depth 5
-Best move is Q on d5 to d4 (88283), EVAL = -0.670000
-3.690000 seconds taken, 347749 nodes searched
-Speed = 94240.921409 nodes per second. 5115 TB hits, 36050 collisions
+Best move is P on h6 to h5 (6103), EVAL = 7.217500
+1.284000 seconds taken, 116730 nodes searched
+Speed = 90911.214953 nodes per second. 8002 TB hits, 10727 collisions
 Searching depth 6
-Best move is Q on d5 to d4 (88283), EVAL = -0.119000
-77.978000 seconds taken, 6064091 nodes searched
-Speed = 77766.690605 nodes per second. 344343 TB hits, 4763629 collisions
-COMPUTER PLAYED Q on d5 to d4 (88283)
-EVAL: -0.119
-------------------------
-|BR|  |BB|  |BK|BB|  |BR|
-------------------------
-|BP|BP|BP|  |  |BP|BP|BP|
-------------------------
-|  |  |  |  |  |BN|  |  |
-------------------------
-|  |  |  |  |BP|  |  |  |
-------------------------
-|  |  |  |BQ|  |  |  |  |
-------------------------
-|  |  |WN|WP|  |  |  |  |
-------------------------
-|WP|WP|WP|  |WK|WP|WP|WP|
-------------------------
-|WR|  |WB|WQ|  |WB|  |WR|
-------------------------
-HERUISTIC EVAL: -0.67
-Where do you move?
-GAME STILL IN PROGRESS
-6452 5900 27964 5835 6899 9542 11134 9345 38628 54979 10937 10450 76013 88283 
+Best move is   on h1 to h1 (-1), EVAL = 10.000000
+29.354000 seconds taken, 2287725 nodes searched
+Speed = 77935.715746 nodes per second. 107786 TB hits, 776212 collisions
+COMPUTER RESIGNED
+6452 5900 27964 5835 6899 9542 11134 9345 38628 54979 10937 10450 76013 88283 15162 22627 20088 13957 6704 14722 7029 47974 105334 21601 10282 113434 173152 78956 6834 5770 22587 25348 15805 16576 6509 24908 38693 9941 6314 10587 28532 43749 20217 25349 23712 42795 147707 155852 22834 8924 28029 5583 20223 6030 22372 24835 86749 24900 14070 17351 20283 
 >>>

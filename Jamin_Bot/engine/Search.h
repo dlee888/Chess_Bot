@@ -70,10 +70,10 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 		return pdi(curr_eval, -1);
 	}
 
-	if (depth < quiescent_prune && curr_state.quiescent())
-	{
-		return pdi(curr_eval, -1);
-	}
+	// if (depth < quiescent_prune && curr_state.quiescent())
+	// {
+	// 	return pdi(curr_eval, -1);
+	// }
 
 	if (curr_state.to_move)
 	{

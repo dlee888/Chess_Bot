@@ -149,7 +149,8 @@ void play()
 				move_i = best_move.second;
 				if (move_i == -1)
 				{
-					error_msg = "ILLEGAL MOVE PLAYED";
+					if (abs(best_move.first) >= 9.9999) error_msg = "COMPUTER RESIGNED";
+					else error_msg = "ILLEGAL MOVE PLAYED";
 					break;
 				}
 				if ((computer_is_white && best_move.first <= -10) || (!computer_is_white && best_move.first >= 10))
