@@ -21,7 +21,7 @@ class Beat_Jamin(commands.Cog):
         For example, Nxe4, Nge5, c4, Ke2, etc
         '''
         if not ctx.author.id in games.keys():
-            await ctx.send('You do not have a game in progress with Beat_Jamin')
+            await ctx.send('You do not have a game in progress with Chess Bot')
             return
 
         person = ctx.author.id
@@ -54,7 +54,7 @@ class Beat_Jamin(commands.Cog):
             f.write('black\n')
         f.write(move + '\nquit\nquit\n')
         f.close()
-        await ctx.send('Beat_Jamin is thinking...')
+        await ctx.send('Chess Bot is thinking...')
         subprocess.call(['./jamin'], stdin=open(file_in),
                         stdout=open(file_out, 'w'))
         f = open(file_out)
@@ -120,7 +120,10 @@ class Beat_Jamin(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.default)
     async def challenge(self, ctx, *flags):
         '''
-        Challenges Beat_Jamin
+        Challenges Chess Bot to a game
+		Your color is assigned randomly.
+		Flags:
+		-t to set time control (in seconds)
         '''
         if ctx.author.id in games.keys():
             await ctx.send('You already have a game in progress')
@@ -136,7 +139,7 @@ class Beat_Jamin(commands.Cog):
         games[ctx.author.id] = []
         colors[ctx.author.id] = random.randint(0, 1)  # 1 if white, 0 if black
 
-        await ctx.send('Game started with Beat_Jamin')
+        await ctx.send('Game started with Chess Bot')
         if colors[ctx.author.id] == 0:
             await ctx.send('You are black')
         else:
@@ -157,7 +160,7 @@ class Beat_Jamin(commands.Cog):
             f.write(
                 f'play\nno\n{time_control[ctx.author.id]}\nwhite\nquit\nquit')
             f.close()
-            print('Starting Jamin')
+            #print('Starting Jamin')
 
             subprocess.call(['./jamin'], stdin=open(file_in),
                             stdout=open(file_out, 'w'))
