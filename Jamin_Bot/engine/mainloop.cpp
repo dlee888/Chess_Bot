@@ -170,9 +170,20 @@ int main()
 				{
 					res += std::to_string(8 - last);
 				}
-				res += '/';
+				if (i != 7)
+					res += '/';
 			}
 			res += ' ';
+
+			if (curr_state.to_move)
+			{
+				res += "w ";
+			}
+			else
+			{
+				res += "b ";
+			}
+
 			if (curr_state.wk_rights.top())
 			{
 				res += 'K';
