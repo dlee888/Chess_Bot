@@ -343,3 +343,6 @@ healthchecksdb
 **/data
 #???
 *.txt
+
+# why no gitignore my files???
+*.gch

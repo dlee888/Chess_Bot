@@ -65,9 +65,9 @@ public:
 	state()
 	{
 		fifty_move = 0;
-		doubled_black = 0;
-		doubled_white = 0;
+		full_move = 0;
 		to_move = true;
+
 		for (int i = 0; i < 8; i++)
 		{
 			for (int j = 0; j < 8; j++)
@@ -75,7 +75,9 @@ public:
 				board[i][j] = default_board[i][j];
 			}
 		}
+
 		board_hash = 0;
+
 		for (int i = 0; i < 8; i++)
 		{
 			for (int j = 0; j < 8; j++)
@@ -83,6 +85,7 @@ public:
 				board_hash = (board_hash + f_exp2(8 * i + j) * (board[i][j] + 6)) % MOD;
 			}
 		}
+
 		wq_rights.push(true);
 		wk_rights.push(true);
 		bq_rights.push(true);

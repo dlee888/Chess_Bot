@@ -44,7 +44,7 @@ class Misc(commands.Cog):
             #print(filename, filename[-4:], filename[-2:])
             if filename[-4:] == '.cpp' or filename[-2:] == '.h':
                 compile_cmd += f'engine/{filename} '
-        
+
         print(compile_cmd)
 
         out = os.system(compile_cmd)
@@ -59,7 +59,7 @@ class Misc(commands.Cog):
         '''
         await ctx.send(f'Your rating is {get_rating(ctx.message.author.id)}')
 
-    @commands.command(aliases = ['info'])
+    @commands.command(aliases=['info'])
     @commands.cooldown(1, 4, commands.BucketType.default)
     async def botinfo(self, ctx):
         embed = discord.Embed(title="Bot Info", color=0xff0000)
