@@ -84,6 +84,8 @@ class Beat_Jamin(commands.Cog):
                 await ctx.send('Chess Bot resigned')
                 update_rating(ctx.author.id, 1)
                 await ctx.send(f'Your new rating is {get_rating(ctx.author.id)}')
+                games.pop(ctx.author.id)
+                push_games()
                 return
 
             winner = 0
