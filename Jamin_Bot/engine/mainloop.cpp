@@ -138,10 +138,55 @@ int main()
 			std::string res;
 			for (int i = 0; i < 8; i++)
 			{
+				int last = -1;
 				for (int j = 0; j < 8; j++)
 				{
+					std::string piece = curr_state.to_piece(curr_state.board[i][j]);
+					if (piece == "  ") {
+						if (last == -1) {
+							last = j;
+						}
+					} else {
+						if (last != -1) {
+							res += std::to_string(j - last);
+							last = -1;
+						}
+					if (piece[0] == 'B') {
+						res += piece[1] - 'A' + 'a';
+					} else {
+						res += piece[1];
+					}
+					}
 				}
+				res += '/';
 			}
+			res += ' ';
+			if (curr_state.wk_rights.top()) {
+				res += 'K';
+			}
+			if (curr_state.wq_rights.top()) {
+				res += 'Q';
+			}
+			if (curr_state.bk_rights.top()) {
+				res += 'k';
+			}
+			if (curr_state.bq_rights.top()) {
+				res += 'q';
+			}
+			if (res[res.size() - 1] == ' ') {
+				res += '-';
+			}
+			res += ' ';
+			if (curr_state.en_passant_target.top() == -1) {
+				res += "- ";
+			} else {
+				int targ = curr_state.en_passant_target.top();
+				res += targ&7 + 'a';
+				res += '8' - (targ>>3);
+				res += ' ';
+			}
+			res += std::to_string(curr_state.fifty_move) + " ";
+			res += std::to_string(curr_state.full_move);
 			std::cout << res << std::endl;
 		}
 		else if (cmnd == "quit")

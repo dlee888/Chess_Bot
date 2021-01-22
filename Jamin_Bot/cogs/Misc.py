@@ -63,7 +63,7 @@ class Misc(commands.Cog):
     async def botinfo(self, ctx):
         embed = discord.Embed(title="Bot Info", color=0xff0000)
         embed.add_field(name="Links",
-                        value="[Github](https://github.com/jeffarjeffar/Jamin_Bot_bruh) | [Invite](https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=2113928439&scope=bot)",
+                        value="[Github](https://github.com/jeffarjeffar/Chess_Bot) | [Invite](https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=2113928439&scope=bot)",
                         inline=False)
         embed.add_field(name="Info",
                         value='Chess Bot is a bot that plays chess. $help for more information', inline=True)

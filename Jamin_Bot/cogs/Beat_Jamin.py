@@ -321,7 +321,6 @@ class Beat_Jamin(commands.Cog):
     async def fen(self, ctx, *user):
         '''
         Sends current game in FEN format
-        TODO: Implement this
         '''
 
         person = -1
