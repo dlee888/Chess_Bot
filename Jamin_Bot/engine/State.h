@@ -50,9 +50,8 @@ public:
 
 	void replace_board(int row, int col, int piece)
 	{
-		board_hash = (board_hash - f_exp2(8 * row + col) * (board[row][col] + 6) + SAFETY) % MOD;
+		board_hash = (board_hash - f_exp2((row << 3) + col) * (board[row][col] - piece) + SAFETY) % MOD;
 		board[row][col] = piece;
-		board_hash = (board_hash + f_exp2(8 * row + col) * (board[row][col] + 6) + SAFETY) % MOD;
 	}
 
 	std::stack<bool> wq_rights, bq_rights, wk_rights, bk_rights; // Castling rights
@@ -101,6 +100,16 @@ public:
 	bool operator==(state s)
 	{
 		if (s.to_move != to_move)
+			return false;
+		if (s.en_passant_target.top() != en_passant_target.top())
+			return false;
+		if (s.wk_rights.top() != wk_rights.top())
+			return false;
+		if (s.wq_rights.top() != wq_rights.top())
+			return false;
+		if (s.bk_rights.top() != bk_rights.top())
+			return false;
+		if (s.bq_rights.top() != bq_rights.top())
 			return false;
 		for (int i = 0; i < 8; i++)
 		{
