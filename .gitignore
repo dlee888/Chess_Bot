@@ -346,3 +346,5 @@ healthchecksdb
 
 # why no gitignore my files???
 *.gch
+Jamin_Bot/debug.exe
+Jamin_Bot/a.exe

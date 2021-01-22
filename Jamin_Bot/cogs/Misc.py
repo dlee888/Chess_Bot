@@ -31,7 +31,8 @@ class Misc(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 15, commands.BucketType.default)
-    async def update(self, ctx):
+    @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger')
+    async def update(self, ctx, flags = ''):
         '''
         Compiles the latest version of Chess Bot
         Compile message of 1 means that there were compile errors
@@ -44,6 +45,7 @@ class Misc(commands.Cog):
             #print(filename, filename[-4:], filename[-2:])
             if filename[-4:] == '.cpp' or filename[-2:] == '.h':
                 compile_cmd += f'engine/{filename} '
+        compile_cmd += flags
 
         print(compile_cmd)
 

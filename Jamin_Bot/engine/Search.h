@@ -19,15 +19,21 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 {
 	nodes++;
 
+	//printf("Searching with depth = %d, alpha = %lf, beta = %lf\n", depth, alpha, beta);
+	//curr_state.print();
+	//printf("hash = %lld\n", curr_state.board_hash);
+
 	if (exists[curr_state.board_hash] && depth <= depths[curr_state.board_hash])
 	{
 		if (curr_state == positions[curr_state.board_hash])
 		{
 			tb_hits++;
+			//printf("found in table\n");
 			return best_moves[curr_state.board_hash];
 		}
 		else
 		{
+			//printf("collision\n");
 			collisions++;
 		}
 	}
