@@ -16,7 +16,8 @@ class Misc(commands.Cog):
     async def on_ready(self):
         pull_ratings()
         pull_games()
-        await client.change_presence(activity=discord.Game(name='$help or $botinfo for more info'))
+
+        await self.client.change_presence(activity=discord.Game(name='$help or $botinfo for more info'))
 
         print('Bot is ready')
 

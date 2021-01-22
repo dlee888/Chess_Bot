@@ -16,7 +16,7 @@ async def on_error(error, *args, **kwargs):
     #print('error found')
     # print(error)
     error_channel = bot.get_channel(799761964401819679)
-    await error_channel.send(f'Error: {str(error)}')
+    await error_channel.send(f'Error: {str(error)}\nArgs: {args}\nkwargs: {kwargs}')
 
 
 @bot.event

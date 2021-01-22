@@ -10,12 +10,13 @@ from cogs.Utility import *
 
 thonking = []
 
+
 class Beat_Jamin(commands.Cog):
 
     def __init__(self, client):
         self.client = client
 
-    @commands.command(aliases = ['play'])
+    @commands.command(aliases=['play'])
     @commands.cooldown(1, 10, commands.BucketType.default)
     async def move(self, ctx, move):
         '''
@@ -35,7 +36,7 @@ class Beat_Jamin(commands.Cog):
             await ctx.send('Resources overloaded. Please wait...')
             while len(thonking) > 3:
                 await asyncio.sleep(5)
-        
+
         person = ctx.author.id
         thonking.append(person)
         file_in = f'data/input-{person}.txt'
@@ -75,7 +76,7 @@ class Beat_Jamin(commands.Cog):
         f.close()
         if out[-3] != 'GAME STILL IN PROGRESS\n':
             thonking.remove(person)
-            print(out[-3])
+            # print(out[-3])
             if out[-3] == 'ILLEGAL MOVE PLAYED\n':
                 await ctx.send('Haha, nice try')
                 return
@@ -106,7 +107,7 @@ class Beat_Jamin(commands.Cog):
         move = int(out[-24][31:-2])
         await ctx.send(f'<@{person}>')
         await ctx.send(out[-24])
-        #await ctx.send(out[-23])
+        # await ctx.send(out[-23])
         msg1 = '```\n'
         for i in range(-21, -4, 2):
             #os.system(f'echo {i}')
@@ -140,9 +141,9 @@ class Beat_Jamin(commands.Cog):
     async def challenge(self, ctx, *flags):
         '''
         Challenges Chess Bot to a game
-		Your color is assigned randomly.
-		Flags:
-		-t to set time control (in seconds)
+                Your color is assigned randomly.
+                Flags:
+                -t to set time control (in seconds)
         '''
         if ctx.author.id in games.keys():
             await ctx.send('You already have a game in progress')
