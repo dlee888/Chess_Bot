@@ -137,7 +137,8 @@ void play()
 					collisions = 0;
 					tb_hits = 0;
 					int start_time = clock();
-					best_move = find_best_move(curr_depth, -10, 10, best_move.second);
+					if (computer_is_white) best_move = find_best_move(curr_depth, -10, DINF, best_move.second);
+					else best_move = find_best_move(curr_depth, -DINF, 10, best_move.second);
 					time_taken = clock() - start_time;
 					printf("Best move is %s, EVAL = %lf\n%lf seconds taken, %lld nodes searched\nSpeed = %lf nodes per second. %lld TB hits, %lld collisions\n",
 						   curr_state.move_to_string(best_move.second).c_str(),

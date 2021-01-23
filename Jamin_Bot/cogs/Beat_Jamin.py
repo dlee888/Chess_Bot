@@ -74,20 +74,22 @@ class Beat_Jamin(commands.Cog):
         f = open(file_out)
         out = f.readlines()
         f.close()
-        if out[-3] != 'GAME STILL IN PROGRESS\n':
-            thonking.remove(person)
-            # print(out[-3])
-            if out[-3] == 'ILLEGAL MOVE PLAYED\n':
-                await ctx.send('Haha, nice try')
-                return
-            if out[-3] == 'COMPUTER RESIGNED\n':
-                await ctx.send('Chess Bot resigned')
-                update_rating(ctx.author.id, 1)
-                await ctx.send(f'Your new rating is {get_rating(ctx.author.id)}')
-                games.pop(ctx.author.id)
-                push_games()
-                return
 
+        if out[-3] == 'ILLEGAL MOVE PLAYED\n':
+            await ctx.send('Haha, nice try')
+            thonking.remove(person)
+            return
+
+        if out[-3] == 'COMPUTER RESIGNED\n':
+            await ctx.send('Chess Bot resigned')
+            update_rating(ctx.author.id, 1)
+            await ctx.send(f'Your new rating is {get_rating(ctx.author.id)}')
+            games.pop(ctx.author.id)
+            push_games()
+            thonking.remove(person)
+            return
+
+        if out[-3] != 'GAME STILL IN PROGRESS\n':
             winner = 0
             if out[-3] == 'DRAW\n':
                 update_rating(ctx.author.id, 1/2)
@@ -99,6 +101,33 @@ class Beat_Jamin(commands.Cog):
                     update_rating(ctx.author.id, 1)
                     await ctx.send('You won!')
                 else:
+                    await ctx.send(f'<@{person}>')
+                    await ctx.send(out[-23])
+                    msg1 = '```\n'
+                    for i in range(-20, -4, 2):
+                        msg1 += out[i] + '\n'
+                        #print(out[i])
+                    msg1 += '```'
+                    await ctx.send(msg1)
+                    game_str = out[-2][:-1].split(' ')
+                    games[ctx.message.author.id].clear()
+                    for i in game_str:
+                        if i == '' or i == '\n':
+                            continue
+                        games[ctx.message.author.id].append(int(i))
+                    push_games()
+                    thonking.remove(person)
+
+                    log_channel = self.client.get_channel(798277701210341459)
+                    msg = f'<{person}>\n```\n'
+                    for i in range(len(out)):
+                        msg += out[i] + '\n'
+                        if i % 10 == 0:
+                            msg += '```'
+                            await log_channel.send(msg)
+                            msg = '```'
+                    msg += '```'
+                    await log_channel.send(msg)
                     update_rating(ctx.author.id, 0)
                     await ctx.send('You lost.')
 
@@ -106,15 +135,12 @@ class Beat_Jamin(commands.Cog):
             games.pop(ctx.author.id)
             push_games()
             return
-        move = int(out[-24][31:-2])
+
         await ctx.send(f'<@{person}>')
         await ctx.send(out[-24])
-        # await ctx.send(out[-23])
         msg1 = '```\n'
-        for i in range(-21, -4, 2):
-            #os.system(f'echo {i}')
+        for i in range(-21, -5, 2):
             msg1 += out[i] + '\n'
-            #os.system(f'echo "{msg1}"')
         msg1 += '```'
         await ctx.send(msg1)
         game_str = out[-2][:-1].split(' ')
@@ -123,7 +149,6 @@ class Beat_Jamin(commands.Cog):
             if i == '' or i == '\n':
                 continue
             games[ctx.message.author.id].append(int(i))
-            #os.system(f'echo {i}')
         push_games()
         thonking.remove(person)
 
