@@ -24,6 +24,7 @@ async def on_command_error(ctx, exc):
     #print(exc, type(exc))
     await ctx.send(f'Command Error: {str(exc)}')
 
-TOKEN = input('Token: ')
+token = open('token.txt')
+TOKEN = token.readlines()[0]
 
 bot.run(TOKEN)

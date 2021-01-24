@@ -1,6 +1,7 @@
 import discord
 import os
 from discord.ext import commands
+import sys
 
 from cogs.Utility import *
 
@@ -84,3 +85,14 @@ class Misc(commands.Cog):
 
         stdout, stderr, status = await run(cmd)
         await ctx.send(f'stdout: {stdout}\nstderr: {stderr}\n{status}')
+
+    @commands.command()
+    async def restart(self, ctx):
+        await ctx.send(f'Restarting...')
+
+        if ctx.author.id != 716070916550819860:
+            await ctx.send('Geniosity limit exceeded. Try again later')
+            return
+
+        await run("py -3 Jamin_Bot.py")
+        sys.exit()
