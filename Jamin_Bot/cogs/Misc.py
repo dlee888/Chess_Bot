@@ -4,7 +4,7 @@ from discord.ext import commands
 
 from cogs.Utility import *
 
-version = '1.0.0'
+version = '1.0.1'
 
 
 class Misc(commands.Cog):
