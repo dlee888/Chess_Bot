@@ -37,13 +37,14 @@ def get_image(person, adj = 0):
             
             square_img = Image.open(square)
             square_img = square_img.resize((50, 50), Image.ANTIALIAS)
-            #square_img.show()
-            width, height = square_img.size
-            # print(width, height)
 
             x *= 50
             y *= 50
-            result.paste(square_img, (y, x, y + width, x + height))
+            
+            if colors[person] == 1:
+                result.paste(square_img, (y, x, y + 50, x + 50))
+            else:
+                result.paste(square_img, (y, 350 - x, y + 50, 400 - x))
 
     if colors[person] == 1:
         result.rotate(180)
