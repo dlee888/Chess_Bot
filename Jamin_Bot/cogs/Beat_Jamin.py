@@ -1,15 +1,54 @@
 import discord
 import os
-import subprocess
 from discord.ext import commands
 import random
 import asyncio
+
+from PIL import Image
 
 from cogs.Utility import *
 
 
 thonking = []
 
+
+def get_image(person, adj = 0):
+    game_file = f'data/output-{person}.txt'
+    F = open(game_file)
+    game = F.readlines();
+    F.close()
+
+    result = Image.open('images/blank_board.png')
+    result.resize((400, 400))
+
+    for i in range(-20 + adj, -4 + adj, 2):
+        for j in range(1, 25, 3):
+            square = 'images/'
+            if game[i][j:j+2] == '  ':
+                square += 'blank'
+            else:
+                square += game[i][j:j+2]
+            x = (i + 21)//2
+            y = (j - 1)//3
+            if (x + y) % 2:
+                square += '-light.png'
+            else:
+                square += '-dark.png'
+            
+            square_img = Image.open(square)
+            square_img = square_img.resize((50, 50), Image.ANTIALIAS)
+            #square_img.show()
+            width, height = square_img.size
+            # print(width, height)
+
+            x *= 50
+            y *= 50
+            result.paste(square_img, (y, x, y + width, x + height))
+
+    if colors[person] == 1:
+        result.rotate(180)
+    
+    result.save(f'data/image-{person}.png')
 
 class Beat_Jamin(commands.Cog):
 
@@ -69,8 +108,7 @@ class Beat_Jamin(commands.Cog):
         f.write(move + '\nquit\nquit\n')
         f.close()
         await ctx.send('Chess Bot is thinking...')
-        subprocess.call(['./a'], stdin=open(file_in),
-                        stdout=open(file_out, 'w'))
+        await run(f'.\\a < {file_in} > {file_out}')
         f = open(file_out)
         out = f.readlines()
         f.close()
@@ -103,19 +141,9 @@ class Beat_Jamin(commands.Cog):
                 else:
                     await ctx.send(f'<@{person}>')
                     await ctx.send(out[-23])
-                    msg1 = '```\n'
-                    for i in range(-20, -4, 2):
-                        msg1 += out[i] + '\n'
-                        #print(out[i])
-                    msg1 += '```'
-                    await ctx.send(msg1)
-                    game_str = out[-2][:-1].split(' ')
-                    games[ctx.message.author.id].clear()
-                    for i in game_str:
-                        if i == '' or i == '\n':
-                            continue
-                        games[ctx.message.author.id].append(int(i))
-                    push_games()
+                    get_image(person)
+                    await ctx.send(file=discord.File(f'data/image-{person}.png'))
+
                     thonking.remove(person)
 
                     log_channel = self.client.get_channel(798277701210341459)
@@ -138,11 +166,8 @@ class Beat_Jamin(commands.Cog):
 
         await ctx.send(f'<@{person}>')
         await ctx.send(out[-24])
-        msg1 = '```\n'
-        for i in range(-21, -5, 2):
-            msg1 += out[i] + '\n'
-        msg1 += '```'
-        await ctx.send(msg1)
+        get_image(person, -1)
+        await ctx.send(file=discord.File(f'data/image-{person}.png'))
         game_str = out[-2][:-1].split(' ')
         games[ctx.message.author.id].clear()
         for i in game_str:
@@ -209,20 +234,14 @@ class Beat_Jamin(commands.Cog):
             f.close()
             #print('Starting a')
 
-            subprocess.call(['./a'], stdin=open(file_in),
-                            stdout=open(file_out, 'w'))
+            await run(f'.\\a < {file_in} > {file_out}')
             f = open(file_out)
             out = f.readlines()
             move = int(out[-24][31:-2])
             await ctx.send(out[-24])
-            await ctx.send(out[-23])
-            msg1 = '```\n'
-            for i in range(-21, -6, 2):
-                #os.system(f'echo {i}')
-                msg1 += out[i] + '\n'
-                #os.system(f'echo "{msg1}"')
-            msg1 += '```'
-            await ctx.send(msg1)
+            await ctx.send(out[-23])     
+            get_image(person, -1)
+            await ctx.send(file=discord.File(f'data/image-{person}.png'))
             await ctx.send(out[-5])
             game_str = out[-2].split(' ')
             games[ctx.author.id].clear()
@@ -298,7 +317,6 @@ class Beat_Jamin(commands.Cog):
                 await ctx.send('You do not have a game in progress')
             return
 
-        person = ctx.author.id
         file_in = f'data/input-{person}.txt'
         file_out = f'data/output-{person}.txt'
         # for asdf in os.listdir('data'):
@@ -331,18 +349,13 @@ class Beat_Jamin(commands.Cog):
             f.write('black\n')
         f.write('\nquit\nquit\n')
         f.close()
-        subprocess.call(['./a'], stdin=open(file_in),
-                        stdout=open(file_out, 'w'))
+        await run(f'.\\a < {file_in} > {file_out}')
         f = open(file_out)
         out = f.readlines()
         f.close()
-        game = f'<@{ctx.author.id}>\n```\n'
-        for i in range(-20, -4, 2):
-            #os.system(f'echo {i}')
-            game += out[i] + '\n'
-            #os.system(f'echo "{msg1}"')
-        game += '```'
-        await ctx.send(game)
+        await ctx.send(f'<@{ctx.author.id}>\n')
+        get_image(person)
+        await ctx.send(file=discord.File(f'data/image-{person}.png'))
 
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.default)
@@ -392,8 +405,7 @@ class Beat_Jamin(commands.Cog):
             f.write(game_str + '\n')
         f.write('quit\n')
         f.close()
-        subprocess.call(['./a'], stdin=open(file_in),
-                        stdout=open(file_out, 'w'))
+        await run(f'.\\a < {file_in} > {file_out}')
         f = open(file_out)
         out = f.readlines()
         f.close()

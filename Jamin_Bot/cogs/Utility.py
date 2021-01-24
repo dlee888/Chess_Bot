@@ -2,6 +2,15 @@ import discord
 import os
 from discord.ext import commands
 
+import asyncio
+
+async def run(cmd):
+    proc = await asyncio.create_subprocess_shell(cmd)
+
+    await proc.communicate()
+
+    #print(f'[{cmd!r} exited with {proc.returncode}]')
+
 
 def is_mooderator(person):
     for role in person.roles:

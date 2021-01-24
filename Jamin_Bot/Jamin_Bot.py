@@ -18,7 +18,6 @@ async def on_error(error, *args, **kwargs):
     error_channel = bot.get_channel(799761964401819679)
     await error_channel.send(f'Error: {str(error)}\nArgs: {args}\nkwargs: {kwargs}')
 
-
 @bot.event
 async def on_command_error(ctx, exc):
     #print('command error found')
