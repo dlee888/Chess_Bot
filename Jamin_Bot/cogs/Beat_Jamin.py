@@ -265,13 +265,11 @@ class Beat_Jamin(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
+    @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
     async def abort(self, ctx, user):
         '''
         Aborts a game
         '''
-        if not is_mooderator(ctx.author):
-            await ctx.send('You do not have permission to abort games')
-            return
 
         person = int(user[3:-1])
 
