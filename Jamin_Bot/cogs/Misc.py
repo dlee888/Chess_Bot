@@ -50,11 +50,9 @@ class Misc(commands.Cog):
                 compile_cmd += f'engine/{filename} '
         compile_cmd += flags
 
-        print(compile_cmd)
+        out, err, status = await run(compile_cmd)
 
-        out = os.system(compile_cmd)
-
-        await ctx.send(f'Updated\nCompile Message: {out}')
+        await ctx.send(f'Updated\nCompile Message: {out}\nStderr: {err}\n{status}')
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)

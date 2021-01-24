@@ -341,7 +341,7 @@ healthchecksdb
 
 input*
 output*
-imata*
+image*
 
 *.gch
 Jamin_Bot/debug.exe
