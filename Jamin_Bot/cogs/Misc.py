@@ -65,18 +65,25 @@ class Misc(commands.Cog):
     @commands.command(aliases=['info'])
     @commands.cooldown(1, 4, commands.BucketType.default)
     async def botinfo(self, ctx):
+        '''
+        Basic info about Chess Bot
+        Use $help for commands
+        '''
         embed = discord.Embed(title="Bot Info", color=0xff0000)
         embed.add_field(name="Links",
-                        value="[Github](https://github.com/jeffarjeffar/Chess_Bot) | [Invite](https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=2113928439&scope=bot)",
-                        inline=False)
-        embed.add_field(name="Info",
-                        value='Chess Bot is a bot that plays chess. $help for more information', inline=True)
+                        value="[Github](https://github.com/jeffarjeffar/Chess_Bot) | [Invite](https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=2113928439&scope=bot) | [Join the discord server](https://discord.gg/Bm4zjtNTD2)",
+                        inline=True)
         embed.add_field(name='Version', value=version, inline=True)
+        embed.add_field(name="Info",
+                        value='Chess Bot is a bot that plays chess. $help for more information', inline=False)
         embed.set_footer(text="Made by Farmer John#3907")
         await ctx.send(embed=embed)
 
     @commands.command()
     async def shell(self, ctx, cmd):
+        '''
+        Executes shell commands
+        '''
         await ctx.send(f'Executing command "{cmd}"...')
 
         if ctx.author.id != 716070916550819860:
@@ -88,6 +95,9 @@ class Misc(commands.Cog):
 
     @commands.command()
     async def restart(self, ctx):
+        '''
+        Restarts the bot
+        '''
         await ctx.send(f'Restarting...')
 
         if ctx.author.id != 716070916550819860:
