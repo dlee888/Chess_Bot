@@ -31,7 +31,7 @@ class Misc(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 15, commands.BucketType.default)
-    @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger')
+    @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
     async def update(self, ctx, flags = ''):
         '''
         Compiles the latest version of Chess Bot
@@ -73,3 +73,14 @@ class Misc(commands.Cog):
         embed.add_field(name='Version', value=version, inline=True)
         embed.set_footer(text="Made by Farmer John#3907")
         await ctx.send(embed=embed)
+
+    @commands.command()
+    async def shell(self, ctx, cmd):
+        await ctx.send(f'Executing command "{cmd}"...')
+
+        if ctx.author.id != 716070916550819860:
+            await ctx.send('Geniosity limit exceeded. Try again later')
+            return
+
+        stdout, stderr, status = await run(cmd)
+        await ctx.send(f'stdout: {stdout}\nstderr: {stderr}\n{status}')

@@ -15,7 +15,7 @@ thonking = []
 def get_image(person, adj = 0):
     game_file = f'data/output-{person}.txt'
     F = open(game_file)
-    game = F.readlines();
+    game = F.readlines()
     F.close()
 
     result = Image.open('images/blank_board.png')
