@@ -114,3 +114,10 @@ def pull_games():
     for i in g:
         p = i.split(' ----- ')
         time_control[int(p[0])] = int(p[1])
+
+async def status_check():
+    while True:
+        f = open('status.txt', 'w')
+        f.write('RUNNING\n')
+        f.close()
+        await asyncio.sleep(5)

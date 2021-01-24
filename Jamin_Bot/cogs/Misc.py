@@ -22,6 +22,8 @@ class Misc(commands.Cog):
 
         print('Bot is ready')
 
+        await status_check()
+
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
     async def ping(self, ctx):
@@ -94,5 +96,5 @@ class Misc(commands.Cog):
             await ctx.send('Geniosity limit exceeded. Try again later')
             return
 
-        await run("py -3 Jamin_Bot.py")
+        #await run("py -3 Jamin_Bot.py")
         sys.exit()
