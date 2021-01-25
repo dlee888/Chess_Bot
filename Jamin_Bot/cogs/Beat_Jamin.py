@@ -252,7 +252,9 @@ class Beat_Jamin(commands.Cog):
                 games[ctx.author.id].append(int(i))
             push_games()
 
+            await ctx.send('Logging...')
             log_channel = self.client.get_channel(798277701210341459)
+            await ctx.send('Got log channel')
             msg = '```\n'
             for i in range(len(out)):
                 msg += out[i] + '\n'
