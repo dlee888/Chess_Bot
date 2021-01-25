@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <functional>
 
 #include "State.h"
 #include "Evaluate.h"
@@ -31,7 +32,8 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 			tb_hits++;
 			//printf("found in table\n");
 			not_same = false;
-			if (depth <= depths[curr_state.board_hash]) return best_moves[curr_state.board_hash];
+			if (depth <= depths[curr_state.board_hash])
+				return best_moves[curr_state.board_hash];
 		}
 		else
 		{
@@ -55,7 +57,61 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 		}
 	}
 
-	int m = curr_state.mate();
+	double curr_eval = eval(curr_state);
+	if (depth <= 0)
+	{
+		return pdi(curr_eval, -1);
+	}
+
+	std::vector <int> moves = curr_state.list_moves();
+	std::vector <pdi> ordered_moves;
+	int m;
+	for (int i : moves)
+	{
+		curr_state.make_move(i);
+		ordered_moves.push_back({eval(curr_state), i});
+		if (!curr_state.to_move)
+		{
+			if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) >= 7)
+			{
+				curr_state.unmake_move(i);
+				m = 0;
+				break;
+			}
+		}
+		else
+		{
+			if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) >= 7)
+			{
+				curr_state.unmake_move(i);
+				m = 0;
+				break;
+			}
+		}
+		curr_state.unmake_move(i);
+	}
+	if (curr_state.to_move)
+	{
+		if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) < 7)
+		{
+			m = 2;
+		}
+		else
+		{
+			m = 1;
+		}
+	}
+	else
+	{
+		if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) < 7)
+		{
+			m = 2;
+		}
+		else
+		{
+			m = 1;
+		}
+	}
 	if (m == 1)
 	{
 		return pdi(0, -1);
@@ -72,12 +128,6 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 		}
 	}
 
-	double curr_eval = eval(curr_state);
-	if (depth <= 0)
-	{
-		return pdi(curr_eval, -1);
-	}
-
 	// if (depth < quiescent_prune && curr_state.quiescent())
 	// {
 	// 	return pdi(curr_eval, -1);
@@ -85,6 +135,8 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 
 	if (curr_state.to_move)
 	{
+		std::sort(moves.begin(), moves.end(), std::greater<pdi>());
+
 		int best_move = -1;
 		if (priority != -1)
 		{
@@ -104,13 +156,15 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 			{
 				exists[curr_state.board_hash] = true;
 				depths[curr_state.board_hash] = depth;
-				positions[curr_state.board_hash] = curr_state;
+				if (not_same)
+					positions[curr_state.board_hash] = curr_state;
 				best_moves[curr_state.board_hash] = pdi(alpha, best_move);
 				return pdi(alpha, best_move);
 			}
 		}
-		for (int move : curr_state.list_moves())
+		for (const pdi& p : ordered_moves)
 		{
+			int move = p.second;
 			if (move == priority)
 				continue;
 			curr_state.make_move(move);
@@ -135,7 +189,8 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 		{
 			exists[curr_state.board_hash] = true;
 			depths[curr_state.board_hash] = depth;
-			positions[curr_state.board_hash] = curr_state;
+			if (not_same)
+				positions[curr_state.board_hash] = curr_state;
 			best_moves[curr_state.board_hash] = pdi(alpha, best_move);
 		}
 
@@ -150,6 +205,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 	}
 	else
 	{
+		std::sort(ordered_moves.begin(), ordered_moves.end());
 		int best_move = -1;
 		if (priority != -1)
 		{
@@ -170,12 +226,15 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 				exists[curr_state.board_hash] = true;
 				depths[curr_state.board_hash] = depth;
 				positions[curr_state.board_hash] = curr_state;
-				best_moves[curr_state.board_hash] = pdi(beta, best_move);
+				if (not_same)
+					best_moves[curr_state.board_hash] = pdi(beta, best_move);
 				return pdi(beta, best_move);
 			}
 		}
-		for (int move : curr_state.list_moves())
+		for (const pdi& p : ordered_moves)
 		{
+			int move = p.second;
+			if (move == priority) continue;
 			curr_state.make_move(move);
 			//curr_state.print();
 			//printf("Made move %s. Eval = %lf\n", curr_state.move_to_string(move).c_str(), eval(curr_state));
@@ -198,7 +257,8 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 		{
 			exists[curr_state.board_hash] = true;
 			depths[curr_state.board_hash] = depth;
-			positions[curr_state.board_hash] = curr_state;
+			if (not_same)
+				positions[curr_state.board_hash] = curr_state;
 			best_moves[curr_state.board_hash] = pdi(beta, best_move);
 		}
 

@@ -19,7 +19,7 @@ async def main():
         if lines[0] != 'RUNNING\n':
             print(f'Status code "{lines[0]}" found')
             print('Restarting')
-            out, err, status = await run('py -3 Jamin_bot.py')
+            out, err, status = await run('python3.9 Jamin_bot.py')
             print(out)
             print(err)
             print(status)
