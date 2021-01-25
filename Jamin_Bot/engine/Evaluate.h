@@ -54,9 +54,9 @@ double eval(state s)
 
 	//doubled pawns
 	score -= dpawn_coeff * ((double)doubled_white - doubled_black);
-	for(int i = 0; i < 8; i++)
-		for(int j = 0; j < 8; j++)
-			score += attacking_coeff*s.board[i][j]*(s.attacking(i, j, s.board[i][j] < 0)-s.attacking(i, j, s.board[i][j] >= 0));
+	// for(int i = 0; i < 8; i++)
+	// 	for(int j = 0; j < 8; j++)
+	// 		score += attacking_coeff*s.board[i][j]*(s.attacking(i, j, s.board[i][j] < 0)-s.attacking(i, j, s.board[i][j] >= 0));
 	return score;
 }
 #endif // !EVALUATE_H_INCLUDED
