@@ -44,7 +44,7 @@ def get_image(person, adj = 0):
             if colors[person] == 1:
                 result.paste(square_img, (y, x, y + 50, x + 50))
             else:
-                result.paste(square_img, (y, 350 - x, y + 50, 400 - x))
+                result.paste(square_img, (350 - y, 350 - x, 400 - y, 400 - x))
 
     if colors[person] == 1:
         result.rotate(180)
