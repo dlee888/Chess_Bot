@@ -14,7 +14,7 @@ extern double NVAL;
 extern double PVAL;
 
 extern double devel_coeff, center_coeff, ksafety_coeff, castle_bonus, pass_pawn_coeff,
-    dpawn_coeff, activity_coeff;
+    dpawn_coeff, activity_coeff, attacking_coeff;
 
 extern int default_cnts[13], cnts[13];
 

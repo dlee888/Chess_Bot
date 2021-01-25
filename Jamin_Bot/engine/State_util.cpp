@@ -119,24 +119,21 @@ int state::mate()
 //lowest piece of the opposite color that is attacking a square
 int state::attacking(int row, int col, bool color)
 {
+	int num_attacking = 0;
 	if (color)
 	{
 		if (!out_of_bounds(row - 1, col - 1))
-		{
 			if (board[row - 1][col - 1] == BP)
-				return 1;
-		}
+				num_attacking++;
 		if (!out_of_bounds(row - 1, col + 1))
-		{
 			if (board[row - 1][col + 1] == BP)
-				return 1;
-		}
+				num_attacking++;
 		for (int i = 0; i < 8; i++)
 		{
 			if (out_of_bounds(row + dr_knight[i], col + dc_knight[i]))
 				continue;
 			if (board[row + dr_knight[i]][col + dc_knight[i]] == BN)
-				return 2;
+				num_attacking++;
 		}
 		for (int j = 0; j < 4; j++)
 		{
@@ -145,7 +142,7 @@ int state::attacking(int row, int col, bool color)
 				if (out_of_bounds(row + dr_bishop[j] * i, col + dc_bishop[j] * i))
 					break;
 				if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] == BB)
-					return 3;
+					num_attacking++;
 				if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] != 0)
 					break;
 			}
@@ -157,7 +154,7 @@ int state::attacking(int row, int col, bool color)
 				if (out_of_bounds(row + dr_rook[j] * i, col + dc_rook[j] * i))
 					break;
 				if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] == BR)
-					return 4;
+					num_attacking++;
 				if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] != 0)
 					break;
 			}
@@ -169,7 +166,7 @@ int state::attacking(int row, int col, bool color)
 				if (out_of_bounds(row + dr_queen[j] * i, col + dc_queen[j] * i))
 					break;
 				if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] == BQ)
-					return 5;
+					num_attacking++;
 				if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] != 0)
 					break;
 			}
@@ -179,27 +176,23 @@ int state::attacking(int row, int col, bool color)
 			if (out_of_bounds(row + dr_king[i], col + dc_king[i]))
 				continue;
 			if (board[row + dr_king[i]][col + dc_king[i]] == BK)
-				return 6;
+				num_attacking++;
 		}
 	}
 	else
 	{
 		if (!out_of_bounds(row + 1, col - 1))
-		{
 			if (board[row + 1][col - 1] == WP)
-				return 1;
-		}
+				num_attacking++;
 		if (!out_of_bounds(row + 1, col + 1))
-		{
 			if (board[row + 1][col + 1] == WP)
-				return 1;
-		}
+				num_attacking++;
 		for (int i = 0; i < 8; i++)
 		{
 			if (out_of_bounds(row + dr_knight[i], col + dc_knight[i]))
 				continue;
 			if (board[row + dr_knight[i]][col + dc_knight[i]] == WN)
-				return 2;
+				num_attacking++;
 		}
 		for (int j = 0; j < 4; j++)
 		{
@@ -208,7 +201,7 @@ int state::attacking(int row, int col, bool color)
 				if (out_of_bounds(row + dr_bishop[j] * i, col + dc_bishop[j] * i))
 					break;
 				if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] == WB)
-					return 3;
+					num_attacking++;
 				if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] != 0)
 					break;
 			}
@@ -220,7 +213,7 @@ int state::attacking(int row, int col, bool color)
 				if (out_of_bounds(row + dr_rook[j] * i, col + dc_rook[j] * i))
 					break;
 				if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] == WR)
-					return 4;
+					num_attacking++;
 				if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] != 0)
 					break;
 			}
@@ -232,7 +225,7 @@ int state::attacking(int row, int col, bool color)
 				if (out_of_bounds(row + dr_queen[j] * i, col + dc_queen[j] * i))
 					break;
 				if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] == WQ)
-					return 5;
+					num_attacking++;
 				if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] != 0)
 					break;
 			}
@@ -242,8 +235,8 @@ int state::attacking(int row, int col, bool color)
 			if (out_of_bounds(row + dr_king[i], col + dc_king[i]))
 				continue;
 			if (board[row + dr_king[i]][col + dc_king[i]] == WK)
-				return 6;
+				num_attacking++;
 		}
 	}
-	return 7;
+	return num_attacking;
 }

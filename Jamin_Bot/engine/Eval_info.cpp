@@ -8,7 +8,7 @@ double NVAL = 3.1;
 double PVAL = 1.0;
 
 double devel_coeff = 0.425, center_coeff = 0.185, ksafety_coeff = 0.1, castle_bonus = 1.5, pass_pawn_coeff = 0.35,
-	   dpawn_coeff = 0.2, activity_coeff = 0.8;
+	   dpawn_coeff = 0.2, activity_coeff = 0.8, attacking_coeff = 0.5;
 
 int default_cnts[13] = {1, 1, 2, 2, 2, 8, 32, 8, 2, 2, 2, 1, 1}, cnts[13];
 

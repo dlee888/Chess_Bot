@@ -53,14 +53,14 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 
 	if (!curr_state.to_move)
 	{
-		if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) != 7)
+		if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true))
 		{
 			return pdi(-1000.0, -1);
 		}
 	}
 	else
 	{
-		if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) != 7)
+		if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false))
 		{
 			return pdi(1000.0, -1);
 		}
@@ -81,7 +81,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 		ordered_moves.push_back({eval(curr_state), i});
 		if (!curr_state.to_move)
 		{
-			if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) >= 7)
+			if (!curr_state.attacking(whitekings[0].first, whitekings[0].second, true))
 			{
 				curr_state.unmake_move(i);
 				mate = 0;
@@ -90,7 +90,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 		}
 		else
 		{
-			if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) >= 7)
+			if (!curr_state.attacking(blackkings[0].first, blackkings[0].second, false))
 			{
 				curr_state.unmake_move(i);
 				mate = 0;
@@ -103,42 +103,28 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 	{
 		if (curr_state.to_move)
 		{
-			if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) < 7)
-			{
+			if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true))
 				mate = 2;
-			}
 			else
-			{
 				mate = 1;
-			}
 		}
 		else
 		{
-			if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) < 7)
-			{
+			if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false))
 				mate = 2;
-			}
 			else
-			{
 				mate = 1;
-			}
 		}
 	}
 
 	if (mate == 1)
-	{
 		return pdi(0, -1);
-	}
 	else if (mate == 2)
 	{
 		if (curr_state.to_move)
-		{
 			return pdi(-1000, -1);
-		}
 		else
-		{
 			return pdi(1000, -1);
-		}
 	}
 
 	// if (depth < quiescent_prune && curr_state.quiescent())
