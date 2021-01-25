@@ -2,6 +2,8 @@
     "files.associations": {
         "vector": "cpp",
         "cstdlib": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "__locale": "cpp",
+        "utility": "cpp"
     }
 }

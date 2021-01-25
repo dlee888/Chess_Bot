@@ -167,6 +167,11 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 			if (move == priority)
 				continue;
 			curr_state.make_move(move);
+			if(alpha > eval(curr_state)+prune)
+			{
+				curr_state.unmake_move(move);
+				continue;
+			}
 			//curr_state.print();
 			//printf("Made move %s. Eval = %lf\n", curr_state.move_to_string(move).c_str(), eval(curr_state));
 			auto x = find_best_move(depth - 1, alpha, beta);
@@ -179,9 +184,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 				best_move = move;
 			}
 			if (alpha >= beta)
-			{
 				break;
-			}
 		}
 
 		if (!(exists[curr_state.board_hash] && positions[curr_state.board_hash].full_move + depths[curr_state.board_hash] > curr_state.full_move + depth))
@@ -190,17 +193,13 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 			depths[curr_state.board_hash] = depth;
 			if (not_same)
 				positions[curr_state.board_hash] = curr_state;
-			best_moves[curr_state.board_hash] = pdi(alpha, best_move);
+			best_moves[curr_state.board_hash] = {alpha, best_move};
 		}
 
 		if (depth == 1 && alpha != 1000 && alpha != -1000)
-		{
 			return pdi((9 * curr_eval + 11 * alpha) / 20, best_move);
-		}
 		else
-		{
 			return pdi(alpha, best_move);
-		}
 	}
 	else
 	{
@@ -236,6 +235,11 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 			if (move == priority)
 				continue;
 			curr_state.make_move(move);
+			if(beta > eval(curr_state)+prune)
+			{
+				curr_state.unmake_move(move);
+				continue;
+			}
 			//curr_state.print();
 			//printf("Made move %s. Eval = %lf\n", curr_state.move_to_string(move).c_str(), eval(curr_state));
 			auto x = find_best_move(depth - 1, alpha, beta);
@@ -248,9 +252,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 				best_move = move;
 			}
 			if (alpha >= beta)
-			{
 				break;
-			}
 		}
 
 		if (!(exists[curr_state.board_hash] && positions[curr_state.board_hash].full_move + depths[curr_state.board_hash] > curr_state.full_move + depth))
@@ -263,9 +265,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 		}
 
 		if (depth == 1 && beta != 1000 && beta != -1000)
-		{
 			return pdi((9 * curr_eval + 11 * beta) / 20, best_move);
-		}
 		return pdi(beta, best_move);
 	}
 }
