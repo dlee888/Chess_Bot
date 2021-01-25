@@ -25,7 +25,7 @@ bool less(const pdi &a, const pdi &b)
 	return a.first < b.first;
 }
 
-pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
+pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool speed = 0)
 {
 	nodes++;
 
@@ -66,7 +66,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 		}
 	}
 
-	double curr_eval = eval(curr_state);
+	double curr_eval = eval(curr_state, speed);
 	if (depth <= 0)
 	{
 		return pdi(curr_eval, -1);
@@ -78,7 +78,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 	for (int i : moves)
 	{
 		curr_state.make_move(i);
-		ordered_moves.push_back({eval(curr_state), i});
+		ordered_moves.push_back({eval(curr_state, speed), i});
 		if (!curr_state.to_move)
 		{
 			if (!curr_state.attacking(whitekings[0].first, whitekings[0].second, true))
@@ -167,7 +167,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 			if (move == priority)
 				continue;
 			curr_state.make_move(move);
-			if(alpha > eval(curr_state)+prune)
+			if(alpha > eval(curr_state, speed)+prune)
 			{
 				curr_state.unmake_move(move);
 				continue;
@@ -235,7 +235,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 			if (move == priority)
 				continue;
 			curr_state.make_move(move);
-			if(beta > eval(curr_state)+prune)
+			if(beta > eval(curr_state, speed)+prune)
 			{
 				curr_state.unmake_move(move);
 				continue;
