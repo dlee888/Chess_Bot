@@ -48,6 +48,8 @@ void state::make_move(int move)
 				whitekings[0].second = 6;
 				wk_rights.push(false);
 				wk_pushed = true;
+				wq_rights.push(false);
+				wq_pushed = true;
 			}
 			else
 			{
@@ -64,6 +66,8 @@ void state::make_move(int move)
 						break;
 					}
 				}
+				wk_rights.push(false);
+				wk_pushed = true;
 				wq_rights.push(false);
 				wq_pushed = true;
 			}
@@ -88,6 +92,8 @@ void state::make_move(int move)
 				blackkings[0].second = 6;
 				bk_rights.push(false);
 				bk_pushed = true;
+				bq_rights.push(false);
+				bq_pushed = true;
 			}
 			else
 			{
@@ -104,6 +110,8 @@ void state::make_move(int move)
 					}
 				}
 				blackkings[0].second = 2;
+				bk_rights.push(false);
+				bk_pushed = true;
 				bq_rights.push(false);
 				bq_pushed = true;
 			}
