@@ -5,7 +5,7 @@
 
 #include "State.h"
 
-#define NUM_OPENINGS 19
+#define NUM_OPENINGS 21
 
 class opening
 {
@@ -50,8 +50,10 @@ std::string temp[NUM_OPENINGS][100] = {
 	{"Grunfeld defense", "d4", "Nf6", "c4", "g6", "Nc3", "d5", "cxd5", "Nxd5", "e4", "Nxc3", "bxc3"}, 
 	{"Four Knights Game: Double Spanish Variation", "e4", "e5", "Nf3", "Nc6", "Bb5", "Nf6", "Nc3", "Bb4", "O-O", "O-O"}, 
 	{"Sicilian defense: Sheveningen Variation", "e4", "c5", "Nf3", "d6", "d4", "cxd4", "Nxd4", "Nf6", "Nc3", "a6", "Be3", "e6", "Qd2", "Nd7", "f3", "b5", "a3", "Bb7", "0-0-0", "Rc8"}, 
-	{"Silician defense: Lasker-Pelikan Variation", "e4", "c5", "Nf3", "Nc6", "d4", "cxd4", "Nxd4", "Nf6", "Nc3", "e5", "Nb5", "d6", "Nd5", "Nxd5", "exd5"}, 
-	{"Silician defense: Sveshnikov Variation", "e4", "c5", "Nf3", "Nc6", "d4", "cxd4", "Nxd4", "Nf6", "Nc3", "e5", "Nb5", "a6", "Nd6+", "Bxd6", "Qxd6"}
+	{"Silician defense: Sveshnikov Variation", "e4", "c5", "Nf3", "Nc6", "d4", "cxd4", "Nxd4", "Nf6", "Nc3", "e5", "Ndb5", "d6", "Nd5", "Nxd5", "exd5", "Ne7", "c4", "Nf5"}, 
+	{"Silician defense: Lasker-Pelikan Variation", "e4", "c5", "Nf3", "Nc6", "d4", "cxd4", "Nxd4", "Nf6", "Nc3", "e5", "Ndb5", "a6", "Nd6+", "Bxd6", "Qxd6"},
+	{"Sicilian defense: Open, Najdorf Variation", "e4", "c5", "Nf3", "d6", "d4", "cxd4", "Nxd4", "Nf6", "Nc3", "a6", "Bg5", "Nbd7", "Bc4", "Qb6", "Bb3", "e6", "Qd2", "Be7", "0-0-0", "Nc5"},
+	{"Sicilian defense: Open, Najdorf Variation", "e4", "c5", "Nf3", "d6", "d4", "cxd4", "Nxd4", "Nf6", "Nc3", "a6", "Bg5", "Nbd7", "f4", "e6", "Qf3", "Qc7", "0-0-0", "Be7", "g4", "b5", "Bxf6", "Nxf6", "g5", "Nd7", "f5", "Bxg5", "Kb1", "Ne5", "Qh5"}
 };
 
 std::vector<opening> openings;
