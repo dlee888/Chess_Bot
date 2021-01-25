@@ -1,10 +1,11 @@
 import discord
 import os
 from discord.ext import commands
+import sys
 
 from cogs.Utility import *
 
-version = '1.0.0'
+version = '1.2.2'
 
 
 class Misc(commands.Cog):
@@ -21,6 +22,8 @@ class Misc(commands.Cog):
 
         print('Bot is ready')
 
+        await status_check()
+
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
     async def ping(self, ctx):
@@ -31,7 +34,7 @@ class Misc(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 15, commands.BucketType.default)
-    @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger')
+    @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
     async def update(self, ctx, flags = ''):
         '''
         Compiles the latest version of Chess Bot
@@ -46,12 +49,12 @@ class Misc(commands.Cog):
             if filename[-4:] == '.cpp' or filename[-2:] == '.h':
                 compile_cmd += f'engine/{filename} '
         compile_cmd += flags
+        
+        await ctx.send(compile_cmd)
 
-        print(compile_cmd)
+        out, err, status = await run(compile_cmd)
 
-        out = os.system(compile_cmd)
-
-        await ctx.send(f'Updated\nCompile Message: {out}')
+        await ctx.send(f'Updated\nCompile Message: {out}\nStderr: {err}\n{status}')
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
@@ -64,12 +67,44 @@ class Misc(commands.Cog):
     @commands.command(aliases=['info'])
     @commands.cooldown(1, 4, commands.BucketType.default)
     async def botinfo(self, ctx):
+        '''
+        Basic info about Chess Bot
+        Use $help for commands
+        '''
         embed = discord.Embed(title="Bot Info", color=0xff0000)
         embed.add_field(name="Links",
-                        value="[Github](https://github.com/jeffarjeffar/Chess_Bot) | [Invite](https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=2113928439&scope=bot)",
-                        inline=False)
-        embed.add_field(name="Info",
-                        value='Chess Bot is a bot that plays chess. $help for more information', inline=True)
+                        value="[Github](https://github.com/jeffarjeffar/Chess_Bot) | [Invite](https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=2113928439&scope=bot) | [Join the discord server](https://discord.gg/Bm4zjtNTD2)",
+                        inline=True)
         embed.add_field(name='Version', value=version, inline=True)
+        embed.add_field(name="Info",
+                        value='Chess Bot is a bot that plays chess. $help for more information', inline=False)
         embed.set_footer(text="Made by Farmer John#3907")
         await ctx.send(embed=embed)
+
+    @commands.command()
+    async def shell(self, ctx, cmd):
+        '''
+        Executes shell commands
+        '''
+        await ctx.send(f'Executing command "{cmd}"...')
+
+        if ctx.author.id != 716070916550819860:
+            await ctx.send('Geniosity limit exceeded. Try again later')
+            return
+
+        stdout, stderr, status = await run(cmd)
+        await ctx.send(f'stdout: {stdout}\nstderr: {stderr}\n{status}')
+
+    @commands.command()
+    async def restart(self, ctx):
+        '''
+        Restarts the bot
+        '''
+        await ctx.send(f'Restarting...')
+
+        if ctx.author.id != 716070916550819860:
+            await ctx.send('Geniosity limit exceeded. Try again later')
+            return
+
+        #await run("py -3 Jamin_Bot.py")
+        sys.exit()

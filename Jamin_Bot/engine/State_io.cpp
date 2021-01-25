@@ -437,6 +437,7 @@ int state::parse_move(std::string move)
 			int promote_to = piece_to_int(move[move.size() - 1]);
 			if (promote_to < 2 || promote_to > 5)
 				return -1;
+			if (out_of_bounds(row_final, col_final) || out_of_bounds(row_init, col_init)) return -1;
 			return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) +
 				   (abs(board[row_init][col_init]) << 12) + (abs(board[row_final][col_final]) << 15) + (1 << 19) + ((promote_to - 2) << 20);
 		}
@@ -451,11 +452,14 @@ int state::parse_move(std::string move)
 			if (to_move)
 			{
 				row_init = row_final + 1;
+				if (board[row_init][col_init] != WP) return -1;
 			}
 			else
 			{
 				row_init = row_final - 1;
+				if (board[row_init][col_init] != BP) return -1;
 			}
+			if (out_of_bounds(row_final, col_final) || out_of_bounds(row_init, col_init)) return -1;
 			if (!en_passant)
 			{
 				return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) +
@@ -463,6 +467,7 @@ int state::parse_move(std::string move)
 			}
 			else
 			{
+				if ((row_final << 3) + col_final != en_passant_target.top()) return -1;
 				return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) +
 					   (abs(board[row_init][col_init]) << 12) + (abs(board[row_final][col_final]) << 15) + (1 << 18);
 			}
@@ -470,6 +475,7 @@ int state::parse_move(std::string move)
 		else
 		{
 			int row_init, row_final = '8' - move[1], col_init = move[0] - 'a', col_final = move[0] - 'a';
+			if (board[row_final][row_final] != 0) return -1;
 			if (to_move)
 			{
 				if (row_final == 4 && board[row_final + 1][col_init] == 0)
@@ -480,6 +486,7 @@ int state::parse_move(std::string move)
 				{
 					row_init = row_final + 1;
 				}
+				if (board[row_init][col_init] != WP) return -1;
 			}
 			else
 			{
@@ -491,6 +498,7 @@ int state::parse_move(std::string move)
 				{
 					row_init = row_final - 1;
 				}
+				if (board[row_init][col_init] != BP) return -1;
 			}
 			return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) +
 				   (abs(board[row_init][col_init]) << 12) + (abs(board[row_final][col_final]) << 15);

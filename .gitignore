@@ -339,12 +339,12 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 
-# Data
-**/data
-#???
-*.txt
+input*
+output*
+image*
 
-# why no gitignore my files???
 *.gch
 Jamin_Bot/debug.exe
 Jamin_Bot/a.exe
+
+token*
