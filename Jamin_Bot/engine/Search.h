@@ -16,6 +16,8 @@ int quiescent_prune;
 long long nodes;
 long long tb_hits, collisions;
 
+double orig_eval;
+
 bool greater(const pdi &a, const pdi &b)
 {
 	return a.first > b.first;
@@ -66,12 +68,17 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 		}
 	}
 
+
 	double curr_eval = eval(curr_state);
 	if (depth <= 0)
 	{
 		return pdi(curr_eval, -1);
 	}
 
+	if (eval(curr_state) + prune < orig_eval && depth < 3) {
+		return pdi(curr_eval, -1);
+	}
+	
 	std::vector<int> moves = curr_state.list_moves();
 	std::vector<pdi> ordered_moves;
 	int mate = 3;
@@ -167,7 +174,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 			if (move == priority)
 				continue;
 			curr_state.make_move(move);
-			if(alpha > eval(curr_state)+prune)
+			if (alpha > eval(curr_state) + prune)
 			{
 				curr_state.unmake_move(move);
 				continue;

@@ -136,6 +136,7 @@ void play()
 					nodes = 0;
 					collisions = 0;
 					tb_hits = 0;
+					orig_eval = eval(curr_state);
 					int start_time = clock();
 					if (computer_is_white) best_move = find_best_move(curr_depth, -10, DINF, best_move.second);
 					else best_move = find_best_move(curr_depth, -DINF, 10, best_move.second);
