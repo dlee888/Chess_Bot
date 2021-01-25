@@ -16,6 +16,15 @@ int quiescent_prune;
 long long nodes;
 long long tb_hits, collisions;
 
+bool greater(const pdi &a, const pdi &b)
+{
+	return a.first > b.first;
+}
+bool less(const pdi &a, const pdi &b)
+{
+	return a.first < b.first;
+}
+
 pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 {
 	nodes++;
@@ -63,8 +72,8 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 		return pdi(curr_eval, -1);
 	}
 
-	std::vector <int> moves = curr_state.list_moves();
-	std::vector <pdi> ordered_moves;
+	std::vector<int> moves = curr_state.list_moves();
+	std::vector<pdi> ordered_moves;
 	int m;
 	for (int i : moves)
 	{
@@ -135,7 +144,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 
 	if (curr_state.to_move)
 	{
-		std::sort(moves.begin(), moves.end(), std::greater<pdi>());
+		sort(ordered_moves.begin(), ordered_moves.end(), greater);
 
 		int best_move = -1;
 		if (priority != -1)
@@ -162,7 +171,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 				return pdi(alpha, best_move);
 			}
 		}
-		for (const pdi& p : ordered_moves)
+		for (const pdi &p : ordered_moves)
 		{
 			int move = p.second;
 			if (move == priority)
@@ -205,7 +214,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 	}
 	else
 	{
-		std::sort(ordered_moves.begin(), ordered_moves.end());
+		sort(ordered_moves.begin(), ordered_moves.end(), less);
 		int best_move = -1;
 		if (priority != -1)
 		{
@@ -231,10 +240,11 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 				return pdi(beta, best_move);
 			}
 		}
-		for (const pdi& p : ordered_moves)
+		for (const pdi &p : ordered_moves)
 		{
 			int move = p.second;
-			if (move == priority) continue;
+			if (move == priority)
+				continue;
 			curr_state.make_move(move);
 			//curr_state.print();
 			//printf("Made move %s. Eval = %lf\n", curr_state.move_to_string(move).c_str(), eval(curr_state));

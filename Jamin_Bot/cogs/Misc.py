@@ -49,6 +49,8 @@ class Misc(commands.Cog):
             if filename[-4:] == '.cpp' or filename[-2:] == '.h':
                 compile_cmd += f'engine/{filename} '
         compile_cmd += flags
+        
+        await ctx.send(compile_cmd)
 
         out, err, status = await run(compile_cmd)
 
