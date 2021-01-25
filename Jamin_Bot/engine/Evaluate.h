@@ -6,9 +6,7 @@
 double eval(state s)
 {
 	if (s.adjucation())
-	{
 		return 0;
-	}
 	double score = 0;
 	if ((((double)cnts[BQ + 6] + cnts[WQ + 6]) * 9.3 + 5 * ((double)cnts[BR + 6] + cnts[WR + 6]) +
 		 3.14 * ((double)cnts[BB + 6] + cnts[WB + 6]) + 3.02 * ((double)cnts[BN + 6] + cnts[WN + 6])) > 30.0)
@@ -29,13 +27,9 @@ double eval(state s)
 		double ksafety = 0;
 		ksafety += ((double)king_safety[whitekings[0].first][whitekings[0].second] - king_safety[7 - blackkings[0].first][blackkings[0].second]);
 		if (s.white_castled)
-		{
 			ksafety += castle_bonus;
-		}
 		if (s.black_castled)
-		{
 			ksafety -= castle_bonus;
-		}
 		score += ksafety_coeff * ksafety;
 	}
 	else
