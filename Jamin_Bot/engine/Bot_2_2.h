@@ -210,6 +210,7 @@ void play()
 				printf("GAME STILL IN PROGRESS\n");
 		}
 	}
+    printf("GAME: ")
 	for (int i : game)
 	{
 		std::cout << i << " ";
