@@ -3,7 +3,7 @@
 
 #include "State.h"
 
-double eval(state s)
+double eval(state s, bool speed)
 {
 	if (s.adjucation())
 		return 0;
@@ -31,6 +31,11 @@ double eval(state s)
 		if (s.black_castled)
 			ksafety -= castle_bonus;
 		score += ksafety_coeff * ksafety;
+		if(!speed){
+			for(int i = 0; i < 8; i++)
+				for(int j = 0; j < 8; j++)
+					score += attacking_coeff*s.board[i][j]*(s.attacking(i, j, s.board[i][j] < 0)-s.attacking(i, j, s.board[i][j] >= 0));
+		}
 	}
 	else
 	{
@@ -54,9 +59,6 @@ double eval(state s)
 
 	//doubled pawns
 	score -= dpawn_coeff * ((double)doubled_white - doubled_black);
-	for(int i = 0; i < 8; i++)
-		for(int j = 0; j < 8; j++)
-	 		score += attacking_coeff*s.board[i][j]*(s.attacking(i, j, s.board[i][j] < 0)-s.attacking(i, j, s.board[i][j] >= 0));
 	return score;
 }
 #endif // !EVALUATE_H_INCLUDED

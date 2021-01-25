@@ -78,27 +78,16 @@ void play()
 	std::cin >> move;
 	if (move == "white")
 		computer_is_white = true;
-
 	if (time_limit < 40)
-	{
 		quiescent_prune = -1;
-	}
 	else if (time_limit < 70)
-	{
 		quiescent_prune = 3;
-	}
 	else if (time_limit < 135)
-	{
 		quiescent_prune = 4;
-	}
 	else if (time_limit < 600)
-	{
 		quiescent_prune = 5;
-	}
 	else
-	{
 		quiescent_prune = 6;
-	}
 
 	int move_i = -1;
 
@@ -136,10 +125,9 @@ void play()
 					nodes = 0;
 					collisions = 0;
 					tb_hits = 0;
-					orig_eval = eval(curr_state);
 					int start_time = clock();
-					if (computer_is_white) best_move = find_best_move(curr_depth, -10, DINF, best_move.second);
-					else best_move = find_best_move(curr_depth, -DINF, 10, best_move.second);
+					if (computer_is_white) best_move = find_best_move(curr_depth, -10, DINF, best_move.second, time_limit < 10000);
+					else best_move = find_best_move(curr_depth, -DINF, 10, best_move.second, time_limit < 10000);
 					time_taken = clock() - start_time;
 					printf("Best move is %s, EVAL = %lf\n%lf seconds taken, %lld nodes searched\nSpeed = %lf nodes per second. %lld TB hits, %lld collisions\n",
 						   curr_state.move_to_string(best_move.second).c_str(),
@@ -184,7 +172,7 @@ void play()
 
 		num_move++;
 		curr_state.print();
-		std::cout << "HERUISTIC EVAL: " << eval(curr_state) << std::endl;
+		std::cout << "HERUISTIC EVAL: " << eval(curr_state, 0) << std::endl;
 		for (int i = 0; i < openings.size(); i++)
 		{
 			if (openings[i].moves[num_move - 1] != move_i || openings[i].moves[num_move] == -1)
@@ -196,44 +184,30 @@ void play()
 		scramble_openings();
 	}
 	if (error_msg.size() != 0)
-	{
 		std::cout << error_msg << std::endl;
-	}
 	else if (move == "resign")
 	{
 		if (computer_is_white)
-		{
 			printf("WHITE WON\n");
-		}
 		else
-		{
 			printf("BLACK WON\n");
-		}
 	}
 	else
 	{
 		int m = curr_state.mate();
 		if (m == 1 || curr_state.adjucation())
-		{
 			printf("DRAW\n");
-		}
 		else
 		{
 			if (m == 2)
 			{
 				if (curr_state.to_move)
-				{
 					printf("BLACK WON\n");
-				}
 				else
-				{
 					printf("WHITE WON\n");
-				}
 			}
 			else
-			{
 				printf("GAME STILL IN PROGRESS\n");
-			}
 		}
 	}
 	for (int i : game)
