@@ -145,8 +145,6 @@ class Beat_Jamin(commands.Cog):
                     get_image(person)
                     await ctx.send(file=discord.File(f'data/image-{person}.png'))
 
-                    thonking.remove(person)
-
                     log_channel = self.client.get_channel(798277701210341459)
                     msg = f'<{person}>\n```\n'
                     for i in range(len(out)):
@@ -160,6 +158,7 @@ class Beat_Jamin(commands.Cog):
                     update_rating(ctx.author.id, 0)
                     await ctx.send('You lost.')
 
+            thonking.remove(person)
             await ctx.send(f'Your new rating is {get_rating(ctx.author.id)}')
             games.pop(ctx.author.id)
             push_games()
@@ -252,9 +251,9 @@ class Beat_Jamin(commands.Cog):
                 games[ctx.author.id].append(int(i))
             push_games()
 
-            await ctx.send('Logging...')
+            #await ctx.send('Logging...')
             log_channel = self.client.get_channel(798277701210341459)
-            await ctx.send('Got log channel')
+            #await ctx.send('Got log channel')
             msg = '```\n'
             for i in range(len(out)):
                 msg += out[i] + '\n'

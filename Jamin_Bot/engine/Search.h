@@ -23,13 +23,15 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 	//curr_state.print();
 	//printf("hash = %lld\n", curr_state.board_hash);
 
-	if (exists[curr_state.board_hash] && depth <= depths[curr_state.board_hash])
+	bool not_same = true;
+	if (exists[curr_state.board_hash])
 	{
 		if (curr_state == positions[curr_state.board_hash])
 		{
 			tb_hits++;
 			//printf("found in table\n");
-			return best_moves[curr_state.board_hash];
+			not_same = false;
+			if (depth <= depths[curr_state.board_hash]) return best_moves[curr_state.board_hash];
 		}
 		else
 		{
