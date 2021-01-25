@@ -74,7 +74,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 
 	std::vector<int> moves = curr_state.list_moves();
 	std::vector<pdi> ordered_moves;
-	int m;
+	int mate = 3;
 	for (int i : moves)
 	{
 		curr_state.make_move(i);
@@ -84,7 +84,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 			if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) >= 7)
 			{
 				curr_state.unmake_move(i);
-				m = 0;
+				mate = 0;
 				break;
 			}
 		}
@@ -93,39 +93,43 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 			if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) >= 7)
 			{
 				curr_state.unmake_move(i);
-				m = 0;
+				mate = 0;
 				break;
 			}
 		}
 		curr_state.unmake_move(i);
 	}
-	if (curr_state.to_move)
+	if (mate == 3)
 	{
-		if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) < 7)
+		if (curr_state.to_move)
 		{
-			m = 2;
+			if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) < 7)
+			{
+				mate = 2;
+			}
+			else
+			{
+				mate = 1;
+			}
 		}
 		else
 		{
-			m = 1;
+			if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) < 7)
+			{
+				mate = 2;
+			}
+			else
+			{
+				mate = 1;
+			}
 		}
 	}
-	else
-	{
-		if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) < 7)
-		{
-			m = 2;
-		}
-		else
-		{
-			m = 1;
-		}
-	}
-	if (m == 1)
+
+	if (mate == 1)
 	{
 		return pdi(0, -1);
 	}
-	else if (m == 2)
+	else if (mate == 2)
 	{
 		if (curr_state.to_move)
 		{
@@ -171,9 +175,9 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 				return pdi(alpha, best_move);
 			}
 		}
-		for (const pdi &p : ordered_moves)
+		for (int move : moves)
 		{
-			int move = p.second;
+			//int move = p.second;
 			if (move == priority)
 				continue;
 			curr_state.make_move(move);
@@ -240,9 +244,9 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 				return pdi(beta, best_move);
 			}
 		}
-		for (const pdi &p : ordered_moves)
+		for (int move : moves)
 		{
-			int move = p.second;
+			//int move = p.second;
 			if (move == priority)
 				continue;
 			curr_state.make_move(move);
