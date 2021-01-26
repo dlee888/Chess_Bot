@@ -96,6 +96,7 @@ class Misc(commands.Cog):
         await ctx.send(f'stdout: {stdout}\nstderr: {stderr}\n{status}')
 
     @commands.command()
+    @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
     async def restart(self, ctx):
         '''
         Restarts the bot
@@ -108,3 +109,14 @@ class Misc(commands.Cog):
 
         #await run("py -3 Jamin_Bot.py")
         sys.exit()
+
+    @commands.command()
+    @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
+    async def git(self, ctx, command):
+        '''
+        Executes shell commands
+        '''
+        await ctx.send(f'Executing command "{cmd}"...')
+
+        stdout, stderr, status = await run(f'git {command}')
+        await ctx.send(f'stdout: {stdout}\nstderr: {stderr}\n{status}')
