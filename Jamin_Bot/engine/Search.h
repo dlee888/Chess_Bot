@@ -173,7 +173,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 			if (move == priority)
 				continue;
 			curr_state.make_move(move);
-			if(alpha > eval(curr_state, speed)+prune)
+			if(alpha > eval(curr_state, speed) + prune && depth >= 4)
 			{
 				curr_state.unmake_move(move);
 				continue;
@@ -241,7 +241,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 			if (move == priority)
 				continue;
 			curr_state.make_move(move);
-			if(beta > eval(curr_state, speed)+prune)
+			if(beta < eval(curr_state, speed) - prune && depth <= 4)
 			{
 				curr_state.unmake_move(move);
 				continue;
