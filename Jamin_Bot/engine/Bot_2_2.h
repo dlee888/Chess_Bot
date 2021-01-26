@@ -145,7 +145,7 @@ void play()
 					else error_msg = "ILLEGAL MOVE PLAYED";
 					break;
 				}
-				if ((computer_is_white && best_move.first < RESIGN) || (!computer_is_white && best_move.first > RESIGN))
+				if ((computer_is_white && best_move.first < -RESIGN) || (!computer_is_white && best_move.first > RESIGN))
 				{
 					error_msg = "COMPUTER RESIGNED";
 					break;
