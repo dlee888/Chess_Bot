@@ -114,6 +114,7 @@ class Engine(commands.Cog):
 
         await output_move(ctx, person)
         await log(person, self.client)
+        thonking.remove(person)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)

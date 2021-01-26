@@ -49,7 +49,9 @@ def get_image(person, end):
     
     result.save(f'data/image-{person}.png')
 
-async def output_move(ctx, person):
+async def output_move(ctx, person, ping = -1):
+    if ping == -1:
+        ping = person
     f = open(f'data/output-{person}.txt')
     out = f.readlines()
     f.close()
@@ -73,8 +75,6 @@ async def output_move(ctx, person):
                     continue
                 games[person].append(int(i))
             push_games()
-            if person in thonking:
-                thonking.remove(person)
             return
 
 async def log(person, client):
