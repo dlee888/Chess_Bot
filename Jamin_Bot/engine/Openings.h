@@ -5,7 +5,7 @@
 
 #include "State.h"
 
-#define NUM_OPENINGS 21
+#define NUM_OPENINGS 20
 
 class opening
 {
@@ -34,7 +34,6 @@ public:
 
 std::string temp[NUM_OPENINGS][100] = {
 	{"Queen's gambit declined, modern variation", "d4", "d5", "c4", "e6", "Nc3", "Nf6", "Bg5", "Be7", "e3", "O-O", "Nf3", "h6", "Bh4"}, 
-	{"French defense advance variation, Paulsen attack", "e4", "e6", "d4", "d5", "e5", "c5", "c3", "Nc6", "Nf3", "Nge7"}, 
 	{"Tarrasach defense, two knights variation", "d4", "d5", "c4", "e6", "Nc3", "c5", "cxd5", "exd5", "Nf3", "Nc6", "g3"}, 
 	{"Ruy lopez, morphy defense, caro", "e4", "e5", "Nf3", "Nc6", "Bb5", "a6", "Ba4", "b5", "Bb3", "Nf6"}, 
 	{"Semi slav defense", "d4", "d5", "c4", "c6", "Nf3", "Nf6", "Nc3", "e6", "e3", "Nbd7", "Bd3", "dxc4", "Bxc4"}, 
@@ -61,23 +60,15 @@ std::vector<opening> openings;
 void load_openings()
 {
 	for (int i = 0; i < NUM_OPENINGS; i++)
-	{
 		openings.push_back(opening(temp[i][0], temp[i] + 1));
-	}
 }
 
 void scramble_openings()
 {
 	for (int iter = 0; iter < (int)openings.size(); iter++)
-	{
 		for (int ind = iter; ind < (int)openings.size() - 1; ind++)
-		{
-			if (rand() % 2 == 1)
-			{
+			if (rand()&1)
 				std::swap(openings[ind], openings[ind + 1]);
-			}
-		}
-	}
 }
 
 #endif // !OPENINGS_H_INCLUDED

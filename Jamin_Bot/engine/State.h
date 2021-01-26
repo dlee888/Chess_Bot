@@ -69,22 +69,14 @@ public:
 		to_move = true;
 
 		for (int i = 0; i < 8; i++)
-		{
 			for (int j = 0; j < 8; j++)
-			{
 				board[i][j] = default_board[i][j];
-			}
-		}
 
 		board_hash = 0;
 
 		for (int i = 0; i < 8; i++)
-		{
 			for (int j = 0; j < 8; j++)
-			{
-				board_hash = (board_hash + f_exp2(8 * i + j) * (board[i][j] + 6)) % MOD;
-			}
-		}
+				board_hash = (board_hash + f_exp2((i << 3) + j) * (board[i][j] + 6)) % MOD;
 
 		wq_rights.push(true);
 		wk_rights.push(true);
@@ -113,13 +105,9 @@ public:
 		if (s.bq_rights.top() != bq_rights.top())
 			return false;
 		for (int i = 0; i < 8; i++)
-		{
 			for (int j = 0; j < 8; j++)
-			{
 				if (s.board[i][j] != board[i][j])
 					return false;
-			}
-		}
 		return true;
 	}
 
