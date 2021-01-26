@@ -22,13 +22,14 @@ def get_image(person, end):
     result = result.resize((400, 400))
 
     for i in range(end - 14, end + 2, 2):
+        print(i, ": ", game[i])
         for j in range(1, 25, 3):
             square = 'images/'
             if game[i][j:j+2] == '  ':
                 square += 'blank'
             else:
                 square += game[i][j:j+2]
-            x = (i + 21 - adj)//2
+            x = (i + 14 - end)//2
             y = (j - 1)//3
             if (x + y) % 2:
                 square += '-light.png'
@@ -48,7 +49,10 @@ def get_image(person, end):
     
     result.save(f'data/image-{person}.png')
 
-def output_move(ctx, person):
+async def output_move(ctx, person):
+    f = open(f'data/output-{person}.txt')
+    out = f.readlines()
+    f.close()
     await ctx.send(f'<@{person}>')
     for i in range(len(out) - 1, 0, -1):
         if out[i].startswith('COMPUTER PLAYED'):
@@ -56,10 +60,12 @@ def output_move(ctx, person):
             break
     for i in range(len(out) - 1, 0, -1):
         if out[i].startswith('-----'):
+            print('Found board at', i)
             get_image(person, i - 1)
             await ctx.send(file=discord.File(f'data/image-{person}.png'))
+            break
     for i in range(len(out) - 1, 0, -1):
-        if out[i].startswith('GAME: ')
+        if out[i].startswith('GAME: '):
             game_str = out[i][6:-1].split(' ')
             games[ctx.message.author.id].clear()
             for i in game_str:
@@ -70,7 +76,10 @@ def output_move(ctx, person):
             thonking.remove(person)
             return
 
-def log(person):
+async def log(person):
+    f = open(f'data/output-{person}.txt')
+    out = f.readlines()
+    f.close()
     log_channel = self.client.get_channel(798277701210341459)
     msg = f'<{person}>\n```\n'
     for i in range(len(out)):
@@ -80,6 +89,7 @@ def log(person):
             await log_channel.send(msg)
             msg = '```'
     msg += '```'
+    await log_channel.send(msg)
 
 class Beat_Jamin(commands.Cog):
 
@@ -136,7 +146,7 @@ class Beat_Jamin(commands.Cog):
             f.write('white\n')
         else:
             f.write('black\n')
-        f.write(move + 'quit\nquit\n')
+        f.write(move + '\nquit\nquit\n')
         f.close()
         await ctx.send('Chess Bot is thinking...')
         await run(f'.\\a < {file_in} > {file_out}')
@@ -170,9 +180,9 @@ class Beat_Jamin(commands.Cog):
                     update_rating(ctx.author.id, 1)
                     await ctx.send('You won!')
                 else:
-                    output_move(cts, person)
+                    await output_move(ctx, person)
 
-                    log(person)
+                    await log(person)
 
             thonking.remove(person)
             await ctx.send(f'Your new rating is {get_rating(ctx.author.id)}')
@@ -180,8 +190,8 @@ class Beat_Jamin(commands.Cog):
             push_games()
             return
 
-        output_move(ctx, person)
-        log(person)
+        await output_move(ctx, person)
+        await log(person)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
@@ -230,8 +240,9 @@ class Beat_Jamin(commands.Cog):
             #print('Starting a')
 
             await run(f'.\\a < {file_in} > {file_out}')
-            output_move(person)
-            log(person)
+            
+            await output_move(ctx, person)
+            await log(person)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
@@ -315,9 +326,9 @@ class Beat_Jamin(commands.Cog):
             f.write('black\n')
         f.write('quit\nquit\n')
         f.close()
-        await run(f'.\\a < {file_in} > {file_out}')
-
-        output_move(person)
+        stdout, stderr, status = await run(f'.\\a < {file_in} > {file_out}')
+        #await ctx.send(f'stdout: {stdout}\nstderr: {stderr}\n{status}')
+        await output_move(ctx, person)
 
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.default)
