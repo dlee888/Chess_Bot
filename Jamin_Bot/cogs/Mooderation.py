@@ -28,8 +28,11 @@ class Mooderation(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.default)
     @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Chess-Admin')
     async def adminify(self, ctx, user : discord.Member):
+        await ctx.send(f'Adminifying {user.name}')
         role = discord.utils.get(user.guild.roles, name='Chess-Admin')
         if role == None:
+            await ctx.send('Role "Chess-Admin" not found. Creating role...')
             role = await user.guild.create_role(name='Chess-Admin', color='0x69ff69')
         
         await user.add_roles(role)
+        await ctx.send(f'Done adminifying {user.name}')
