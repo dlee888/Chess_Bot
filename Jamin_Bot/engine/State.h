@@ -131,7 +131,8 @@ public:
 	void unmake_move(int move);
 
 	int attacking(int row, int col, bool color);
-
+	int num_attack(int row, int col, bool color);
+	
 	std::vector<int> list_moves();
 
 	bool quiescent();
