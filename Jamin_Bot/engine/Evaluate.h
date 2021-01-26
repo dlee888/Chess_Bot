@@ -3,7 +3,7 @@
 
 #include "State.h"
 
-double eval(state s, bool speed)
+double eval(state& s, bool speed)
 {
 	if (s.adjucation())
 		return 0;
@@ -34,7 +34,7 @@ double eval(state s, bool speed)
 		if(!speed){
 			for(int i = 0; i < 8; i++)
 				for(int j = 0; j < 8; j++)
-					score += attacking_coeff*s.board[i][j]*(s.attacking(i, j, s.board[i][j] < 0)-s.attacking(i, j, s.board[i][j] >= 0));
+					score += attacking_coeff*s.board[i][j]*(s.num_attack(i, j, s.board[i][j] < 0)-s.num_attack(i, j, s.board[i][j] >= 0));
 		}
 	}
 	else

@@ -15,7 +15,7 @@ async def output_move(ctx, person):
     f = open(f'data/output-{person}.txt')
     out = f.readlines()
     f.close()
-    await ctx.send(f'<@{person}>')
+    await ctx.send(f'<@{ping}>')
     for i in range(len(out) - 1, 0, -1):
         if out[i].startswith('COMPUTER PLAYED'):
             await ctx.send(out[i])
@@ -29,20 +29,21 @@ async def output_move(ctx, person):
     for i in range(len(out) - 1, 0, -1):
         if out[i].startswith('GAME: '):
             game_str = out[i][6:-1].split(' ')
-            games[ctx.message.author.id].clear()
+            games[person].clear()
             for i in game_str:
                 if i == '' or i == '\n':
                     continue
-                games[ctx.message.author.id].append(int(i))
+                games[person].append(int(i))
             push_games()
-            thonking.remove(person)
+            if person in thonking:
+                thonking.remove(person)
             return
 
-async def log(person):
+async def log(person, client):
     f = open(f'data/output-{person}.txt')
     out = f.readlines()
     f.close()
-    log_channel = self.client.get_channel(798277701210341459)
+    log_channel = client.get_channel(798277701210341459)
     msg = f'<{person}>\n```\n'
     for i in range(len(out)):
         msg += out[i] + '\n'
@@ -59,7 +60,7 @@ class Beat_Jamin(commands.Cog):
         self.client = client
 
     @commands.command(aliases=['play'])
-    @commands.cooldown(1, 10, commands.BucketType.default)
+    @commands.cooldown(1, 5, commands.BucketType.default)
     async def move(self, ctx, move):
         '''
         Plays <move> against the computer
@@ -128,6 +129,8 @@ class Beat_Jamin(commands.Cog):
             games.pop(ctx.author.id)
             push_games()
             thonking.remove(person)
+
+            await log(person, self.client)
             return
 
         if out[-3] != 'GAME STILL IN PROGRESS\n':
@@ -144,7 +147,7 @@ class Beat_Jamin(commands.Cog):
                 else:
                     await output_move(ctx, person)
 
-                    await log(person)
+                    await log(person, self.client)
 
             thonking.remove(person)
             await ctx.send(f'Your new rating is {get_rating(ctx.author.id)}')
@@ -153,7 +156,7 @@ class Beat_Jamin(commands.Cog):
             return
 
         await output_move(ctx, person)
-        await log(person)
+        await log(person, self.client)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
@@ -204,7 +207,7 @@ class Beat_Jamin(commands.Cog):
             await run(f'.\\a < {file_in} > {file_out}')
             
             await output_move(ctx, person)
-            await log(person)
+            await log(person, self.client)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)

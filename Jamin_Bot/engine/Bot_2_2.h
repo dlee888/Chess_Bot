@@ -8,6 +8,8 @@
 #include "Openings.h"
 #include "Search.h"
 
+double RESIGN = 10.0;
+
 void play()
 {
 	std::vector<int> game;
@@ -139,11 +141,11 @@ void play()
 				move_i = best_move.second;
 				if (move_i == -1)
 				{
-					if (abs(best_move.first) >= 9.9999) error_msg = "COMPUTER RESIGNED";
+					if (abs(best_move.first) > RESIGN) error_msg = "COMPUTER RESIGNED";
 					else error_msg = "ILLEGAL MOVE PLAYED";
 					break;
 				}
-				if ((computer_is_white && best_move.first <= -10) || (!computer_is_white && best_move.first >= 10))
+				if ((computer_is_white && best_move.first < -RESIGN) || (!computer_is_white && best_move.first > RESIGN))
 				{
 					error_msg = "COMPUTER RESIGNED";
 					break;

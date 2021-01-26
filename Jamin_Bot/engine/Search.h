@@ -55,6 +55,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 	{
 		if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) != 7)
 		{
+			//printf("King attacked\n");
 			return pdi(-1000.0, -1);
 		}
 	}
@@ -62,6 +63,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 	{
 		if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) != 7)
 		{
+			//printf("King attacked\n");
 			return pdi(1000.0, -1);
 		}
 	}
@@ -81,7 +83,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 		ordered_moves.push_back({eval(curr_state, speed), i});
 		if (!curr_state.to_move)
 		{
-			if (!curr_state.attacking(whitekings[0].first, whitekings[0].second, true))
+			if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) == 7)
 			{
 				curr_state.unmake_move(i);
 				mate = 0;
@@ -90,7 +92,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 		}
 		else
 		{
-			if (!curr_state.attacking(blackkings[0].first, blackkings[0].second, false))
+			if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) == 7)
 			{
 				curr_state.unmake_move(i);
 				mate = 0;
@@ -103,14 +105,14 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 	{
 		if (curr_state.to_move)
 		{
-			if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true))
+			if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) != 7)
 				mate = 2;
 			else
 				mate = 1;
 		}
 		else
 		{
-			if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false))
+			if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) != 7)
 				mate = 2;
 			else
 				mate = 1;
@@ -121,10 +123,14 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 		return pdi(0, -1);
 	else if (mate == 2)
 	{
-		if (curr_state.to_move)
+		if (curr_state.to_move) {
+			//printf("Checkmate\n");
 			return pdi(-1000, -1);
-		else
+		}
+		else {
+			//printf("Checkmate\n");
 			return pdi(1000, -1);
+		}
 	}
 
 	// if (depth < quiescent_prune && curr_state.quiescent())
@@ -167,7 +173,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 			if (move == priority)
 				continue;
 			curr_state.make_move(move);
-			if(alpha > eval(curr_state, speed)+prune)
+			if(alpha > eval(curr_state, speed) + prune && depth >= 4)
 			{
 				curr_state.unmake_move(move);
 				continue;
@@ -235,7 +241,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 			if (move == priority)
 				continue;
 			curr_state.make_move(move);
-			if(beta > eval(curr_state, speed)+prune)
+			if(beta < eval(curr_state, speed) - prune && depth <= 4)
 			{
 				curr_state.unmake_move(move);
 				continue;
