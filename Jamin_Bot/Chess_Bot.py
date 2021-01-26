@@ -3,7 +3,9 @@ import os
 from discord.ext import commands
 
 from cogs.Misc import *
-from cogs.Beat_Jamin import *
+from cogs.Engine import *
+from cogs.Viewing import *
+from cogs.Mooderation import *
 
 import logging
 
@@ -16,9 +18,10 @@ logger.addHandler(handler)
 
 bot = commands.Bot(command_prefix='$')
 
-bot.add_cog(Beat_Jamin(bot))
+bot.add_cog(Engine(bot))
 bot.add_cog(Misc(bot))
-
+bot.add_cog(Viewing(bot))
+bot.add_cog(Mooderation(bot))
 
 @bot.event
 async def on_error(error, *args, **kwargs):

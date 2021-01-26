@@ -54,7 +54,7 @@ async def log(person, client):
     msg += '```'
     await log_channel.send(msg)
 
-class Beat_Jamin(commands.Cog):
+class Engine(commands.Cog):
 
     def __init__(self, client):
         self.client = client
@@ -208,24 +208,6 @@ class Beat_Jamin(commands.Cog):
             
             await output_move(ctx, person)
             await log(person, self.client)
-
-    @commands.command()
-    @commands.cooldown(1, 3, commands.BucketType.default)
-    @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
-    async def abort(self, ctx, user):
-        '''
-        Aborts a game
-        '''
-
-        person = int(user[3:-1])
-
-        if not person in games.keys():
-            await ctx.send('You do not have a game in progress')
-            return
-
-        games.pop(person)
-        await ctx.send('Game aborted')
-        push_games()
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)

@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from PIL import Image
 
+from cogs.Utility import *
 
 def get_image(person, end):
     game_file = f'data/output-{person}.txt'
