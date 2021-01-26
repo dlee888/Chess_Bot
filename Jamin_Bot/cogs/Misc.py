@@ -115,5 +115,6 @@ class Misc(commands.Cog):
         await ctx.send(f'Executing command "{cmd}"...')
 
         stdout, stderr, status = await run(f'git {cmd}')
+
         await ctx.send(f'stdout: {stdout}\nstderr: {stderr}')
         await ctx.send(status)
