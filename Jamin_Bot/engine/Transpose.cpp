@@ -7,17 +7,13 @@ long long comp_exp[64];
 
 long long f_exp2(long long power)
 {
-	if (power == 0)
-		return 1;
-	if (power == 1)
-		return (BASE + MOD) % MOD;
-	if (comp_exp[power])
-		return comp_exp[power];
-	long long ans = f_exp2(power / 2);
-	ans = (ans * ans + MOD) % MOD;
-	if (power % 2 == 1)
-		ans = (ans * BASE + MOD) % MOD;
-	return (ans + MOD) % MOD;
+	long long base = BASE, ans = 1;
+	power = power%(BASE-1);
+	while(power){
+		if(power&1) (ans*=base)%MOD;
+		(base*=base)%MOD, power>>=1;
+	}
+	return ans;
 }
 
 bool exists[TABLE_SIZE];
