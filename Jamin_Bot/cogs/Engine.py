@@ -128,7 +128,8 @@ class Engine(commands.Cog):
         if ctx.author.id in games.keys():
             await ctx.send('You already have a game in progress')
             return
-
+        person = ctx.author.id
+        thonking.append(person)
         time_control[ctx.author.id] = 60
 
         for i in range(0, len(flags), 2):
@@ -146,7 +147,6 @@ class Engine(commands.Cog):
             await ctx.send('You are white')
 
         if colors[ctx.author.id] == 0:
-            person = ctx.author.id
             file_in = f'data/input-{person}.txt'
             file_out = f'data/output-{person}.txt'
             if not file_in[5:] in os.listdir('data'):
@@ -166,6 +166,7 @@ class Engine(commands.Cog):
             
             await output_move(ctx, person)
             await log(person, self.client)
+        thonking.remove(person)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
