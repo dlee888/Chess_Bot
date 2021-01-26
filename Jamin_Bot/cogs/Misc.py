@@ -97,26 +97,23 @@ class Misc(commands.Cog):
 
     @commands.command()
     @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
+    @commands.cooldown(1, 60, commands.BucketType.default)
     async def restart(self, ctx):
         '''
         Restarts the bot
         '''
         await ctx.send(f'Restarting...')
 
-        if ctx.author.id != 716070916550819860:
-            await ctx.send('Geniosity limit exceeded. Try again later')
-            return
-
-        #await run("py -3 Jamin_Bot.py")
         sys.exit()
 
     @commands.command()
     @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
-    async def git(self, ctx, command):
+    async def git(self, ctx, cmd):
         '''
         Executes shell commands
         '''
         await ctx.send(f'Executing command "{cmd}"...')
 
-        stdout, stderr, status = await run(f'git {command}')
-        await ctx.send(f'stdout: {stdout}\nstderr: {stderr}\n{status}')
+        stdout, stderr, status = await run(f'git {cmd}')
+        await ctx.send(f'stdout: {stdout}\nstderr: {stderr}')
+        await ctx.send(status)
