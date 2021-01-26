@@ -53,14 +53,14 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 
 	if (!curr_state.to_move)
 	{
-		if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true))
+		if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) != 7)
 		{
 			return pdi(-1000.0, -1);
 		}
 	}
 	else
 	{
-		if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false))
+		if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) != 7)
 		{
 			return pdi(1000.0, -1);
 		}
