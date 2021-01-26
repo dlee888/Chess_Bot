@@ -475,7 +475,7 @@ int state::parse_move(std::string move)
 		else
 		{
 			int row_init, row_final = '8' - move[1], col_init = move[0] - 'a', col_final = move[0] - 'a';
-			if (board[row_final][row_final] != 0) return -1;
+			if (board[row_final][col_final] != 0) return -1;
 			if (to_move)
 			{
 				if (row_final == 4 && board[row_final + 1][col_init] == 0)
