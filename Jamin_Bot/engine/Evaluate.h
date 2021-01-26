@@ -3,7 +3,7 @@
 
 #include "State.h"
 
-double eval(state s, bool speed)
+double eval(state& s, bool speed)
 {
 	if (s.adjucation())
 		return 0;
