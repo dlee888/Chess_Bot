@@ -11,49 +11,6 @@ from cogs.Utility import *
 thonking = []
 
 
-async def output_move(ctx, person):
-    f = open(f'data/output-{person}.txt')
-    out = f.readlines()
-    f.close()
-    await ctx.send(f'<@{ping}>')
-    for i in range(len(out) - 1, 0, -1):
-        if out[i].startswith('COMPUTER PLAYED'):
-            await ctx.send(out[i])
-            break
-    for i in range(len(out) - 1, 0, -1):
-        if out[i].startswith('-----'):
-            print('Found board at', i)
-            get_image(person, i - 1)
-            await ctx.send(file=discord.File(f'data/image-{person}.png'))
-            break
-    for i in range(len(out) - 1, 0, -1):
-        if out[i].startswith('GAME: '):
-            game_str = out[i][6:-1].split(' ')
-            games[person].clear()
-            for i in game_str:
-                if i == '' or i == '\n':
-                    continue
-                games[person].append(int(i))
-            push_games()
-            if person in thonking:
-                thonking.remove(person)
-            return
-
-async def log(person, client):
-    f = open(f'data/output-{person}.txt')
-    out = f.readlines()
-    f.close()
-    log_channel = client.get_channel(798277701210341459)
-    msg = f'<{person}>\n```\n'
-    for i in range(len(out)):
-        msg += out[i] + '\n'
-        if i % 10 == 0:
-            msg += '```'
-            await log_channel.send(msg)
-            msg = '```'
-    msg += '```'
-    await log_channel.send(msg)
-
 class Engine(commands.Cog):
 
     def __init__(self, client):

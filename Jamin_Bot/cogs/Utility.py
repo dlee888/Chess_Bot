@@ -1,7 +1,7 @@
 import discord
 import os
 from discord.ext import commands
-
+from PIL import Image
 import asyncio
 
 async def run(cmd):
@@ -12,13 +12,85 @@ async def run(cmd):
 
     return stdout, stderr, f'[{cmd!r} exited with {proc.returncode}]'
 
+def get_image(person, end):
+    game_file = f'data/output-{person}.txt'
+    F = open(game_file)
+    game = F.readlines()
+    F.close()
 
-def is_mooderator(person):
-    for role in person.roles:
-        if role.name == 'Mooderator':
-            return True
-    return False
+    result = Image.open('images/blank_board.png')
+    result = result.resize((400, 400))
 
+    for i in range(end - 14, end + 2, 2):
+        print(i, ": ", game[i])
+        for j in range(1, 25, 3):
+            square = 'images/'
+            if game[i][j:j+2] == '  ':
+                square += 'blank'
+            else:
+                square += game[i][j:j+2]
+            x = (i + 14 - end)//2
+            y = (j - 1)//3
+            if (x + y) % 2:
+                square += '-light.png'
+            else:
+                square += '-dark.png'
+            
+            square_img = Image.open(square)
+            square_img = square_img.resize((50, 50), Image.ANTIALIAS)
+
+            x *= 50
+            y *= 50
+            
+            if colors[person] == 1:
+                result.paste(square_img, (y, x, y + 50, x + 50))
+            else:
+                result.paste(square_img, (350 - y, 350 - x, 400 - y, 400 - x))
+    
+    result.save(f'data/image-{person}.png')
+
+async def output_move(ctx, person):
+    f = open(f'data/output-{person}.txt')
+    out = f.readlines()
+    f.close()
+    await ctx.send(f'<@{ping}>')
+    for i in range(len(out) - 1, 0, -1):
+        if out[i].startswith('COMPUTER PLAYED'):
+            await ctx.send(out[i])
+            break
+    for i in range(len(out) - 1, 0, -1):
+        if out[i].startswith('-----'):
+            print('Found board at', i)
+            get_image(person, i - 1)
+            await ctx.send(file=discord.File(f'data/image-{person}.png'))
+            break
+    for i in range(len(out) - 1, 0, -1):
+        if out[i].startswith('GAME: '):
+            game_str = out[i][6:-1].split(' ')
+            games[person].clear()
+            for i in game_str:
+                if i == '' or i == '\n':
+                    continue
+                games[person].append(int(i))
+            push_games()
+            if person in thonking:
+                thonking.remove(person)
+            return
+
+async def log(person, client):
+    f = open(f'data/output-{person}.txt')
+    out = f.readlines()
+    f.close()
+    log_channel = client.get_channel(798277701210341459)
+    msg = f'<{person}>\n```\n'
+    for i in range(len(out)):
+        msg += out[i] + '\n'
+        if i % 10 == 0:
+            msg += '```'
+            await log_channel.send(msg)
+            msg = '```'
+    msg += '```'
+    await log_channel.send(msg)
 
 games = {}
 colors = {}

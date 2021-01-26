@@ -4,43 +4,6 @@ from PIL import Image
 
 from cogs.Utility import *
 
-def get_image(person, end):
-    game_file = f'data/output-{person}.txt'
-    F = open(game_file)
-    game = F.readlines()
-    F.close()
-
-    result = Image.open('images/blank_board.png')
-    result = result.resize((400, 400))
-
-    for i in range(end - 14, end + 2, 2):
-        print(i, ": ", game[i])
-        for j in range(1, 25, 3):
-            square = 'images/'
-            if game[i][j:j+2] == '  ':
-                square += 'blank'
-            else:
-                square += game[i][j:j+2]
-            x = (i + 14 - end)//2
-            y = (j - 1)//3
-            if (x + y) % 2:
-                square += '-light.png'
-            else:
-                square += '-dark.png'
-            
-            square_img = Image.open(square)
-            square_img = square_img.resize((50, 50), Image.ANTIALIAS)
-
-            x *= 50
-            y *= 50
-            
-            if colors[person] == 1:
-                result.paste(square_img, (y, x, y + 50, x + 50))
-            else:
-                result.paste(square_img, (350 - y, 350 - x, 400 - y, 400 - x))
-    
-    result.save(f'data/image-{person}.png')
-
 class Viewing(commands.Cog):
 
     def __init__(self, client):
