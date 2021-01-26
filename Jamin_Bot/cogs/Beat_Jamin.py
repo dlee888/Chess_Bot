@@ -73,7 +73,8 @@ async def output_move(ctx, person):
                     continue
                 games[ctx.message.author.id].append(int(i))
             push_games()
-            thonking.remove(person)
+            if person in thonking:
+                thonking.remove(person)
             return
 
 async def log(person, client):
@@ -97,7 +98,7 @@ class Beat_Jamin(commands.Cog):
         self.client = client
 
     @commands.command(aliases=['play'])
-    @commands.cooldown(1, 10, commands.BucketType.default)
+    @commands.cooldown(1, 5, commands.BucketType.default)
     async def move(self, ctx, move):
         '''
         Plays <move> against the computer
@@ -166,6 +167,8 @@ class Beat_Jamin(commands.Cog):
             games.pop(ctx.author.id)
             push_games()
             thonking.remove(person)
+
+            await log(person, self.client)
             return
 
         if out[-3] != 'GAME STILL IN PROGRESS\n':
