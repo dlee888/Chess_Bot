@@ -49,11 +49,13 @@ def get_image(person, end):
     
     result.save(f'data/image-{person}.png')
 
-async def output_move(ctx, person):
+async def output_move(ctx, person, ping = -1):
+    if ping == -1:
+        ping = person
     f = open(f'data/output-{person}.txt')
     out = f.readlines()
     f.close()
-    await ctx.send(f'<@{person}>')
+    await ctx.send(f'<@{ping}>')
     for i in range(len(out) - 1, 0, -1):
         if out[i].startswith('COMPUTER PLAYED'):
             await ctx.send(out[i])
@@ -67,11 +69,11 @@ async def output_move(ctx, person):
     for i in range(len(out) - 1, 0, -1):
         if out[i].startswith('GAME: '):
             game_str = out[i][6:-1].split(' ')
-            games[ctx.message.author.id].clear()
+            games[person].clear()
             for i in game_str:
                 if i == '' or i == '\n':
                     continue
-                games[ctx.message.author.id].append(int(i))
+                games[person].append(int(i))
             push_games()
             if person in thonking:
                 thonking.remove(person)
@@ -331,7 +333,7 @@ class Beat_Jamin(commands.Cog):
         f.close()
         stdout, stderr, status = await run(f'.\\a < {file_in} > {file_out}')
         #await ctx.send(f'stdout: {stdout}\nstderr: {stderr}\n{status}')
-        await output_move(ctx, person)
+        await output_move(ctx, person, ctx.author.id)
 
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.default)
@@ -353,7 +355,6 @@ class Beat_Jamin(commands.Cog):
                 await ctx.send('You do not have a game in progress')
             return
 
-        person = ctx.author.id
         file_in = f'data/input-{person}.txt'
         file_out = f'data/output-{person}.txt'
         if not file_in[5:] in os.listdir('data'):
