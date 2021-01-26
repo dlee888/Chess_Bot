@@ -76,11 +76,11 @@ async def output_move(ctx, person):
             thonking.remove(person)
             return
 
-async def log(person):
+async def log(person, client):
     f = open(f'data/output-{person}.txt')
     out = f.readlines()
     f.close()
-    log_channel = self.client.get_channel(798277701210341459)
+    log_channel = client.get_channel(798277701210341459)
     msg = f'<{person}>\n```\n'
     for i in range(len(out)):
         msg += out[i] + '\n'
@@ -182,7 +182,7 @@ class Beat_Jamin(commands.Cog):
                 else:
                     await output_move(ctx, person)
 
-                    await log(person)
+                    await log(person, self.client)
 
             thonking.remove(person)
             await ctx.send(f'Your new rating is {get_rating(ctx.author.id)}')
@@ -191,7 +191,7 @@ class Beat_Jamin(commands.Cog):
             return
 
         await output_move(ctx, person)
-        await log(person)
+        await log(person, self.client)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
@@ -242,7 +242,7 @@ class Beat_Jamin(commands.Cog):
             await run(f'.\\a < {file_in} > {file_out}')
             
             await output_move(ctx, person)
-            await log(person)
+            await log(person, self.client)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
