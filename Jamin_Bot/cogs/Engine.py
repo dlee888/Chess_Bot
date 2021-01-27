@@ -102,6 +102,9 @@ class Engine(commands.Cog):
                     winner = 0
                 else:
                     await ctx.send('Something went wrong :thonkery:')
+                    thonking.remove(person)
+                    return
+
                 if winner == colors[ctx.author.id]:
                     update_rating(ctx.author.id, 1)
                     await ctx.send('You won!')
