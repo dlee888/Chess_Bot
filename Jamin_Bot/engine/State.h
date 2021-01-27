@@ -120,7 +120,8 @@ public:
 
 	int attacking(int row, int col, bool color);
 	int num_attack(int row, int col, bool color);
-	
+	bool illegal(int move);
+
 	std::vector<int> list_moves();
 
 	bool quiescent();
