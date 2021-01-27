@@ -5,7 +5,7 @@ import sys
 
 from cogs.Utility import *
 
-version = '1.2.2'
+version = '1.2.3'
 
 
 class Misc(commands.Cog):
@@ -71,7 +71,7 @@ class Misc(commands.Cog):
         '''
         embed = discord.Embed(title="Bot Info", color=0xff0000)
         embed.add_field(name="Links",
-                        value="[Github](https://github.com/jeffarjeffar/Chess_Bot) | [Invite](https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=2113928439&scope=bot) | [Join the discord server](https://discord.gg/Bm4zjtNTD2)",
+                        value="[Github](https://github.com/jeffarjeffar/Chess_Bot) | [Invite](https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=1544023120&scope=bot) | [Join the discord server](https://discord.gg/Bm4zjtNTD2)",
                         inline=True)
         embed.add_field(name='Version', value=version, inline=True)
         embed.add_field(name="Info",
