@@ -384,7 +384,7 @@ bool state::illegal(int move){
 	curr_state.make_move(move);
 	if (!curr_state.to_move)
 	{
-		if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) == 7)
+		if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) != 7)
 		{
 			curr_state.unmake_move(move);
 			return true;
@@ -392,7 +392,7 @@ bool state::illegal(int move){
 	}
 	else
 	{
-		if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) == 7)
+		if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) != 7)
 		{
 			curr_state.unmake_move(move);
 			return true;
