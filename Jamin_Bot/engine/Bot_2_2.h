@@ -226,7 +226,7 @@ void play()
 			{
 				if (black_openings[i].moves[num_move - 1] != move_i || black_openings[i].moves[num_move] == -1)
 				{
-					black_openings.erase(white_openings.begin() + i);
+					black_openings.erase(black_openings.begin() + i);
 					i--;
 				}
 			}

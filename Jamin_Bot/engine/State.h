@@ -51,7 +51,7 @@ public:
 
 	void replace_board(int row, int col, int piece)
 	{
-		board_hash = (board_hash - f_exp2((row << 3) + col) * (board[row][col] - piece) + SAFETY) % MOD;
+		board_hash = (board_hash + f_exp2(((long long)row << 3) + col) * (((long long)piece - board[row][col] + MOD) % MOD) % MOD + SAFETY) % MOD;
 		board[row][col] = piece;
 	}
 
