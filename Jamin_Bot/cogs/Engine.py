@@ -101,7 +101,7 @@ class Engine(commands.Cog):
                 elif out[-3] == 'BLACK WON\n':
                     winner = 0
                 else:
-                    await ctx.send('Something went wrong :thonkery:')
+                    await ctx.send('Something went wrong <:thonkery:532458240559153163>')
                     thonking.remove(person)
                     return
 
