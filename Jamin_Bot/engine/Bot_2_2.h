@@ -109,11 +109,34 @@ void play()
 
 		if (curr_state.to_move == computer_is_white)
 		{
-			if (openings.size())
+			int opening_size = openings.size();
+			if (computer_is_white)
+				opening_size += white_openings.size();
+			else 
+				opening_size += black_openings.size();
+			if (opening_size)
 			{
-				std::cout << "COMPUTER PLAYED " << curr_state.move_to_string(openings[0].moves[num_move]) << std::endl
+				if (opening_size > openings.size())
+				{
+					if (computer_is_white)
+					{
+						std::cout << "COMPUTER PLAYED " << curr_state.move_to_string(white_openings[0].moves[num_move]) << std::endl
+						  << "OPENING: " << white_openings[0].name << std::endl;
+						move_i = white_openings[0].moves[num_move];
+					}
+					else
+					{
+						std::cout << "COMPUTER PLAYED " << curr_state.move_to_string(black_openings[0].moves[num_move]) << std::endl
+						  << "OPENING: " << black_openings[0].name << std::endl;
+						move_i = black_openings[0].moves[num_move];
+					}
+				}
+				else
+				{
+					std::cout << "COMPUTER PLAYED " << curr_state.move_to_string(openings[0].moves[num_move]) << std::endl
 						  << "OPENING: " << openings[0].name << std::endl;
-				move_i = openings[0].moves[num_move];
+					move_i = openings[0].moves[num_move];
+				}
 				curr_state.make_move(move_i);
 				game.push_back(move_i);
 			}
@@ -186,6 +209,29 @@ void play()
 				i--;
 			}
 		}
+		if (computer_is_white)
+		{
+			for (int i = 0; i < white_openings.size(); i++)
+			{
+				if (white_openings[i].moves[num_move - 1] != move_i || white_openings[i].moves[num_move] == -1)
+				{
+					white_openings.erase(white_openings.begin() + i);
+					i--;
+				}
+			}
+		}
+		else
+		{
+			for (int i = 0; i < black_openings.size(); i++)
+			{
+				if (black_openings[i].moves[num_move - 1] != move_i || black_openings[i].moves[num_move] == -1)
+				{
+					black_openings.erase(white_openings.begin() + i);
+					i--;
+				}
+			}
+		}
+		
 		scramble_openings();
 	}
 	if (error_msg.size() != 0)

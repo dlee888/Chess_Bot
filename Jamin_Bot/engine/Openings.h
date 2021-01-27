@@ -5,7 +5,9 @@
 
 #include "State.h"
 
-#define NUM_OPENINGS 20
+#define NUM_ALL 20
+#define NUM_WHITE 2
+#define NUM_BLACK 1
 
 class opening
 {
@@ -32,7 +34,7 @@ public:
 	}
 };
 
-std::string temp[NUM_OPENINGS][100] = {
+std::string all[NUM_ALL][100] = {
 	{"Queen's gambit declined, modern variation", "d4", "d5", "c4", "e6", "Nc3", "Nf6", "Bg5", "Be7", "e3", "O-O", "Nf3", "h6", "Bh4"}, 
 	{"Tarrasach defense, two knights variation", "d4", "d5", "c4", "e6", "Nc3", "c5", "cxd5", "exd5", "Nf3", "Nc6", "g3"}, 
 	{"Ruy lopez, morphy defense, caro", "e4", "e5", "Nf3", "Nc6", "Bb5", "a6", "Ba4", "b5", "Bb3", "Nf6"}, 
@@ -55,12 +57,28 @@ std::string temp[NUM_OPENINGS][100] = {
 	{"Sicilian defense: Open, Najdorf Variation", "e4", "c5", "Nf3", "d6", "d4", "cxd4", "Nxd4", "Nf6", "Nc3", "a6", "Bg5", "Nbd7", "f4", "e6", "Qf3", "Qc7", "0-0-0", "Be7", "g4", "b5", "Bxf6", "Nxf6", "g5", "Nd7", "f5", "Bxg5", "Kb1", "Ne5", "Qh5"}
 };
 
-std::vector<opening> openings;
+std::string white[NUM_WHITE][100] = {
+//	{"French defense: Winnever variation", "e4", "e6", "d4", "d5", "Nc3", "Bb4", "Nf3"} // petition to get rid of the french
+	{"blah", "e4"}, 
+	{"blah", "d4"}
+};
+
+std::string black[NUM_BLACK][100] = {
+	{"blah", "a4", "a5"} // temporary holder
+};
+
+std::vector<opening> openings, black_openings, white_openings;
+// black openings are really good for black (engine will never play it as white)
+// white openings are really good for white (engine will never play it as black)
 
 void load_openings()
 {
-	for (int i = 0; i < NUM_OPENINGS; i++)
-		openings.push_back(opening(temp[i][0], temp[i] + 1));
+	for (int i = 0; i < NUM_ALL; i++)
+		openings.push_back(opening(all[i][0], all[i] + 1));
+	for (int i = 0; i < NUM_WHITE; i++)
+		white_openings.push_back(opening(white[i][0], white[i] + 1));
+	for (int i = 0; i < NUM_BLACK; i++)
+		black_openings.push_back(opening(black[i][0], black[i] + 1));
 }
 
 void scramble_openings()
@@ -69,6 +87,14 @@ void scramble_openings()
 		for (int ind = iter; ind < (int)openings.size() - 1; ind++)
 			if (rand()&1)
 				std::swap(openings[ind], openings[ind + 1]);
+	for (int iter = 0; iter < (int) white_openings.size(); iter++)
+		for (int ind = iter; ind < (int) white_openings.size() - 1; ind++)
+			if (rand()&1)
+				std::swap(white_openings[ind], white_openings[ind + 1]);
+	for (int iter = 0; iter < (int) black_openings.size(); iter++)
+		for (int ind = iter; ind < (int) black_openings.size() - 1; ind++)
+			if (rand()&1)
+				std::swap(black_openings[ind], black_openings[ind + 1]);
 }
 
 #endif // !OPENINGS_H_INCLUDED
