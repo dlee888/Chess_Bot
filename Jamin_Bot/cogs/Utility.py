@@ -12,7 +12,7 @@ async def run(cmd):
 
     stdout = str(stdout, 'utf-8')
     stderr = str(stderr, 'utf-8')
-    
+
     return stdout, stderr, f'[{cmd!r} exited with {proc.returncode}]'
 
 def get_image(person, end):
@@ -25,7 +25,6 @@ def get_image(person, end):
     result = result.resize((400, 400))
 
     for i in range(end - 14, end + 2, 2):
-        print(i, ": ", game[i])
         for j in range(1, 25, 3):
             square = 'images/'
             if game[i][j:j+2] == '  ':
@@ -65,7 +64,7 @@ async def output_move(ctx, person, ping = -1):
             break
     for i in range(len(out) - 1, 0, -1):
         if out[i].startswith('-----'):
-            print('Found board at', i)
+            #print('Found board at', i)
             get_image(person, i - 1)
             await ctx.send(file=discord.File(f'data/image-{person}.png'))
             break

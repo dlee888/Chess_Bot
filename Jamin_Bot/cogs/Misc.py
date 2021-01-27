@@ -41,11 +41,8 @@ class Misc(commands.Cog):
         Compile message of 1 means that there were compile errors
         Compiler: g++
         '''
-        #os.system('echo hi')
         compile_cmd = 'g++ '
         for filename in os.listdir('engine'):
-            #os.system(f'echo {filename}')
-            #print(filename, filename[-4:], filename[-2:])
             if filename[-4:] == '.cpp' or filename[-2:] == '.h':
                 compile_cmd += f'engine/{filename} '
         compile_cmd += flags
@@ -105,7 +102,7 @@ class Misc(commands.Cog):
         await ctx.send(f'Restarting...')
 
         sys.exit()
-        
+
     @commands.command()
     @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
     async def git(self, ctx, cmd):

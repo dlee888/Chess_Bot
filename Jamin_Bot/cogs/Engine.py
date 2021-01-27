@@ -160,7 +160,6 @@ class Engine(commands.Cog):
             f.write(
                 f'play\nno\n{time_control[ctx.author.id]}\nwhite\nquit\nquit')
             f.close()
-            #print('Starting a')
 
             await run(f'.\\a < {file_in} > {file_out}')
             
