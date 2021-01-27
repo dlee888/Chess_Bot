@@ -171,11 +171,6 @@ void play()
 				error_msg = "ILLEGAL MOVE PLAYED";
 				break;
 			}
-			if(curr_state.illegal(move_i))
-			{
-				error_msg = "ILLEGAL MOVE PLAYED";
-				break;
-			}
 			curr_state.make_move(move_i);
 			game.push_back(move_i);
 		}
