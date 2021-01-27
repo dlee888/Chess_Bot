@@ -51,7 +51,8 @@ class Misc(commands.Cog):
 
         out, err, status = await run(compile_cmd)
 
-        await ctx.send(f'Updated\nCompile Message: {out}\nStderr: {err}\n{status}')
+        await ctx.send(f'Updated\nCompile Message: ```{out}```\nStderr: ```{err}```')
+        await ctx.send(status)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
@@ -105,13 +106,13 @@ class Misc(commands.Cog):
 
     @commands.command()
     @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
-    async def git(self, ctx, cmd):
+    async def git_pull(self, ctx, cmd):
         '''
-        Executes shell commands
+        Pulls from the github repository
         '''
-        await ctx.send(f'Executing command "{cmd}"...')
+        await ctx.send(f'Executing command "git pull"...')
 
-        stdout, stderr, status = await run(f'git {cmd}')
+        stdout, stderr, status = await run(f'git pull')
 
         await ctx.send(f'stdout: {stdout}\nstderr: {stderr}')
         await ctx.send(status)

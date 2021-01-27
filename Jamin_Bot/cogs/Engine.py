@@ -98,6 +98,10 @@ class Engine(commands.Cog):
             else:
                 if out[-3] == 'WHITE WON\n':
                     winner = 1
+                elif out[-3] == 'BLACK WON\n':
+                    winner = 0
+                else:
+                    await ctx.send('Something went wrong :thonkery:')
                 if winner == colors[ctx.author.id]:
                     update_rating(ctx.author.id, 1)
                     await ctx.send('You won!')
