@@ -139,10 +139,13 @@ void play()
 					curr_depth++;
 				}
 				move_i = best_move.second;
+				if (move_i == -2) {
+					error_msg = "COMPUTER RESIGNED";
+					break;
+				}
 				if (move_i == -1)
 				{
-					if (abs(best_move.first) > RESIGN) error_msg = "COMPUTER RESIGNED";
-					else error_msg = "ILLEGAL MOVE PLAYED";
+					error_msg = "ILLEGAL MOVE PLAYED";
 					break;
 				}
 				if ((computer_is_white && best_move.first < -RESIGN) || (!computer_is_white && best_move.first > RESIGN))

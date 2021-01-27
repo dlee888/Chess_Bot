@@ -105,7 +105,7 @@ class Misc(commands.Cog):
         await ctx.send(f'Restarting...')
 
         sys.exit()
-
+        
     @commands.command()
     @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
     async def git(self, ctx, cmd):

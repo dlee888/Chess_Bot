@@ -142,7 +142,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 	{
 		sort(ordered_moves.begin(), ordered_moves.end(), greater);
 
-		int best_move = -1;
+		int best_move = -2;
 		if (priority != -1)
 		{
 			curr_state.make_move(priority);
@@ -210,7 +210,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 	else
 	{
 		sort(ordered_moves.begin(), ordered_moves.end(), less);
-		int best_move = -1;
+		int best_move = -2;
 		if (priority != -1)
 		{
 			curr_state.make_move(priority);
