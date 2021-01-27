@@ -7,6 +7,9 @@ async def run(cmd):
 
     stdout, stderr = await proc.communicate()
 
+    stdout = str(stdout, 'utf-8')
+    stderr = str(stderr, 'utf-8')
+
     return stdout, stderr, f'[{cmd!r} exited with {proc.returncode}]'
 
 async def main():
