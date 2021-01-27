@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 
+from cogs.Utility import *
+
 class Mooderation(commands.Cog):
 
     def __init__(self, client):
