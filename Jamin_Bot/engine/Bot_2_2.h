@@ -163,7 +163,7 @@ void play()
 			if (move == "resign" || move == "quit")
 				break;
 			move_i = curr_state.parse_move(move);
-			if (move_i == -1)
+			if (move_i == -1 || curr_state.illegal(move_i))
 			{
 				error_msg = "ILLEGAL MOVE PLAYED";
 				break;
