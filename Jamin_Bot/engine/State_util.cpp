@@ -379,25 +379,3 @@ int state::num_attack(int row, int col, bool color)
 	}
 	return num_attack;
 }
-
-bool state::illegal(int move){
-	curr_state.make_move(move);
-	if (!curr_state.to_move)
-	{
-		if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) == 7)
-		{
-			curr_state.unmake_move(move);
-			return true;
-		}
-	}
-	else
-	{
-		if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) == 7)
-		{
-			curr_state.unmake_move(move);
-			return true;
-		}
-	}
-	curr_state.unmake_move(move);
-	return false;
-}
