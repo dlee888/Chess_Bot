@@ -7,7 +7,7 @@
 
 #define NUM_ALL 20
 #define NUM_WHITE 2
-#define NUM_BLACK 1
+#define NUM_BLACK 2
 
 class opening
 {
@@ -59,12 +59,13 @@ std::string all[NUM_ALL][100] = {
 
 std::string white[NUM_WHITE][100] = {
 //	{"French defense: Winnever variation", "e4", "e6", "d4", "d5", "Nc3", "Bb4", "Nf3"} // petition to get rid of the french
-	{"blah", "e4"}, 
+	{"blah", "e4"}, // temporary holder
 	{"blah", "d4"}
 };
 
 std::string black[NUM_BLACK][100] = {
-	{"blah", "a4", "a5"} // temporary holder
+	{"blah", "d4"}, // temporary holder
+	{"blah", "e4"} // temporary holder
 };
 
 std::vector<opening> openings, black_openings, white_openings;
