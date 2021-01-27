@@ -106,7 +106,7 @@ class Misc(commands.Cog):
 
     @commands.command()
     @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
-    async def git_pull(self, ctx, cmd):
+    async def git_pull(self, ctx):
         '''
         Pulls from the github repository
         '''
