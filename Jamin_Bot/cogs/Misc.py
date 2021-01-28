@@ -83,6 +83,7 @@ class Misc(commands.Cog):
     async def shell(self, ctx, cmd):
         '''
         Executes shell commands
+        (Bot developers only)
         '''
         await ctx.send(f'Executing command "{cmd}"...')
 
@@ -99,7 +100,13 @@ class Misc(commands.Cog):
     async def restart(self, ctx):
         '''
         Restarts the bot
+        (Bot developers only)
         '''
+
+        if ctx.message.guild.id != 733762995372425337:
+            await ctx.send(f'This command can only be used in the Chess Bot Support server')
+            return
+            
         await ctx.send(f'Restarting...')
 
         sys.exit()
@@ -109,8 +116,13 @@ class Misc(commands.Cog):
     async def git_pull(self, ctx):
         '''
         Pulls from the github repository
+        (Bot developers only)
         '''
         await ctx.send(f'Executing command "git pull"...')
+
+        if ctx.message.guild.id != 733762995372425337:
+            await ctx.send(f'This command can only be used in the Chess Bot Support server')
+            return
 
         stdout, stderr, status = await run(f'git pull')
 
