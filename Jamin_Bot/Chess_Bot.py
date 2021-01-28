@@ -6,6 +6,7 @@ from cogs.Misc import *
 from cogs.Engine import *
 from cogs.Viewing import *
 from cogs.Mooderation import *
+from cogs.Development import *
 
 import logging
 
@@ -22,6 +23,7 @@ bot.add_cog(Engine(bot))
 bot.add_cog(Misc(bot))
 bot.add_cog(Viewing(bot))
 bot.add_cog(Mooderation(bot))
+bot.add_cog(Development(bot))
 
 @bot.event
 async def on_error(error, *args, **kwargs):
