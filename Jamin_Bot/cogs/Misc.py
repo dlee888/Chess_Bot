@@ -4,6 +4,7 @@ from discord.ext import commands
 import sys
 import time
 import subprocess
+import textwrap
 
 from cogs.Utility import *
 
@@ -85,8 +86,11 @@ class Misc(commands.Cog):
         embed.add_field(name='Version', value=version, inline=True)
         embed.add_field(name="Info",
                         value='Chess Bot is a bot that plays chess. $help for more information', inline=False)
+        users = 0
+        for guild in self.client.guilds:
+            users += guild.member_count
         embed.add_field(name="Stats",
-                        value=f'Chess bot is in {len(self.client.guilds)} and serves {len(self.client.users)} members\nChess bot has been running for {time.time() - self.start_time} seconds')
+                        value=f'Chess bot is in {len(self.client.guilds)} guilds and serves {users} users\nChess bot has been running for {round(time.time() - self.start_time)} seconds')
         embed.set_footer(text="Made by Farmer John#3907")
         await ctx.send(embed=embed)
 
