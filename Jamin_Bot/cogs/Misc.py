@@ -30,7 +30,7 @@ class Misc(commands.Cog):
         '''
         Sends "Pong!"
         '''
-        await ctx.send(f'Pong!\nLatency: {self.client.latency}')
+        await ctx.send(f'Pong!\nLatency: {round(self.client.latency*1000000)/1000}ms')
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)

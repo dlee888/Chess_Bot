@@ -53,7 +53,7 @@ class Development(commands.Cog):
 
     @commands.command()
     @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
-    @commands.cooldown(1, 30, commands.BucketType.default)
+    @commands.cooldown(1, 15, commands.BucketType.default)
     async def restart(self, ctx):
         '''
         Restarts the bot
