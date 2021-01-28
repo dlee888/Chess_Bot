@@ -2,16 +2,47 @@ import discord
 import os
 from discord.ext import commands
 import sys
+import time
+import subprocess
 
 from cogs.Utility import *
 
 version = '1.2.4'
 
 
+def get_git_history():
+    def _minimal_ext_cmd(cmd):
+        # construct minimal environment
+        env = {}
+        for k in ['SYSTEMROOT', 'PATH']:
+            v = os.environ.get(k)
+            if v is not None:
+                env[k] = v
+        # LANGUAGE is used on win32
+        env['LANGUAGE'] = 'C'
+        env['LANG'] = 'C'
+        env['LC_ALL'] = 'C'
+        out = subprocess.Popen(cmd, stdout = subprocess.PIPE, env=env).communicate()[0]
+        return out
+    try:
+        out = _minimal_ext_cmd(['git', 'rev-parse', '--abbrev-ref', 'HEAD'])
+        branch = out.strip().decode('ascii')
+        out = _minimal_ext_cmd(['git', 'log', '--oneline', '-5'])
+        history = out.strip().decode('ascii')
+        return (
+            'Branch:\n' +
+            textwrap.indent(branch, '  ') +
+            '\nCommits:\n' +
+            textwrap.indent(history, '  ')
+        )
+    except OSError:
+        return "Fetching git info failed"
+
 class Misc(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+        self.start_time = time.time()
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -54,5 +85,12 @@ class Misc(commands.Cog):
         embed.add_field(name='Version', value=version, inline=True)
         embed.add_field(name="Info",
                         value='Chess Bot is a bot that plays chess. $help for more information', inline=False)
+        embed.add_field(name="Stats",
+                        value=f'Chess bot is in {len(self.client.guilds)} and serves {len(self.client.users)} members\nChess bot has been running for {time.time() - self.start_time} seconds')
         embed.set_footer(text="Made by Farmer John#3907")
         await ctx.send(embed=embed)
+
+    @commands.command(brief='Get git information')
+    async def git_history(self, ctx):
+        """Replies with git information."""
+        await ctx.send('```yaml\n' + get_git_history() + '```')

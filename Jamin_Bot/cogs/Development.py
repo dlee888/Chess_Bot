@@ -14,8 +14,8 @@ class Development(commands.Cog):
     async def update(self, ctx, flags = ''):
         '''
         Compiles the latest version of Chess Bot
-        Compile message of 1 means that there were compile errors
         Compiler: g++
+        (Bot developers only)
         '''
 
         if ctx.message.guild.id != 733762995372425337:
