@@ -33,7 +33,7 @@ def get_image(person, end):
                 square += game[i][j:j+2]
             x = (i + 14 - end)//2
             y = (j - 1)//3
-            if (x + y) % 2:
+            if (x + y) % 2 == 0:
                 square += '-light.png'
             else:
                 square += '-dark.png'
