@@ -173,11 +173,14 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 			if (move == priority)
 				continue;
 			curr_state.make_move(move);
-			if(alpha > find_best_move(depth - 2, alpha, beta, -1, speed).first + prune && depth > 3)
+			if(depth > 3)
 			{
-				//printf("Prune\n");
-				curr_state.unmake_move(move);
-				continue;
+				if(alpha > find_best_move(depth - 2, alpha, beta, -1, speed).first + prune)
+				{
+					//printf("Prune\n");
+					curr_state.unmake_move(move);
+					continue;
+				}
 			}
 			//curr_state.print();
 			//printf("Made move %s. Eval = %lf\n", curr_state.move_to_string(move).c_str(), eval(curr_state, speed));
@@ -242,11 +245,14 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 			if (move == priority)
 				continue;
 			curr_state.make_move(move);
-			if(beta < find_best_move(depth - 2, alpha, beta, -1, speed).first - prune && depth > 3)
+			if(depth > 3)
 			{
-				//printf("Prune\n");
-				curr_state.unmake_move(move);
-				continue;
+				if(beta < find_best_move(depth - 2, alpha, beta, -1, speed).first - prune)
+				{
+					//printf("Prune\n");
+					curr_state.unmake_move(move);
+					continue;
+				}
 			}
 			//curr_state.print();
 			//printf("Made move %s. Eval = %lf\n", curr_state.move_to_string(move).c_str(), eval(curr_state, speed));
