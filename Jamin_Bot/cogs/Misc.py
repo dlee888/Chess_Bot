@@ -92,7 +92,7 @@ class Misc(commands.Cog):
         embed.add_field(name="Stats", inline=False)
         embed.add_field(name="Guild Count", value=str(len(self.client.guilds)), inline=True)
         embed.add_field(name="Member Count", value=str(users), inline=True)
-        embed.add_field(name="Up time", value=f'{round(time.time() - self.start_time)*1000)/1000} seconds', inline=True)
+        embed.add_field(name="Up time", value=f'{round((time.time() - self.start_time)*1000)/1000} seconds', inline=True)
         owner = (await bot.application_info()).owner
         embed.set_footer(text=f"Made by {owner}", icon_url=owner.avatar_url)
         await ctx.send(embed=embed)
