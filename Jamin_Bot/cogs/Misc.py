@@ -89,9 +89,12 @@ class Misc(commands.Cog):
         users = 0
         for guild in self.client.guilds:
             users += guild.member_count
-        embed.add_field(name="Stats",
-                        value=f'Chess bot is in {len(self.client.guilds)} guilds and serves {users} users\nChess bot has been running for {round(time.time() - self.start_time)} seconds')
-        embed.set_footer(text="Made by Farmer John#3907")
+        embed.add_field(name="Stats", inline=False)
+        embed.add_field(name="Guild Count", value=str(len(self.client.guilds)), inline=True)
+        embed.add_field(name="Member Count", value=str(users), inline=True)
+        embed.add_field(name="Up time", value=f'{round(time.time() - self.start_time)*1000)/1000} seconds', inline=True)
+        owner = (await bot.application_info()).owner
+        embed.set_footer(text=f"Made by {owner}", icon_url=owner.avatar_url)
         await ctx.send(embed=embed)
 
     @commands.command(brief='Get git information')
