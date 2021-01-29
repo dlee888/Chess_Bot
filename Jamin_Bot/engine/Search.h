@@ -173,7 +173,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 			if (move == priority)
 				continue;
 			curr_state.make_move(move);
-			if(alpha > find_best_move(2, alpha, beta, -1, speed).first + prune && depth > 3)
+			if(alpha > find_best_move(depth - 2, alpha, beta, -1, speed).first + prune && depth > 3)
 			{
 				//printf("Prune\n");
 				curr_state.unmake_move(move);
@@ -242,7 +242,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 			if (move == priority)
 				continue;
 			curr_state.make_move(move);
-			if(beta < find_best_move(2, alpha, beta, -1, speed).first - prune && depth > 3)
+			if(beta < find_best_move(depth - 2, alpha, beta, -1, speed).first - prune && depth > 3)
 			{
 				//printf("Prune\n");
 				curr_state.unmake_move(move);
