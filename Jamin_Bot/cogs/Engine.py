@@ -23,6 +23,7 @@ class Engine(commands.Cog):
         Plays <move> against the computer
         Please enter the move in algebraic notation
         For example, Nxe4, Nge5, c4, Ke2, etc
+        More about algebraic notation here: https://www.chess.com/article/view/chess-notation#algebraic-notation
         '''
         if not ctx.author.id in games.keys():
             await ctx.send('You do not have a game in progress with Chess Bot')
@@ -128,9 +129,9 @@ class Engine(commands.Cog):
     async def challenge(self, ctx, *flags):
         '''
         Challenges Chess Bot to a game
-                Your color is assigned randomly.
-                Flags:
-                -t to set time control (in seconds)
+        Your color is assigned randomly.
+        Flags:
+            -t to set time control (in seconds)
         '''
         if ctx.author.id in games.keys():
             await ctx.send('You already have a game in progress')
