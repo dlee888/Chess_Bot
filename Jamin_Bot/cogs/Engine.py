@@ -69,14 +69,14 @@ class Engine(commands.Cog):
             f.write('black\n')
         f.write(move + '\nquit\nquit\n')
         f.close()
-        await ctx.send('Chess Bot is thinking...')
+        await ctx.send('Chess Bot is thinking <:thonk:517531367517454347> ...')
         await run(f'.\\a < {file_in} > {file_out}')
         f = open(file_out)
         out = f.readlines()
         f.close()
 
         if out[-3] == 'ILLEGAL MOVE PLAYED\n':
-            await ctx.send('Haha, nice try')
+            await ctx.send('Illegal move played. Make sure your move is in algebraic notation.\nType "$help move" for more info')
             thonking.remove(person)
             return
 
