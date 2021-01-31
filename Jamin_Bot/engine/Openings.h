@@ -58,8 +58,7 @@ std::string all[NUM_ALL][100] = {
 };
 
 std::string white[NUM_WHITE][100] = {
-//	{"French defense: Winnever variation", "e4", "e6", "d4", "d5", "Nc3", "Bb4", "Nf3"} // petition to get rid of the french
-	{"blah", "e4"}, // temporary holder
+	{"French defense: Winnever variation", "e4", "e6", "d4", "d5", "Nc3", "Bb4", "Nf3"}, // petition to get rid of the french
 	{"blah", "d4"}
 };
 
