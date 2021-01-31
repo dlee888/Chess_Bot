@@ -110,14 +110,17 @@ class Engine(commands.Cog):
                     update_rating(ctx.author.id, 1)
                     await ctx.send('You won!')
                 else:
+                    update_rating(ctx.author.id, 1)
+                    
                     await output_move(ctx, person)
-
-                    await log(person, self.client)
+                    await ctx.send('You lost.')
 
             thonking.remove(person)
             await ctx.send(f'Your new rating is {get_rating(ctx.author.id)}')
             games.pop(ctx.author.id)
             push_games()
+            
+            await log(person, self.client)
             return
 
         await output_move(ctx, person)
