@@ -110,7 +110,7 @@ class Engine(commands.Cog):
                     update_rating(ctx.author.id, 1)
                     await ctx.send('You won!')
                 else:
-                    update_rating(ctx.author.id, 1)
+                    update_rating(ctx.author.id, 0)
                     
                     await output_move(ctx, person)
                     await ctx.send('You lost.')
