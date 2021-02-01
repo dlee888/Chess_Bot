@@ -55,7 +55,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 	{
 		if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) != 7)
 		{
-			//printf("King attacked\n");
+			if (depth == 9) printf("King attacked\n");
 			return pdi(-1000.0, -1);
 		}
 	}
@@ -63,7 +63,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 	{
 		if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) != 7)
 		{
-			//printf("King attacked (%d)\n", curr_state.attacking(blackkings[0].first, blackkings[0].second, false));
+			if (depth == 9) printf("King attacked\n");
 			return pdi(1000.0, -1);
 		}
 	}
@@ -74,19 +74,21 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 		return pdi(curr_eval, -1);
 	}
 
+	if (depth == 9) curr_state.print();
 	std::vector<int> moves = curr_state.list_moves();
 	std::vector<pdi> ordered_moves;
 	int mate = 3;
 	for (int i : moves)
 	{
 		curr_state.make_move(i);
+		if (depth == 9) std::cout << curr_state.move_to_string(i) << std::endl;
 		ordered_moves.push_back({eval(curr_state, speed), i});
 		if (mate == 3) {
 			if (!curr_state.to_move)
 			{
 				if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) == 7)
 				{
-					//curr_state.print();
+					if (depth == 9) curr_state.print();
 					mate = 0;
 				}
 			}
@@ -94,7 +96,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 			{
 				if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) == 7)
 				{
-					//curr_state.print();
+					if (depth == 9) curr_state.print();
 					mate = 0;
 				}
 			}
@@ -124,11 +126,11 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 	else if (mate == 2)
 	{
 		if (curr_state.to_move) {
-			//printf("Checkmate\n");
+			if (depth == 9) printf("Checkmate\n");
 			return pdi(-1000, -1);
 		}
 		else {
-			//printf("Checkmate\n");
+			if (depth == 9) printf("Checkmate\n");
 			return pdi(1000, -1);
 		}
 	}

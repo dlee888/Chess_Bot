@@ -34,7 +34,7 @@ class Development(commands.Cog):
 
         out, err, status = await run(compile_cmd)
 
-        await ctx.send(f'Updated\nCompile Message: ```{out}```\nStderr: ```{err}```')
+        await ctx.send(f'Updated\nCompile Message: {out}\nStderr: {err}')
         await ctx.send(status)
 
     
