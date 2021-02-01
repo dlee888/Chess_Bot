@@ -99,8 +99,6 @@ colors = {}
 time_control = {}
 
 ratings = {}
-jamin_rating = 1500
-
 
 def get_rating(user):
     if user in ratings.keys():
@@ -110,8 +108,8 @@ def get_rating(user):
 
 
 def update_rating(user, outcome):
-    global jamin_rating
-
+    jamin_rating = ratings[801501916810838066]
+    
     E = 1 / (1 + 10 ** ((jamin_rating - get_rating(user)) / 400))
     if outcome == 1:
         jamin_rating -= 32 * E
@@ -127,7 +125,7 @@ def update_rating(user, outcome):
 
 def push_ratings():
     f = open('data/ratings.txt', 'w')
-    f.write(str(jamin_rating)+'\n')
+    
     for k in ratings.keys():
         f.write(f'{k} ----- {ratings[k]}\n')
 
@@ -139,9 +137,8 @@ def pull_ratings():
 
     f = open('data/ratings.txt')
     pulled = f.readlines()
-    jamin_rating = float(pulled[0])
 
-    for i in range(1, len(pulled)):
+    for i in range(0, len(pulled)):
         p = pulled[i].split(' ----- ')
         ratings[int(p[0])] = float(p[1])
 

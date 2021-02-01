@@ -20,6 +20,7 @@ It also has a built-in elo rating system.
  - botinfo:   Sends info about the bot
  - ping:      Sends "Pong!" and gives latency
  - rating:    Tells you your rating
+ - leaderboard: Shows top rated players
  - help:      Sends a message with all of the commands
 
  Note: the following commands are for bot developers only:

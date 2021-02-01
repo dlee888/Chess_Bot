@@ -71,6 +71,27 @@ class Misc(commands.Cog):
         Tells you your rating
         '''
         await ctx.send(f'Your rating is {get_rating(ctx.message.author.id)}')
+        
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.default)
+    async def leaderboard(self, ctx, number=10):
+        '''
+        Shows highest rated players
+        '''
+        
+        all_players = []
+        
+        for k in ratings.keys():
+            all_players.append((k, ratings[k]))
+        
+        all_players.sort(reverse=True, key=lambda a: a[1])
+        
+        embed = discord.Embed(title="Leaderboard", color=0xffff69)
+        for i in range(number):
+            user = await self.client.fetch_user(all_players[i][0])
+            embed.add_field(name= f'{i+1}: {user.name}#{user.discriminator}', value= f'{round(all_players[i][1])}', inline=False)
+        
+        await ctx.send(embed=embed)
 
     @commands.command(aliases=['info'])
     @commands.cooldown(1, 4, commands.BucketType.default)
