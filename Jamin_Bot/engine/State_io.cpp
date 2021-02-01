@@ -119,7 +119,7 @@ int state::parse_move(std::string move)
 		last = move[move.size() - 1];
 	}
 
-	if (move == "0-0")
+	if (move == "0-0" || move == "O-O")
 	{
 		if (to_move)
 		{
@@ -146,7 +146,7 @@ int state::parse_move(std::string move)
 			}
 		}
 	}
-	else if (move == "0-0-0")
+	else if (move == "0-0-0" || move == "O-O-O")
 	{
 		if (to_move)
 		{
