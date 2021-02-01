@@ -92,6 +92,7 @@ class Engine(commands.Cog):
             return
 
         if out[-3] != 'GAME STILL IN PROGRESS\n':
+            await log(person, self.client)
             winner = 0
             if out[-3] == 'DRAW\n':
                 update_rating(ctx.author.id, 1/2)
@@ -120,12 +121,11 @@ class Engine(commands.Cog):
             games.pop(ctx.author.id)
             push_games()
             
-            await log(person, self.client)
             return
 
-        await output_move(ctx, person)
         await log(person, self.client)
         thonking.remove(person)
+        await output_move(ctx, person)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
@@ -174,8 +174,8 @@ class Engine(commands.Cog):
 
             await run(f'.\\a < {file_in} > {file_out}')
             
-            await output_move(ctx, person)
             await log(person, self.client)
+            await output_move(ctx, person)
         thonking.remove(person)
 
     @commands.command()
