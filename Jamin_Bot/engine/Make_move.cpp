@@ -501,7 +501,7 @@ void state::make_move(int move)
 				if (col_init - col_final == 2)
 				{
 					en_passant_target.pop();
-					en_passant_target.push(row_final << 3 + col_init - 1);
+					en_passant_target.push((row_final << 3) + col_init - 1);
 				}
 				if (white_pawn_counts[col_final] >= 2)
 					doubled_white += white_pawn_counts[col_final];
@@ -534,7 +534,7 @@ void state::make_move(int move)
 				if (col_final - col_init == 2)
 				{
 					en_passant_target.pop();
-					en_passant_target.push(row_final << 3 + col_init + 1);
+					en_passant_target.push((row_final << 3) + col_init + 1);
 				}
 				for (int i = 0; i < blackpawns.size(); i++)
 				{
