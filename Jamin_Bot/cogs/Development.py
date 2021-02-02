@@ -87,3 +87,22 @@ class Development(commands.Cog):
 
         await ctx.send(f'stdout: {stdout}\nstderr: {stderr}')
         await ctx.send(status)
+        
+       
+    @commands.command()
+    @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
+    async def debug_load(self, ctx, user : discord.Member):
+        '''
+        Loads <user>'s game to your game
+        '''
+
+        if ctx.message.guild.id != 733762995372425337:
+            await ctx.send(f'This command can only be used in the Chess Bot Support server')
+            return
+
+        if not user.id in games.keys():
+            await ctx.send(f'<@{user.id}> does not have a game in progress')
+            return
+        
+        games[ctx.author.id] = games[user.id]
+        await ctx.send(f'Succesfully loaded game')
