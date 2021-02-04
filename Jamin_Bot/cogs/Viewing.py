@@ -60,7 +60,7 @@ class Viewing(commands.Cog):
         f.close()
         stdout, stderr, status = await run(f'.\\a < {file_in} > {file_out}')
         #await ctx.send(f'stdout: {stdout}\nstderr: {stderr}\n{status}')
-        await output_move(ctx, person, ctx.author.id)
+        await output_move(ctx, person, self.client)
 
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.default)

@@ -51,22 +51,33 @@ def get_image(person, end):
     
     result.save(f'data/image-{person}.png')
 
-async def output_move(ctx, person, ping = -1):
-    if ping == -1:
-        ping = person
+async def output_move(ctx, person, client):
+    user = await ctx.message.guild.fetch_member(person)
+    
     f = open(f'data/output-{person}.txt')
     out = f.readlines()
     f.close()
-    await ctx.send(f'<@{ping}>')
+    
+    #await ctx.send(f'<@{ping}>')
+    
     for i in range(len(out) - 1, 0, -1):
         if out[i].startswith('COMPUTER PLAYED'):
             await ctx.send(out[i])
             break
     for i in range(len(out) - 1, 0, -1):
         if out[i].startswith('-----'):
-            #print('Found board at', i)
             get_image(person, i - 1)
-            await ctx.send(file=discord.File(f'data/image-{person}.png'))
+                    
+            temp_channel = client.get_channel(806967405414187019)
+            image_msg = await temp_channel.send(file = discord.File(f'data/image-{person}.png'))
+            
+            image_url = image_msg.attachments[0].url
+            
+            embed = discord.Embed(title= f'{user}\'s game', color=0x5ef29c)
+            embed.set_image(url = image_url)
+            embed.set_footer(text = f'Requested by {ctx.author}', icon_url = ctx.author.avatar_url)
+            
+            await ctx.send(embed=embed)
             break
     for i in range(len(out) - 1, 0, -1):
         if out[i].startswith('GAME: '):

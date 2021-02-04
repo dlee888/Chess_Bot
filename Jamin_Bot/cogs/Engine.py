@@ -113,7 +113,7 @@ class Engine(commands.Cog):
                 else:
                     update_rating(ctx.author.id, 0)
                     
-                    await output_move(ctx, person)
+                    await output_move(ctx, person, self.client)
                     await ctx.send('You lost.')
 
             thonking.remove(person)
@@ -125,7 +125,7 @@ class Engine(commands.Cog):
 
         await log(person, self.client)
         thonking.remove(person)
-        await output_move(ctx, person)
+        await output_move(ctx, person, self.client)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
@@ -175,7 +175,7 @@ class Engine(commands.Cog):
             await run(f'.\\a < {file_in} > {file_out}')
             
             await log(person, self.client)
-            await output_move(ctx, person)
+            await output_move(ctx, person, self.client)
         thonking.remove(person)
 
     @commands.command()
