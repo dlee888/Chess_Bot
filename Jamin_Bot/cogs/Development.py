@@ -12,7 +12,6 @@ class Development(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 15, commands.BucketType.default)
-    @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
     async def update(self, ctx, flags = ''):
         '''
         Compiles the latest version of Chess Bot
@@ -20,8 +19,8 @@ class Development(commands.Cog):
         (Bot developers only)
         '''
 
-        if ctx.message.guild.id != 733762995372425337:
-            await ctx.send(f'This command can only be used in the Chess Bot Support server')
+        if not has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+            await ctx.send(f'You do not have permission to update')
             return
 
         compile_cmd = 'g++ '
@@ -54,7 +53,6 @@ class Development(commands.Cog):
         await ctx.send(f'stdout: {stdout}\nstderr: {stderr}\n{status}')
 
     @commands.command()
-    @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
     @commands.cooldown(1, 15, commands.BucketType.default)
     async def restart(self, ctx):
         '''
@@ -62,8 +60,8 @@ class Development(commands.Cog):
         (Bot developers only)
         '''
 
-        if ctx.message.guild.id != 733762995372425337:
-            await ctx.send(f'This command can only be used in the Chess Bot Support server')
+        if not has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+            await ctx.send(f'You do not have permission to restart')
             return
 
         await ctx.send(f'Restarting...')
@@ -79,8 +77,8 @@ class Development(commands.Cog):
         '''
         await ctx.send(f'Executing command "git pull"...')
 
-        if ctx.message.guild.id != 733762995372425337:
-            await ctx.send(f'This command can only be used in the Chess Bot Support server')
+        if not has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+            await ctx.send(f'You do not have permission to git_pull')
             return
 
         stdout, stderr, status = await run(f'git pull')
@@ -90,14 +88,13 @@ class Development(commands.Cog):
         
        
     @commands.command()
-    @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
     async def debug_load(self, ctx, user : discord.Member):
         '''
         Loads <user>'s game to your game
         '''
 
-        if ctx.message.guild.id != 733762995372425337:
-            await ctx.send(f'This command can only be used in the Chess Bot Support server')
+        if not has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+            await ctx.send(f'You do not have permission to debug_load')
             return
 
         if not user.id in games.keys():

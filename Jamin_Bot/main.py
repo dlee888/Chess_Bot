@@ -31,6 +31,6 @@ async def main():
         f.write('CHECKING\n')
         f.close()
 
-        await asyncio.sleep(10)
+        await asyncio.sleep(6)
 
 asyncio.run(main())

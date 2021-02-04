@@ -14,7 +14,7 @@ It also has a built-in elo rating system.
   
 ### Moderation
  - abort:     Aborts a game. Must be admin
- - adminify [person]:  Gives "Chess-Admin" to person
+ - refund [user] [points]: Refunds [user] [points] rating points
 
 ### Other:
  - botinfo:   Sends info about the bot

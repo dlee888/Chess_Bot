@@ -63,6 +63,14 @@ class Misc(commands.Cog):
         Sends "Pong!"
         '''
         await ctx.send(f'Pong!\nLatency: {round(self.client.latency*1000000)/1000}ms')
+        
+    @commands.command()
+    @commands.cooldown(1, 1, commands.BucketType.default)
+    async def f(self, ctx):
+        '''
+        Sends an 'f' in the chat
+        '''
+        await ctx.send('f')
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
@@ -79,6 +87,10 @@ class Misc(commands.Cog):
         Shows highest rated players
         '''
         
+        if number > len(ratings.keys()):
+            await ctx.send('There aren\'t even that many rated players lmao')
+            return
+        
         all_players = []
         
         for k in ratings.keys():
@@ -89,7 +101,7 @@ class Misc(commands.Cog):
         embed = discord.Embed(title="Leaderboard", color=0xffff69)
         for i in range(number):
             user = await self.client.fetch_user(all_players[i][0])
-            embed.add_field(name= f'{i+1}: {user.name}#{user.discriminator}', value= f'{round(all_players[i][1])}', inline=False)
+            embed.add_field(name= f'{i+1}: {user.name}#{user.discriminator}', value= f'{round(all_players[i][1])}', inline = (i%5==0))
         
         await ctx.send(embed=embed)
 

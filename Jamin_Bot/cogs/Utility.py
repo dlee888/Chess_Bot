@@ -111,6 +111,16 @@ time_control = {}
 
 ratings = {}
 
+async def has_roles(person, roles, client):
+    support_server = await client.fetch_guild(733762995372425337)
+    member = await client.fetch_member(person)
+    
+    for role in roles:
+        if role in member.roles:
+            return True
+    
+    return False
+
 def get_rating(user):
     if user in ratings.keys():
         return ratings[user]
@@ -202,4 +212,4 @@ async def status_check():
         f = open('status.txt', 'w')
         f.write('RUNNING\n')
         f.close()
-        await asyncio.sleep(5)
+        await asyncio.sleep(3)

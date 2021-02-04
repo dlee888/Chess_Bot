@@ -10,11 +10,14 @@ class Mooderation(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
-    @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
     async def abort(self, ctx, user):
         '''
         Aborts a game
         '''
+        
+        if not has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+            await ctx.send('You do not have permission to abort games')
+            return
 
         person = int(user[3:-1])
 
@@ -25,16 +28,20 @@ class Mooderation(commands.Cog):
         games.pop(person)
         await ctx.send('Game aborted')
         push_games()
-
+        
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
-    @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Chess-Admin')
-    async def adminify(self, ctx, user : discord.Member):
-        await ctx.send(f'Adminifying {user.name}')
-        role = discord.utils.get(user.guild.roles, name='Chess-Admin')
-        if role == None:
-            await ctx.send('Role "Chess-Admin" not found. Creating role...')
-            role = await user.guild.create_role(name='Chess-Admin', color='0x69ff69')
+    async def refund(self, ctx, user : discord.Member, points : float):
+        '''
+        Refunds rating points to a user
+        '''
         
-        await user.add_roles(role)
-        await ctx.send(f'Done adminifying {user.name}')
+        if not has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Chess-Admin'], self.client):
+            await ctx.send('You do not have permission to refund rating')
+            return
+
+        ratings[user.id] += points
+        ratings[801501916810838066] -= points
+        
+        await ctx.send(f'{points} points refunded')
+        push_ratings()
