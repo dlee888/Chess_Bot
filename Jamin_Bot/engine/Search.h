@@ -16,6 +16,8 @@ int quiescent_prune;
 long long nodes;
 long long tb_hits, collisions;
 
+double orig_eval;
+
 bool greater(const pdi &a, const pdi &b)
 {
 	return a.first > b.first;
@@ -143,6 +145,10 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 
 	if (curr_state.to_move)
 	{
+		if (curr_eval < orig_eval - prune && depth <= 3) {
+			return pdi(curr_eval, -1);
+		}
+
 		sort(ordered_moves.begin(), ordered_moves.end(), greater);
 
 		int best_move = -2;
@@ -216,7 +222,12 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 	}
 	else
 	{
+		if (curr_eval > orig_eval + prune && depth <= 3) {
+			return pdi(curr_eval, -1);
+		}
+
 		sort(ordered_moves.begin(), ordered_moves.end(), less);
+
 		int best_move = -2;
 		if (priority != -1)
 		{
