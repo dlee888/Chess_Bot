@@ -142,7 +142,9 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 	// {
 	// 	return pdi(curr_eval, -1);
 	// }
-
+	
+	
+	
 	if (curr_state.to_move)
 	{
 		if (curr_eval < orig_eval - prune && depth <= 3) {
@@ -182,9 +184,9 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 			if (move == priority)
 				continue;
 			curr_state.make_move(move);
-			if(depth > 3)
+			if(depth < 3)
 			{
-				if(alpha > find_best_move(depth - 2, alpha, beta, -1, speed).first + prune)
+				if(alpha > curr_eval + prune)
 				{
 					//printf("Prune\n");
 					curr_state.unmake_move(move);
@@ -259,9 +261,9 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 			if (move == priority)
 				continue;
 			curr_state.make_move(move);
-			if(depth > 3)
+			if(depth < 3)
 			{
-				if(beta < find_best_move(depth - 2, alpha, beta, -1, speed).first - prune)
+				if (beta < curr_eval - prune)
 				{
 					//printf("Prune\n");
 					curr_state.unmake_move(move);
