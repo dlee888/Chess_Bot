@@ -34,13 +34,13 @@ std::vector<int> state::list_moves()
 				else
 				{
 					res.push_back(
+						(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second) << 6) + (WP << 12) + 3670016);
+					res.push_back(
 						(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second) << 6) + (WP << 12) + 524288);
 					res.push_back(
 						(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second) << 6) + (WP << 12) + 1572864);
 					res.push_back(
 						(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second) << 6) + (WP << 12) + 2621440);
-					res.push_back(
-						(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second) << 6) + (WP << 12) + 3670016);
 				}
 			}
 			if (!out_of_bounds(p.first - 1, p.second - 1))
@@ -51,6 +51,9 @@ std::vector<int> state::list_moves()
 					{
 						res.push_back(
 							(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second - 1) << 6) +
+							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first - 1][p.second - 1]) << 15) + 3670016);
+						res.push_back(
+							(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second - 1) << 6) +
 							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first - 1][p.second - 1]) << 15) + 524288);
 						res.push_back(
 							(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second - 1) << 6) +
@@ -58,9 +61,6 @@ std::vector<int> state::list_moves()
 						res.push_back(
 							(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second - 1) << 6) +
 							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first - 1][p.second - 1]) << 15) + 2621440);
-						res.push_back(
-							(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second - 1) << 6) +
-							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first - 1][p.second - 1]) << 15) + 3670016);
 					}
 					else
 					{
@@ -69,12 +69,12 @@ std::vector<int> state::list_moves()
 							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first - 1][p.second - 1]) << 15));
 					}
 				}
-				else if ((p.first - 1) << 3 + p.second - 1 == en_passant_target.top())
+				else if (((p.first - 1) << 3) + p.second - 1 == en_passant_target.top())
 				{
 					res.push_back(
 						(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second - 1) << 6) +
-							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first - 1][p.second - 1]) << 15) + 1
-						<< 18);
+						(abs(board[p.first][p.second]) << 12) + (abs(board[p.first - 1][p.second - 1]) << 15) + (1
+						<< 18));
 				}
 			}
 			if (!out_of_bounds(p.first - 1, p.second + 1))
@@ -85,6 +85,9 @@ std::vector<int> state::list_moves()
 					{
 						res.push_back(
 							(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second + 1) << 6) +
+							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first - 1][p.second + 1]) << 15) + 3670016);
+						res.push_back(
+							(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second + 1) << 6) +
 							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first - 1][p.second + 1]) << 15) + 524288);
 						res.push_back(
 							(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second + 1) << 6) +
@@ -92,9 +95,6 @@ std::vector<int> state::list_moves()
 						res.push_back(
 							(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second + 1) << 6) +
 							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first - 1][p.second + 1]) << 15) + 2621440);
-						res.push_back(
-							(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second + 1) << 6) +
-							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first - 1][p.second + 1]) << 15) + 3670016);
 					}
 					else
 					{
@@ -103,12 +103,12 @@ std::vector<int> state::list_moves()
 							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first - 1][p.second + 1]) << 15));
 					}
 				}
-				else if ((p.first - 1) << 3 + p.second + 1 == en_passant_target.top())
+				else if (((p.first - 1) << 3) + p.second + 1 == en_passant_target.top())
 				{
 					res.push_back(
 						(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second + 1) << 6) +
-							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first - 1][p.second + 1]) << 15) + 1
-						<< 18);
+						(abs(board[p.first][p.second]) << 12) + (abs(board[p.first - 1][p.second + 1]) << 15) + (1
+							<< 18));
 				}
 			}
 		}
@@ -122,7 +122,7 @@ std::vector<int> state::list_moves()
 					if (board[row_final][col_final] <= 0)
 					{
 						res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
-									  (abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
+							(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
 					}
 				}
 			}
@@ -139,7 +139,7 @@ std::vector<int> state::list_moves()
 					if (board[row_final][col_final] > 0)
 						break;
 					res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
-								  (abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
+						(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
 					if (board[row_final][col_final] != 0)
 						break;
 				}
@@ -157,7 +157,7 @@ std::vector<int> state::list_moves()
 					if (board[row_final][col_final] > 0)
 						break;
 					res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
-								  (abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
+						(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
 					if (board[row_final][col_final] != 0)
 						break;
 				}
@@ -175,7 +175,7 @@ std::vector<int> state::list_moves()
 					if (board[row_final][col_final] > 0)
 						break;
 					res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
-								  (abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
+						(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
 					if (board[row_final][col_final] != 0)
 						break;
 				}
@@ -191,7 +191,7 @@ std::vector<int> state::list_moves()
 					if (board[row_final][col_final] <= 0)
 					{
 						res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
-									  (abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
+							(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
 					}
 				}
 			}
@@ -228,13 +228,13 @@ std::vector<int> state::list_moves()
 				else
 				{
 					res.push_back(
-						(p.first << 3) + p.second + ((((p.first + 1) << 3) + p.second) << 6) + (WP << 12) + 524288);
-					res.push_back(
-						(p.first << 3) + p.second + ((((p.first + 1) << 3) + p.second) << 6) + (WP << 12) + 1572864);
+						(p.first << 3) + p.second + ((((p.first + 1) << 3) + p.second) << 6) + (WP << 12) + 3670016);
 					res.push_back(
 						(p.first << 3) + p.second + ((((p.first + 1) << 3) + p.second) << 6) + (WP << 12) + 2621440);
 					res.push_back(
-						(p.first << 3) + p.second + ((((p.first + 1) << 3) + p.second) << 6) + (WP << 12) + 3670016);
+						(p.first << 3) + p.second + ((((p.first + 1) << 3) + p.second) << 6) + (WP << 12) + 1572864);
+					res.push_back(
+						(p.first << 3) + p.second + ((((p.first + 1) << 3) + p.second) << 6) + (WP << 12) + 524288);
 				}
 			}
 			if (!out_of_bounds(p.first + 1, p.second - 1))
@@ -245,6 +245,9 @@ std::vector<int> state::list_moves()
 					{
 						res.push_back(
 							(p.first << 3) + p.second + ((((p.first + 1) << 3) + p.second - 1) << 6) +
+							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first + 1][p.second - 1]) << 15) + 3670016);
+						res.push_back(
+							(p.first << 3) + p.second + ((((p.first + 1) << 3) + p.second - 1) << 6) +
 							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first + 1][p.second - 1]) << 15) + 524288);
 						res.push_back(
 							(p.first << 3) + p.second + ((((p.first + 1) << 3) + p.second - 1) << 6) +
@@ -252,9 +255,6 @@ std::vector<int> state::list_moves()
 						res.push_back(
 							(p.first << 3) + p.second + ((((p.first + 1) << 3) + p.second - 1) << 6) +
 							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first + 1][p.second - 1]) << 15) + 2621440);
-						res.push_back(
-							(p.first << 3) + p.second + ((((p.first + 1) << 3) + p.second - 1) << 6) +
-							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first + 1][p.second - 1]) << 15) + 3670016);
 					}
 					else
 					{
@@ -263,12 +263,12 @@ std::vector<int> state::list_moves()
 							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first + 1][p.second - 1]) << 15));
 					}
 				}
-				else if ((p.first + 1) << 3 + p.second - 1 == en_passant_target.top())
+				else if (((p.first + 1) << 3) + p.second - 1 == en_passant_target.top())
 				{
 					res.push_back(
 						(p.first << 3) + p.second + ((((p.first + 1) << 3) + p.second - 1) << 6) +
-							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first + 1][p.second - 1]) << 15) + 1
-						<< 18);
+						(abs(board[p.first][p.second]) << 12) + (abs(board[p.first + 1][p.second - 1]) << 15) + (1
+						<< 18));
 				}
 			}
 			if (!out_of_bounds(p.first + 1, p.second + 1))
@@ -297,12 +297,12 @@ std::vector<int> state::list_moves()
 							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first + 1][p.second + 1]) << 15));
 					}
 				}
-				else if ((p.first + 1) << 3 + p.second + 1 == en_passant_target.top())
+				else if (((p.first + 1) << 3) + p.second + 1 == en_passant_target.top())
 				{
 					res.push_back(
 						(p.first << 3) + p.second + ((((p.first + 1) << 3) + p.second + 1) << 6) +
-							(abs(board[p.first][p.second]) << 12) + (abs(board[p.first + 1][p.second + 1]) << 15) + 1
-						<< 18);
+						(abs(board[p.first][p.second]) << 12) + (abs(board[p.first + 1][p.second + 1]) << 15) + (1
+							<< 18));
 				}
 			}
 		}
@@ -316,7 +316,7 @@ std::vector<int> state::list_moves()
 					if (board[row_final][col_final] >= 0)
 					{
 						res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
-									  (abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
+							(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
 					}
 				}
 			}
@@ -333,7 +333,7 @@ std::vector<int> state::list_moves()
 					if (board[row_final][col_final] < 0)
 						break;
 					res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
-								  (abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
+						(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
 					if (board[row_final][col_final] != 0)
 					{
 						break;
@@ -353,7 +353,7 @@ std::vector<int> state::list_moves()
 					if (board[row_final][col_final] < 0)
 						break;
 					res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
-								  (abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
+						(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
 					if (board[row_final][col_final] != 0)
 						break;
 				}
@@ -371,7 +371,7 @@ std::vector<int> state::list_moves()
 					if (board[row_final][col_final] < 0)
 						break;
 					res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
-								  (abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
+						(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
 					if (board[row_final][col_final] != 0)
 						break;
 				}
@@ -387,7 +387,7 @@ std::vector<int> state::list_moves()
 					if (board[row_final][col_final] >= 0)
 					{
 						res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
-									  (abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
+							(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
 					}
 				}
 			}

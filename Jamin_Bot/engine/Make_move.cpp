@@ -348,7 +348,7 @@ void state::make_move(int move)
 		{
 			replace_board(row_final, col_final, WP);
 			replace_board(row_init, col_init, 0);
-			replace_board(row_final, col_final - 1, 0);
+			replace_board(row_final + 1, col_final, 0);
 
 			fifty_move = 0;
 
@@ -398,7 +398,7 @@ void state::make_move(int move)
 		{
 			replace_board(row_final, col_final, BP);
 			replace_board(row_init, col_init, 0);
-			replace_board(row_final, col_final + 1, 0);
+			replace_board(row_final - 1, col_final, 0);
 
 			fifty_move = 0;
 
@@ -434,6 +434,7 @@ void state::make_move(int move)
 			white_pawn_counts[col_final]--;
 			if (white_pawn_counts[col_final] >= 2)
 				doubled_white += white_pawn_counts[col_final];
+
 			for (int i = 0; i < whitepawns.size(); i++)
 			{
 				if (whitepawns[i].first == row_final - 1 && whitepawns[i].second == col_final)
@@ -498,10 +499,10 @@ void state::make_move(int move)
 					doubled_white -= white_pawn_counts[col_init];
 				white_pawn_counts[col_final]++;
 				white_pawn_counts[col_init]--;
-				if (col_init - col_final == 2)
+				if (row_init - row_final == 2)
 				{
 					en_passant_target.pop();
-					en_passant_target.push((row_final << 3) + col_init - 1);
+					en_passant_target.push(((row_final + 1) << 3) + col_init);
 				}
 				if (white_pawn_counts[col_final] >= 2)
 					doubled_white += white_pawn_counts[col_final];
@@ -531,10 +532,10 @@ void state::make_move(int move)
 					doubled_black += black_pawn_counts[col_final];
 				if (black_pawn_counts[col_init] >= 2)
 					doubled_black += black_pawn_counts[col_init];
-				if (col_final - col_init == 2)
+				if (row_final - row_init == 2)
 				{
 					en_passant_target.pop();
-					en_passant_target.push((row_final << 3) + col_init + 1);
+					en_passant_target.push(((row_final - 1) << 3) + col_init);
 				}
 				for (int i = 0; i < blackpawns.size(); i++)
 				{
