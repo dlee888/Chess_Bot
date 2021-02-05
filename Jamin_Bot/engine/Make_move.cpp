@@ -352,6 +352,8 @@ void state::make_move(int move)
 
 			fifty_move = 0;
 
+			cnts[BP + 6]--;
+
 			white_center += pawn_center[row_final][col_final] - pawn_center[row_init][col_init];
 			whitepawn_row_sum -= row_final - row_init;
 
@@ -401,6 +403,8 @@ void state::make_move(int move)
 			replace_board(row_final - 1, col_final, 0);
 
 			fifty_move = 0;
+
+			cnts[WP + 6]--;
 
 			black_center += pawn_center[7 - row_final][col_final] - pawn_center[7 - row_init][col_init];
 			blackpawn_row_sum += row_final - row_init;
