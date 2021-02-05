@@ -297,7 +297,7 @@ void state::unmake_move(int move)
 		{
 			replace_board(row_final, col_final, 0);
 			replace_board(row_init, col_init, WP);
-			replace_board(row_final, col_final - 1, BP);
+			replace_board(row_final + 1, col_final, BP);
 
 			fifty_move = 0;
 
@@ -340,7 +340,7 @@ void state::unmake_move(int move)
 		{
 			replace_board(row_final, col_final, 0);
 			replace_board(row_init, col_init, BP);
-			replace_board(row_final, col_final + 1, WP);
+			replace_board(row_final - 1, col_final, WP);
 
 			fifty_move = 0;
 
