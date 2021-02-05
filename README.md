@@ -13,7 +13,8 @@ It also has a built-in elo rating system.
  - view:      Views your current game
   
 ### Moderation
- - abort:     Aborts a game. Must be admin
+These commands require special permissions
+ - abort:     Aborts a game
  - refund [user] [points]: Refunds [user] [points] rating points
 
 ### Other:
