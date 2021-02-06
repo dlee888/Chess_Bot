@@ -4,6 +4,16 @@ from discord.ext import commands
 from PIL import Image
 import asyncio
 
+
+thonking = []
+
+games = {}
+colors = {}
+time_control = {}
+
+ratings = {}
+
+
 async def run(cmd):
     proc = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE)
@@ -14,6 +24,7 @@ async def run(cmd):
     stderr = str(stderr, 'utf-8')
 
     return stdout, stderr, f'[{cmd!r} exited with {proc.returncode}]'
+
 
 def get_image(person, end):
     game_file = f'data/output-{person}.txt'
@@ -50,6 +61,7 @@ def get_image(person, end):
                 result.paste(square_img, (350 - y, 350 - x, 400 - y, 400 - x))
     
     result.save(f'data/image-{person}.png')
+
 
 async def output_move(ctx, person, client):
     user = await ctx.message.guild.fetch_member(person)
@@ -90,6 +102,7 @@ async def output_move(ctx, person, client):
             push_games()
             return
 
+
 async def log(person, client):
     f = open(f'data/output-{person}.txt')
     out = f.readlines()
@@ -105,11 +118,6 @@ async def log(person, client):
     msg += '```'
     await log_channel.send(msg)
 
-games = {}
-colors = {}
-time_control = {}
-
-ratings = {}
 
 async def has_roles(person, roles, client):
     support_server = await client.fetch_guild(733762995372425337)
@@ -206,6 +214,7 @@ def pull_games():
     for i in g:
         p = i.split(' ----- ')
         time_control[int(p[0])] = int(p[1])
+
 
 async def status_check():
     while True:

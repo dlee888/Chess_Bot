@@ -15,14 +15,14 @@ class Mooderation(commands.Cog):
         Aborts a game
         '''
         
-        if not has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             await ctx.send('You do not have permission to abort games')
             return
 
         person = int(user[3:-1])
 
         if not person in games.keys():
-            await ctx.send('You do not have a game in progress')
+            await ctx.send(f'<@{person}> does not have a game in progress')
             return
 
         games.pop(person)
@@ -36,7 +36,7 @@ class Mooderation(commands.Cog):
         Refunds rating points to a user
         '''
         
-        if not has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Chess-Admin'], self.client):
+        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Chess-Admin'], self.client):
             await ctx.send('You do not have permission to refund rating')
             return
 

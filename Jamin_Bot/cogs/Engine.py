@@ -8,8 +8,6 @@ from PIL import Image
 
 from cogs.Utility import *
 
-thonking = []
-
 
 class Engine(commands.Cog):
 

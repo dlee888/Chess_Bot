@@ -15,7 +15,7 @@ class Viewing(commands.Cog):
         '''
         Views your current game
         '''
-
+        
         person = -1
         if len(user) == 1:
             person = int(user[0][3:-1])
@@ -27,6 +27,10 @@ class Viewing(commands.Cog):
                 await ctx.send(f'{user[0]} does not have a game in progress')
             else:
                 await ctx.send('You do not have a game in progress')
+            return
+        
+        if person in thonking:
+            await ctx.send('Chess Bot is in the middle of thinking. Try again later.')
             return
 
         file_in = f'data/input-{person}.txt'
@@ -81,6 +85,10 @@ class Viewing(commands.Cog):
                 await ctx.send(f'{user[0]} does not have a game in progress')
             else:
                 await ctx.send('You do not have a game in progress')
+            return
+        
+        if person in thonking:
+            await ctx.send('Chess Bot is in the middle of thinking. Try again later.')
             return
 
         person = ctx.author.id
