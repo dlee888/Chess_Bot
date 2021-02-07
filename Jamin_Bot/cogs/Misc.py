@@ -1,6 +1,7 @@
 import discord
 import os
 from discord.ext import commands
+from discord.ext import tasks
 import sys
 import time
 import subprocess
@@ -44,6 +45,8 @@ class Misc(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.start_time = time.time()
+        self.cow_worshipping = True
+        self.cow_worship.start()
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -134,3 +137,45 @@ class Misc(commands.Cog):
     async def git_history(self, ctx):
         """Replies with git information."""
         await ctx.send('```yaml\n' + get_git_history() + '```')
+
+    @tasks.loop(seconds=696)
+    async def cow_worship(self):
+        if self.cow_worshipping:
+            for guild in self.client.guilds:
+                for channel in guild.channels:
+                    if 'cow' in channel.name.lower() and 'worship' in channel.name.lower():
+                        await channel.send(':pray::cow:')
+                        
+    @commands.command()
+    async def cow(self, ctx, onoff):
+        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator'], self.client):
+            await ctx.send('You do not have permission to change the status of cow')
+            return
+        
+        if onoff == 'status':
+            if self.cow_worshipping:
+                await ctx.send(f'Cow worshipping is on')
+            else:
+                await ctx.send(f'Cow worshipping is off')
+            return
+        
+        new_cow = False
+        
+        if onoff == 'on':
+            new_cow = True
+        elif onoff != 'off':
+            await ctx.send('Please enter a valid state (on/off)')
+            return
+            
+        if new_cow == self.cow_worshipping:
+            await ctx.send(f'Cow worshipping is already {onoff}')
+            return
+        
+        self.cow_worshipping = new_cow
+        
+        await ctx.send(f'Cow worshipping has been turned {onoff}')
+        
+    @cow_worship.before_loop
+    async def wait_ready(self):
+        print('waiting for bot to get ready...')
+        await self.bot.wait_until_ready()

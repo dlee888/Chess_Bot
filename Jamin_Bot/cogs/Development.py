@@ -19,7 +19,7 @@ class Development(commands.Cog):
         (Bot developers only)
         '''
 
-        if not has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             await ctx.send(f'You do not have permission to update')
             return
 
@@ -60,7 +60,7 @@ class Development(commands.Cog):
         (Bot developers only)
         '''
 
-        if not has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             await ctx.send(f'You do not have permission to restart')
             return
 
@@ -77,7 +77,7 @@ class Development(commands.Cog):
         '''
         await ctx.send(f'Executing command "git pull"...')
 
-        if not has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             await ctx.send(f'You do not have permission to git_pull')
             return
 
@@ -91,9 +91,10 @@ class Development(commands.Cog):
     async def debug_load(self, ctx, user : discord.Member):
         '''
         Loads <user>'s game to your game
+        (Bot developers only)
         '''
 
-        if not has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             await ctx.send(f'You do not have permission to debug_load')
             return
 
