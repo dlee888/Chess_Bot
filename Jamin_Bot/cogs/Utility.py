@@ -121,11 +121,15 @@ async def log(person, client):
 
 async def has_roles(person, roles, client):
     support_server = await client.fetch_guild(733762995372425337)
-    member = await client.fetch_member(person)
+    try:
+        member = await support_server.fetch_member(person)
+    except discord.HTTPException:
+        return False
     
     for role in roles:
-        if role in member.roles:
-            return True
+        for member_role in member.roles:
+            if member_role.name == role:
+                return True
     
     return False
 

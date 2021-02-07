@@ -102,4 +102,6 @@ class Development(commands.Cog):
             return
         
         games[ctx.author.id] = games[user.id]
+        colors[ctx.author.id] = colors[user.id]
+        
         await ctx.send(f'Succesfully loaded game')
