@@ -138,7 +138,7 @@ class Misc(commands.Cog):
         """Replies with git information."""
         await ctx.send('```yaml\n' + get_git_history() + '```')
 
-    @tasks.loop(seconds=696)
+    @tasks.loop(seconds=10)
     async def cow_worship(self):
         if self.cow_worshipping:
             for guild in self.client.guilds:
@@ -178,4 +178,4 @@ class Misc(commands.Cog):
     @cow_worship.before_loop
     async def wait_ready(self):
         print('waiting for bot to get ready...')
-        await self.bot.wait_until_ready()
+        await self.client.wait_until_ready()
