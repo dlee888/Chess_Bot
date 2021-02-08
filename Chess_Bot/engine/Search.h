@@ -27,7 +27,7 @@ bool less(const pdi &a, const pdi &b)
 	return a.first < b.first;
 }
 
-pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool speed = 0)
+pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 {
 	//if (whitekings[0].second == 'e' - 'a') assert(0);
 	nodes++;
@@ -71,7 +71,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 		}
 	}
 
-	double curr_eval = eval(curr_state, speed);
+	double curr_eval = eval(curr_state);
 	if (depth <= 0)
 	{
 		return pdi(curr_eval, -1);
@@ -85,7 +85,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 	{
 		curr_state.make_move(i);
 		//if (depth == 9) std::cout << curr_state.move_to_string(i) << std::endl;
-		ordered_moves.push_back({eval(curr_state, speed), i});
+		ordered_moves.push_back({eval(curr_state), i});
 		if (mate == 3) {
 			if (!curr_state.to_move)
 			{
@@ -159,7 +159,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 			curr_state.make_move(priority);
 			//curr_state.print();
 			//printf("Made move %s. Eval = %lf\n", curr_state.move_to_string(priority).c_str(), eval(curr_state, speed));
-			auto x = find_best_move(depth - 1, alpha, beta, -1, speed);
+			auto x = find_best_move(depth - 1, alpha, beta, -1);
 			curr_state.unmake_move(priority);
 			//curr_state.print();
 			//printf("Unmade move %s. Eval = %lf\n", curr_state.move_to_string(priority).c_str(), eval(curr_state, speed));
@@ -186,7 +186,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 			curr_state.make_move(move);
 			//curr_state.print();
 			//printf("Made move %s. Eval = %lf\n", curr_state.move_to_string(move).c_str(), eval(curr_state, speed));
-			auto x = find_best_move(depth - 1, alpha, beta, -1, speed);
+			auto x = find_best_move(depth - 1, alpha, beta, -1);
 			curr_state.unmake_move(move);
 			//curr_state.print();
 			//printf("Unmade move %s. Eval = %lf\n", curr_state.move_to_string(move).c_str(), eval(curr_state, speed));
@@ -227,7 +227,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 			curr_state.make_move(priority);
 			//curr_state.print();
 			//printf("Made move %s. Eval = %lf\n", curr_state.move_to_string(priority).c_str(), eval(curr_state, speed));
-			auto x = find_best_move(depth - 1, alpha, beta, -1, speed);
+			auto x = find_best_move(depth - 1, alpha, beta, -1);
 			curr_state.unmake_move(priority);
 			//curr_state.print();
 			//printf("Unmade move %s. Eval = %lf\n", curr_state.move_to_string(priority).c_str(), eval(curr_state, speed));
@@ -254,7 +254,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1, bool
 			curr_state.make_move(move);
 			//curr_state.print();
 			//printf("Made move %s. Eval = %lf\n", curr_state.move_to_string(move).c_str(), eval(curr_state, speed));
-			auto x = find_best_move(depth - 1, alpha, beta, -1, speed);
+			auto x = find_best_move(depth - 1, alpha, beta, -1);
 			curr_state.unmake_move(move);
 			//curr_state.print();
 			//printf("Unmade move %s. Eval = %lf\n", curr_state.move_to_string(move).c_str(), eval(curr_state, speed));

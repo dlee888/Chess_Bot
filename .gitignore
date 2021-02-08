@@ -341,10 +341,11 @@ healthchecksdb
 
 input*
 output*
-image*
+image-*
 
 *.gch
-Jamin_Bot/debug.exe
-Jamin_Bot/a.exe
+debug.exe
+a.exe
+hi.exe
 
 token*
