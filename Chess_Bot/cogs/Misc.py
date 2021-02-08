@@ -45,7 +45,7 @@ class Misc(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.start_time = time.time()
-        self.cow_worshipping = True
+        self.cow_worshipping = False
         self.cow_worship.start()
 
     @commands.Cog.listener()

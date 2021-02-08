@@ -33,7 +33,16 @@ class Development(commands.Cog):
 
         out, err, status = await run(compile_cmd)
 
-        await ctx.send(f'Updated\nCompile Message: {out}\nStderr: {err}')
+        message = f'Updated\nCompile Message: {out}\nStderr: {err}'
+        
+        if len(message) >= 2000:
+            f = open('data/message.txt', 'w')
+            f.write(message)
+            f.close()
+            await ctx.send(file=discord.File('data/message.txt'))
+        else:
+            await ctx.send(message)
+        
         await ctx.send(status)
 
     
@@ -50,7 +59,18 @@ class Development(commands.Cog):
             return
 
         stdout, stderr, status = await run(cmd)
-        await ctx.send(f'stdout: {stdout}\nstderr: {stderr}\n{status}')
+        
+        message = f'Stdout: {out}\nStderr: {err}'
+        
+        if len(message) >= 2000:
+            f = open('data/message.txt', 'w')
+            f.write(message)
+            f.close()
+            await ctx.send(file=discord.File('data/message.txt'))
+        else:
+            await ctx.send(message)
+            
+        await ctx.send(status)
 
     @commands.command()
     @commands.cooldown(1, 15, commands.BucketType.default)
@@ -83,7 +103,16 @@ class Development(commands.Cog):
 
         stdout, stderr, status = await run(f'git pull')
 
-        await ctx.send(f'stdout: {stdout}\nstderr: {stderr}')
+        message = f'Stdout: {out}\nStderr: {err}'
+        
+        if len(message) >= 2000:
+            f = open('data/message.txt', 'w')
+            f.write(message)
+            f.close()
+            await ctx.send(file=discord.File('data/message.txt'))
+        else:
+            await ctx.send(message)
+            
         await ctx.send(status)
         
        
