@@ -85,10 +85,14 @@ class Misc(commands.Cog):
         
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.default)
-    async def leaderboard(self, ctx, number=10):
+    async def leaderboard(self, ctx, number = -1):
         '''
         Shows highest rated players
         '''
+        if number == -1:
+            number = min(10, len(ratings.keys()))
+        
+        #await ctx.send(number)
         
         if number > len(ratings.keys()):
             await ctx.send('There aren\'t even that many rated players lmao')
@@ -104,7 +108,9 @@ class Misc(commands.Cog):
         embed = discord.Embed(title="Leaderboard", color=0xffff69)
         for i in range(number):
             user = await self.client.fetch_user(all_players[i][0])
-            embed.add_field(name= f'{i+1}: {user.name}#{user.discriminator}', value= f'{round(all_players[i][1])}', inline = (i%5==0))
+            embed.add_field(name= f'{i+1}: {user.name}#{user.discriminator}', value= f'{round(all_players[i][1])}', inline = False)
+            if i%5 == 4:
+                embed.add_field(name='--------------', value='', inline=True)
         
         await ctx.send(embed=embed)
 
@@ -117,7 +123,7 @@ class Misc(commands.Cog):
         '''
         embed = discord.Embed(title="Bot Info", color=0xff0000)
         embed.add_field(name="Links",
-                        value="[Github](https://github.com/jeffarjeffar/Chess_Bot) | [Invite](https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=268815424&scope=bot) | [Join the discord server](https://discord.gg/Bm4zjtNTD2)",
+                        value="[Github](https://github.com/jeffarjeffar/Chess_Bot) | [Invite](https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=268815424&scope=bot) | [Join the discord server](https://discord.gg/Bm4zjtNTD2) | [Top.gg](https://top.gg/bot/801501916810838066/vote)",
                         inline=True)
         embed.add_field(name='Version', value=version, inline=True)
         embed.add_field(name="Info",

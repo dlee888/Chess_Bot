@@ -23,12 +23,9 @@ std::vector<int> state::list_moves()
 				{
 					res.push_back(
 						(p.first << 3) + p.second + ((((p.first - 1) << 3) + p.second) << 6) + (WP << 12));
-					if (p.first == 6)
+					if (p.first == 6 && board[4][p.second] == 0)
 					{
-						if (board[4][p.second] == 0)
-						{
-							res.push_back(48 + p.second + ((32 + p.second) << 6) + (WP << 12));
-						}
+						res.push_back(48 + p.second + ((32 + p.second) << 6) + (WP << 12));
 					}
 				}
 				else
