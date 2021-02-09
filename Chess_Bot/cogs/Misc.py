@@ -134,7 +134,7 @@ class Misc(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
-    @commands.cooldown(1. 3. commands.BucketType.default)
+    @commands.cooldown(1, 3, commands.BucketType.default)
     async def invite(self, ctx):
         '''
         Sends invite link
