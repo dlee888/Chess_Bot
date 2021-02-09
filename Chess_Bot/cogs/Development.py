@@ -60,7 +60,7 @@ class Development(commands.Cog):
 
         stdout, stderr, status = await run(cmd)
         
-        message = f'Stdout: {out}\nStderr: {err}'
+        message = f'Stdout: {stdout}\nStderr: {stderr}'
         
         if len(message) >= 2000:
             f = open('data/message.txt', 'w')
@@ -103,7 +103,7 @@ class Development(commands.Cog):
 
         stdout, stderr, status = await run(f'git pull')
 
-        message = f'Stdout: {out}\nStderr: {err}'
+        message = f'Stdout: {stdout}\nStderr: {stderr}'
         
         if len(message) >= 2000:
             f = open('data/message.txt', 'w')
