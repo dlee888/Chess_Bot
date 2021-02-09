@@ -117,7 +117,7 @@ class Misc(commands.Cog):
         '''
         embed = discord.Embed(title="Bot Info", color=0xff0000)
         embed.add_field(name="Links",
-                        value="[Github](https://github.com/jeffarjeffar/Chess_Bot) | [Invite](https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=1544023120&scope=bot) | [Join the discord server](https://discord.gg/Bm4zjtNTD2)",
+                        value="[Github](https://github.com/jeffarjeffar/Chess_Bot) | [Invite](https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=268815424&scope=bot) | [Join the discord server](https://discord.gg/Bm4zjtNTD2)",
                         inline=True)
         embed.add_field(name='Version', value=version, inline=True)
         embed.add_field(name="Info",
@@ -132,6 +132,14 @@ class Misc(commands.Cog):
         owner = (await self.client.application_info()).owner
         embed.set_footer(text=f"Made by {owner}", icon_url=owner.avatar_url)
         await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.cooldown(1. 3. commands.BucketType.default)
+    async def invite(self, ctx):
+        '''
+        Sends invite link
+        '''
+        await ctx.send('https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=268815424&scope=bot')
 
     @commands.command(brief='Get git information')
     async def git_history(self, ctx):
