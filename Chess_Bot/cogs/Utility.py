@@ -72,6 +72,7 @@ async def output_move(ctx, person, client):
     
     wb = ['Black', 'White']
     embed = discord.Embed(title= f'{user}\'s game', description=f'{wb[colors[user.id]]} to move', color=0x5ef29c)
+    embed.set_footer(text = f'Requested by {ctx.author}', icon_url = ctx.author.avatar_url)
             
     for i in range(len(out) - 1, 0, -1):
         if out[i].startswith('COMPUTER PLAYED'):
@@ -88,9 +89,8 @@ async def output_move(ctx, person, client):
             image_url = image_msg.attachments[0].url
             
             embed.set_image(url = image_url)
-            embed.set_footer(text = f'Requested by {ctx.author}', icon_url = ctx.author.avatar_url)
             
-            await ctx.send(embed=embed)
+            await ctx.message.reply(embed=embed)
             break
         
     for i in range(len(out) - 1, 0, -1):
