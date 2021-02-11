@@ -1,6 +1,6 @@
-# Jamin Bot
+# Chess Bot
 
-Jamin Bot is a bot that plays chess.
+Chess Bot is a bot that plays chess.
 It also has a built-in elo rating system.
 
 ## Commands:
@@ -29,3 +29,4 @@ These commands require special permissions
  - shell
  - git_pull
  - restart
+ - debug

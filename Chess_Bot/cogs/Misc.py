@@ -108,9 +108,11 @@ class Misc(commands.Cog):
         embed = discord.Embed(title="Leaderboard", color=0xffff69)
         for i in range(number):
             user = await self.client.fetch_user(all_players[i][0])
-            embed.add_field(name= f'{i+1}: {user.name}#{user.discriminator}', value= f'{round(all_players[i][1])}', inline = False)
-            if i%5 == 4:
-                embed.add_field(name='--------------', value='', inline=True)
+            embed.add_field(name= f'{i+1}: {user.name}#{user.discriminator}', value= f'{round(all_players[i][1])}', inline = True)
+            
+            # if i%5 == 4:
+            #     embed.add_field(name='--------------', value='--------------', inline = False)
+            
         
         await ctx.send(embed=embed)
 

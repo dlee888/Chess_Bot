@@ -17,7 +17,7 @@ handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 
 
-bot = commands.Bot(command_prefix='$')
+bot = commands.Bot(command_prefix=commands.when_mentioned_or('$'))
 
 bot.add_cog(Engine(bot))
 bot.add_cog(Misc(bot))
