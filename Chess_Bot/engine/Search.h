@@ -29,7 +29,6 @@ bool less(const pdi &a, const pdi &b)
 
 pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 {
-	//if (whitekings[0].second == 'e' - 'a') assert(0);
 	nodes++;
 
 	//printf("Searching with depth = %d, alpha = %lf, beta = %lf\n", depth, alpha, beta);
@@ -58,7 +57,6 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 	{
 		if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) != 7)
 		{
-			//if (depth == 9) printf("King attacked\n");
 			return pdi(-1000.0, -1);
 		}
 	}
@@ -66,7 +64,6 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 	{
 		if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) != 7)
 		{
-			//if (depth == 9) printf("King attacked\n");
 			return pdi(1000.0, -1);
 		}
 	}
@@ -77,21 +74,19 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 		return pdi(curr_eval, -1);
 	}
 
-	//if (depth == 9) curr_state.print();
 	std::vector<int> moves = curr_state.list_moves();
 	std::vector<pdi> ordered_moves;
+
 	int mate = 3;
 	for (int i : moves)
 	{
 		curr_state.make_move(i);
-		//if (depth == 9) std::cout << curr_state.move_to_string(i) << std::endl;
 		ordered_moves.push_back({eval(curr_state), i});
 		if (mate == 3) {
 			if (!curr_state.to_move)
 			{
 				if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) == 7)
 				{
-					//if (depth == 9) curr_state.print();
 					mate = 0;
 				}
 			}
@@ -99,7 +94,6 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 			{
 				if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) == 7)
 				{
-					//if (depth == 9) curr_state.print();
 					mate = 0;
 				}
 			}
@@ -129,21 +123,12 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 	else if (mate == 2)
 	{
 		if (curr_state.to_move) {
-			//if (depth == 9) printf("Checkmate\n");
 			return pdi(-1000, -1);
 		}
 		else {
-			//if (depth == 9) printf("Checkmate\n");
 			return pdi(1000, -1);
 		}
 	}
-
-	// if (depth < quiescent_prune && curr_state.quiescent())
-	// {
-	// 	return pdi(curr_eval, -1);
-	// }
-	
-	
 	
 	if (curr_state.to_move)
 	{

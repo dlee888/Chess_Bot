@@ -128,6 +128,14 @@ public:
 	bool adjucation();
 
 	int mate();
+
+	bool legal(int move) {
+		std::vector <int> moves = list_moves();
+		for (int i : moves) {
+			if (move == i) return true;
+		}
+		return false;
+	}
 };
 
 extern state curr_state;
