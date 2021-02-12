@@ -70,12 +70,15 @@ async def output_move(ctx, person, client):
     out = f.readlines()
     f.close()
     
-    #await ctx.send(f'<@{ping}>')
-    
+    wb = ['Black', 'White']
+    embed = discord.Embed(title= f'{user}\'s game', description=f'{wb[colors[user.id]]} to move', color=0x5ef29c)
+    embed.set_footer(text = f'Requested by {ctx.author}', icon_url = ctx.author.avatar_url)
+            
     for i in range(len(out) - 1, 0, -1):
         if out[i].startswith('COMPUTER PLAYED'):
-            await ctx.send(out[i])
+            embed.add_field(name='Computer moved', value=out[i][16:])
             break
+        
     for i in range(len(out) - 1, 0, -1):
         if out[i].startswith('-----'):
             get_image(person, i - 1)
@@ -85,12 +88,11 @@ async def output_move(ctx, person, client):
             
             image_url = image_msg.attachments[0].url
             
-            embed = discord.Embed(title= f'{user}\'s game', color=0x5ef29c)
             embed.set_image(url = image_url)
-            embed.set_footer(text = f'Requested by {ctx.author}', icon_url = ctx.author.avatar_url)
             
-            await ctx.send(embed=embed)
+            await ctx.message.reply(embed=embed)
             break
+        
     for i in range(len(out) - 1, 0, -1):
         if out[i].startswith('GAME: '):
             game_str = out[i][6:-1].split(' ')
@@ -137,11 +139,12 @@ def get_rating(user):
     if user in ratings.keys():
         return ratings[user]
     ratings[user] = 1500
+    push_ratings()
     return 1500
 
 
 def update_rating(user, outcome):
-    jamin_rating = ratings[801501916810838066]
+    jamin_rating = get_rating(801501916810838066)
     
     E = 1 / (1 + 10 ** ((jamin_rating - get_rating(user)) / 400))
     if outcome == 1:
@@ -153,6 +156,9 @@ def update_rating(user, outcome):
     else:
         jamin_rating += 32 * (E - 0.5)
         ratings[user] += 32 * (0.5 - E)
+        
+    ratings[801501916810838066] = jamin_rating
+    
     push_ratings()
 
 
@@ -166,11 +172,10 @@ def push_ratings():
 
 
 def pull_ratings():
-    global jamin_rating
-
     f = open('data/ratings.txt')
     pulled = f.readlines()
 
+    ratings.clear()
     for i in range(0, len(pulled)):
         p = pulled[i].split(' ----- ')
         ratings[int(p[0])] = float(p[1])
@@ -181,24 +186,30 @@ def pull_ratings():
 def push_games():
     #os.system('echo "pushing games"')
     f = open('data/games.txt', 'w')
+    
     for k in games.keys():
         f.write(f'{k} -----')
         for move in games[k]:
             f.write(f' {move}')
         f.write('\n')
     f.close()
+    
     f = open('data/colors.txt', 'w')
     for k in colors.keys():
         f.write(f'{k} ----- {colors[k]}\n')
+    f.close()
+    
     f = open('data/times.txt', 'w')
     for k in time_control.keys():
         f.write(f'{k} ----- {time_control[k]}\n')
+    f.close()
 
 
 def pull_games():
     f = open('data/games.txt')
 
     g = f.readlines()
+    games.clear()
     for i in g:
         p = i.split(' ----- ')
         games[int(p[0])] = []
@@ -209,15 +220,19 @@ def pull_games():
 
     f = open('data/colors.txt')
     g = f.readlines()
+    colors.clear()
     for i in g:
         p = i.split(' ----- ')
         colors[int(p[0])] = int(p[1])
-
+    f.close()
+    
     f = open('data/times.txt')
     g = f.readlines()
+    time_control.clear()
     for i in g:
         p = i.split(' ----- ')
         time_control[int(p[0])] = int(p[1])
+    f.close()
 
 
 async def status_check():
