@@ -77,7 +77,7 @@ class Misc(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
-    async def rating(self, ctx, *user : discord.Member):
+    async def rating(self, ctx, *, user : discord.Member):
         '''
         Tells you your rating
         '''
