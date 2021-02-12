@@ -77,11 +77,15 @@ class Misc(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
-    async def rating(self, ctx):
+    async def rating(self, ctx, *user : discord.Member):
         '''
         Tells you your rating
         '''
-        await ctx.send(f'Your rating is {get_rating(ctx.message.author.id)}')
+        
+        if user:
+            await ctx.send(f'{user}\'s ratingn is {get_rating(user.id)}')
+        else:
+            await ctx.send(f'Your rating is {get_rating(ctx.message.author.id)}')
         
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.default)

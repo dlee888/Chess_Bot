@@ -172,3 +172,16 @@ class Development(commands.Cog):
             return
         
         await ctx.send(eval(code))
+
+    @commands.command()
+    async def execute(self, ctx, *, code):
+        '''
+        Runs python code
+        '''
+        if ctx.author.id != 716070916550819860:
+            await ctx.send('Geniosity limit exceeded. Try again later')
+            return
+        
+        exec(code)
+
+        await ctx.send('Code done executing')
