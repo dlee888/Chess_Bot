@@ -139,7 +139,7 @@ class Engine(commands.Cog):
             return
         person = ctx.author.id
         thonking.append(person)
-        time_control[ctx.author.id] = 60
+        time_control[ctx.author.id] = 5
 
         for i in range(0, len(flags), 2):
             os.system(f'echo {flags[i]}')
