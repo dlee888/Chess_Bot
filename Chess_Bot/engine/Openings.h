@@ -65,7 +65,7 @@ std::string white[NUM_WHITE][100] = {
 std::string black[NUM_BLACK][100] = {
 	{"blah", "d4"}, // temporary holder
 	{"blah", "e4"}, // temporary holder
-	{"dumb english g3 bug", "c4", "e5", "g3", "Nf6", "Bb2", "Nc6"}
+	//{"dumb english g3 bug", "c4", "e5", "g3", "Nf6", "Bb2", "Nc6"}
 };
 
 std::vector<opening> openings, black_openings, white_openings;

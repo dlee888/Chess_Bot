@@ -89,12 +89,19 @@ class Misc(commands.Cog):
         
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.default)
-    async def leaderboard(self, ctx, number = -1):
+    async def leaderboard(self, ctx, num = '-1'):
         '''
         Shows highest rated players
         '''
-        if number == -1:
+        
+        number = 1
+        
+        if num == 'all':
+            number = len(ratings.keys())
+        elif num == '-1':
             number = min(10, len(ratings.keys()))
+        else:
+            number = int(num)
         
         #await ctx.send(number)
         

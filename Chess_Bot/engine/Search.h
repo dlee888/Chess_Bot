@@ -35,16 +35,13 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 	//curr_state.print();
 	//printf("hash = %lld\n", curr_state.board_hash);
 
-	bool not_same = true;
-	if (exists[curr_state.board_hash])
+	if (exists[curr_state.board_hash] && depth <= depths[curr_state.board_hash])
 	{
 		if (curr_state == positions[curr_state.board_hash])
 		{
 			tb_hits++;
 			//printf("found in table\n");
-			not_same = false;
-			if (depth <= depths[curr_state.board_hash])
-				return best_moves[curr_state.board_hash];
+			return best_moves[curr_state.board_hash];
 		}
 		else
 		{
@@ -157,8 +154,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 			{
 				exists[curr_state.board_hash] = true;
 				depths[curr_state.board_hash] = depth;
-				if (not_same)
-					positions[curr_state.board_hash] = curr_state;
+				positions[curr_state.board_hash] = curr_state;
 				best_moves[curr_state.board_hash] = pdi(alpha, best_move);
 				return pdi(alpha, best_move);
 			}
@@ -188,8 +184,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 		{
 			exists[curr_state.board_hash] = true;
 			depths[curr_state.board_hash] = depth;
-			if (not_same)
-				positions[curr_state.board_hash] = curr_state;
+			positions[curr_state.board_hash] = curr_state;
 			best_moves[curr_state.board_hash] = {alpha, best_move};
 		}
 
@@ -226,8 +221,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 				exists[curr_state.board_hash] = true;
 				depths[curr_state.board_hash] = depth;
 				positions[curr_state.board_hash] = curr_state;
-				if (not_same)
-					best_moves[curr_state.board_hash] = pdi(beta, best_move);
+				best_moves[curr_state.board_hash] = pdi(beta, best_move);
 				return pdi(beta, best_move);
 			}
 		}
@@ -256,8 +250,7 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 		{
 			exists[curr_state.board_hash] = true;
 			depths[curr_state.board_hash] = depth;
-			if (not_same)
-				positions[curr_state.board_hash] = curr_state;
+			positions[curr_state.board_hash] = curr_state;
 			best_moves[curr_state.board_hash] = pdi(beta, best_move);
 		}
 
