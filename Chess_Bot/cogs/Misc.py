@@ -137,19 +137,22 @@ class Misc(commands.Cog):
         embed = discord.Embed(title="Bot Info", color=0xff0000)
         embed.add_field(name="Links",
                         value="[Github](https://github.com/jeffarjeffar/Chess_Bot) | [Invite](https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=268815424&scope=bot) | [Join the discord server](https://discord.gg/Bm4zjtNTD2) | [Top.gg](https://top.gg/bot/801501916810838066/vote)",
-                        inline=True)
+                        inline=False)
         embed.add_field(name='Version', value=version, inline=True)
         embed.add_field(name="Info",
                         value='Chess Bot is a bot that plays chess. $help for more information', inline=False)
+        
         users = 0
         for guild in self.client.guilds:
             users += guild.member_count
+        
         embed.add_field(name="Stats", value="Stats", inline=False)
         embed.add_field(name="Guild Count", value=str(len(self.client.guilds)), inline=True)
         embed.add_field(name="Member Count", value=str(users), inline=True)
         embed.add_field(name="Up time", value=f'{round((time.time() - self.start_time)*1000)/1000} seconds', inline=True)
         owner = (await self.client.application_info()).owner
         embed.set_footer(text=f"Made by {owner}", icon_url=owner.avatar_url)
+        embed.set_thumbnail(url='https://i.imgur.com/n1jak68.png')
         await ctx.send(embed=embed)
 
     @commands.command()

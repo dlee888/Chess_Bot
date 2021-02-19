@@ -185,3 +185,18 @@ class Development(commands.Cog):
         exec(code)
 
         await ctx.send('Code done executing')
+        
+    @commands.command()
+    async def gimme(self, ctx, file):
+        '''
+        Sends files
+        '''
+        if '..' in file and ctx.author.id != 716070916550819860:
+            await ctx.send('Geniosity limit exceeded. Try again later')
+            return
+            
+        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+            await ctx.send(f'You do not have permission to get files')
+            return
+        
+        await ctx.send(file, file=discord.File(file))
