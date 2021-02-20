@@ -8,6 +8,7 @@ from cogs.Engine import *
 from cogs.Viewing import *
 from cogs.Mooderation import *
 from cogs.Development import *
+from cogs.Data import *
 
 import logging
 
@@ -25,20 +26,19 @@ bot.add_cog(Misc(bot))
 bot.add_cog(Viewing(bot))
 bot.add_cog(Mooderation(bot))
 bot.add_cog(Development(bot))
+bot.add_cog(Data(bot))
 
 @bot.event
 async def on_error(error, *args, **kwargs):
-    #print('error found')
-    # print(error)
+    print('error found')
+    print(error, type(error))
     error_channel = bot.get_channel(799761964401819679)
     await error_channel.send(f'Error: {str(error)}\nArgs: {args}\nkwargs: {kwargs}')
 
 @bot.event
 async def on_command_error(ctx, exc):
-    #print('command error found')
-    #print(exc, type(exc))
-    #traceback.print_exc()
-    #traceback.print_exc(file='data/traceback.txt')
+    print('command error found')
+    print(exc, type(exc))
     await ctx.send(f'Command Error: {str(exc)}')
 
 token = open('token.txt')
