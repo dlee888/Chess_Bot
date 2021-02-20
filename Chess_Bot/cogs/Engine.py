@@ -37,7 +37,8 @@ class Engine(commands.Cog):
         person = ctx.author.id
         thonking.append(person)
         
-        file_in, file_out = prepare_input(person, move)
+        file_in, file_out = prepare_files(person)
+        prepare_input(person, move)
 
         await ctx.send('Chess Bot is thinking <:thonk:517531367517454347> ...')
         await run(f'.\\a < {file_in} > {file_out}')
@@ -45,9 +46,15 @@ class Engine(commands.Cog):
         out = f.readlines()
         f.close()
 
+        await log(person, self.client)
+        thonking.remove(person)
+        await output_move(ctx, person, self.client)
+        
+        if out[-3] == 'GAME STILL IN PROGRESS\n':
+            return
+        
         if out[-3] == 'ILLEGAL MOVE PLAYED\n':
             await ctx.send('Illegal move played. Make sure your move is in algebraic notation.\nType "$help move" for more info')
-            thonking.remove(person)
             return
 
         if out[-3] == 'COMPUTER RESIGNED\n':
@@ -55,47 +62,23 @@ class Engine(commands.Cog):
             update_rating(ctx.author.id, 1)
             await ctx.send(f'Your new rating is {get_rating(ctx.author.id)}')
             games.pop(ctx.author.id)
-            push_games()
-            thonking.remove(person)
-
-            await log(person, self.client)
             return
+        
+        if out[-3] == 'DRAW\n':
+            update_rating(ctx.author.id, 1/2)
+            await ctx.send('Draw')
+        elif out[-3][:5].lower() == whiteblack[colors[ctx.author.id]]:
+            update_rating(ctx.author.id, 1)
+            await ctx.send('You won!')
+        elif out[-3][:5].lower() == whiteblack[1 - colors[ctx.author.id]]:
+            update_rating(ctx.author.id, 0)
+            await ctx.send('You lost.')
+        else:
+            await ctx.send('Something went wrong. <:thonkery:532458240559153163>')
 
-        if out[-3] != 'GAME STILL IN PROGRESS\n':
-            await log(person, self.client)
-            winner = 0
-            if out[-3] == 'DRAW\n':
-                update_rating(ctx.author.id, 1/2)
-                await ctx.send('Draw')
-            else:
-                if out[-3] == 'WHITE WON\n':
-                    winner = 1
-                elif out[-3] == 'BLACK WON\n':
-                    winner = 0
-                else:
-                    await ctx.send('Something went wrong <:thonkery:532458240559153163>')
-                    thonking.remove(person)
-                    return
+        await ctx.send(f'Your new rating is {get_rating(ctx.author.id)}')
+        games.pop(ctx.author.id)
 
-                if winner == colors[ctx.author.id]:
-                    update_rating(ctx.author.id, 1)
-                    await ctx.send('You won!')
-                else:
-                    update_rating(ctx.author.id, 0)
-                    
-                    await output_move(ctx, person, self.client)
-                    await ctx.send('You lost.')
-
-            thonking.remove(person)
-            await ctx.send(f'Your new rating is {get_rating(ctx.author.id)}')
-            games.pop(ctx.author.id)
-            push_games()
-            
-            return
-
-        await log(person, self.client)
-        thonking.remove(person)
-        await output_move(ctx, person, self.client)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
@@ -109,25 +92,24 @@ class Engine(commands.Cog):
         if ctx.author.id in games.keys():
             await ctx.send('You already have a game in progress')
             return
+        
         person = ctx.author.id
+        
         thonking.append(person)
-        time_control[ctx.author.id] = 60
+        
+        time_control[person] = 60
 
         for i in range(0, len(flags), 2):
-            os.system(f'echo {flags[i]}')
             if flags[i] == '-t':
-                time_control[ctx.author.id] = int(flags[i+1])
+                time_control[person] = int(flags[i+1])
 
-        games[ctx.author.id] = []
-        colors[ctx.author.id] = random.randint(0, 1)  # 1 if white, 0 if black
+        games[person] = []
+        colors[person] = random.randint(0, 1)  # 1 if white, 0 if black
 
-        await ctx.send('Game started with Chess Bot')
-        if colors[ctx.author.id] == 0:
-            await ctx.send('You are black')
-        else:
-            await ctx.send('You are white')
+        await ctx.send(f'Game started with Chess Bot\nYou are {whiteblack[colors[person]]}')
 
-        file_in, file_out = prepare_input(person)
+        file_in, file_out = prepare_files(person)
+        prepare_input(person)
 
         await run(f'.\\a < {file_in} > {file_out}')
         

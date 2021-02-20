@@ -82,7 +82,6 @@ def get_rating(user):
     if user in ratings.keys():
         return ratings[user]
     ratings[user] = 1500
-    push_ratings()
     return 1500
 
 
@@ -101,8 +100,6 @@ def update_rating(user, outcome):
         ratings[user] += 32 * (0.5 - E)
         
     ratings[801501916810838066] = jamin_rating
-    
-    push_ratings()
 
 
 def push_ratings():

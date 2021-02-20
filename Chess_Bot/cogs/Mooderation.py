@@ -10,7 +10,7 @@ class Mooderation(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
-    async def abort(self, ctx, user):
+    async def abort(self, ctx, user : discord.Member):
         '''
         Aborts a game
         '''
@@ -19,13 +19,12 @@ class Mooderation(commands.Cog):
             await ctx.send('You do not have permission to abort games')
             return
 
-        person = int(user[3:-1])
-
-        if not person in games.keys():
-            await ctx.send(f'<@{person}> does not have a game in progress')
+        if not user.id in games.keys():
+            await ctx.send(f'{user} does not have a game in progress')
             return
 
-        games.pop(person)
+        games.pop(user.id)
+        
         await ctx.send('Game aborted')
         push_games()
         

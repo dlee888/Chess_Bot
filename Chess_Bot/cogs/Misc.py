@@ -44,11 +44,7 @@ class Misc(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.start_time = time.time()
-<<<<<<< HEAD
         
-=======
-
->>>>>>> 0c4c1d82f03c731d1214303755b47af0c8baf20f
     @commands.Cog.listener()
     async def on_ready(self):
         pull_ratings()

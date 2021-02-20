@@ -137,32 +137,6 @@ class Development(commands.Cog):
         await ctx.send(f'Succesfully loaded game')
 
     @commands.command()
-    async def push_all(self, ctx):
-        '''
-        Sync variables with txt documents
-        '''
-        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            await ctx.send(f'You do not have permission to push_all')
-            return
-
-        push_games()
-        push_ratings()
-        await ctx.send('Sucessfully pushed')
-
-    @commands.command()
-    async def pull_all(self, ctx):
-        '''
-        Sync variables with txt documents
-        '''
-        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            await ctx.send(f'You do not have permission to pull_all')
-            return
-
-        pull_games()
-        pull_ratings()
-        await ctx.send('Sucessfully pulled')
-
-    @commands.command()
     async def debug(self, ctx, *, code):
         '''
         Runs python code
