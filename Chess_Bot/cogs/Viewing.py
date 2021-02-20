@@ -3,6 +3,7 @@ from discord.ext import commands
 from PIL import Image
 
 from cogs.Utility import *
+from cogs.CPP_IO import *
 
 class Viewing(commands.Cog):
 
@@ -33,35 +34,7 @@ class Viewing(commands.Cog):
             await ctx.send('Chess Bot is in the middle of thinking. Try again later.')
             return
 
-        file_in = f'data/input-{person}.txt'
-        file_out = f'data/output-{person}.txt'
-        if not file_in[5:] in os.listdir('data'):
-            f = open(file_in, 'x')
-            f.close()
-        if not file_out[5:] in os.listdir('data'):
-            f = open(file_out, 'x')
-            f.close()
-
-        f = open(file_in, 'w')
-        f.write('play\n')
-        if len(games[person]) == 0:
-            f.write('no\n')
-        else:
-            f.write('yes2\n')
-            game_str = ''
-            for i in range(len(games[person])):
-                if i % 2 == 0:
-                    game_str += str(i//2+1) + '. '
-                game_str += str(games[person][i]) + ' '
-            game_str += '*'
-            f.write(game_str + '\n')
-        f.write('60\n')
-        if colors[person] == 0:
-            f.write('white\n')
-        else:
-            f.write('black\n')
-        f.write('quit\nquit\n')
-        f.close()
+        file_in, file_out = prepare_input(person)
         
         stdout, stderr, status = await run(f'.\\a < {file_in} > {file_out}')
         
