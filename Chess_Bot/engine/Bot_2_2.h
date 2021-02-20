@@ -98,8 +98,6 @@ void play()
 	int move_i = -1;
 
 	curr_state.print();
-	//std::cout << eval(curr_state) << std::endl;
-	if(is_draw){ printf("DRAW\n"); return; }
 	std::string error_msg = "";
 
 	while (true)
@@ -108,7 +106,7 @@ void play()
 			break;
 		if (curr_state.mate())
 			break;
-		if (curr_state.adjucation())
+		if (curr_state.adjucation() || is_draw)
 			break;
 
 		if (curr_state.to_move == computer_is_white)
@@ -251,7 +249,7 @@ void play()
 	else
 	{
 		int m = curr_state.mate();
-		if (m == 1 || curr_state.adjucation())
+		if (m == 1 || curr_state.adjucation() || is_draw)
 			printf("DRAW\n");
 		else
 		{
