@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from PIL import Image
 
 from cogs.Utility import *
 
@@ -63,20 +62,20 @@ class Viewing(commands.Cog):
         f.write('quit\nquit\n')
         f.close()
         
-        stdout, stderr, status = await run(f'.\\a < {file_in} > {file_out}')
+        await run(f'.\\a < {file_in} > {file_out}')
         
         await output_move(ctx, person, self.client)
 
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.default)
-    async def fen(self, ctx, *user):
+    async def fen(self, ctx, *user : discord.Member):
         '''
         Sends current game in FEN format
         '''
 
         person = -1
         if len(user) == 1:
-            person = int(user[0][3:-1])
+            person = user[0].id
         else:
             person = ctx.author.id
 
@@ -91,7 +90,6 @@ class Viewing(commands.Cog):
             await ctx.send('Chess Bot is in the middle of thinking. Try again later.')
             return
 
-        person = ctx.author.id
         file_in = f'data/input-{person}.txt'
         file_out = f'data/output-{person}.txt'
         if not file_in[5:] in os.listdir('data'):
