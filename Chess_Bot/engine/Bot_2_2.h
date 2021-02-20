@@ -13,8 +13,8 @@ double RESIGN = 10.0;
 void play()
 {
 	std::vector<int> game;
-
-	bool computer_is_white = false;
+	std::map<state, int> draw;
+	bool computer_is_white = false, is_draw = false;
 	int num_move = 0;
 	double time_limit;
 	std::string move;
@@ -22,7 +22,6 @@ void play()
 	std::cin >> move;
 	if (move == "yes")
 	{
-		std::map<state, int> draw;
 		std::cout << "Please enter the game:\n";
 		//loading by typing in moves, such as 1. e4 e5 2. d4 ...
 		while (!(move == "*"))
@@ -37,7 +36,7 @@ void play()
 			int move_i = curr_state.parse_move(move);
 			curr_state.make_move(move_i);
 			draw[curr_state]++;
-			if(draw[curr_state] >= 3){ printf("DRAW\n"); return; }
+			if(draw[curr_state] >= 3) is_draw = true;
 			game.push_back(move_i);
 			num_move++;
 			for (int i = 0; i < openings.size(); i++)
@@ -52,7 +51,6 @@ void play()
 	}
 	else if (move == "yes2")
 	{
-		std::map<state, int> draw;
 		std::cout << "Please enter the game:\n";
 		//loading by typing in moves, such as 1. e4 e5 2. d4 ...
 		while (!(move == "*"))
@@ -67,7 +65,7 @@ void play()
 			int move_i = std::stoi(move);
 			curr_state.make_move(move_i);
 			draw[curr_state]++;
-			if(draw[curr_state] >= 3){ printf("DRAW\n"); return; }
+			if(draw[curr_state] >= 3) is_draw = true;
 			game.push_back(move_i);
 			num_move++;
 			for (int i = 0; i < openings.size(); i++)
@@ -101,7 +99,7 @@ void play()
 
 	curr_state.print();
 	//std::cout << eval(curr_state) << std::endl;
-
+	if(is_draw){ printf("DRAW\n"); return; }
 	std::string error_msg = "";
 
 	while (true)
