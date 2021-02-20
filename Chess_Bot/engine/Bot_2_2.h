@@ -22,6 +22,7 @@ void play()
 	std::cin >> move;
 	if (move == "yes")
 	{
+		std::map<state, int> draw;
 		std::cout << "Please enter the game:\n";
 		//loading by typing in moves, such as 1. e4 e5 2. d4 ...
 		while (!(move == "*"))
@@ -35,6 +36,8 @@ void play()
 				break;
 			int move_i = curr_state.parse_move(move);
 			curr_state.make_move(move_i);
+			draw[curr_state]++;
+			if(draw[curr_state] >= 3){ printf("DRAW\n"); return; }
 			game.push_back(move_i);
 			num_move++;
 			for (int i = 0; i < openings.size(); i++)
@@ -49,6 +52,7 @@ void play()
 	}
 	else if (move == "yes2")
 	{
+		std::map<state, int> draw;
 		std::cout << "Please enter the game:\n";
 		//loading by typing in moves, such as 1. e4 e5 2. d4 ...
 		while (!(move == "*"))
@@ -62,6 +66,8 @@ void play()
 				break;
 			int move_i = std::stoi(move);
 			curr_state.make_move(move_i);
+			draw[curr_state]++;
+			if(draw[curr_state] >= 3){ printf("DRAW\n"); return; }
 			game.push_back(move_i);
 			num_move++;
 			for (int i = 0; i < openings.size(); i++)
