@@ -35,7 +35,7 @@ def prepare_input(person, move=''):
     file_in = f'data/input-{person}.txt'
 
     f = open(file_in, 'w')
-    f.write(f'play\nyes2\n{get_game_str(person)}\n{whiteblack[1 - colors[person]]}\n{move}\nquit\nquit\n')
+    f.write(f'play\nyes2\n{get_game_str(person)}\n{time_control[person]}\n{whiteblack[1 - colors[person]]}\n{move}\nquit\nquit\n')
     f.close()
 
 
