@@ -1,4 +1,3 @@
-import os
 import asyncio
 
 async def run(cmd):
@@ -20,7 +19,7 @@ async def main():
         f.close()
 
         if lines[0] != 'RUNNING\n':
-            print(f'Status code "{lines[0]}" found')
+            print(f'Status code "{lines[0].strip()}" found')
             print('Restarting')
             out, err, status = await run('python3.9 Chess_Bot.py')
             print(out)

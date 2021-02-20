@@ -44,7 +44,11 @@ class Misc(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.start_time = time.time()
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> 0c4c1d82f03c731d1214303755b47af0c8baf20f
     @commands.Cog.listener()
     async def on_ready(self):
         pull_ratings()
@@ -63,14 +67,6 @@ class Misc(commands.Cog):
         Sends "Pong!"
         '''
         await ctx.send(f'Pong!\nLatency: {round(self.client.latency*1000000)/1000}ms')
-        
-    @commands.command()
-    @commands.cooldown(1, 1, commands.BucketType.default)
-    async def f(self, ctx):
-        '''
-        Sends an 'f' in the chat
-        '''
-        await ctx.send('f')
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
@@ -103,7 +99,7 @@ class Misc(commands.Cog):
         if number > len(ratings.keys()):
             await ctx.send('There aren\'t even that many rated players lmao')
             return
-        
+
         all_players = []
         
         for k in ratings.keys():

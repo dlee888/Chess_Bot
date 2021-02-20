@@ -4,10 +4,8 @@ from discord.ext import commands
 import random
 import asyncio
 
-from PIL import Image
-
 from cogs.Utility import *
-
+from cogs.CPP_IO import *
 
 class Engine(commands.Cog):
 
@@ -38,35 +36,9 @@ class Engine(commands.Cog):
 
         person = ctx.author.id
         thonking.append(person)
-        file_in = f'data/input-{person}.txt'
-        file_out = f'data/output-{person}.txt'
-        if not file_in[5:] in os.listdir('data'):
-            f = open(file_in, 'x')
-            f.close()
-        if not file_out[5:] in os.listdir('data'):
-            f = open(file_out, 'x')
-            f.close()
+        
+        file_in, file_out = prepare_input(person, move)
 
-        f = open(file_in, 'w')
-        f.write('play\n')
-        if len(games[ctx.author.id]) == 0:
-            f.write('no\n')
-        else:
-            f.write('yes2\n')
-            game_str = ''
-            for i in range(len(games[ctx.author.id])):
-                if i % 2 == 0:
-                    game_str += str(i//2+1) + '. '
-                game_str += str(games[ctx.author.id][i]) + ' '
-            game_str += '*'
-            f.write(game_str + '\n')
-        f.write(f'{time_control[ctx.author.id]}\n')
-        if colors[ctx.author.id] == 0:
-            f.write('white\n')
-        else:
-            f.write('black\n')
-        f.write(move + '\nquit\nquit\n')
-        f.close()
         await ctx.send('Chess Bot is thinking <:thonk:517531367517454347> ...')
         await run(f'.\\a < {file_in} > {file_out}')
         f = open(file_out)
@@ -155,25 +127,13 @@ class Engine(commands.Cog):
         else:
             await ctx.send('You are white')
 
-        if colors[ctx.author.id] == 0:
-            file_in = f'data/input-{person}.txt'
-            file_out = f'data/output-{person}.txt'
-            if not file_in[5:] in os.listdir('data'):
-                f = open(file_in, 'x')
-                f.close()
-            if not file_out[5:] in os.listdir('data'):
-                f = open(file_out, 'x')
-                f.close()
+        file_in, file_out = prepare_input(person)
 
-            f = open(file_in, 'w')
-            f.write(
-                f'play\nno\n{time_control[ctx.author.id]}\nwhite\nquit\nquit')
-            f.close()
+        await run(f'.\\a < {file_in} > {file_out}')
+        
+        await log(person, self.client)
+        await output_move(ctx, person, self.client)
 
-            await run(f'.\\a < {file_in} > {file_out}')
-            
-            await log(person, self.client)
-            await output_move(ctx, person, self.client)
         thonking.remove(person)
 
     @commands.command()

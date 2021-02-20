@@ -1,6 +1,7 @@
 import discord
 import os
 from discord.ext import commands
+import traceback
 
 from cogs.Misc import *
 from cogs.Engine import *
@@ -36,6 +37,8 @@ async def on_error(error, *args, **kwargs):
 async def on_command_error(ctx, exc):
     #print('command error found')
     #print(exc, type(exc))
+    #traceback.print_exc()
+    #traceback.print_exc(file='data/traceback.txt')
     await ctx.send(f'Command Error: {str(exc)}')
 
 token = open('token.txt')
