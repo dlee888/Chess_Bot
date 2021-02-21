@@ -9,6 +9,7 @@ from cogs.Viewing import *
 from cogs.Mooderation import *
 from cogs.Development import *
 from cogs.Data import *
+from cogs.Help import *
 
 import logging
 
@@ -19,7 +20,7 @@ handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 
 
-bot = commands.Bot(command_prefix=commands.when_mentioned_or('$'))
+bot = commands.Bot(command_prefix=commands.when_mentioned_or('$'), help_command=None)
 
 bot.add_cog(Engine(bot))
 bot.add_cog(Misc(bot))
@@ -27,6 +28,7 @@ bot.add_cog(Viewing(bot))
 bot.add_cog(Mooderation(bot))
 bot.add_cog(Development(bot))
 bot.add_cog(Data(bot))
+bot.add_cog(Help(bot))
 
 @bot.event
 async def on_error(error, *args, **kwargs):
