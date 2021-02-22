@@ -67,7 +67,7 @@ class Viewing(commands.Cog):
         file_in, file_out = prepare_files(person)
 
         f = open(file_in, 'w')
-        f.write('fen\nyes2\n{get_game_str(person)}\nquit\n')
+        f.write(f'fen\nyes2\n{get_game_str(person)}\nquit\n')
         f.close()
         
         await run(f'.\\a < {file_in} > {file_out}')
