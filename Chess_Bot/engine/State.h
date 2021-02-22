@@ -136,6 +136,7 @@ public:
 		}
 		return false;
 	}
+	bool operator<(const State &s){ return true; }
 };
 
 extern state curr_state;
