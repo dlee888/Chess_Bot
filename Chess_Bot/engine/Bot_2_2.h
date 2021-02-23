@@ -164,7 +164,7 @@ void play()
 					printf("Best move is %s, EVAL = %lf\n%lf seconds taken, %lld nodes searched\nSpeed = %lf nodes per second. %lld TB hits, %lld collisions\n",
 						   curr_state.move_to_string(best_move.second).c_str(),
 						   actual_eval, (double)time_taken / CLOCKS_PER_SEC, nodes, (double)nodes * CLOCKS_PER_SEC / time_taken, tb_hits, collisions);
-					if (abs(best_move.first) == 1000000)
+					if (abs(best_move.first) >= 100000)
 						break;
 					curr_depth++;
 				}
@@ -184,7 +184,7 @@ void play()
 					break;
 				}
 				std::cout << "COMPUTER PLAYED " << curr_state.move_to_string(move_i) << std::endl
-						  << "EVAL: " << (double)best_move.first / 1000 << std::endl;
+						  << "EVAL: " << (double)best_move.first / 100 << std::endl;
 				curr_state.make_move(move_i);
 				game.push_back(move_i);
 			}
@@ -207,7 +207,7 @@ void play()
 
 		num_move++;
 		curr_state.print();
-		std::cout << "HERUISTIC EVAL: " << (double)eval(curr_state) / 1000 << std::endl;
+		std::cout << "HERUISTIC EVAL: " << (double)eval(curr_state) / 100 << std::endl;
 		for (int i = 0; i < openings.size(); i++)
 		{
 			if (openings[i].moves[num_move - 1] != move_i || openings[i].moves[num_move] == -1)

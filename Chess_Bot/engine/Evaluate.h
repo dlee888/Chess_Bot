@@ -49,7 +49,7 @@ int eval(state &s)
 		score += activity_coeff * kactivity;
 	}
 	//material
-	double mat = QVAL * (cnts[WQ + 6] - cnts[BQ + 6]) + RVAL * (cnts[WR + 6] - cnts[BR + 6]) + BVAL * (cnts[WB + 6] - cnts[BB + 6]) + NVAL * (cnts[WN + 6] - cnts[BN + 6]) + (cnts[WP + 6] - cnts[BP + 6]);
+	int mat = QVAL * (cnts[WQ + 6] - cnts[BQ + 6]) + RVAL * (cnts[WR + 6] - cnts[BR + 6]) + BVAL * (cnts[WB + 6] - cnts[BB + 6]) + NVAL * (cnts[WN + 6] - cnts[BN + 6]) + PVAL * (cnts[WP + 6] - cnts[BP + 6]);
 	score += mat;
 
 	//doubled pawns
