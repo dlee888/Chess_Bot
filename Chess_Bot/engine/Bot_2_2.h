@@ -13,7 +13,7 @@ int RESIGN = 1000;
 void play()
 {
 	std::vector<int> game;
-	std::map<state, int> draw;
+	//std::map<state, int> draw;
 	bool computer_is_white = false, is_draw = false;
 	int num_move = 0;
 	double time_limit;
@@ -35,8 +35,8 @@ void play()
 				break;
 			int move_i = curr_state.parse_move(move);
 			curr_state.make_move(move_i);
-			draw[curr_state]++;
-			if(draw[curr_state] >= 3) is_draw = true;
+			//draw[curr_state]++;
+			//if(draw[curr_state] >= 3) is_draw = true;
 			game.push_back(move_i);
 			num_move++;
 			for (int i = 0; i < openings.size(); i++)
@@ -64,8 +64,8 @@ void play()
 				break;
 			int move_i = std::stoi(move);
 			curr_state.make_move(move_i);
-			draw[curr_state]++;
-			if(draw[curr_state] >= 3) is_draw = true;
+			//draw[curr_state]++;
+			//if(draw[curr_state] >= 3) is_draw = true;
 			game.push_back(move_i);
 			num_move++;
 			for (int i = 0; i < openings.size(); i++)
