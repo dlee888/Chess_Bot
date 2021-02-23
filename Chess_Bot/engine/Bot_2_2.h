@@ -98,6 +98,7 @@ void play()
 	int move_i = -1;
 
 	curr_state.print();
+
 	std::string error_msg = "";
 
 	while (true)

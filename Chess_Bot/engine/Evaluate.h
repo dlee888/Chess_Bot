@@ -19,9 +19,11 @@ int eval(state &s)
 
 		//development
 		score += devel_coeff * (white_devel - black_devel);
+		// printf("Development: %d\n", devel_coeff * (white_devel - black_devel));
 
 		//center control
 		score += center_coeff * (white_center - black_center);
+		// printf("Center control: %d\n", center_coeff * (white_center - black_center));
 
 		//King safety
 		int ksafety = 0;
@@ -31,6 +33,7 @@ int eval(state &s)
 		if (s.black_castled)
 			ksafety -= castle_bonus;
 		score += ksafety_coeff * ksafety;
+		// printf("King safety: %d\n", ksafety_coeff * ksafety);
 	}
 	else
 	{
@@ -51,9 +54,11 @@ int eval(state &s)
 	//material
 	int mat = QVAL * (cnts[WQ + 6] - cnts[BQ + 6]) + RVAL * (cnts[WR + 6] - cnts[BR + 6]) + BVAL * (cnts[WB + 6] - cnts[BB + 6]) + NVAL * (cnts[WN + 6] - cnts[BN + 6]) + PVAL * (cnts[WP + 6] - cnts[BP + 6]);
 	score += mat;
+	// printf("Material: %d\n", mat);
 
 	//doubled pawns
 	score -= dpawn_coeff * (doubled_white - doubled_black);
+	// printf("Doubled pawns: %d\n", dpawn_coeff * (doubled_white - doubled_black));
 	return score;
 }
 #endif // !EVALUATE_H_INCLUDED
