@@ -9,14 +9,16 @@
 #include "Evaluate.h"
 #include "Transpose.h"
 
-#define DINF 9.99e100
+#define INF 1000000007
 
 int quiescent_prune;
 
 long long nodes;
 long long tb_hits, collisions;
 
-double orig_eval;
+int orig_eval;
+
+int prune = 500;
 
 bool greater(const pdi &a, const pdi &b)
 {
@@ -27,7 +29,7 @@ bool less(const pdi &a, const pdi &b)
 	return a.first < b.first;
 }
 
-pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
+pdi find_best_move(int depth, int alpha, int beta, int priority = -1)
 {
 	nodes++;
 
@@ -54,18 +56,18 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 	{
 		if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) != 7)
 		{
-			return pdi(-1000.0, -1);
+			return pdi(-100000, -1);
 		}
 	}
 	else
 	{
 		if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) != 7)
 		{
-			return pdi(1000.0, -1);
+			return pdi(100000, -1);
 		}
 	}
 
-	double curr_eval = eval(curr_state);
+	int curr_eval = eval(curr_state);
 	if (depth <= 0)
 	{
 		return pdi(curr_eval, -1);
@@ -120,10 +122,10 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 	else if (mate == 2)
 	{
 		if (curr_state.to_move) {
-			return pdi(-1000, -1);
+			return pdi(-100000, -1);
 		}
 		else {
-			return pdi(1000, -1);
+			return pdi(100000, -1);
 		}
 	}
 	
@@ -188,8 +190,8 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 			best_moves[curr_state.board_hash] = {alpha, best_move};
 		}
 
-		if (depth == 1 && alpha != 1000 && alpha != -1000)
-			return pdi((9 * curr_eval + 11 * alpha) / 20, best_move);
+		if (depth == 1 && alpha != 100000 && alpha != -100000)
+			return pdi((curr_eval + alpha) / 2, best_move);
 		else
 			return pdi(alpha, best_move);
 	}
@@ -254,8 +256,8 @@ pdi find_best_move(int depth, double alpha, double beta, int priority = -1)
 			best_moves[curr_state.board_hash] = pdi(beta, best_move);
 		}
 
-		if (depth == 1 && beta != 1000 && beta != -1000)
-			return pdi((9 * curr_eval + 11 * beta) / 20, best_move);
+		if (depth == 1 && beta != 100000 && beta != -100000)
+			return pdi((curr_eval + beta) / 2, best_move);
 		return pdi(beta, best_move);
 	}
 }

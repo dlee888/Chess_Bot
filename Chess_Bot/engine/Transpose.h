@@ -4,7 +4,7 @@
 
 #include "State.h"
 
-typedef std::pair<double, int> pdi;
+typedef std::pair<int, int> pdi;
 
 extern long long comp_exp[64];
 
