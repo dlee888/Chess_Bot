@@ -3,19 +3,19 @@
 
 #include "State.h"
 
-double eval(state& s)
+int eval(state& s)
 {
 	if (s.adjucation())
 		return 0;
-	double score = 0;
-	if ((((double)cnts[BQ + 6] + cnts[WQ + 6]) * 9.3 + 5 * ((double)cnts[BR + 6] + cnts[WR + 6]) +
-		 3.14 * ((double)cnts[BB + 6] + cnts[WB + 6]) + 3.02 * ((double)cnts[BN + 6] + cnts[WN + 6])) > 30.0)
+	int score = 0;
+	if ((9 * (cnts[BQ + 6] + cnts[WQ + 6]) + 5 * (cnts[BR + 6] + cnts[WR + 6]) +
+		 3 * (cnts[BB + 6] + cnts[WB + 6] + cnts[BN + 6] + cnts[WN + 6])) > 30)
 	{
 		//This is opening and middlegame
-		RVAL = 5.0;
-		BVAL = 3.2;
-		NVAL = 3.1;
-		PVAL = 1.0;
+		RVAL = 500;
+		BVAL = 320;
+		NVAL = 310;
+		PVAL = 100;
 
 		//development
 		score += devel_coeff * (white_devel - black_devel);
