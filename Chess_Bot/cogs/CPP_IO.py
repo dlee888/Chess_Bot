@@ -47,7 +47,7 @@ async def output_move(ctx, person, client):
     f.close()
 
     embed = discord.Embed(
-        title=f'{user}\'s game', description=f'{whiteblack[colors[user.id]]} to move', color=0x5ef29c)
+        title=f'{user}\'s game', description=f'{whiteblack[colors[user.id]].capitalize()} to move', color=0x5ef29c)
     embed.set_footer(
         text=f'Requested by {ctx.author}', icon_url=ctx.author.avatar_url)
 
@@ -89,7 +89,7 @@ async def output_move(ctx, person, client):
     elif (code == 'RESIGN' and colors[person] == 0) or code == 'BLACK WON':
         embed.description = 'Black won.'
     elif code == 'ILLEGAL MOVE PLAYED':
-        embed.description = f'{whiteblack[1 - colors[person]]} to move.\nIllegal move played'
+        embed.description = f'{whiteblack[colors[person]].capitalize()} to move.\nIllegal move played'
         
     await ctx.message.reply(embed=embed)
     return code
