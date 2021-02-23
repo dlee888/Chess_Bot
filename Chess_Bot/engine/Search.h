@@ -18,6 +18,8 @@ long long tb_hits, collisions;
 
 int orig_eval;
 
+int prune = 500;
+
 bool greater(const pdi &a, const pdi &b)
 {
 	return a.first > b.first;

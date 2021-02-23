@@ -28,7 +28,6 @@ extern int default_board[8][8];
 
 extern int dr_knight[8], dc_knight[8], dr_bishop[4], dc_bishop[4], dr_rook[4],
 	dc_rook[4], dr_queen[8], dc_queen[8], dr_king[8], dc_king[8];
-extern double prune;
 
 class state
 {
