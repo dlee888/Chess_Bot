@@ -67,7 +67,6 @@ async def output_move(ctx, person, client):
 
             embed.set_image(url=image_url)
 
-            await ctx.message.reply(embed=embed)
             break
 
     for i in range(len(out) - 1, 0, -1):
@@ -79,7 +78,21 @@ async def output_move(ctx, person, client):
                     continue
                 games[person].append(int(i))
             push_games()
-            return
+            break
+    
+    code = out[-3].strip()
+    
+    if code == 'DRAW':
+        embed.description = 'Draw'
+    elif (code == 'RESIGN' and colors[person] == 1) or code == 'WHITE WON':
+        embed.description = 'White won.'
+    elif (code == 'RESIGN' and colors[person] == 0) or code == 'BLACK WON':
+        embed.description = 'Black won.'
+    elif code == 'ILLEGAL MOVE PLAYED':
+        embed.description = f'{whiteblack[1 - colors[person]]} to move.\nIllegal move played'
+        
+    await ctx.message.reply(embed=embed)
+    return code
 
 
 async def log(person, client):

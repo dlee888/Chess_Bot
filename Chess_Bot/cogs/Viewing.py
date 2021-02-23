@@ -11,14 +11,14 @@ class Viewing(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.default)
-    async def view(self, ctx, *user):
+    async def view(self, ctx, *user : discord.Member):
         '''
         Views your current game
         '''
         
         person = -1
         if len(user) == 1:
-            person = int(user[0][3:-1])
+            person = user.id
         else:
             person = ctx.author.id
 

@@ -48,29 +48,30 @@ class Engine(commands.Cog):
 
         await log(person, self.client)
         thonking.remove(person)
-        await output_move(ctx, person, self.client)
         
-        if out[-3] == 'GAME STILL IN PROGRESS\n':
+        code = await output_move(ctx, person, self.client)
+        
+        if code == 'GAME STILL IN PROGRESS':
             return
         
-        if out[-3] == 'ILLEGAL MOVE PLAYED\n':
+        if code == 'ILLEGAL MOVE PLAYED':
             await ctx.send('Illegal move played. Make sure your move is in algebraic notation.\nType "$help move" for more info')
             return
 
-        if out[-3] == 'COMPUTER RESIGNED\n':
+        if code == 'COMPUTER RESIGNED':
             await ctx.send('Chess Bot resigned')
             update_rating(ctx.author.id, 1)
             await ctx.send(f'Your new rating is {get_rating(ctx.author.id)}')
             games.pop(ctx.author.id)
             return
         
-        if out[-3] == 'DRAW\n':
+        if code == 'DRAW':
             update_rating(ctx.author.id, 1/2)
             await ctx.send('Draw')
-        elif out[-3][:5].lower() == whiteblack[colors[ctx.author.id]]:
+        elif code[:5].lower() == whiteblack[colors[ctx.author.id]]:
             update_rating(ctx.author.id, 1)
             await ctx.send('You won!')
-        elif out[-3][:5].lower() == whiteblack[1 - colors[ctx.author.id]]:
+        elif code[:5].lower() == whiteblack[1 - colors[ctx.author.id]]:
             update_rating(ctx.author.id, 0)
             await ctx.send('You lost.')
         else:
