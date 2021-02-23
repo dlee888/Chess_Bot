@@ -3,7 +3,7 @@
 
 #include "State.h"
 
-int eval(state& s)
+int eval(state &s)
 {
 	if (s.adjucation())
 		return 0;
@@ -24,8 +24,8 @@ int eval(state& s)
 		score += center_coeff * (white_center - black_center);
 
 		//King safety
-		double ksafety = 0;
-		ksafety += ((double)king_safety[whitekings[0].first][whitekings[0].second] - king_safety[7 - blackkings[0].first][blackkings[0].second]);
+		int ksafety = 0;
+		ksafety += (king_safety[whitekings[0].first][whitekings[0].second] - king_safety[7 - blackkings[0].first][blackkings[0].second]);
 		if (s.white_castled)
 			ksafety += castle_bonus;
 		if (s.black_castled)
@@ -35,25 +35,25 @@ int eval(state& s)
 	else
 	{
 		//This is for endgames
-		RVAL = 5.5;
-		BVAL = 3.5;
-		NVAL = 2.7;
-		PVAL = 1.3;
+		RVAL = 550;
+		BVAL = 350;
+		NVAL = 270;
+		PVAL = 130;
 
 		//pushed pawns
-		score += pass_pawn_coeff * ((double)whitepawn_row_sum - blackpawn_row_sum);
+		score += pass_pawn_coeff * (whitepawn_row_sum - blackpawn_row_sum);
 
 		//king activity
-		double kactivity = 0;
-		kactivity += ((double)king_activity[whitekings[0].first][whitekings[0].second] - king_activity[7 - blackkings[0].first][blackkings[0].second]);
+		int kactivity = 0;
+		kactivity += (king_activity[whitekings[0].first][whitekings[0].second] - king_activity[7 - blackkings[0].first][blackkings[0].second]);
 		score += activity_coeff * kactivity;
 	}
 	//material
-	double mat = KVAL * ((double)cnts[WK + 6] - cnts[BK + 6]) + QVAL * ((double)cnts[WQ + 6] - cnts[BQ + 6]) + RVAL * ((double)cnts[WR + 6] - cnts[BR + 6]) + BVAL * ((double)cnts[WB + 6] - cnts[BB + 6]) + NVAL * ((double)cnts[WN + 6] - cnts[BN + 6]) + ((double)cnts[WP + 6] - cnts[BP + 6]);
+	double mat = QVAL * (cnts[WQ + 6] - cnts[BQ + 6]) + RVAL * (cnts[WR + 6] - cnts[BR + 6]) + BVAL * (cnts[WB + 6] - cnts[BB + 6]) + NVAL * (cnts[WN + 6] - cnts[BN + 6]) + (cnts[WP + 6] - cnts[BP + 6]);
 	score += mat;
 
 	//doubled pawns
-	score -= dpawn_coeff * ((double)doubled_white - doubled_black);
+	score -= dpawn_coeff * (doubled_white - doubled_black);
 	return score;
 }
 #endif // !EVALUATE_H_INCLUDED
