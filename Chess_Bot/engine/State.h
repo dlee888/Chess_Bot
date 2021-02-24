@@ -8,7 +8,7 @@
 #include <stack>
 
 #include "Eval_info.h"
-#include "Transpose_info.h"
+#include "Transpose.h"
 
 #define n 8
 #define BP -1
@@ -46,12 +46,19 @@ public:
 	}
 
 	int board[8][8];
-	long long board_hash;
+	unsigned long long board_hash;
 
 	void replace_board(int row, int col, int piece)
 	{
-		board_hash = (board_hash + f_exp2(((long long)row << 3) + col) * (((long long)piece - board[row][col] + MOD) % MOD) % MOD + SAFETY) % MOD;
+		board_hash ^= rand_bitstrings[(row<<3) + col][piece + 6];
 		board[row][col] = piece;
+	}
+
+	unsigned long long get_hash()
+	{
+		return board_hash ^ (to_move ? color_bitstring : 0) ^ ((en_passant_target.top() == -1) ? 0 : en_passant_bistrings[en_passant_target.top() / 8]) ^
+				(wk_rights.top() ? castling_bitstrings[0] : 0) ^ (wq_rights.top() ? castling_bitstrings[1] : 0) ^ (bk_rights.top() ? castling_bitstrings[2] : 0) ^
+				(bq_rights.top() ? castling_bitstrings[3] : 0);
 	}
 
 	std::stack<bool> wq_rights, bq_rights, wk_rights, bk_rights; // Castling rights
@@ -69,13 +76,9 @@ public:
 
 		for (int i = 0; i < 8; i++)
 			for (int j = 0; j < 8; j++)
-				board[i][j] = default_board[i][j];
+				replace_board(i, j, default_board[i][j]);
 
 		board_hash = 0;
-
-		for (int i = 0; i < 8; i++)
-			for (int j = 0; j < 8; j++)
-				board_hash = (board_hash + f_exp2((i << 3) + j) * (board[i][j] + 6)) % MOD;
 
 		wq_rights.push(true);
 		wk_rights.push(true);
