@@ -96,7 +96,9 @@ class Engine(commands.Cog):
         
         person = ctx.author.id
         
-        thonking.append(person)
+
+        games[person] = []
+        colors[person] = random.randint(0, 1)  # 1 if white, 0 if black
         
         time_control[person] = 60
 
@@ -104,20 +106,20 @@ class Engine(commands.Cog):
             if flags[i] == '-t':
                 time_control[person] = int(flags[i+1])
 
-        games[person] = []
-        colors[person] = random.randint(0, 1)  # 1 if white, 0 if black
-
         await ctx.send(f'Game started with Chess Bot\nYou are {whiteblack[colors[person]]}')
 
+        thonking.append(person)
+        
         file_in, file_out = prepare_files(person)
         prepare_input(person)
 
         await run(f'.\\a < {file_in} > {file_out}')
         
+        thonking.remove(person)
+        
         await log(person, self.client)
         await output_move(ctx, person, self.client)
 
-        thonking.remove(person)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
