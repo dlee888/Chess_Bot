@@ -11,6 +11,10 @@ class Development(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+    async def get_gcc(self):
+        out, err, status = await run('sudo apt install build-essential')
+        print(f'stdout: {out}\nstderr: {err}\n{status}')
+
     @commands.command()
     @commands.cooldown(1, 15, commands.BucketType.default)
     async def update(self, ctx, flags = ''):
@@ -24,6 +28,8 @@ class Development(commands.Cog):
             await ctx.send(f'You do not have permission to update')
             return
 
+        await self.get_gcc()
+        
         compile_cmd = 'g++ '
         for filename in os.listdir('engine'):
             if filename[-4:] == '.cpp' or filename[-2:] == '.h':
