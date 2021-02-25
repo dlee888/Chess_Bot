@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands
 
-from cogs.Utility import *
-from cogs.CPP_IO import *
+from Chess_Bot.cogs.Utility import *
+from Chess_Bot.cogs.CPP_IO import *
 
 class Viewing(commands.Cog):
 

@@ -1,12 +1,11 @@
 import discord
 import os
 from discord.ext import commands
-from discord.ext import tasks
 import time
 import subprocess
 import textwrap
 
-from cogs.Utility import *
+from Chess_Bot.cogs.Utility import *
 
 version = '1.2.7'
 

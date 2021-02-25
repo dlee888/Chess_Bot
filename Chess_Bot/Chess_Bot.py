@@ -1,15 +1,14 @@
 import discord
 import os
 from discord.ext import commands
-import traceback
 
-from cogs.Misc import *
-from cogs.Engine import *
-from cogs.Viewing import *
-from cogs.Mooderation import *
-from cogs.Development import *
-from cogs.Data import *
-from cogs.Help import *
+from Chess_Bot.cogs.Misc import *
+from Chess_Bot.cogs.Engine import *
+from Chess_Bot.cogs.Viewing import *
+from Chess_Bot.cogs.Mooderation import *
+from Chess_Bot.cogs.Development import *
+from Chess_Bot.cogs.Data import *
+from Chess_Bot.cogs.Help import *
 
 import logging
 
