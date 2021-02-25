@@ -44,7 +44,7 @@ class Engine(commands.Cog):
         prepare_input(person, move)
 
         # await ctx.send('Chess Bot is thinking <:thonk:517531367517454347> ...')
-        await run(f'.\\a < {file_in} > {file_out}')
+        await run(f'.\\"engine/a" < {file_in} > {file_out}')
 
         await log(person, self.client)
         
@@ -119,7 +119,7 @@ class Engine(commands.Cog):
         file_in, file_out = prepare_files(person)
         prepare_input(person)
 
-        await run(f'.\\a < {file_in} > {file_out}')
+        await run(f'.\\"engine/a" < {file_in} > {file_out}')
         
         await ctx.message.remove_reaction(thonk)
         thonking.remove(person)

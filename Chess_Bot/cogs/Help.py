@@ -33,7 +33,7 @@ class Help(commands.Cog):
         
         if await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             embed.add_field(
-                name='Development', value='`debug`, `debug_load`, `gimme`, `git_pull`, `restart`, `update`', inline=False
+                name='Development', value='Note: some developer commands do not work on heroku\n`debug`, `debug_load`, `gimme`, `git_pull`, `restart`, `update`', inline=False
             )
             embed.add_field(
                 name='Moderation', value='`abort`, `refund`'

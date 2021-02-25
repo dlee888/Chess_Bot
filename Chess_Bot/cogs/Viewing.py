@@ -36,7 +36,7 @@ class Viewing(commands.Cog):
         file_in, file_out = prepare_files(person)
         prepare_input(person)
         
-        await run(f'.\\a < {file_in} > {file_out}')
+        await run(f'.\\"engine/a" < {file_in} > {file_out}')
         
         await output_move(ctx, person, self.client)
 
@@ -70,7 +70,7 @@ class Viewing(commands.Cog):
         f.write(f'fen\nyes2\n{get_game_str(person)}\nquit\n')
         f.close()
         
-        await run(f'.\\a < {file_in} > {file_out}')
+        await run(f'.\\"engine/a" < {file_in} > {file_out}')
         
         f = open(file_out)
         out = f.readlines()
