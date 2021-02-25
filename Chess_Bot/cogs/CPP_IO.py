@@ -38,6 +38,8 @@ def prepare_input(person, move=''):
     f.write(f'play\nyes2\n{get_game_str(person)}\n{time_control[person]}\n{whiteblack[1 - colors[person]]}\n{move}\nquit\nquit\n')
     f.close()
 
+async def run_engine(file_in, file_out):
+    await run(f'.\\a < {file_in} > {file_out}')
 
 async def output_move(ctx, person, client):
     user = await ctx.message.guild.fetch_member(person)
