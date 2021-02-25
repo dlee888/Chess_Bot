@@ -343,10 +343,6 @@ input*
 output*
 image-*
 
-*.gch
-*.o
-*.exe
-
 token*
 
 message.txt
