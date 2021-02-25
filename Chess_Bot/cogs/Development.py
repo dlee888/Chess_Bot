@@ -24,11 +24,17 @@ class Development(commands.Cog):
         (Bot developers only)
         '''
 
-        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            await ctx.send(f'You do not have permission to update')
-            return
+        try:
+            if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+                await ctx.send(f'You do not have permission to update')
+                return
+        except Exception as e:
+            print(f'Error in has_roles:\n\t{e}')
 
-        await self.get_gcc()
+        try:
+            await self.get_gcc()
+        except Exception as e:
+            print(f'Error in get_gcc:\n\t{e}')
         
         compile_cmd = 'g++ '
         for filename in os.listdir('engine'):
