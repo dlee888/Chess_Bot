@@ -35,18 +35,21 @@ class Engine(commands.Cog):
                 await asyncio.sleep(5)
 
         person = ctx.author.id
+        
+        thonk = self.client.get_emoji(814285875265536001)
+        await ctx.message.add_reaction(thonk)
         thonking.append(person)
         
         file_in, file_out = prepare_files(person)
         prepare_input(person, move)
 
-        await ctx.send('Chess Bot is thinking <:thonk:517531367517454347> ...')
+        # await ctx.send('Chess Bot is thinking <:thonk:517531367517454347> ...')
         await run(f'.\\a < {file_in} > {file_out}')
-        f = open(file_out)
-        out = f.readlines()
-        f.close()
 
         await log(person, self.client)
+        
+        bot = await ctx.guild.fetch_member(self.client.user.id)
+        await ctx.message.remove_reaction(thonk, bot)
         thonking.remove(person)
         
         code = await output_move(ctx, person, self.client)
@@ -76,6 +79,7 @@ class Engine(commands.Cog):
             await ctx.send('You lost.')
         else:
             await ctx.send('Something went wrong. <:thonkery:532458240559153163>')
+            return
 
         await ctx.send(f'Your new rating is {get_rating(ctx.author.id)}')
         games.pop(ctx.author.id)
@@ -108,6 +112,8 @@ class Engine(commands.Cog):
 
         await ctx.send(f'Game started with Chess Bot\nYou are {whiteblack[colors[person]]}')
 
+        thonk = self.client.get_emoji(814285875265536001)
+        await ctx.message.add_reaction(thonk)
         thonking.append(person)
         
         file_in, file_out = prepare_files(person)
@@ -115,6 +121,7 @@ class Engine(commands.Cog):
 
         await run(f'.\\a < {file_in} > {file_out}')
         
+        await ctx.message.remove_reaction(thonk)
         thonking.remove(person)
         
         await log(person, self.client)

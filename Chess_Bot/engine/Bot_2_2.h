@@ -84,16 +84,6 @@ void play()
 	std::cin >> move;
 	if (move == "white")
 		computer_is_white = true;
-	if (time_limit < 40)
-		quiescent_prune = -1;
-	else if (time_limit < 70)
-		quiescent_prune = 3;
-	else if (time_limit < 135)
-		quiescent_prune = 4;
-	else if (time_limit < 600)
-		quiescent_prune = 5;
-	else
-		quiescent_prune = 6;
 
 	int move_i = -1;
 
@@ -157,14 +147,14 @@ void play()
 					orig_eval = eval(curr_state);
 
 					int start_time = clock();
-					if (computer_is_white) best_move = find_best_move(curr_depth, -RESIGN, INF, best_move.second);
-					else best_move = find_best_move(curr_depth, -INF, RESIGN, best_move.second);
+					if (computer_is_white) best_move = search(curr_depth, -RESIGN, INF, best_move.second);
+					else best_move = search(curr_depth, -INF, RESIGN, best_move.second);
 					time_taken = clock() - start_time;
 
 					double actual_eval = (double)best_move.first / 100;
-					printf("Best move is %s, EVAL = %lf\n%lf seconds taken, %lld nodes searched\nSpeed = %lf nodes per second. %lld TB hits\n",
+					printf("Best move is %s, EVAL = %lf\n%lf seconds taken, %lld nodes searched, %lld nodes qsearched\nSpeed = %lf nodes per second. %lld TB hits\n",
 						   curr_state.move_to_string(best_move.second).c_str(),
-						   actual_eval, (double)time_taken / CLOCKS_PER_SEC, nodes, (double)nodes * CLOCKS_PER_SEC / time_taken, tb_hits);
+						   actual_eval, (double)time_taken / CLOCKS_PER_SEC, nodes, qsearch_nodes, ((double)nodes + qsearch_nodes) * CLOCKS_PER_SEC / time_taken, tb_hits);
 					if (abs(best_move.first) >= 100000)
 						break;
 					curr_depth++;

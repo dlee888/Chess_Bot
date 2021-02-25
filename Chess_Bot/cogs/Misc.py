@@ -8,7 +8,7 @@ import textwrap
 
 from cogs.Utility import *
 
-version = '1.2.6'
+version = '1.2.7'
 
 
 def get_git_history():
