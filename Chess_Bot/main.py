@@ -13,23 +13,10 @@ async def run(cmd):
 
 async def main():
     while True:
-        f = open('status.txt')
-        lines = f.readlines()
-        print(lines)
-        f.close()
-
-        if lines[0] != 'RUNNING\n':
-            print(f'Status code "{lines[0].strip()}" found')
-            print('Restarting')
-            out, err, status = await run('python3.9 Chess_Bot.py')
-            print(out)
-            print(err)
-            print(status)
-
-        f = open('status.txt', 'w')
-        f.write('CHECKING\n')
-        f.close()
-
-        await asyncio.sleep(6)
+        print('Restarting')
+        out, err, status = await run('python3.9 Chess_Bot.py')
+        print(out)
+        print(err)
+        print(status)
 
 asyncio.run(main())
