@@ -1,7 +1,7 @@
 import os
 import discord
 
-from Chess_Bot.cogs.Utility import *
+from cogs.Utility import *
 
 
 whiteblack = ['black', 'white']

@@ -5,7 +5,7 @@ import time
 import subprocess
 import textwrap
 
-from Chess_Bot.cogs.Utility import *
+from cogs.Utility import *
 
 version = '1.2.7'
 

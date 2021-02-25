@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord.ext import tasks
 
-from Chess_Bot.cogs.Utility import *
+from cogs.Utility import *
 
 class Data(commands.Cog):
     

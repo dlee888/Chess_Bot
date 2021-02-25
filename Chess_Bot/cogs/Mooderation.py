@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from Chess_Bot.cogs.Utility import *
+from cogs.Utility import *
 
 class Mooderation(commands.Cog):
 
