@@ -344,8 +344,8 @@ output*
 image-*
 
 *.gch
-debug.exe
-hi.exe
+*.o
+*.exe
 
 token*
 
