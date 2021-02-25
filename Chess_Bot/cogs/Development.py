@@ -12,7 +12,7 @@ class Development(commands.Cog):
         self.client = client
 
     async def get_gcc(self):
-        out, err, status = await run('sudo apt install build-essential')
+        out, err, status = await run('apt-get install build-essential')
         print(f'stdout: {out}\nstderr: {err}\n{status}')
 
     @commands.command()
