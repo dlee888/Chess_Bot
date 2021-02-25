@@ -345,7 +345,6 @@ image-*
 
 *.gch
 debug.exe
-a.exe
 hi.exe
 
 token*
