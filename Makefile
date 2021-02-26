@@ -1,5 +1,5 @@
 a : engine_bin/Eval_info.o engine_bin/Evaluate.o engine_bin/List_moves.o engine_bin/mainloop.o engine_bin/Make_move.o engine_bin/Search_util.o engine_bin/Search.o engine_bin/State_constants.o engine_bin/State_io.o engine_bin/State_util.o engine_bin/Transpose.o engine_bin/Unmake_move.o
-	g++ engine_bin/Eval_info.o engine_bin/Evaluate.o engine_bin/List_moves.o engine_bin/mainloop.o engine_bin/Make_move.o engine_bin/Search_util.o engine_bin/Search.o engine_bin/State_constants.o engine_bin/State_io.o engine_bin/State_util.o engine_bin/Transpose.o engine_bin/Unmake_move.o
+	g++ -o Chess_Bot/a engine_bin/Eval_info.o engine_bin/Evaluate.o engine_bin/List_moves.o engine_bin/mainloop.o engine_bin/Make_move.o engine_bin/Search_util.o engine_bin/Search.o engine_bin/State_constants.o engine_bin/State_io.o engine_bin/State_util.o engine_bin/Transpose.o engine_bin/Unmake_move.o
 
 engine_bin/Eval_info.o :
 	g++ -c Chess_Bot/engine/Eval_info.cpp -o engine_bin/Eval_info.o
@@ -38,4 +38,4 @@ engine_bin/Unmake_move.o : Chess_Bot/engine/Unmake_move.cpp Chess_Bot/engine/Sta
 	g++ -c Chess_Bot/engine/Unmake_move.cpp -o engine_bin/Unmake_move.o
 
 clear : 
-	rm a engine_bin/Eval_info.o engine_bin/Evaluate.o engine_bin/List_moves.o engine_bin/mainloop.o engine_bin/Make_move.o engine_bin/Search_util.o engine_bin/Search.o engine_bin/State_constants.o engine_bin/State_io.o engine_bin/State_util.o engine_bin/Transpose.o engine_bin/Unmake_move.o
+	rm Chess_Bot/a engine_bin/Eval_info.o engine_bin/Evaluate.o engine_bin/List_moves.o engine_bin/mainloop.o engine_bin/Make_move.o engine_bin/Search_util.o engine_bin/Search.o engine_bin/State_constants.o engine_bin/State_io.o engine_bin/State_util.o engine_bin/Transpose.o engine_bin/Unmake_move.o
