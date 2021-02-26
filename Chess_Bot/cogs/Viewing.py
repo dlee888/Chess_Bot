@@ -18,7 +18,7 @@ class Viewing(commands.Cog):
         try:
             person = -1
             if len(user) == 1:
-                person = user.id
+                person = user[0].id
             else:
                 person = ctx.author.id
 
