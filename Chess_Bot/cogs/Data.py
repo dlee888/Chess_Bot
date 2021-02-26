@@ -69,6 +69,7 @@ class Data(commands.Cog):
     async def download_data(self):
         data_channel = await self.client.fetch_channel(814962871532257310)
         log_channel = await self.client.fetch_channel(798277701210341459)
+        log_channel.send('Downloading data...')
         
         games_found = False
         times_found = False
@@ -76,7 +77,7 @@ class Data(commands.Cog):
         ratings_found = False
         
         async for message in data_channel.history(limit=25):
-            await log_channel.send(f'Processing message {message.jump_url}')
+            # await log_channel.send(f'Processing message {message.jump_url}')
             for attachment in message.attachments:
                 if not games_found and attachment.filename == 'games.txt':
                     games_found = True
