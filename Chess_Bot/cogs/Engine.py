@@ -118,7 +118,8 @@ class Engine(commands.Cog):
 
         await run_engine(file_in, file_out)
         
-        await ctx.message.remove_reaction(thonk)
+        bot = await ctx.guild.fetch_member(self.client.user.id)
+        await ctx.message.remove_reaction(thonk, bot)
         thonking.remove(person)
         
         await log(person, self.client)
