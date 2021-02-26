@@ -6,8 +6,8 @@ int BVAL = 320;
 int NVAL = 305;
 int PVAL = 100;
 
-int devel_coeff = 6, center_coeff = 4, ksafety_coeff = 10, castle_bonus = 25, pass_pawn_coeff = 25,
-	   dpawn_coeff = 10, activity_coeff = 8;
+int devel_coeff = 6, center_coeff = 4, ksafety_coeff = 10, castle_bonus = 25, castle_right_bonus = 69, pass_pawn_coeff = 25,
+	   dpawn_coeff = 10, activity_coeff = 8, semi_open_bonus = 10, open_bonus = 16;
 
 int default_cnts[13] = {1, 1, 2, 2, 2, 8, 32, 8, 2, 2, 2, 1, 1}, cnts[13];
 

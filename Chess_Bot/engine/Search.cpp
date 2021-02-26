@@ -13,7 +13,7 @@ pdi search(int depth, int alpha, int beta, int priority)
 	if (exists[curr_board_hash] && depths[curr_board_hash] >= depth)
 	{
 		tb_hits++;
-		return best_moves[curr_board_hash];
+		return pdi(best_eval[curr_board_hash], -3);
 	}
 
 	if (!curr_state.to_move)
@@ -124,7 +124,7 @@ pdi search(int depth, int alpha, int beta, int priority)
 			{
 				exists[curr_board_hash] = true;
 				depths[curr_board_hash] = depth;
-				best_moves[curr_board_hash] = pdi(alpha, best_move);
+				best_eval[curr_board_hash] = alpha;
 				return pdi(alpha, best_move);
 			}
 		}
@@ -151,7 +151,7 @@ pdi search(int depth, int alpha, int beta, int priority)
 
 		exists[curr_board_hash] = true;
 		depths[curr_board_hash] = depth;
-		best_moves[curr_board_hash] = {alpha, best_move};
+		best_eval[curr_board_hash] = alpha;
 
 		return pdi(alpha, best_move);
 	}
@@ -183,7 +183,7 @@ pdi search(int depth, int alpha, int beta, int priority)
 			{
 				exists[curr_board_hash] = true;
 				depths[curr_board_hash] = depth;
-				best_moves[curr_board_hash] = pdi(beta, best_move);
+				best_eval[curr_board_hash] = beta;
 				return pdi(beta, best_move);
 			}
 		}
@@ -210,7 +210,7 @@ pdi search(int depth, int alpha, int beta, int priority)
 
 		exists[curr_board_hash] = true;
 		depths[curr_board_hash] = depth;
-		best_moves[curr_board_hash] = pdi(beta, best_move);
+		best_eval[curr_board_hash] = beta;
 
 		return pdi(beta, best_move);
 	}
@@ -225,7 +225,7 @@ pdi qsearch(int alpha, int beta)
 	if (exists[curr_board_hash])
 	{
 		tb_hits++;
-		return best_moves[curr_board_hash];
+		return pdi(best_eval[curr_board_hash], -3);
 	}
 
 	if (!curr_state.to_move)

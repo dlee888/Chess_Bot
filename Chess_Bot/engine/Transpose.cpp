@@ -5,9 +5,8 @@
 #include "Transpose.h"
 
 bool exists[TABLE_SIZE];
-// state positions[TABLE_SIZE];
 int depths[TABLE_SIZE];
-pdi best_moves[TABLE_SIZE];
+int best_eval[TABLE_SIZE];
 
 unsigned long long rand_bitstrings[64][13], color_bitstring, en_passant_bistrings[8], castling_bitstrings[4];
 
@@ -17,11 +16,6 @@ void init_table()
 	std::mt19937 generator(seed);
 
 	memset(exists, 0, sizeof(exists));
-	memset(depths, -1, sizeof(depths));
-	for (int i = 0; i < TABLE_SIZE; i++)
-	{
-		best_moves[i] = pdi(0, -1);
-	}
 
 	for (int square = 0; square < 64; square++) {
 		for (int piece = 0; piece < 13; piece++) {
@@ -35,4 +29,8 @@ void init_table()
 	for (int i = 0; i < 4; i++) {
 		castling_bitstrings[i] = generator();
 	}
+}
+
+void clear_table() {
+	memset(exists, 0, sizeof(exists));
 }

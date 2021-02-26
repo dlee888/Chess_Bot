@@ -27,7 +27,7 @@
 extern int default_board[8][8];
 
 extern int dr_knight[8], dc_knight[8], dr_bishop[4], dc_bishop[4], dr_rook[4],
-	dc_rook[4], dr_queen[8], dc_queen[8], dr_king[8], dc_king[8];
+dc_rook[4], dr_queen[8], dc_queen[8], dr_king[8], dc_king[8];
 
 class state
 {
@@ -50,15 +50,16 @@ public:
 
 	void replace_board(int row, int col, int piece)
 	{
-		board_hash ^= rand_bitstrings[(row<<3) + col][piece + 6];
+		board_hash ^= rand_bitstrings[(row << 3) + col][board[row][col] + 6];
+		board_hash ^= rand_bitstrings[(row << 3) + col][piece + 6];
 		board[row][col] = piece;
 	}
 
 	unsigned long long get_hash()
 	{
 		return board_hash ^ (to_move ? color_bitstring : 0) ^ ((en_passant_target.top() == -1) ? 0 : en_passant_bistrings[en_passant_target.top() / 8]) ^
-				(wk_rights.top() ? castling_bitstrings[0] : 0) ^ (wq_rights.top() ? castling_bitstrings[1] : 0) ^ (bk_rights.top() ? castling_bitstrings[2] : 0) ^
-				(bq_rights.top() ? castling_bitstrings[3] : 0);
+			(wk_rights.top() ? castling_bitstrings[0] : 0) ^ (wq_rights.top() ? castling_bitstrings[1] : 0) ^ (bk_rights.top() ? castling_bitstrings[2] : 0) ^
+			(bq_rights.top() ? castling_bitstrings[3] : 0);
 	}
 
 	std::stack<bool> wq_rights, bq_rights, wk_rights, bk_rights; // Castling rights
@@ -125,13 +126,11 @@ public:
 
 	std::vector<int> list_moves();
 
-	bool quiescent();
-
 	bool adjucation();
 
 	int mate();
 
-	bool legal(int move) {
+	bool legal_check(int move) {
 		std::vector <int> moves = list_moves();
 		for (int i : moves) {
 			if (move == i) return true;
