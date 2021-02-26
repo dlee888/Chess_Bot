@@ -116,8 +116,8 @@ class Development(commands.Cog):
         
         self.data_manager = Data(self.client)
         
-        self.data_manager.push_all(self, ctx)
-        self.data_manager.upload(self, ctx)
+        await self.data_manager.push_all(self, ctx)
+        await self.data_manager.upload(self, ctx)
 
         sys.exit(1)
 
