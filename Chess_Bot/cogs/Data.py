@@ -12,12 +12,15 @@ class Data(commands.Cog):
         
     @commands.Cog.listener()
     async def on_ready(self):
+        await self.client.change_presence(activity=discord.Game(name='$help or $botinfo for more info'))
         print('Getting data...')
         
         self.download_data()
         
         pull_games()
-        pull_ratings()    
+        pull_ratings()  
+         
+        print('Bot is ready') 
     
     @commands.command()
     async def push_all(self, ctx):
