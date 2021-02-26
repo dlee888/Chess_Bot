@@ -39,7 +39,9 @@ def prepare_input(person, move=''):
     f.close()
 
 async def run_engine(file_in, file_out):
-    await run(f'.\\a < {file_in} > {file_out}')
+    print('Running engine')
+    out, err, status = await run(f'.\\a < {file_in} > {file_out}')
+    print(f'Stdout: {out}\nStderr: {err}\n{status}')
 
 async def output_move(ctx, person, client):
     user = await ctx.message.guild.fetch_member(person)
