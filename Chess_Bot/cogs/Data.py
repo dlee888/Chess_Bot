@@ -10,8 +10,10 @@ class Data(commands.Cog):
         self.client = client
         self.sync_data.start()
         
-    @commands.Cog.listener
+    @commands.Cog.listener()
     async def on_ready(self):
+        print('Getting data...')
+        
         self.download_data()
         
         pull_games()
