@@ -69,7 +69,7 @@ class Data(commands.Cog):
     async def download_data(self):
         data_channel = await self.client.fetch_channel(814962871532257310)
         log_channel = await self.client.fetch_channel(798277701210341459)
-        log_channel.send('Downloading data...')
+        await log_channel.send('Downloading data...')
         
         games_found = False
         times_found = False
