@@ -15,7 +15,7 @@ class Data(commands.Cog):
         await self.client.change_presence(activity=discord.Game(name='$help or $botinfo for more info'))
         print('Getting data...')
         
-        self.download_data()
+        await self.download_data()
         
         pull_games()
         pull_ratings()  
