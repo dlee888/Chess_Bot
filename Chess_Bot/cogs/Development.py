@@ -93,33 +93,17 @@ class Development(commands.Cog):
 
         await ctx.send(f'Restarting...')
         
-        self.data_manager = Data(self.client)
+        push_games()
+        push_ratings()
         
-        await self.data_manager.push_all(self, ctx)
-        await self.data_manager.upload(self, ctx)
+        data_channel = await self.client.fetch_channel(814962871532257310)
+        
+        await data_channel.send(file=discord.File('data/games.txt'))
+        await data_channel.send(file=discord.File('data/times.txt'))
+        await data_channel.send(file=discord.File('data/colors.txt'))
+        await data_channel.send(file=discord.File('data/ratings.txt'))
 
         sys.exit()
-
-    @commands.command()
-    @commands.cooldown(1, 15, commands.BucketType.default)
-    async def forcequit(self, ctx):
-        '''
-        Restarts the bot
-        (Bot developers only)
-        '''
-
-        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            await ctx.send(f'You do not have permission to forcequit')
-            return
-
-        await ctx.send(f'Quitting...')
-        
-        self.data_manager = Data(self.client)
-        
-        await self.data_manager.push_all(self, ctx)
-        await self.data_manager.upload(self, ctx)
-
-        sys.exit(1)
 
     @commands.command()
     @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
