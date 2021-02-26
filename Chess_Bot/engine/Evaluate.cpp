@@ -35,7 +35,7 @@ int eval(state& s)
 			ksafety += castle_right_bonus;
 		}
 		if (s.bq_rights.top() || s.bk_rights.top()) {
-			ksafety += castle_right_bonus;
+			ksafety -= castle_right_bonus;
 		}
 		score += ksafety_coeff * ksafety;
 		// printf("King safety: %d\n", ksafety_coeff * ksafety);

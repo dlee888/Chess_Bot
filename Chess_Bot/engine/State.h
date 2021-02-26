@@ -6,6 +6,7 @@
 #include <fstream>
 #include <string>
 #include <stack>
+#include <cstring>
 
 #include "Eval_info.h"
 #include "Transpose.h"
@@ -74,6 +75,8 @@ public:
 		fifty_move = 0;
 		full_move = 0;
 		to_move = true;
+
+		std::memset(board, 0, sizeof(board));
 
 		for (int i = 0; i < 8; i++)
 			for (int j = 0; j < 8; j++)
