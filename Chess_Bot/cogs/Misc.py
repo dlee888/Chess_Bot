@@ -46,14 +46,9 @@ class Misc(commands.Cog):
         
     @commands.Cog.listener()
     async def on_ready(self):
-        pull_ratings()
-        pull_games()
-
         await self.client.change_presence(activity=discord.Game(name='$help or $botinfo for more info'))
 
         print('Bot is ready')
-
-        await status_check()
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)

@@ -6,6 +6,8 @@ import sys
 from cogs.Utility import *
 from cogs.CPP_IO import *
 
+from cogs.Data import *
+
 class Development(commands.Cog):
 
     def __init__(self, client):
@@ -24,17 +26,9 @@ class Development(commands.Cog):
         (Bot developers only)
         '''
 
-        try:
-            if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-                await ctx.send(f'You do not have permission to update')
-                return
-        except Exception as e:
-            print(f'Error in has_roles:\n\t{e}')
-
-        try:
-            await self.get_gcc()
-        except Exception as e:
-            print(f'Error in get_gcc:\n\t{e}')
+        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+            await ctx.send(f'You do not have permission to update')
+            return
         
         compile_cmd = 'g++ '
         for filename in os.listdir('engine'):
@@ -98,8 +92,34 @@ class Development(commands.Cog):
             return
 
         await ctx.send(f'Restarting...')
+        
+        self.data_manager = Data(self.client)
+        
+        self.data_manager.push_all(self, ctx)
+        self.data_manager.upload(self, ctx)
 
         sys.exit()
+
+    @commands.command()
+    @commands.cooldown(1, 15, commands.BucketType.default)
+    async def forcequit(self, ctx):
+        '''
+        Restarts the bot
+        (Bot developers only)
+        '''
+
+        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+            await ctx.send(f'You do not have permission to forcequit')
+            return
+
+        await ctx.send(f'Quitting...')
+        
+        self.data_manager = Data(self.client)
+        
+        self.data_manager.push_all(self, ctx)
+        self.data_manager.upload(self, ctx)
+
+        sys.exit(1)
 
     @commands.command()
     @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
