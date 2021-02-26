@@ -56,7 +56,7 @@ class Data(commands.Cog):
         await self.client.wait_until_ready()
         
     async def upload_data(self):
-        data_channel = self.client.fetch_channel(814962871532257310)
+        data_channel = await self.client.fetch_channel(814962871532257310)
         
         await data_channel.send(file=discord.File('data/games.txt'))
         await data_channel.send(file=discord.File('data/times.txt'))
@@ -64,7 +64,7 @@ class Data(commands.Cog):
         await data_channel.send(file=discord.File('data/ratings.txt'))
         
     async def download_data(self):
-        data_channel = self.client.fetch_channel(814962871532257310)
+        data_channel = await self.client.fetch_channel(814962871532257310)
         
         games_found = False
         times_found = False
