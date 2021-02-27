@@ -44,9 +44,9 @@ void analyse_game(int depth)
 	for (int i = 0; i < game.size(); i++)
 	{
 		temp.print();
-		printf("EVAL = %lf\n", best_moves[i].first);
+		printf("EVAL = %lf\n", (double)best_moves[i].first / 100);
 		printf("%s was played\n", temp.move_to_string(game[i]).c_str());
-		double eval_diff = best_moves[i + 1].first - best_moves[i].first;
+		double eval_diff = ((double)best_moves[i + 1].first - best_moves[i].first) / 100;
 		if (!temp.to_move)
 			eval_diff *= -1;
 		if (eval_diff > 0.01)
@@ -76,7 +76,7 @@ void analyse_game(int depth)
 		{
 			printf("Blunder\n");
 		}
-		printf("Best move was %s, EVAL = %lf\n", temp.move_to_string(best_moves[i].second).c_str(), best_moves[i].first);
+		printf("Best move was %s, EVAL = %lf\n", temp.move_to_string(best_moves[i].second).c_str(), (double)best_moves[i].first / 100);
 		temp.make_move(game[i]);
 
 		printf("Type \'next\' to continue. ");
@@ -126,7 +126,7 @@ void get_best_move()
 		time_taken = clock() - start_time;
 		printf("Best move is %s, EVAL = %lf\n%lf seconds taken, %lld nodes searched\nSpeed = %lf nodes per second\n",
 			   curr_state.move_to_string(best_move.second).c_str(),
-			   best_move.first, (double)time_taken / CLOCKS_PER_SEC, nodes, (double)nodes * CLOCKS_PER_SEC / time_taken);
+			   (double)best_move.first / 100, (double)time_taken / CLOCKS_PER_SEC, nodes, (double)nodes * CLOCKS_PER_SEC / time_taken);
 		if (abs(best_move.first - 1000.0) < 1)
 			break;
 		if (abs(best_move.first + 1000.0) < 1)
@@ -135,7 +135,7 @@ void get_best_move()
 		curr_depth++;
 	}
 
-	std::cout << "Best move is " << curr_state.move_to_string(best_move.second) << ", EVAL = " << best_move.first << std::endl;
+	std::cout << "Best move is " << curr_state.move_to_string(best_move.second) << ", EVAL = " << (double)best_move.first / 100 << std::endl;
 }
 void get_best_move2()
 {
@@ -168,6 +168,6 @@ void get_best_move2()
 	std::cin >> depth;
 
 	auto best_move = search(depth, -INF, INF);
-	std::cout << "Best move is " << curr_state.move_to_string(best_move.second) << ", EVAL = " << best_move.first << std::endl;
+	std::cout << "Best move is " << curr_state.move_to_string(best_move.second) << ", EVAL = " << (double)best_move.first / 100 << std::endl;
 }
 #endif // !ENGINE_H_INCLUDED

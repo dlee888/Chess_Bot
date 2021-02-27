@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 
-from cogs.Utility import *
+from Chess_Bot.cogs.Utility import *
 
 
 class Help(commands.Cog):
@@ -25,7 +25,7 @@ class Help(commands.Cog):
         embed.description = 'List of commands. Type "$help [command]" for more information about a certain command'
 
         embed.add_field(
-            name='Playing', value='`challenge`, `move`, `resign`, `view`, `fen`', inline=False)
+            name='Playing', value='`challenge`, `move`, `resign`, `view`, `fen`, `time`', inline=False)
         embed.add_field(
             name='Rating', value='`rating`, `leaderboard`', inline=False)
         embed.add_field(
@@ -47,8 +47,9 @@ class Help(commands.Cog):
         embed.description = '''`$challenge <flags>`
                               Challenges Chess bot to a game. Color is assigned randomly.
                               Flags:
-                              `-t` to set the time control (in seconds). 
-                              For example, `$challenge -t 5` to indicate that you want the computer to think for about 5 seconds'''
+                                `-t` to set the time control (in seconds). 
+                                For example, `$challenge -t 5` to indicate that you want the computer to think for about 5 seconds
+                                If no time is specified, the default time is 60 seconds'''
 
         await ctx.send(embed=embed)
 
@@ -106,7 +107,8 @@ class Help(commands.Cog):
                                 Shows top rated players.
                                 By default, shows 10 players.
                                 Use `$leaderboard <number>` to get the top <number> players
-                                Use `$leaderboard all` to get all players'''
+                                Use `$leaderboard all` to get all players.
+                                Note: Leaderboard is really laggy with more than about 15 people'''
 
         await ctx.send(embed=embed)
         
@@ -131,6 +133,14 @@ class Help(commands.Cog):
         embed = await self.get_default_help_embed()
         embed.description = '''`$invite`
                                 Sends a invite link'''
+
+        await ctx.send(embed=embed)
+        
+    @help.command()
+    async def time(self, ctx):
+        embed = await self.get_default_help_embed()
+        embed.description = '''`$time`
+                                Sends how much time you have left'''
 
         await ctx.send(embed=embed)
         

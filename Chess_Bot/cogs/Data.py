@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord.ext import tasks
 
-from cogs.Utility import *
+from Chess_Bot.cogs.Utility import *
 
 class Data(commands.Cog):
     
@@ -65,6 +65,7 @@ class Data(commands.Cog):
         await data_channel.send(file=discord.File('data/times.txt'))
         await data_channel.send(file=discord.File('data/colors.txt'))
         await data_channel.send(file=discord.File('data/ratings.txt'))
+        await data_channel.send(file=discord.File('data/timer.txt'))
         
     async def download_data(self):
         data_channel = await self.client.fetch_channel(814962871532257310)
@@ -75,6 +76,7 @@ class Data(commands.Cog):
         times_found = False
         colors_found = False
         ratings_found = False
+        timer_found = False
         
         async for message in data_channel.history(limit=25):
             # await log_channel.send(f'Processing message {message.jump_url}')
@@ -85,6 +87,9 @@ class Data(commands.Cog):
                 if not times_found and attachment.filename == 'times.txt':
                     times_found = True
                     await attachment.save('data/times.txt')
+                if not timer_found and attachment.filename == 'timer.txt':
+                    timer_found = True
+                    await attachment.save('data/timer.txt')
                 if not colors_found and attachment.filename == 'colors.txt':
                     colors_found = True
                     await attachment.save('data/colors.txt')
@@ -92,7 +97,7 @@ class Data(commands.Cog):
                     ratings_found = True
                     await attachment.save('data/ratings.txt')
                     
-        return games_found, times_found, colors_found, ratings_found
+        return games_found, times_found, colors_found, ratings_found, timer_found
         
     @commands.command()
     async def upload(self, ctx):
@@ -102,6 +107,8 @@ class Data(commands.Cog):
         
         await self.upload_data()
         
+        await ctx.send('Finished uploading data')
+        
     @commands.command()
     async def download(self, ctx):
         if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
@@ -109,7 +116,9 @@ class Data(commands.Cog):
             return
         
         status = await self.download_data()
-        filenames = ['games.txt', 'times.txt', 'colors.txt', 'ratings.txt']
+        filenames = ['games.txt', 'times.txt', 'colors.txt', 'ratings.txt', 'timer.txt']
         for i in range(4):
             if not status[i]:
-                await ctx.send(f'File {filenames[i]} not found in the last 100 message')
+                await ctx.send(f'File {filenames[i]} not found in the last 25 message')
+                
+        await ctx.send('Finished downloading data')

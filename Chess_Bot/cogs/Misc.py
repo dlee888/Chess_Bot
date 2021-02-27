@@ -5,9 +5,9 @@ import time
 import subprocess
 import textwrap
 
-from cogs.Utility import *
+from Chess_Bot.cogs.Utility import *
 
-version = '1.2.7'
+version = '1.2.8'
 
 
 def get_git_history():

@@ -3,10 +3,8 @@ import os
 from discord.ext import commands
 import sys
 
-from cogs.Utility import *
-from cogs.CPP_IO import *
-
-from cogs.Data import *
+from Chess_Bot.cogs.Utility import *
+from Chess_Bot.cogs.CPP_IO import *
 
 class Development(commands.Cog):
 

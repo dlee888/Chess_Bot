@@ -11,10 +11,11 @@ time_control = {}
 
 ratings = {}
 
+last_moved = {}
 
 async def run(cmd):
     proc = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE)
+                                                 stderr=asyncio.subprocess.PIPE)
 
     stdout, stderr = await proc.communicate()
 
@@ -46,20 +47,19 @@ def get_image(person, end):
                 square += '-light.png'
             else:
                 square += '-dark.png'
-            
+
             square_img = Image.open(square)
             square_img = square_img.resize((50, 50), Image.ANTIALIAS)
 
             x *= 50
             y *= 50
-            
+
             if colors[person] == 1:
                 result.paste(square_img, (y, x, y + 50, x + 50))
             else:
                 result.paste(square_img, (350 - y, 350 - x, 400 - y, 400 - x))
-    
-    result.save(f'data/image-{person}.png')
 
+    result.save(f'data/image-{person}.png')
 
 
 async def has_roles(person, roles, client):
@@ -68,13 +68,14 @@ async def has_roles(person, roles, client):
         member = await support_server.fetch_member(person)
     except discord.HTTPException:
         return False
-    
+
     for role in roles:
         for member_role in member.roles:
             if member_role.name == role:
                 return True
-    
+
     return False
+
 
 def get_rating(user):
     if user in ratings.keys():
@@ -85,7 +86,7 @@ def get_rating(user):
 
 def update_rating(user, outcome):
     jamin_rating = get_rating(801501916810838066)
-    
+
     E = 1 / (1 + 10 ** ((jamin_rating - get_rating(user)) / 400))
     if outcome == 1:
         jamin_rating -= 32 * E
@@ -96,13 +97,13 @@ def update_rating(user, outcome):
     else:
         jamin_rating += 32 * (E - 0.5)
         ratings[user] += 32 * (0.5 - E)
-        
+
     ratings[801501916810838066] = jamin_rating
 
 
 def push_ratings():
     f = open('data/ratings.txt', 'w')
-    
+
     for k in ratings.keys():
         f.write(f'{k} ----- {ratings[k]}\n')
 
@@ -124,23 +125,28 @@ def pull_ratings():
 def push_games():
     #os.system('echo "pushing games"')
     f = open('data/games.txt', 'w')
-    
+
     for k in games.keys():
         f.write(f'{k} ----- ')
         for move in games[k]:
             f.write(f'{move} ')
         f.write('\n')
     f.close()
-    
+
     f2 = open('data/colors.txt', 'w')
     for k in colors.keys():
         f2.write(f'{k} ----- {colors[k]}\n')
     f2.close()
-    
+
     f3 = open('data/times.txt', 'w')
     for k in time_control.keys():
         f3.write(f'{k} ----- {time_control[k]}\n')
     f3.close()
+    
+    f4 = open('data/timer.txt', 'w')
+    for k in last_moved.keys():
+        f.write(f'{k} ----- {last_moved[k]}')
+    f4.close()
 
 
 def pull_games():
@@ -165,7 +171,7 @@ def pull_games():
         p = i.split(' ----- ')
         colors[int(p[0])] = int(p[1])
     f2.close()
-    
+
     f3 = open('data/times.txt')
     g3 = f3.readlines()
     time_control.clear()
@@ -173,3 +179,19 @@ def pull_games():
         p = i.split(' ----- ')
         time_control[int(p[0])] = int(p[1])
     f3.close()
+    
+    f4 = open('data/timer.txt')
+    g4 = f4.readlines()
+    last_moved.clear()
+    for i in g4:
+        p = i.split(' ----- ')
+        last_moved[int(p[0])] = float(p[1])
+    f4.close()
+
+
+def pretty_time(time):
+    hours = time//3600
+    time -= 3600 * hours
+    minutes = time//60
+    time -= 3600 * minutes
+    return f'{hours} hours, {minutes} minutes, {time} seconds'

@@ -16,6 +16,11 @@ pdi search(int depth, int alpha, int beta, int priority)
 		return pdi(best_eval[curr_board_hash], -3);
 	}
 
+	if (depth <= 0)
+	{
+		return qsearch(alpha, beta);
+	}
+
 	if (!curr_state.to_move)
 	{
 		if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) != 7)
@@ -32,10 +37,6 @@ pdi search(int depth, int alpha, int beta, int priority)
 	}
 
 	int curr_eval = eval(curr_state);
-	if (depth <= 0)
-	{
-		return qsearch(alpha, beta);
-	}
 
 	std::vector<int> moves = curr_state.list_moves();
 	std::vector<pdi> ordered_moves;
@@ -338,6 +339,9 @@ pdi qsearch(int alpha, int beta)
 			if (alpha >= beta)
 				break;
 		}
+		exists[curr_board_hash] = true;
+		depths[curr_board_hash] = 0;
+		best_eval[curr_board_hash] = alpha;
 		return pdi(alpha, best_move);
 	}
 	else
@@ -367,6 +371,9 @@ pdi qsearch(int alpha, int beta)
 			if (alpha >= beta)
 				break;
 		}
+		exists[curr_board_hash] = true;
+		depths[curr_board_hash] = 0;
+		best_eval[curr_board_hash] = beta;
 		return pdi(beta, best_move);
 	}
 }

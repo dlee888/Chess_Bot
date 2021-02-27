@@ -2,8 +2,8 @@ from discord.ext import commands
 import random
 import asyncio
 
-from cogs.Utility import *
-from cogs.CPP_IO import *
+from Chess_Bot.cogs.Utility import *
+from Chess_Bot.cogs.CPP_IO import *
 
 class Engine(commands.Cog):
 
@@ -136,7 +136,7 @@ class Engine(commands.Cog):
             await ctx.send('You do not have a game in progress')
             return
 
-        games.pop(ctx.message.author.id)
+        games.pop(ctx.author.id)
         update_rating(ctx.author.id, 0)
         await ctx.send(f'Game resigned. Your new rating is {get_rating(ctx.author.id)}')
         push_games()
