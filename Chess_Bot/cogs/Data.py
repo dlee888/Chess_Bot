@@ -112,19 +112,19 @@ class Data(commands.Cog):
             for attachment in message.attachments:
                 if not games_found and attachment.filename == 'games.txt':
                     games_found = True
-                    await attachment.save(open('Chess_Bot/data/games.txt', 'w'))
+                    await log_channel.send(str(await attachment.save('Chess_Bot/data/games.txt')))
                 if not times_found and attachment.filename == 'times.txt':
                     times_found = True
-                    await attachment.save(open('Chess_Bot/data/times.txt', 'w'))
+                    await log_channel.send(str(await attachment.save('Chess_Bot/data/times.txt')))
                 if not timer_found and attachment.filename == 'timer.txt':
                     timer_found = True
-                    await attachment.save(open('Chess_Bot/data/timer.txt', 'w'))
+                    await log_channel.send(str(await attachment.save('Chess_Bot/data/timer.txt')))
                 if not colors_found and attachment.filename == 'colors.txt':
                     colors_found = True
-                    await attachment.save(open('Chess_Bot/data/colors.txt', 'w'))
+                    await log_channel.send(str(await attachment.save('Chess_Bot/data/colors.txt')))
                 if not ratings_found and attachment.filename == 'ratings.txt':
                     ratings_found = True
-                    await attachment.save(open('Chess_Bot/data/ratings.txt', 'w'))
+                    await log_channel.send(str(await attachment.save('Chess_Bot/data/ratings.txt')))
                     
         return games_found, times_found, colors_found, ratings_found, timer_found
         
