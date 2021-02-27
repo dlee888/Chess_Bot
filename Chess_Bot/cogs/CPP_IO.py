@@ -11,10 +11,10 @@ def prepare_files(person):
     file_in = f'Chess_Bot/data/input-{person}.txt'
     file_out = f'Chess_Bot/data/output-{person}.txt'
 
-    if not file_in[5:] in os.listdir('data'):
+    if not file_in[5:] in os.listdir('Chess_Bot/data'):
         f = open(file_in, 'x')
         f.close()
-    if not file_out[5:] in os.listdir('data'):
+    if not file_out[5:] in os.listdir('Chess_Bot/data'):
         f = open(file_out, 'x')
         f.close()
 
