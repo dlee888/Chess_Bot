@@ -8,8 +8,8 @@ whiteblack = ['black', 'white']
 
 
 def prepare_files(person):
-    file_in = f'data/input-{person}.txt'
-    file_out = f'data/output-{person}.txt'
+    file_in = f'Chess_Bot/data/input-{person}.txt'
+    file_out = f'Chess_Bot/data/output-{person}.txt'
 
     if not file_in[5:] in os.listdir('data'):
         f = open(file_in, 'x')
@@ -32,7 +32,7 @@ def get_game_str(person):
 
 
 def prepare_input(person, move=''):
-    file_in = f'data/input-{person}.txt'
+    file_in = f'Chess_Bot/data/input-{person}.txt'
 
     f = open(file_in, 'w')
     f.write(f'play\nyes2\n{get_game_str(person)}\n{time_control[person]}\n{whiteblack[1 - colors[person]]}\n{move}\nquit\nquit\n')
@@ -46,7 +46,7 @@ async def run_engine(file_in, file_out):
 async def output_move(ctx, person, client):
     user = await ctx.message.guild.fetch_member(person)
 
-    f = open(f'data/output-{person}.txt')
+    f = open(f'Chess_Bot/data/output-{person}.txt')
     out = f.readlines()
     f.close()
 
@@ -65,7 +65,7 @@ async def output_move(ctx, person, client):
             get_image(person, i - 1)
 
             temp_channel = client.get_channel(806967405414187019)
-            image_msg = await temp_channel.send(file=discord.File(f'data/image-{person}.png'))
+            image_msg = await temp_channel.send(file=discord.File(f'Chess_Bot/data/image-{person}.png'))
 
             image_url = image_msg.attachments[0].url
 
@@ -100,7 +100,7 @@ async def output_move(ctx, person, client):
 
 
 async def log(person, client):
-    f = open(f'data/output-{person}.txt')
+    f = open(f'Chess_Bot/data/output-{person}.txt')
     out = f.readlines()
     f.close()
     log_channel = client.get_channel(798277701210341459)
