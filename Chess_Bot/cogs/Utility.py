@@ -26,17 +26,17 @@ async def run(cmd):
 
 
 def get_image(person, end):
-    game_file = f'data/output-{person}.txt'
+    game_file = f'Chess_Bot/data/output-{person}.txt'
     F = open(game_file)
     game = F.readlines()
     F.close()
 
-    result = Image.open('images/blank_board.png')
+    result = Image.open('Chess_Bot/images/blank_board.png')
     result = result.resize((400, 400))
 
     for i in range(end - 14, end + 2, 2):
         for j in range(1, 25, 3):
-            square = 'images/'
+            square = 'Chess_Bot/images/'
             if game[i][j:j+2] == '  ':
                 square += 'blank'
             else:
@@ -59,7 +59,7 @@ def get_image(person, end):
             else:
                 result.paste(square_img, (350 - y, 350 - x, 400 - y, 400 - x))
 
-    result.save(f'data/image-{person}.png')
+    result.save(f'Chess_Bot/data/image-{person}.png')
 
 
 async def has_roles(person, roles, client):
@@ -102,7 +102,7 @@ def update_rating(user, outcome):
 
 
 def push_ratings():
-    f = open('data/ratings.txt', 'w')
+    f = open('Chess_Bot/data/ratings.txt', 'w')
 
     for k in ratings.keys():
         f.write(f'{k} ----- {ratings[k]}\n')
@@ -111,7 +111,7 @@ def push_ratings():
 
 
 def pull_ratings():
-    f = open('data/ratings.txt')
+    f = open('Chess_Bot/data/ratings.txt')
     pulled = f.readlines()
 
     ratings.clear()
@@ -124,7 +124,7 @@ def pull_ratings():
 
 def push_games():
     #os.system('echo "pushing games"')
-    f = open('data/games.txt', 'w')
+    f = open('Chess_Bot/data/games.txt', 'w')
 
     for k in games.keys():
         f.write(f'{k} ----- ')
@@ -133,24 +133,24 @@ def push_games():
         f.write('\n')
     f.close()
 
-    f2 = open('data/colors.txt', 'w')
+    f2 = open('Chess_Bot/data/colors.txt', 'w')
     for k in colors.keys():
         f2.write(f'{k} ----- {colors[k]}\n')
     f2.close()
 
-    f3 = open('data/times.txt', 'w')
+    f3 = open('Chess_Bot/data/times.txt', 'w')
     for k in time_control.keys():
         f3.write(f'{k} ----- {time_control[k]}\n')
     f3.close()
     
-    f4 = open('data/timer.txt', 'w')
+    f4 = open('Chess_Bot/data/timer.txt', 'w')
     for k in last_moved.keys():
         f.write(f'{k} ----- {last_moved[k]}')
     f4.close()
 
 
 def pull_games():
-    f = open('data/games.txt')
+    f = open('Chess_Bot/data/games.txt')
 
     g = f.readlines()
     games.clear()
@@ -164,7 +164,7 @@ def pull_games():
             games[int(p[0])].append(int(i2))
     f.close()
 
-    f2 = open('data/colors.txt')
+    f2 = open('Chess_Bot/data/colors.txt')
     g2 = f2.readlines()
     colors.clear()
     for i in g2:
@@ -172,7 +172,7 @@ def pull_games():
         colors[int(p[0])] = int(p[1])
     f2.close()
 
-    f3 = open('data/times.txt')
+    f3 = open('Chess_Bot/data/times.txt')
     g3 = f3.readlines()
     time_control.clear()
     for i in g3:
@@ -180,7 +180,7 @@ def pull_games():
         time_control[int(p[0])] = int(p[1])
     f3.close()
     
-    f4 = open('data/timer.txt')
+    f4 = open('Chess_Bot/data/timer.txt')
     g4 = f4.readlines()
     last_moved.clear()
     for i in g4:
