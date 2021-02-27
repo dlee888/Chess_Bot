@@ -1,1 +1,1 @@
-worker: python3.9 Chess_Bot/Chess_Bot.py
+worker: python3.9 __main__.py
