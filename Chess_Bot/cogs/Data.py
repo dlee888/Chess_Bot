@@ -8,7 +8,6 @@ class Data(commands.Cog):
     
     def __init__(self, client):
         self.client = client
-        self.sync_data.start()
         self.games_msg = None
         self.colors_msg = None
         self.times_msg = None
@@ -25,6 +24,8 @@ class Data(commands.Cog):
         pull_games()
         pull_ratings()  
          
+        self.sync_data.start()
+        
         print('Bot is ready') 
     
     @commands.command()
