@@ -9,6 +9,7 @@ from Chess_Bot.cogs.Mooderation import *
 from Chess_Bot.cogs.Development import *
 from Chess_Bot.cogs.Data import *
 from Chess_Bot.cogs.Help import *
+from Chess_Bot.cogs.Timer import *
 
 import logging
 
@@ -28,6 +29,7 @@ bot.add_cog(Mooderation(bot))
 bot.add_cog(Development(bot))
 bot.add_cog(Data(bot))
 bot.add_cog(Help(bot))
+bot.add_cog(Timer(bot))
 
 @bot.event
 async def on_error(error, *args, **kwargs):
