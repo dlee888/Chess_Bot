@@ -1,6 +1,6 @@
 from discord.ext import commands
 import random
-import asyncio
+import time
 
 from Chess_Bot.cogs.Utility import *
 from Chess_Bot.cogs.CPP_IO import *
@@ -47,20 +47,19 @@ class Engine(commands.Cog):
         code = await output_move(ctx, person, self.client)
         
         if code == 'GAME STILL IN PROGRESS':
+            last_moved[person] = time.time()
             return
         
         if code == 'ILLEGAL MOVE PLAYED':
             await ctx.send('Illegal move played. Make sure your move is in algebraic notation.\nType "$help move" for more info')
             return
 
+        old_rating = get_rating(ctx.author.id)
+        
         if code == 'COMPUTER RESIGNED':
             await ctx.send('Chess Bot resigned')
-            update_rating(ctx.author.id, 1)
-            await ctx.send(f'Your new rating is {get_rating(ctx.author.id)}')
-            games.pop(ctx.author.id)
-            return
-        
-        if code == 'DRAW':
+            update_rating(ctx.author.id, 1)        
+        elif code == 'DRAW':
             update_rating(ctx.author.id, 1/2)
             await ctx.send('Draw')
         elif code[:5].lower() == whiteblack[colors[ctx.author.id]]:
@@ -73,8 +72,9 @@ class Engine(commands.Cog):
             await ctx.send('Something went wrong. <:thonkery:532458240559153163>')
             return
 
-        await ctx.send(f'Your new rating is {get_rating(ctx.author.id)}')
+        await ctx.send(f'Your new rating is {get_rating(ctx.author.id)} ({old_rating} + {get_rating(person) - old_rating}')
         games.pop(ctx.author.id)
+        last_moved.pop(person)
 
 
     @commands.command()
@@ -97,7 +97,8 @@ class Engine(commands.Cog):
         colors[person] = random.randint(0, 1)  # 1 if white, 0 if black
         
         time_control[person] = 60
-
+        last_moved[person] = time.time()
+        
         for i in range(0, len(flags), 2):
             if flags[i] == '-t':
                 time_control[person] = int(flags[i+1])
@@ -132,7 +133,10 @@ class Engine(commands.Cog):
             return
 
         games.pop(ctx.author.id)
+        last_moved.pop(ctx.author.id)
+        
+        old_rating = get_rating(ctx.author.id)
+        
         update_rating(ctx.author.id, 0)
-        await ctx.send(f'Game resigned. Your new rating is {get_rating(ctx.author.id)}')
-        push_games()
-
+        
+        await ctx.send(f'Game resigned. Your new rating is {get_rating(ctx.author.id)} ({old_rating} + {get_rating(ctx.author.id) - old_rating}')
