@@ -41,10 +41,10 @@ class Development(commands.Cog):
         message = f'Updated\nCompile Message: {out}\nStderr: {err}'
         
         if len(message) >= 2000:
-            f = open('data/message.txt', 'w')
+            f = open('Chess_Bot/data/message.txt', 'w')
             f.write(message)
             f.close()
-            await ctx.send(file=discord.File('data/message.txt'))
+            await ctx.send(file=discord.File('Chess_Bot/data/message.txt'))
         else:
             await ctx.send(message)
         
@@ -68,10 +68,10 @@ class Development(commands.Cog):
         message = f'Stdout: {stdout}\nStderr: {stderr}'
         
         if len(message) >= 2000:
-            f = open('data/message.txt', 'w')
+            f = open('Chess_Bot/data/message.txt', 'w')
             f.write(message)
             f.close()
-            await ctx.send(file=discord.File('data/message.txt'))
+            await ctx.send(file=discord.File('Chess_Bot/data/message.txt'))
         else:
             await ctx.send(message)
             
@@ -96,10 +96,10 @@ class Development(commands.Cog):
         
         data_channel = await self.client.fetch_channel(814962871532257310)
         
-        await data_channel.send(file=discord.File('data/games.txt'))
-        await data_channel.send(file=discord.File('data/times.txt'))
-        await data_channel.send(file=discord.File('data/colors.txt'))
-        await data_channel.send(file=discord.File('data/ratings.txt'))
+        await data_channel.send(file=discord.File('Chess_Bot/data/games.txt'))
+        await data_channel.send(file=discord.File('Chess_Bot/data/times.txt'))
+        await data_channel.send(file=discord.File('Chess_Bot/data/colors.txt'))
+        await data_channel.send(file=discord.File('Chess_Bot/data/ratings.txt'))
 
         sys.exit()
 
@@ -121,10 +121,10 @@ class Development(commands.Cog):
         message = f'Stdout: {stdout}\nStderr: {stderr}'
         
         if len(message) >= 2000:
-            f = open('data/message.txt', 'w')
+            f = open('Chess_Bot/data/message.txt', 'w')
             f.write(message)
             f.close()
-            await ctx.send(file=discord.File('data/message.txt'))
+            await ctx.send(file=discord.File('Chess_Bot/data/message.txt'))
         else:
             await ctx.send(message)
             

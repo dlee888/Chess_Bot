@@ -27,11 +27,6 @@ class Engine(commands.Cog):
             await ctx.send('Chess Bot is already thinking')
             return
 
-        if len(thonking) > 3:
-            await ctx.send('Resources overloaded. Please wait...')
-            while len(thonking) > 3:
-                await asyncio.sleep(5)
-
         person = ctx.author.id
         
         thonk = self.client.get_emoji(814285875265536001)

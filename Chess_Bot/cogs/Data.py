@@ -9,6 +9,11 @@ class Data(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.sync_data.start()
+        self.games_msg = None
+        self.colors_msg = None
+        self.times_msg = None
+        self.ratings_msg = None
+        self.timer_msg = None
         
     @commands.Cog.listener()
     async def on_ready(self):
@@ -48,10 +53,33 @@ class Data(commands.Cog):
         pull_ratings()
         await ctx.send('Sucessfully pulled')
         
-    @tasks.loop(seconds=30)
+    @tasks.loop(minutes=1)
     async def sync_data(self):
         push_games()
         push_ratings()
+        
+        data_channel = await self.client.fetch_channel(814962871532257310)
+        
+        if self.games_msg == None:
+            self.games_msg = await data_channel.send(file=discord.File('Chess_Bot/data/games.txt'))
+        else:
+            self.games_msg.edit(file=discord.File('Chess_Bot/data/games.txt'))
+        if self.times_msg == None:
+            self.times_msg = await data_channel.send(file=discord.File('Chess_Bot/data/times.txt'))
+        else:
+            self.times_msg.edit(file=discord.File('Chess_Bot/data/times.txt'))
+        if self.colors_msg == None:
+            self.colors_msg = await data_channel.send(file=discord.File('Chess_Bot/data/colors.txt'))
+        else:
+            self.colors_msg.edit(file=discord.File('Chess_Bot/data/colors.txt'))
+        if self.ratings_msg == None:
+            self.ratings_msg = await data_channel.send(file=discord.File('Chess_Bot/data/ratings.txt'))
+        else:
+            self.ratings_msg.edit(file=discord.File('Chess_Bot/data/ratings.txt'))
+        if self.timer_msg == None:
+            self.timer_msg = await data_channel.send(file=discord.File('Chess_Bot/data/timer.txt'))
+        else:
+            self.timer_msg.edit(file=discord.File('Chess_Bot/data/timer.txt'))
         
     @sync_data.before_loop
     async def wait_until_ready(self):
@@ -61,11 +89,11 @@ class Data(commands.Cog):
     async def upload_data(self):
         data_channel = await self.client.fetch_channel(814962871532257310)
         
-        await data_channel.send(file=discord.File('data/games.txt'))
-        await data_channel.send(file=discord.File('data/times.txt'))
-        await data_channel.send(file=discord.File('data/colors.txt'))
-        await data_channel.send(file=discord.File('data/ratings.txt'))
-        await data_channel.send(file=discord.File('data/timer.txt'))
+        await data_channel.send(file=discord.File('Chess_Bot/data/games.txt'))
+        await data_channel.send(file=discord.File('Chess_Bot/data/times.txt'))
+        await data_channel.send(file=discord.File('Chess_Bot/data/colors.txt'))
+        await data_channel.send(file=discord.File('Chess_Bot/data/ratings.txt'))
+        await data_channel.send(file=discord.File('Chess_Bot/data/timer.txt'))
         
     async def download_data(self):
         data_channel = await self.client.fetch_channel(814962871532257310)
@@ -83,19 +111,19 @@ class Data(commands.Cog):
             for attachment in message.attachments:
                 if not games_found and attachment.filename == 'games.txt':
                     games_found = True
-                    await attachment.save('data/games.txt')
+                    await attachment.save('Chess_Bot/data/games.txt')
                 if not times_found and attachment.filename == 'times.txt':
                     times_found = True
-                    await attachment.save('data/times.txt')
+                    await attachment.save('Chess_Bot/data/times.txt')
                 if not timer_found and attachment.filename == 'timer.txt':
                     timer_found = True
-                    await attachment.save('data/timer.txt')
+                    await attachment.save('Chess_Bot/data/timer.txt')
                 if not colors_found and attachment.filename == 'colors.txt':
                     colors_found = True
-                    await attachment.save('data/colors.txt')
+                    await attachment.save('Chess_Bot/data/colors.txt')
                 if not ratings_found and attachment.filename == 'ratings.txt':
                     ratings_found = True
-                    await attachment.save('data/ratings.txt')
+                    await attachment.save('Chess_Bot/data/ratings.txt')
                     
         return games_found, times_found, colors_found, ratings_found, timer_found
         

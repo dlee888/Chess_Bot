@@ -48,7 +48,7 @@ class Timer(commands.Cog):
                 get_image(person, i - 1)
 
                 temp_channel = self.client.get_channel(806967405414187019)
-                image_msg = await temp_channel.send(file=discord.File(f'data/image-{person}.png'))
+                image_msg = await temp_channel.send(file=discord.File(f'Chess_Bot/data/image-{person}.png'))
 
                 image_url = image_msg.attachments[0].url
 

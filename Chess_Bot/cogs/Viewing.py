@@ -15,33 +15,29 @@ class Viewing(commands.Cog):
         '''
         Views your current game
         '''
-        try:
-            person = -1
+        person = -1
+        if len(user) == 1:
+            person = user[0].id
+        else:
+            person = ctx.author.id
+
+        if not person in games.keys():
             if len(user) == 1:
-                person = user[0].id
+                await ctx.send(f'{user[0]} does not have a game in progress')
             else:
-                person = ctx.author.id
+                await ctx.send('You do not have a game in progress')
+            return
+        
+        if person in thonking:
+            await ctx.send('Chess Bot is in the middle of thinking. Try again later.')
+            return
 
-            if not person in games.keys():
-                if len(user) == 1:
-                    await ctx.send(f'{user[0]} does not have a game in progress')
-                else:
-                    await ctx.send('You do not have a game in progress')
-                return
-            
-            if person in thonking:
-                await ctx.send('Chess Bot is in the middle of thinking. Try again later.')
-                return
-
-            file_in, file_out = prepare_files(person)
-            prepare_input(person)
-            
-            await run_engine(file_in, file_out)
-            
-            await output_move(ctx, person, self.client)
-        except Exception as e:
-            await ctx.send(e)
-            print(f'Error in $view: {e}')
+        file_in, file_out = prepare_files(person)
+        prepare_input(person)
+        
+        await run_engine(file_in, file_out)
+        
+        await output_move(ctx, person, self.client)
 
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.default)
