@@ -145,7 +145,7 @@ def push_games():
     
     f4 = open('Chess_Bot/data/timer.txt', 'w')
     for k in last_moved.keys():
-        f.write(f'{k} ----- {last_moved[k]}')
+        f4.write(f'{k} ----- {last_moved[k]}')
     f4.close()
 
 

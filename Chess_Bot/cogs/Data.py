@@ -64,23 +64,23 @@ class Data(commands.Cog):
         if self.games_msg == None:
             self.games_msg = await data_channel.send(file=discord.File('Chess_Bot/data/games.txt'))
         else:
-            self.games_msg.edit(file=discord.File('Chess_Bot/data/games.txt'))
+            await self.games_msg.edit(file=discord.File('Chess_Bot/data/games.txt'))
         if self.times_msg == None:
             self.times_msg = await data_channel.send(file=discord.File('Chess_Bot/data/times.txt'))
         else:
-            self.times_msg.edit(file=discord.File('Chess_Bot/data/times.txt'))
+            await self.times_msg.edit(file=discord.File('Chess_Bot/data/times.txt'))
         if self.colors_msg == None:
             self.colors_msg = await data_channel.send(file=discord.File('Chess_Bot/data/colors.txt'))
         else:
-            self.colors_msg.edit(file=discord.File('Chess_Bot/data/colors.txt'))
+            await self.colors_msg.edit(file=discord.File('Chess_Bot/data/colors.txt'))
         if self.ratings_msg == None:
             self.ratings_msg = await data_channel.send(file=discord.File('Chess_Bot/data/ratings.txt'))
         else:
-            self.ratings_msg.edit(file=discord.File('Chess_Bot/data/ratings.txt'))
+            await self.ratings_msg.edit(file=discord.File('Chess_Bot/data/ratings.txt'))
         if self.timer_msg == None:
             self.timer_msg = await data_channel.send(file=discord.File('Chess_Bot/data/timer.txt'))
         else:
-            self.timer_msg.edit(file=discord.File('Chess_Bot/data/timer.txt'))
+            await self.timer_msg.edit(file=discord.File('Chess_Bot/data/timer.txt'))
         
     @sync_data.before_loop
     async def wait_until_ready(self):
