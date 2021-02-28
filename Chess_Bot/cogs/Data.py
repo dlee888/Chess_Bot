@@ -54,13 +54,7 @@ class Data(commands.Cog):
         push_games()
         push_ratings()
         
-        data_channel = await self.client.fetch_channel(814962871532257310)
-        
-        await data_channel.send(file=discord.File('Chess_Bot/data/games.txt'))
-        await data_channel.send(file=discord.File('Chess_Bot/data/times.txt'))
-        await data_channel.send(file=discord.File('Chess_Bot/data/colors.txt'))
-        await data_channel.send(file=discord.File('Chess_Bot/data/ratings.txt'))
-        await data_channel.send(file=discord.File('Chess_Bot/data/timer.txt'))
+        await self.upload_data()
         
     @sync_data.before_loop
     async def wait_until_ready(self):
