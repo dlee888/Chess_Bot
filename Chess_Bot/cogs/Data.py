@@ -8,11 +8,6 @@ class Data(commands.Cog):
     
     def __init__(self, client):
         self.client = client
-        self.games_msg = None
-        self.colors_msg = None
-        self.times_msg = None
-        self.ratings_msg = None
-        self.timer_msg = None
         
     @commands.Cog.listener()
     async def on_ready(self):
@@ -54,33 +49,18 @@ class Data(commands.Cog):
         pull_ratings()
         await ctx.send('Sucessfully pulled')
         
-    @tasks.loop(minutes=1)
+    @tasks.loop(hours=1)
     async def sync_data(self):
         push_games()
         push_ratings()
         
         data_channel = await self.client.fetch_channel(814962871532257310)
         
-        if self.games_msg == None:
-            self.games_msg = await data_channel.send(file=discord.File('Chess_Bot/data/games.txt'))
-        else:
-            await self.games_msg.edit(file=discord.File('Chess_Bot/data/games.txt'))
-        if self.times_msg == None:
-            self.times_msg = await data_channel.send(file=discord.File('Chess_Bot/data/times.txt'))
-        else:
-            await self.times_msg.edit(file=discord.File('Chess_Bot/data/times.txt'))
-        if self.colors_msg == None:
-            self.colors_msg = await data_channel.send(file=discord.File('Chess_Bot/data/colors.txt'))
-        else:
-            await self.colors_msg.edit(file=discord.File('Chess_Bot/data/colors.txt'))
-        if self.ratings_msg == None:
-            self.ratings_msg = await data_channel.send(file=discord.File('Chess_Bot/data/ratings.txt'))
-        else:
-            await self.ratings_msg.edit(file=discord.File('Chess_Bot/data/ratings.txt'))
-        if self.timer_msg == None:
-            self.timer_msg = await data_channel.send(file=discord.File('Chess_Bot/data/timer.txt'))
-        else:
-            await self.timer_msg.edit(file=discord.File('Chess_Bot/data/timer.txt'))
+        await data_channel.send(file=discord.File('Chess_Bot/data/games.txt'))
+        await data_channel.send(file=discord.File('Chess_Bot/data/times.txt'))
+        await data_channel.send(file=discord.File('Chess_Bot/data/colors.txt'))
+        await data_channel.send(file=discord.File('Chess_Bot/data/ratings.txt'))
+        await data_channel.send(file=discord.File('Chess_Bot/data/timer.txt'))
         
     @sync_data.before_loop
     async def wait_until_ready(self):
