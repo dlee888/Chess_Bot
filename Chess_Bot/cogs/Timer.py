@@ -91,9 +91,9 @@ class Timer(commands.Cog):
             return
     
         if len(user) == 1:
-            await ctx.send(f'{user[0]} has {pretty_time(time.time() - last_moved[person])} left.')
+            await ctx.send(f'{user[0]} has {pretty_time(last_moved[person] + MAX_TIME_PER_MOVE - time.time())} left.')
         else:
-            await ctx.send(f'You have {pretty_time(time.time() - last_moved[person])} left.')
+            await ctx.send(f'You have {pretty_time(last_moved[person] + MAX_TIME_PER_MOVE - time.time())} left.')
             
     @tasks.loop(seconds=10)
     async def low_time_warn(self):
