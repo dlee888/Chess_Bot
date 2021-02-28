@@ -88,9 +88,9 @@ async def output_move(ctx, person, client):
     
     if code == 'DRAW':
         embed.description = 'Draw'
-    elif (code == 'RESIGN' and colors[person] == 1) or code == 'WHITE WON':
+    elif (code == 'COMPUTER RESIGNED' and colors[person] == 1) or code == 'WHITE WON':
         embed.description = 'White won.'
-    elif (code == 'RESIGN' and colors[person] == 0) or code == 'BLACK WON':
+    elif (code == 'COMPUTER RESIGNED' and colors[person] == 0) or code == 'BLACK WON':
         embed.description = 'Black won.'
     elif code == 'ILLEGAL MOVE PLAYED':
         embed.description = f'{whiteblack[colors[person]].capitalize()} to move.\nIllegal move played.'
