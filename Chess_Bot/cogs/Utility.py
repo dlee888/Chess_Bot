@@ -193,5 +193,5 @@ def pretty_time(time):
     hours = time//3600
     time -= 3600 * hours
     minutes = time//60
-    time -= 3600 * minutes
+    time -= 60 * minutes
     return f'{hours} hours, {minutes} minutes, {time} seconds'
