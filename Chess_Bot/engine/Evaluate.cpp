@@ -24,7 +24,7 @@ int eval(state& s)
 
 		// King safety
 		int ksafety = 0;
-		ksafety += (king_safety[whitekings[0].first][whitekings[0].second] - king_safety[7 - blackkings[0].first][blackkings[0].second]);
+		ksafety += ksafety_coeff * (king_safety[whitekings[0].first][whitekings[0].second] - king_safety[7 - blackkings[0].first][blackkings[0].second]);
 		// Castled?
 		if (s.white_castled)
 			ksafety += castle_bonus;
@@ -37,7 +37,7 @@ int eval(state& s)
 		if (s.bq_rights.top() || s.bk_rights.top()) {
 			ksafety -= castle_right_bonus;
 		}
-		score += ksafety_coeff * ksafety;
+		score += ksafety;
 		// printf("King safety: %d\n", ksafety_coeff * ksafety);
 
 		// Open files
@@ -88,5 +88,14 @@ int eval(state& s)
 	//doubled pawns
 	score -= dpawn_coeff * (doubled_white - doubled_black);
 	// printf("Doubled pawns: %d\n", dpawn_coeff * (doubled_white - doubled_black));
+
+	// Bishop pair
+	if (whitebishops.size() >= 2) {
+		score += bishop_pair_bonus;
+	}
+	if (blackbishops.size() >= 2) {
+		score -= bishop_pair_bonus;
+	}
+	
 	return score;
 }
