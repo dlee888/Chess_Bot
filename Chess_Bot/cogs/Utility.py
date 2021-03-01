@@ -12,6 +12,7 @@ time_control = {}
 ratings = {}
 
 last_moved = {}
+warned = {}
 
 async def run(cmd):
     proc = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE,

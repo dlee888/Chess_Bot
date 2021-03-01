@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from discord.ext import tasks
+import pickle
 
 from Chess_Bot.cogs.Utility import *
 
@@ -17,11 +18,20 @@ class Data(commands.Cog):
         await self.download_data()
         
         pull_games()
-        pull_ratings()  
+        pull_ratings()
+        
+        # self.pull_data()  
          
         self.sync_data.start()
         
         print('Bot is ready') 
+    
+    def pull_data(self):
+        global games, colors, time_control, ratings, last_moved, warned
+        games, colors, time_control, ratings, last_moved, warned = pickle.load(open('Chess_Bot/data/database', 'rb'))
+        
+    def push_data(self):
+        pickle.dump([games, colors, time_control, ratings, last_moved, warned], open('Chess_Bot/data/database', 'wb'))
     
     @commands.command()
     async def push_all(self, ctx):
@@ -54,6 +64,8 @@ class Data(commands.Cog):
         push_games()
         push_ratings()
         
+        self.push_data()
+        
         await self.upload_data()
         
     @sync_data.before_loop
@@ -69,6 +81,8 @@ class Data(commands.Cog):
         await data_channel.send(file=discord.File('Chess_Bot/data/colors.txt'))
         await data_channel.send(file=discord.File('Chess_Bot/data/ratings.txt'))
         await data_channel.send(file=discord.File('Chess_Bot/data/timer.txt'))
+        
+        await data_channel.send(file=discord.File('Chess_Bot/data/database'))
         
     async def download_data(self):
         data_channel = await self.client.fetch_channel(814962871532257310)

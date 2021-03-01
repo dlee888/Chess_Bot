@@ -1,42 +1,11 @@
 import discord
-import os
 from discord.ext import commands
 import time
-import subprocess
-import textwrap
 
 from Chess_Bot.cogs.Utility import *
 
 version = '1.2.8'
 
-
-def get_git_history():
-    def _minimal_ext_cmd(cmd):
-        # construct minimal environment
-        env = {}
-        for k in ['SYSTEMROOT', 'PATH']:
-            v = os.environ.get(k)
-            if v is not None:
-                env[k] = v
-        # LANGUAGE is used on win32
-        env['LANGUAGE'] = 'C'
-        env['LANG'] = 'C'
-        env['LC_ALL'] = 'C'
-        out = subprocess.Popen(cmd, stdout = subprocess.PIPE, env=env).communicate()[0]
-        return out
-    try:
-        out = _minimal_ext_cmd(['git', 'rev-parse', '--abbrev-ref', 'HEAD'])
-        branch = out.strip().decode('ascii')
-        out = _minimal_ext_cmd(['git', 'log', '--oneline', '-5'])
-        history = out.strip().decode('ascii')
-        return (
-            'Branch:\n' +
-            textwrap.indent(branch, '  ') +
-            '\nCommits:\n' +
-            textwrap.indent(history, '  ')
-        )
-    except OSError:
-        return "Fetching git info failed"
 
 class Misc(commands.Cog):
 
@@ -133,8 +102,3 @@ class Misc(commands.Cog):
         Sends invite link
         '''
         await ctx.send('https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=268815424&scope=bot')
-
-    @commands.command(brief='Get git information')
-    async def git_history(self, ctx):
-        """Replies with git information."""
-        await ctx.send('```yaml\n' + get_git_history() + '```')

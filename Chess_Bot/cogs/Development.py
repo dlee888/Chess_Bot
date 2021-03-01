@@ -2,6 +2,7 @@ import discord
 import os
 from discord.ext import commands
 import sys
+import time
 
 from Chess_Bot.cogs.Utility import *
 from Chess_Bot.cogs.CPP_IO import *

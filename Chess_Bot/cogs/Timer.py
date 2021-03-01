@@ -13,6 +13,7 @@ class Timer(commands.Cog):
     
     def __init__(self, client):
         self.client = client
+        self.no_time_check.start()
         
     @commands.command()
     async def reset(self, ctx):
@@ -66,13 +67,16 @@ class Timer(commands.Cog):
         user = self.client.fetch_user(person)
                
         games.pop(person)
+        last_moved.pop(person)
+        
+        old_rating = get_rating(person)
         update_rating(person, 0)
         
         dm = user.dm_channel
         if dm == None:
             dm = await user.create_dm()
         
-        await dm.send(f'Your game was automatically forfeited on time. Your new rating is {get_rating(person)}')
+        await dm.send(f'Your game was automatically forfeited on time. Your new rating is {get_rating(person)} ({old_rating} + {get_rating(person) - old_rating}')
         
     @commands.command()
     async def time(self, ctx, *user : discord.Member):
@@ -100,7 +104,7 @@ class Timer(commands.Cog):
         for k in last_moved.keys():
             time_left = last_moved[k] + MAX_TIME_PER_MOVE - time.time()
             
-            if time_left < LOW_TIME_WARN:
+            if time_left < LOW_TIME_WARN and not warned[k]:
                 await self.send_low_time_warning(k)
                 
     @tasks.loop(seconds=10)
