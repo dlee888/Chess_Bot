@@ -42,7 +42,7 @@ class Timer(commands.Cog):
         out = f.readlines()
         f.close()
         
-        user = self.client.fetch_user(person)
+        user = await self.client.fetch_user(person)
         
         embed = discord.Embed(
             title=f'{user}\'s game', description=f'{whiteblack[util.colors[user.id]].capitalize()} to move.\nYou are low on time.', color=0x5ef29c)
