@@ -24,9 +24,11 @@ class Timer(commands.Cog):
             return
         
         util.last_moved.clear()
+        util.warned.clear()
         
         for k in util.games.keys():
             util.last_moved[k] = time.time()
+            util.warned[k] = False
         
         await ctx.send('Times reset')
             

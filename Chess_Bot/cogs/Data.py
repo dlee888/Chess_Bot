@@ -26,12 +26,12 @@ class Data(commands.Cog):
     def pull_data(self):
         print('Pulling data')
         util.games, util.colors, util.time_control, util.ratings, util.last_moved, util.warned = pickle.load(open('Chess_Bot/data/database', 'rb'))
-        print('Pulled', util.games, util.colors, util.time_control, util.ratings, util.last_moved, util.warned)
+        # print('Pulled', util.games, util.colors, util.time_control, util.ratings, util.last_moved, util.warned)
         
     def push_data(self):
         print('Pushing data')
         pickle.dump([util.games, util.colors, util.time_control, util.ratings, util.last_moved, util.warned], open('Chess_Bot/data/database', 'wb'))
-        print('Pushed', util.games, util.colors, util.time_control, util.ratings, util.last_moved, util.warned)
+        # print('Pushed', util.games, util.colors, util.time_control, util.ratings, util.last_moved, util.warned)
     
     @commands.command()
     async def push_all(self, ctx):
