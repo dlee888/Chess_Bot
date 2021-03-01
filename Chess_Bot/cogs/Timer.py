@@ -14,6 +14,7 @@ class Timer(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.no_time_check.start()
+        self.low_time_warn.start()
         
     @commands.command()
     async def reset(self, ctx):
