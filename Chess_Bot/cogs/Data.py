@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord.ext import tasks
 import pickle
 
-from Chess_Bot.cogs.Utility import *
+import Chess_Bot.cogs.Utility as util
 
 class Data(commands.Cog):
     
@@ -27,11 +27,10 @@ class Data(commands.Cog):
         print('Bot is ready') 
     
     def pull_data(self):
-        global games, colors, time_control, ratings, last_moved, warned
-        games, colors, time_control, ratings, last_moved, warned = pickle.load(open('Chess_Bot/data/database', 'rb'))
+        util.games, util.colors, util.time_control, util.ratings, util.last_moved, util.warned = pickle.load(open('Chess_Bot/data/database', 'rb'))
         
     def push_data(self):
-        pickle.dump([games, colors, time_control, ratings, last_moved, warned], open('Chess_Bot/data/database', 'wb'))
+        pickle.dump([util.games, util.colors, util.time_control, util.ratings, util.last_moved, util.warned], open('Chess_Bot/data/database', 'wb'))
     
     # @commands.command()
     # async def push_all(self, ctx):
@@ -93,7 +92,7 @@ class Data(commands.Cog):
         
     @commands.command()
     async def upload(self, ctx):
-        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             await ctx.send(f'You do not have permission to upload')
             return
         
@@ -103,7 +102,7 @@ class Data(commands.Cog):
         
     @commands.command()
     async def download(self, ctx):
-        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             await ctx.send(f'You do not have permission to download')
             return
         
