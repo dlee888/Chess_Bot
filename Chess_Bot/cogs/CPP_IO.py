@@ -81,7 +81,6 @@ async def output_move(ctx, person, client):
                 if i == '' or i == '\n':
                     continue
                 games[person].append(int(i))
-            push_games()
             break
     
     code = out[-3].strip()

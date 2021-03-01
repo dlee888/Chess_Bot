@@ -3,6 +3,7 @@ import os
 from discord.ext import commands
 import sys
 import time
+import pickle
 
 from Chess_Bot.cogs.Utility import *
 from Chess_Bot.cogs.CPP_IO import *
@@ -92,15 +93,11 @@ class Development(commands.Cog):
 
         await ctx.send(f'Restarting...')
         
-        push_games()
-        push_ratings()
+        pickle.dump([games, colors, time_control, ratings, last_moved, warned], open('Chess_Bot/data/database', 'wb'))
         
         data_channel = await self.client.fetch_channel(814962871532257310)
         
-        await data_channel.send(file=discord.File('Chess_Bot/data/games.txt'))
-        await data_channel.send(file=discord.File('Chess_Bot/data/times.txt'))
-        await data_channel.send(file=discord.File('Chess_Bot/data/colors.txt'))
-        await data_channel.send(file=discord.File('Chess_Bot/data/ratings.txt'))
+        await data_channel.send(file=discord.File('Chess_Bot/data/database'))
 
         sys.exit()
 

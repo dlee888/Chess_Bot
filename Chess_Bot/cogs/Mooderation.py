@@ -24,9 +24,9 @@ class Mooderation(commands.Cog):
             return
 
         games.pop(user.id)
+        last_moved.pop(user.id)
         
         await ctx.send('Game aborted')
-        push_games()
         
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
@@ -43,4 +43,3 @@ class Mooderation(commands.Cog):
         ratings[801501916810838066] -= points
         
         await ctx.send(f'{points} points refunded')
-        push_ratings()

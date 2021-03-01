@@ -102,92 +102,92 @@ def update_rating(user, outcome):
     ratings[801501916810838066] = jamin_rating
 
 
-def push_ratings():
-    f = open('Chess_Bot/data/ratings.txt', 'w')
+# def push_ratings():
+#     f = open('Chess_Bot/data/ratings.txt', 'w')
 
-    for k in ratings.keys():
-        f.write(f'{k} ----- {ratings[k]}\n')
+#     for k in ratings.keys():
+#         f.write(f'{k} ----- {ratings[k]}\n')
 
-    f.close()
-
-
-def pull_ratings():
-    f = open('Chess_Bot/data/ratings.txt')
-    pulled = f.readlines()
-
-    ratings.clear()
-    for i in range(0, len(pulled)):
-        p = pulled[i].split(' ----- ')
-        ratings[int(p[0])] = float(p[1])
-
-    f.close()
+#     f.close()
 
 
-def push_games():
-    #os.system('echo "pushing games"')
-    f = open('Chess_Bot/data/games.txt', 'w')
+# def pull_ratings():
+#     f = open('Chess_Bot/data/ratings.txt')
+#     pulled = f.readlines()
 
-    for k in games.keys():
-        f.write(f'{k} ----- ')
-        for move in games[k]:
-            f.write(f'{move} ')
-        f.write('\n')
-    f.close()
+#     ratings.clear()
+#     for i in range(0, len(pulled)):
+#         p = pulled[i].split(' ----- ')
+#         ratings[int(p[0])] = float(p[1])
 
-    f2 = open('Chess_Bot/data/colors.txt', 'w')
-    for k in colors.keys():
-        f2.write(f'{k} ----- {colors[k]}\n')
-    f2.close()
+#     f.close()
 
-    f3 = open('Chess_Bot/data/times.txt', 'w')
-    for k in time_control.keys():
-        f3.write(f'{k} ----- {time_control[k]}\n')
-    f3.close()
+
+# def push_games():
+#     #os.system('echo "pushing games"')
+#     f = open('Chess_Bot/data/games.txt', 'w')
+
+#     for k in games.keys():
+#         f.write(f'{k} ----- ')
+#         for move in games[k]:
+#             f.write(f'{move} ')
+#         f.write('\n')
+#     f.close()
+
+#     f2 = open('Chess_Bot/data/colors.txt', 'w')
+#     for k in colors.keys():
+#         f2.write(f'{k} ----- {colors[k]}\n')
+#     f2.close()
+
+#     f3 = open('Chess_Bot/data/times.txt', 'w')
+#     for k in time_control.keys():
+#         f3.write(f'{k} ----- {time_control[k]}\n')
+#     f3.close()
     
-    f4 = open('Chess_Bot/data/timer.txt', 'w')
-    for k in last_moved.keys():
-        f4.write(f'{k} ----- {last_moved[k]}')
-    f4.close()
+#     f4 = open('Chess_Bot/data/timer.txt', 'w')
+#     for k in last_moved.keys():
+#         f4.write(f'{k} ----- {last_moved[k]}')
+#     f4.close()
 
 
-def pull_games():
-    f = open('Chess_Bot/data/games.txt')
+# def pull_games():
+#     f = open('Chess_Bot/data/games.txt')
 
-    g = f.readlines()
-    games.clear()
-    for i in g:
-        p = i.split(' ----- ')
-        games[int(p[0])] = []
-        g2 = p[1].strip().split(' ')
-        for i2 in g2:
-            if i2 == '' or i2 == '\n':
-                continue
-            games[int(p[0])].append(int(i2))
-    f.close()
+#     g = f.readlines()
+#     games.clear()
+#     for i in g:
+#         p = i.split(' ----- ')
+#         games[int(p[0])] = []
+#         g2 = p[1].strip().split(' ')
+#         for i2 in g2:
+#             if i2 == '' or i2 == '\n':
+#                 continue
+#             games[int(p[0])].append(int(i2))
+#     f.close()
 
-    f2 = open('Chess_Bot/data/colors.txt')
-    g2 = f2.readlines()
-    colors.clear()
-    for i in g2:
-        p = i.split(' ----- ')
-        colors[int(p[0])] = int(p[1])
-    f2.close()
+#     f2 = open('Chess_Bot/data/colors.txt')
+#     g2 = f2.readlines()
+#     colors.clear()
+#     for i in g2:
+#         p = i.split(' ----- ')
+#         colors[int(p[0])] = int(p[1])
+#     f2.close()
 
-    f3 = open('Chess_Bot/data/times.txt')
-    g3 = f3.readlines()
-    time_control.clear()
-    for i in g3:
-        p = i.split(' ----- ')
-        time_control[int(p[0])] = int(p[1])
-    f3.close()
+#     f3 = open('Chess_Bot/data/times.txt')
+#     g3 = f3.readlines()
+#     time_control.clear()
+#     for i in g3:
+#         p = i.split(' ----- ')
+#         time_control[int(p[0])] = int(p[1])
+#     f3.close()
     
-    f4 = open('Chess_Bot/data/timer.txt')
-    g4 = f4.readlines()
-    last_moved.clear()
-    for i in g4:
-        p = i.split(' ----- ')
-        last_moved[int(p[0])] = float(p[1])
-    f4.close()
+#     f4 = open('Chess_Bot/data/timer.txt')
+#     g4 = f4.readlines()
+#     last_moved.clear()
+#     for i in g4:
+#         p = i.split(' ----- ')
+#         last_moved[int(p[0])] = float(p[1])
+#     f4.close()
 
 
 def pretty_time(time):
