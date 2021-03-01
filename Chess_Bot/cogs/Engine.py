@@ -2,7 +2,7 @@ from discord.ext import commands
 import random
 import time
 
-from Chess_Bot.cogs.Utility import *
+import Chess_Bot.cogs.Utility as util
 from Chess_Bot.cogs.CPP_IO import *
 
 class Engine(commands.Cog):
@@ -19,11 +19,11 @@ class Engine(commands.Cog):
         For example, Nxe4, Nge5, c4, Ke2, etc
         More about algebraic notation here: https://www.chess.com/article/view/chess-notation#algebraic-notation
         '''
-        if not ctx.author.id in games.keys():
+        if not ctx.author.id in util.games.keys():
             await ctx.send('You do not have a game in progress with Chess Bot')
             return
 
-        if ctx.author.id in thonking:
+        if ctx.author.id in util.thonking:
             await ctx.send('Chess Bot is already thinking')
             return
 
@@ -31,7 +31,7 @@ class Engine(commands.Cog):
         
         thonk = self.client.get_emoji(814285875265536001)
         await ctx.message.add_reaction(thonk)
-        thonking.append(person)
+        util.thonking.append(person)
         
         file_in, file_out = prepare_files(person)
         prepare_input(person, move)
@@ -42,39 +42,39 @@ class Engine(commands.Cog):
         
         bot = await ctx.guild.fetch_member(self.client.user.id)
         await ctx.message.remove_reaction(thonk, bot)
-        thonking.remove(person)
+        util.thonking.remove(person)
         
         code = await output_move(ctx, person, self.client)
         
         if code == 'GAME STILL IN PROGRESS':
-            last_moved[person] = time.time()
+            util.last_moved[person] = time.time()
             return
         
         if code == 'ILLEGAL MOVE PLAYED':
             await ctx.send('Illegal move played. Make sure your move is in algebraic notation.\nType "$help move" for more info')
             return
 
-        old_rating = get_rating(ctx.author.id)
+        old_rating = util.get_rating(ctx.author.id)
         
         if code == 'COMPUTER RESIGNED':
             await ctx.send('Chess Bot resigned')
-            update_rating(ctx.author.id, 1)        
+            util.update_rating(ctx.author.id, 1)        
         elif code == 'DRAW':
-            update_rating(ctx.author.id, 1/2)
+            util.update_rating(ctx.author.id, 1/2)
             await ctx.send('Draw')
-        elif code[:5].lower() == whiteblack[colors[ctx.author.id]]:
-            update_rating(ctx.author.id, 1)
+        elif code[:5].lower() == whiteblack[util.colors[ctx.author.id]]:
+            util.update_rating(ctx.author.id, 1)
             await ctx.send('You won!')
-        elif code[:5].lower() == whiteblack[1 - colors[ctx.author.id]]:
-            update_rating(ctx.author.id, 0)
+        elif code[:5].lower() == whiteblack[1 - util.colors[ctx.author.id]]:
+            util.update_rating(ctx.author.id, 0)
             await ctx.send('You lost.')
         else:
             await ctx.send('Something went wrong. <:thonkery:532458240559153163>')
             return
 
-        await ctx.send(f'Your new rating is {get_rating(ctx.author.id)} ({old_rating} + {get_rating(person) - old_rating}')
-        games.pop(ctx.author.id)
-        last_moved.pop(person)
+        await ctx.send(f'Your new rating is {util.get_rating(ctx.author.id)} ({old_rating} + {util.get_rating(person) - old_rating}')
+        util.games.pop(ctx.author.id)
+        util.last_moved.pop(person)
 
 
     @commands.command()
@@ -86,28 +86,28 @@ class Engine(commands.Cog):
         Flags:
             -t to set time control (in seconds)
         '''
-        if ctx.author.id in games.keys():
+        if ctx.author.id in util.games.keys():
             await ctx.send('You already have a game in progress')
             return
         
         person = ctx.author.id
         
 
-        games[person] = []
-        colors[person] = random.randint(0, 1)  # 1 if white, 0 if black
+        util.games[person] = []
+        util.colors[person] = random.randint(0, 1)  # 1 if white, 0 if black
         
-        time_control[person] = 60
-        last_moved[person] = time.time()
+        util.time_control[person] = 60
+        util.last_moved[person] = time.time()
         
         for i in range(0, len(flags), 2):
             if flags[i] == '-t':
-                time_control[person] = int(flags[i+1])
+                util.time_control[person] = int(flags[i+1])
 
-        await ctx.send(f'Game started with Chess Bot\nYou are {whiteblack[colors[person]]}')
+        await ctx.send(f'Game started with Chess Bot\nYou are {whiteblack[util.colors[person]]}')
 
         thonk = self.client.get_emoji(814285875265536001)
         await ctx.message.add_reaction(thonk)
-        thonking.append(person)
+        util.thonking.append(person)
         
         file_in, file_out = prepare_files(person)
         prepare_input(person)
@@ -116,7 +116,7 @@ class Engine(commands.Cog):
         
         bot = await ctx.guild.fetch_member(self.client.user.id)
         await ctx.message.remove_reaction(thonk, bot)
-        thonking.remove(person)
+        util.thonking.remove(person)
         
         await log(person, self.client)
         await output_move(ctx, person, self.client)
@@ -128,15 +128,15 @@ class Engine(commands.Cog):
         '''
         Resigns the game
         '''
-        if not ctx.author.id in games.keys():
+        if not ctx.author.id in util.games.keys():
             await ctx.send('You do not have a game in progress')
             return
 
-        games.pop(ctx.author.id)
-        last_moved.pop(ctx.author.id)
+        util.games.pop(ctx.author.id)
+        util.last_moved.pop(ctx.author.id)
         
-        old_rating = get_rating(ctx.author.id)
+        old_rating = util.get_rating(ctx.author.id)
         
-        update_rating(ctx.author.id, 0)
+        util.update_rating(ctx.author.id, 0)
         
-        await ctx.send(f'Game resigned. Your new rating is {get_rating(ctx.author.id)} ({old_rating} + {get_rating(ctx.author.id) - old_rating}')
+        await ctx.send(f'Game resigned. Your new rating is {util.get_rating(ctx.author.id)} ({old_rating} + {util.get_rating(ctx.author.id) - old_rating}')

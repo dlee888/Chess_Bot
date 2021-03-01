@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 
-from Chess_Bot.cogs.Utility import *
+import Chess_Bot.cogs.Utility as util
 
 
 class Help(commands.Cog):
@@ -31,7 +31,7 @@ class Help(commands.Cog):
         embed.add_field(
             name='Other', value='`ping`, `help`, `botinfo`, `invite`, `git_history`')
         
-        if await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+        if await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             embed.add_field(
                 name='Development', value='Note: some developer commands do not work on heroku\n`debug`, `debug_load`, `gimme`, `git_pull`, `restart`, `update`', inline=False
             )

@@ -5,7 +5,7 @@ import sys
 import time
 import pickle
 
-from Chess_Bot.cogs.Utility import *
+import Chess_Bot.cogs.Utility as util
 from Chess_Bot.cogs.CPP_IO import *
 
 class Development(commands.Cog):
@@ -14,7 +14,7 @@ class Development(commands.Cog):
         self.client = client
 
     async def get_gcc(self):
-        out, err, status = await run('apt-get install g++')
+        out, err, status = await util.util.run('apt-get install g++')
         print(f'stdout: {out}\nstderr: {err}\n{status}')
 
     @commands.command()
@@ -26,7 +26,7 @@ class Development(commands.Cog):
         (Bot developers only)
         '''
 
-        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             await ctx.send(f'You do not have permission to update')
             return
         
@@ -38,7 +38,7 @@ class Development(commands.Cog):
         
         await ctx.send(compile_cmd)
 
-        out, err, status = await run(compile_cmd)
+        out, err, status = await util.run(compile_cmd)
 
         message = f'Updated\nCompile Message: {out}\nStderr: {err}'
         
@@ -65,7 +65,7 @@ class Development(commands.Cog):
             await ctx.send('Geniosity limit exceeded. Try again later')
             return
 
-        stdout, stderr, status = await run(cmd)
+        stdout, stderr, status = await util.run(cmd)
         
         message = f'Stdout: {stdout}\nStderr: {stderr}'
         
@@ -87,13 +87,13 @@ class Development(commands.Cog):
         (Bot developers only)
         '''
 
-        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             await ctx.send(f'You do not have permission to restart')
             return
 
         await ctx.send(f'Restarting...')
         
-        pickle.dump([games, colors, time_control, ratings, last_moved, warned], open('Chess_Bot/data/database', 'wb'))
+        pickle.dump([util.games, util.colors, util.time_control, util.ratings, util.last_moved, util.warned], open('Chess_Bot/data/database', 'wb'))
         
         data_channel = await self.client.fetch_channel(814962871532257310)
         
@@ -110,11 +110,11 @@ class Development(commands.Cog):
         '''
         await ctx.send(f'Executing command "git pull"...')
 
-        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             await ctx.send(f'You do not have permission to git_pull')
             return
 
-        stdout, stderr, status = await run(f'git pull')
+        stdout, stderr, status = await util.run(f'git pull')
 
         message = f'Stdout: {stdout}\nStderr: {stderr}'
         
@@ -136,16 +136,16 @@ class Development(commands.Cog):
         (Bot developers only)
         '''
 
-        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             await ctx.send(f'You do not have permission to debug_load')
             return
 
-        if not user.id in games.keys():
+        if not user.id in util.games.keys():
             await ctx.send(f'<@{user.id}> does not have a game in progress')
             return
         
-        games[ctx.author.id] = games[user.id]
-        colors[ctx.author.id] = colors[user.id]
+        util.games[ctx.author.id] = util.games[user.id]
+        util.colors[ctx.author.id] = util.colors[user.id]
         
         await ctx.send(f'Succesfully loaded game')
 
@@ -154,7 +154,7 @@ class Development(commands.Cog):
         '''
         Runs python code
         '''
-        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             await ctx.send(f'You do not have permission to debug')
             return
         
@@ -182,7 +182,7 @@ class Development(commands.Cog):
             await ctx.send('Geniosity limit exceeded. Try again later')
             return
             
-        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             await ctx.send(f'You do not have permission to get files')
             return
         

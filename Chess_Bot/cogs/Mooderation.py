@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from Chess_Bot.cogs.Utility import *
+import Chess_Bot.cogs.Utility as util
 
 class Mooderation(commands.Cog):
 
@@ -15,16 +15,16 @@ class Mooderation(commands.Cog):
         Aborts a game
         '''
         
-        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             await ctx.send('You do not have permission to abort games')
             return
 
-        if not user.id in games.keys():
+        if not user.id in util.games.keys():
             await ctx.send(f'{user} does not have a game in progress')
             return
 
-        games.pop(user.id)
-        last_moved.pop(user.id)
+        util.games.pop(user.id)
+        util.last_moved.pop(user.id)
         
         await ctx.send('Game aborted')
         
@@ -35,11 +35,11 @@ class Mooderation(commands.Cog):
         Refunds rating points to a user
         '''
         
-        if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Chess-Admin'], self.client):
+        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Chess-Admin'], self.client):
             await ctx.send('You do not have permission to refund rating')
             return
 
-        ratings[user.id] += points
-        ratings[801501916810838066] -= points
+        util.ratings[user.id] += points
+        util.ratings[801501916810838066] -= points
         
         await ctx.send(f'{points} points refunded')

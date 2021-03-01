@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from Chess_Bot.cogs.Utility import *
+import Chess_Bot.cogs.Utility as util
 from Chess_Bot.cogs.CPP_IO import *
 
 class Viewing(commands.Cog):
@@ -21,14 +21,14 @@ class Viewing(commands.Cog):
         else:
             person = ctx.author.id
 
-        if not person in games.keys():
+        if not person in util.games.keys():
             if len(user) == 1:
                 await ctx.send(f'{user[0]} does not have a game in progress')
             else:
                 await ctx.send('You do not have a game in progress')
             return
         
-        if person in thonking:
+        if person in util.thonking:
             await ctx.send('Chess Bot is in the middle of thinking. Try again later.')
             return
 
@@ -52,14 +52,14 @@ class Viewing(commands.Cog):
         else:
             person = ctx.author.id
 
-        if not person in games.keys():
+        if not person in util.games.keys():
             if len(user) == 1:
                 await ctx.send(f'{user[0]} does not have a game in progress')
             else:
                 await ctx.send('You do not have a game in progress')
             return
         
-        if person in thonking:
+        if person in util.thonking:
             await ctx.send('Chess Bot is in the middle of thinking. Try again later.')
             return
 

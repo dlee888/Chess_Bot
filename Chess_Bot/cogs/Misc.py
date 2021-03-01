@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import time
 
-from Chess_Bot.cogs.Utility import *
+import Chess_Bot.cogs.Utility as util
 
 version = '1.2.8'
 
@@ -29,9 +29,9 @@ class Misc(commands.Cog):
         '''
         
         if len(user) == 1:
-            await ctx.send(f'{user[0]}\'s rating is {get_rating(user[0].id)}')
+            await ctx.send(f'{user[0]}\'s rating is {util.get_rating(user[0].id)}')
         else:
-            await ctx.send(f'Your rating is {get_rating(ctx.message.author.id)}')
+            await ctx.send(f'Your rating is {util.get_rating(ctx.message.author.id)}')
         
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.default)
@@ -43,20 +43,20 @@ class Misc(commands.Cog):
         number = 1
         
         if num == 'all':
-            number = len(ratings.keys())
+            number = len(util.ratings.keys())
         elif num == '-1':
-            number = min(10, len(ratings.keys()))
+            number = min(10, len(util.ratings.keys()))
         else:
             number = int(num)
         
-        if number > len(ratings.keys()):
+        if number > len(util.ratings.keys()):
             await ctx.send('There aren\'t even that many rated players lmao')
             return
 
         all_players = []
         
-        for k in ratings.keys():
-            all_players.append((k, ratings[k]))
+        for k in util.ratings.keys():
+            all_players.append((k, util.ratings[k]))
         
         all_players.sort(reverse=True, key=lambda a: a[1])
         
