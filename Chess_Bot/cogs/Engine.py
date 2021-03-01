@@ -48,6 +48,7 @@ class Engine(commands.Cog):
         
         if code == 'GAME STILL IN PROGRESS':
             util.last_moved[person] = time.time()
+            util.warned[person] = False
             return
         
         if code == 'ILLEGAL MOVE PLAYED':
@@ -72,9 +73,11 @@ class Engine(commands.Cog):
             await ctx.send('Something went wrong. <:thonkery:532458240559153163>')
             return
 
-        await ctx.send(f'Your new rating is {util.get_rating(ctx.author.id)} ({old_rating} + {util.get_rating(person) - old_rating}')
+        await ctx.send(f'Your new rating is {round(util.get_rating(ctx.author.id))} ({round(old_rating)} + {round(util.get_rating(person) - old_rating)})')
+        
         util.games.pop(ctx.author.id)
         util.last_moved.pop(person)
+        util.warned.pop(person)
 
 
     @commands.command()
@@ -98,6 +101,7 @@ class Engine(commands.Cog):
         
         util.time_control[person] = 60
         util.last_moved[person] = time.time()
+        util.warned[person] = False
         
         for i in range(0, len(flags), 2):
             if flags[i] == '-t':
@@ -139,4 +143,4 @@ class Engine(commands.Cog):
         
         util.update_rating(ctx.author.id, 0)
         
-        await ctx.send(f'Game resigned. Your new rating is {util.get_rating(ctx.author.id)} ({old_rating} + {util.get_rating(ctx.author.id) - old_rating}')
+        await ctx.send(f'Game resigned. Your new rating is {round(util.get_rating(ctx.author.id))} ({round(old_rating)} + {round(util.get_rating(ctx.author.id) - old_rating)})')

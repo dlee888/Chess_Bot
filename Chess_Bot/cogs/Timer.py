@@ -66,6 +66,8 @@ class Timer(commands.Cog):
     async def send_no_time_message(self, person): 
         user = self.client.fetch_user(person)
                
+        util.games.pop(person)
+        util.warned.pop(person)
         util.last_moved.pop(person)
         
         old_rating = util.get_rating(person)
@@ -105,6 +107,7 @@ class Timer(commands.Cog):
             
             if time_left < LOW_TIME_WARN and not util.warned[k]:
                 await self.send_low_time_warning(k)
+                util.warned[k] = True
                 
     @tasks.loop(seconds=10)
     async def no_time_check(self):
