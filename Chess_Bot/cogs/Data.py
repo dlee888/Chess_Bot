@@ -17,9 +17,6 @@ class Data(commands.Cog):
         
         await self.download_data()
         
-        # pull_games()
-        # pull_ratings()
-        
         self.pull_data()  
          
         self.sync_data.start()
@@ -27,42 +24,41 @@ class Data(commands.Cog):
         print('Bot is ready') 
     
     def pull_data(self):
+        print('Pulling data')
         util.games, util.colors, util.time_control, util.ratings, util.last_moved, util.warned = pickle.load(open('Chess_Bot/data/database', 'rb'))
         
     def push_data(self):
+        print('Pushing data')
         pickle.dump([util.games, util.colors, util.time_control, util.ratings, util.last_moved, util.warned], open('Chess_Bot/data/database', 'wb'))
     
-    # @commands.command()
-    # async def push_all(self, ctx):
-    #     '''
-    #     Sync variables with txt documents
-    #     '''
-    #     if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-    #         await ctx.send(f'You do not have permission to push_all')
-    #         return
+    @commands.command()
+    async def push_all(self, ctx):
+        '''
+        Sync variables with txt documents
+        '''
+        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+            await ctx.send(f'You do not have permission to push_all')
+            return
 
-    #     push_games()
-    #     push_ratings()
-    #     await ctx.send('Sucessfully pushed')
+        self.push_data()
+        
+        await ctx.send('Sucessfully pushed')
 
-    # @commands.command()
-    # async def pull_all(self, ctx):
-    #     '''
-    #     Sync variables with txt documents
-    #     '''
-    #     if not await has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-    #         await ctx.send(f'You do not have permission to pull_all')
-    #         return
+    @commands.command()
+    async def pull_all(self, ctx):
+        '''
+        Sync variables with txt documents
+        '''
+        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+            await ctx.send(f'You do not have permission to pull_all')
+            return
 
-    #     pull_games()
-    #     pull_ratings()
-    #     await ctx.send('Sucessfully pulled')
+        self.pull_data()
+        
+        await ctx.send('Sucessfully pulled')
         
     @tasks.loop(hours=1)
     async def sync_data(self):
-        # push_games()
-        # push_ratings()
-        
         self.push_data()
         
         await self.upload_data()
