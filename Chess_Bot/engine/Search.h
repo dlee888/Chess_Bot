@@ -12,14 +12,14 @@
 #define INF 1000000007
 
 extern long long nodes, qsearch_nodes;
-extern long long tb_hits, collisions;
+extern long long tb_hits;
 
 extern int orig_eval;
 
 extern int prune;
 
-bool greater(const pdi &a, const pdi &b);
-bool less(const pdi &a, const pdi &b);
+inline bool greater(const pdi &a, const pdi &b);
+inline bool less(const pdi &a, const pdi &b);
 
 pdi search(int, int, int, int = -1);
 
