@@ -10,7 +10,7 @@ int best_eval[TABLE_SIZE];
 
 unsigned long long rand_bitstrings[64][13], color_bitstring, en_passant_bistrings[8], castling_bitstrings[4];
 
-void init_table()
+inline void init_table()
 {
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::mt19937 generator(seed);
@@ -31,6 +31,6 @@ void init_table()
 	}
 }
 
-void clear_table() {
+inline void clear_table() {
 	std::memset(exists, 0, sizeof(exists));
 }

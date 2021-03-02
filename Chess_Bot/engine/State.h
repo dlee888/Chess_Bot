@@ -33,7 +33,7 @@ dc_rook[4], dr_queen[8], dc_queen[8], dr_king[8], dc_king[8];
 class state
 {
 public:
-	bool out_of_bounds(int row, int column)
+	inline bool out_of_bounds(int row, int column)
 	{
 		if (row < 0)
 			return true;
@@ -49,14 +49,14 @@ public:
 	int board[8][8];
 	unsigned long long board_hash;
 
-	void replace_board(int row, int col, int piece)
+	inline void replace_board(int row, int col, int piece)
 	{
 		board_hash ^= rand_bitstrings[(row << 3) + col][board[row][col] + 6];
 		board_hash ^= rand_bitstrings[(row << 3) + col][piece + 6];
 		board[row][col] = piece;
 	}
 
-	unsigned long long get_hash()
+	inline unsigned long long get_hash()
 	{
 		return board_hash ^ (to_move ? color_bitstring : 0) ^ ((en_passant_target.top() == -1) ? 0 : en_passant_bistrings[en_passant_target.top() / 8]) ^
 			(wk_rights.top() ? castling_bitstrings[0] : 0) ^ (wq_rights.top() ? castling_bitstrings[1] : 0) ^ (bk_rights.top() ? castling_bitstrings[2] : 0) ^
@@ -92,11 +92,11 @@ public:
 		en_passant_target.push(-1);
 	}
 
-	std::string to_piece(int x);
-	int piece_to_int(char c);
-	std::string move_to_string(int move);
+	inline std::string to_piece(int x);
+	inline int piece_to_int(char c);
+	inline std::string move_to_string(int move);
 
-	bool operator==(state s)
+	inline bool operator==(state s)
 	{
 		if (s.to_move != to_move)
 			return false;
@@ -117,23 +117,23 @@ public:
 		return true;
 	}
 
-	void print();
+	inline void print();
 
 	int parse_move(std::string move);
 
 	void make_move(int move);
 	void unmake_move(int move);
 
-	int attacking(int row, int col, bool color);
-	int num_attack(int row, int col, bool color);
+	inline int attacking(int row, int col, bool color);
+	inline int num_attack(int row, int col, bool color);
 
 	std::vector<int> list_moves();
 
-	bool adjucation();
+	inline bool adjucation();
 
-	int mate();
+	inline int mate();
 
-	bool legal_check(int move) {
+	inline bool legal_check(int move) {
 		std::vector <int> moves = list_moves();
 		for (int i : moves) {
 			if (move == i) return true;

@@ -22,7 +22,7 @@ int whitepawn_row_sum, blackpawn_row_sum;
 std::vector<pii> whitepawns, whiteknights, whitebishops, whiterooks, whitequeens, whitekings;
 std::vector<pii> blackpawns, blackknights, blackbishops, blackrooks, blackqueens, blackkings;
 
-void init_eval_info()
+inline void init_eval_info()
 {
 	white_devel = 0;
 	black_devel = 0;

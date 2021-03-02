@@ -1,6 +1,6 @@
 #include "Evaluate.h"
 
-int eval(state& s)
+inline int eval(state& s)
 {
 	if (s.adjucation())
 		return 0;
@@ -39,30 +39,6 @@ int eval(state& s)
 		}
 		score += ksafety;
 		// printf("King safety: %d\n", ksafety_coeff * ksafety);
-
-		// Open files
-		int files = 0;
-		for (pii& p : whiterooks) {
-			if (white_pawn_counts[p.second] == 0) {
-				if (black_pawn_counts[p.second] == 0) {
-					files += open_bonus;
-				}
-				else {
-					files += semi_open_bonus;
-				}
-			}
-		}
-		for (pii& p : blackrooks) {
-			if (black_pawn_counts[p.second] == 0) {
-				if (white_pawn_counts[p.second] == 0) {
-					files -= open_bonus;
-				}
-				else {
-					files -= semi_open_bonus;
-				}
-			}
-		}
-		score += files;
 	}
 	else
 	{
@@ -88,6 +64,30 @@ int eval(state& s)
 	//doubled pawns
 	score -= dpawn_coeff * (doubled_white - doubled_black);
 	// printf("Doubled pawns: %d\n", dpawn_coeff * (doubled_white - doubled_black));
+
+	// open files
+	int files = 0;
+	for (pii& p : whiterooks) {
+		if (white_pawn_counts[p.second] == 0) {
+			if (black_pawn_counts[p.second] == 0) {
+				files += open_bonus;
+			}
+			else {
+				files += semi_open_bonus;
+			}
+		}
+	}
+	for (pii& p : blackrooks) {
+		if (black_pawn_counts[p.second] == 0) {
+			if (white_pawn_counts[p.second] == 0) {
+				files -= open_bonus;
+			}
+			else {
+				files -= semi_open_bonus;
+			}
+		}
+	}
+	score += files;
 
 	// Bishop pair
 	if (whitebishops.size() >= 2) {
