@@ -101,4 +101,4 @@ async def output_move(ctx, person, client):
 async def log(person, client, ctx):
     log_channel = client.get_channel(798277701210341459)
     
-    await log_channel.send(f'Output for {ctx.author} (id = {ctx.author.id})\nRequest: {ctx.message} ({ctx.message.jump_url})', file=discord.File(f'Chess_Bot/data/output-{person}.txt'))
+    await log_channel.send(f'Output for {ctx.author} (id = {ctx.author.id})\nRequest: {ctx.message.content}\n{ctx.message} ({ctx.message.jump_url})', file=discord.File(f'Chess_Bot/data/output-{person}.txt'))
