@@ -98,17 +98,7 @@ async def output_move(ctx, person, client):
     return code
 
 
-async def log(person, client):
-    f = open(f'Chess_Bot/data/output-{person}.txt')
-    out = f.readlines()
-    f.close()
+async def log(person, client, ctx):
     log_channel = client.get_channel(798277701210341459)
-    msg = f'<{person}>\n```\n'
-    for i in range(len(out)):
-        msg += out[i] + '\n'
-        if i % 10 == 0:
-            msg += '```'
-            await log_channel.send(msg)
-            msg = '```'
-    msg += '```'
-    await log_channel.send(msg)
+    
+    await log_channel.send(f'Output for {ctx.author} (id = {ctx.author.id})\nRequest: {ctx.message} ({ctx.message.jump_url})', file=discord.File(f'Chess_Bot/data/output-{person}.txt'))

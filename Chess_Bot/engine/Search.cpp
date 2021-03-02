@@ -36,17 +36,15 @@ pdi search(int depth, int alpha, int beta, int priority)
 		}
 	}
 
-	int curr_eval = eval(curr_state);
-
 	std::vector<int> moves = curr_state.list_moves();
 	std::vector<pdi> ordered_moves;
 
-	int mate = 3;
+	bool mate = true;
 	for (int i : moves)
 	{
 		curr_state.make_move(i);
 		ordered_moves.push_back({eval(curr_state), i});
-		if (mate == 3)
+		if (mate)
 		{
 			if (!curr_state.to_move)
 			{
@@ -65,37 +63,25 @@ pdi search(int depth, int alpha, int beta, int priority)
 		}
 		curr_state.unmake_move(i);
 	}
-	if (mate == 3)
+	if (mate)
 	{
 		if (curr_state.to_move)
 		{
 			if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) != 7)
-				mate = 2;
+				return pdi(-100000, -1);
 			else
-				mate = 1;
+				return pdi(0, -1);
 		}
 		else
 		{
 			if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) != 7)
-				mate = 2;
+				return pdi(100000, -1);
 			else
-				mate = 1;
+				return pdi(0, -1);
 		}
 	}
 
-	if (mate == 1)
-		return pdi(0, -1);
-	else if (mate == 2)
-	{
-		if (curr_state.to_move)
-		{
-			return pdi(-100000, -1);
-		}
-		else
-		{
-			return pdi(100000, -1);
-		}
-	}
+	int curr_eval = eval(curr_state);
 
 	if (curr_state.to_move)
 	{
@@ -244,16 +230,14 @@ pdi qsearch(int alpha, int beta)
 		}
 	}
 
-	int curr_eval = eval(curr_state);
-
 	std::vector<int> moves = curr_state.list_moves();
 	std::vector<pdi> ordered_moves;
 
-	int mate = 3;
+	bool mate = true;
 	for (int i : moves)
 	{
 		curr_state.make_move(i);
-		if (mate == 3)
+		if (mate)
 		{
 			if (!curr_state.to_move)
 			{
@@ -271,41 +255,29 @@ pdi qsearch(int alpha, int beta)
 			}
 		}
 		curr_state.unmake_move(i);
-		if ((((i >> 15) & 7) == 0) && ((i >> 18) != 1) && ((i >> 18) != 2))
-			continue;
-		ordered_moves.push_back({eval(curr_state), i});
+		if ((((i >> 15) & 7) != 0) || ((((i >> 18) & 3) == 2) && (((i >> 20) & 3) == 3))) {
+			ordered_moves.push_back({eval(curr_state), i});
+		}
 	}
-	if (mate == 3)
+	if (mate)
 	{
 		if (curr_state.to_move)
 		{
 			if (curr_state.attacking(whitekings[0].first, whitekings[0].second, true) != 7)
-				mate = 2;
+				return pdi(-100000, -1);
 			else
-				mate = 1;
+				return pdi(0, -1);
 		}
 		else
 		{
 			if (curr_state.attacking(blackkings[0].first, blackkings[0].second, false) != 7)
-				mate = 2;
+				return pdi(100000, -1);
 			else
-				mate = 1;
+				return pdi(0, -1);
 		}
 	}
 
-	if (mate == 1)
-		return pdi(0, -1);
-	else if (mate == 2)
-	{
-		if (curr_state.to_move)
-		{
-			return pdi(-100000, -1);
-		}
-		else
-		{
-			return pdi(100000, -1);
-		}
-	}
+	int curr_eval = eval(curr_state);
 
 	if (ordered_moves.size() == 0)
 	{
@@ -314,7 +286,7 @@ pdi qsearch(int alpha, int beta)
 
 	if (curr_state.to_move)
 	{
-        if (curr_eval >= beta) {
+        if (curr_eval >= beta) { // Standing pat
             return pdi(curr_eval, -3);
         }
 

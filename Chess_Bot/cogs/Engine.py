@@ -38,7 +38,7 @@ class Engine(commands.Cog):
 
         await run_engine(file_in, file_out)
 
-        await log(person, self.client)
+        await log(person, self.client, ctx)
         
         bot = await ctx.guild.fetch_member(self.client.user.id)
         await ctx.message.remove_reaction(thonk, bot)
@@ -122,7 +122,7 @@ class Engine(commands.Cog):
         await ctx.message.remove_reaction(thonk, bot)
         util.thonking.remove(person)
         
-        await log(person, self.client)
+        await log(person, self.client, ctx)
         await output_move(ctx, person, self.client)
 
 
