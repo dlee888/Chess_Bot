@@ -277,6 +277,7 @@ pdi qsearch(int alpha, int beta)
 		}
 	}
 
+
 	int curr_eval = eval(curr_state);
 
 	if (ordered_moves.size() == 0)

@@ -1,6 +1,6 @@
 #include "State.h"
 
-inline std::string state::to_piece(int x)
+std::string state::to_piece(int x)
 {
 	if (x == BK)
 		return "BK";
@@ -28,7 +28,7 @@ inline std::string state::to_piece(int x)
 		return "WP";
 	return "  ";
 }
-inline int state::piece_to_int(char c)
+int state::piece_to_int(char c)
 {
 	if (c == 'P')
 		return 1;
@@ -45,7 +45,7 @@ inline int state::piece_to_int(char c)
 	return 0;
 }
 
-inline void state::print()
+void state::print()
 {
 	for (int i = 0; i < 8; i++)
 	{
@@ -67,7 +67,7 @@ inline void state::print()
 	std::cout << "\n";
 }
 
-inline std::string state::move_to_string(int move)
+std::string state::move_to_string(int move)
 {
 	if (move == 1835008)
 	{

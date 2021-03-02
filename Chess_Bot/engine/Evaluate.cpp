@@ -1,6 +1,6 @@
 #include "Evaluate.h"
 
-inline int eval(state& s)
+int eval(state& s)
 {
 	if (s.adjucation())
 		return 0;

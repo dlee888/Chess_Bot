@@ -28,7 +28,7 @@ extern int whitepawn_row_sum, blackpawn_row_sum;
 extern std::vector<pii> whitepawns, whiteknights, whitebishops, whiterooks, whitequeens, whitekings;
 extern std::vector<pii> blackpawns, blackknights, blackbishops, blackrooks, blackqueens, blackkings;
 
-inline void init_eval_info();
+void init_eval_info();
 
 extern int king_safety[8][8], king_activity[8][8], knight_devel[8][8], bishop_devel[8][8], pawn_center[8][8], knight_center[8][8];
 #endif // !EVAL_INFO_H_INCLUDED

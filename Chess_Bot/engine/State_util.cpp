@@ -1,6 +1,6 @@
 #include "State.h"
 
-inline bool state::adjucation()
+ bool state::adjucation()
 {
 	if (fifty_move >= 50)
 		return true;
@@ -22,7 +22,7 @@ inline bool state::adjucation()
 }
 
 // returns 2 if checkmate, 1 if stalemate, and 0 otherwise
-inline int state::mate()
+ int state::mate()
 {
 	for (int i : list_moves())
 	{
@@ -62,7 +62,7 @@ inline int state::mate()
 }
 
 //lowest piece of the opposite color that is attacking a square
-inline int state::attacking(int row, int col, bool color)
+ int state::attacking(int row, int col, bool color)
 {
 	if (color)
 	{
@@ -193,7 +193,7 @@ inline int state::attacking(int row, int col, bool color)
 	return 7;
 }
 
-inline int state::num_attack(int row, int col, bool color)
+ int state::num_attack(int row, int col, bool color)
 {
 	int num_attack = 0;
 	if (color)

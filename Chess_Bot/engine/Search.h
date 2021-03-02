@@ -18,8 +18,8 @@ extern int orig_eval;
 
 extern int prune;
 
-inline bool greater(const pdi &a, const pdi &b);
-inline bool less(const pdi &a, const pdi &b);
+ bool greater(const pdi &a, const pdi &b);
+ bool less(const pdi &a, const pdi &b);
 
 pdi search(int, int, int, int = -1);
 

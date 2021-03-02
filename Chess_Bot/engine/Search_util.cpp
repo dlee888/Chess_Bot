@@ -7,11 +7,11 @@ int orig_eval;
 
 int prune = 500;
 
-inline bool greater(const pdi &a, const pdi &b)
+ bool greater(const pdi &a, const pdi &b)
 {
 	return a.first > b.first;
 }
-inline bool less(const pdi &a, const pdi &b)
+ bool less(const pdi &a, const pdi &b)
 {
 	return a.first < b.first;
 }
