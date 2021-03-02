@@ -141,8 +141,7 @@ void play()
 				{
 					printf("Searching depth %d\n", curr_depth);
 
-					nodes = 0;
-					collisions = 0;
+					nodes = 0; qsearch_nodes = 0;
 					tb_hits = 0;
 					orig_eval = eval(curr_state);
 
