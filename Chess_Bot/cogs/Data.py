@@ -94,6 +94,7 @@ class Data(commands.Cog):
             await ctx.send(f'You do not have permission to upload')
             return
         
+        self.push_data()
         await self.upload_data()
         
         await ctx.send('Finished uploading data')

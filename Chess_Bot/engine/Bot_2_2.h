@@ -142,7 +142,7 @@ void play()
 					printf("Searching depth %d\n", curr_depth);
 
 					nodes = 0; qsearch_nodes = 0;
-					tb_hits = 0;
+					tb_hits = 0; qsearch_hits = 0;
 					orig_eval = eval(curr_state);
 
 					int start_time = clock();
@@ -151,9 +151,9 @@ void play()
 					time_taken = clock() - start_time;
 
 					double actual_eval = (double)best_move.first / 100;
-					printf("Best move is %s, EVAL = %lf\n%lf seconds taken, %lld nodes searched, %lld nodes qsearched\nSpeed = %lf nodes per second. %lld TB hits\n",
+					printf("Best move is %s, EVAL = %lf\n%lf seconds taken, %lld nodes searched, %lld nodes qsearched\nSpeed = %lf nodes per second. %lld TB hits, %lld Qsearch TB hits\n",
 						   curr_state.move_to_string(best_move.second).c_str(),
-						   actual_eval, (double)time_taken / CLOCKS_PER_SEC, nodes, qsearch_nodes, ((double)nodes + qsearch_nodes) * CLOCKS_PER_SEC / time_taken, tb_hits);
+						   actual_eval, (double)time_taken / CLOCKS_PER_SEC, nodes, qsearch_nodes, ((double)nodes + qsearch_nodes) * CLOCKS_PER_SEC / time_taken, tb_hits, qsearch_hits);
 					if (abs(best_move.first) >= 100000)
 						break;
 					curr_depth++;

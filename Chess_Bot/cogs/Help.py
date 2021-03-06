@@ -27,13 +27,13 @@ class Help(commands.Cog):
         embed.add_field(
             name='Playing', value='`challenge`, `move`, `resign`, `view`, `fen`, `time`', inline=False)
         embed.add_field(
-            name='Rating', value='`rating`, `leaderboard`', inline=False)
+            name='Rating', value='`rating`, `leaderboard`, `rank`', inline=False)
         embed.add_field(
-            name='Other', value='`ping`, `help`, `botinfo`, `invite`, `git_history`')
+            name='Other', value='`ping`, `help`, `botinfo`, `invite`')
         
         if await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             embed.add_field(
-                name='Development', value='Note: some developer commands do not work on heroku\n`debug`, `debug_load`, `gimme`, `git_pull`, `restart`, `update`', inline=False
+                name='Development', value='Note: some developer commands do not work on heroku: `git_pull` and `update`\n`debug`, `debug_load`, `gimme`, `git_pull`, `restart`, `update`', inline=False
             )
             embed.add_field(
                 name='Moderation', value='`abort`, `refund`'
@@ -145,9 +145,10 @@ class Help(commands.Cog):
         await ctx.send(embed=embed)
         
     @help.command()
-    async def git_history(self, ctx):
+    async def time(self, ctx):
         embed = await self.get_default_help_embed()
-        embed.description = '''`$git_history`
-                                Sends git history'''
+        embed.description = '''`$rank`
+                                Tells you what rank you are'''
 
         await ctx.send(embed=embed)
+        

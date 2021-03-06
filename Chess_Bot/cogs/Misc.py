@@ -66,6 +66,28 @@ class Misc(commands.Cog):
             embed.add_field(name= f'{i+1}: {user.name}#{user.discriminator}', value= f'{round(all_players[i][1])}', inline = True)
         
         await ctx.send(embed=embed)
+        
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.default)
+    async def rank(self, ctx):
+        '''
+        Shows highest rated players
+        '''
+
+        all_players = []
+        
+        for k in util.ratings.keys():
+            all_players.append((k, util.ratings[k]))
+        
+        all_players.sort(reverse=True, key=lambda a: a[1])
+        
+        rank = None
+        for i in range(len(all_players)):
+            if all_players[i][0] == ctx.author.id:
+                rank = i + 1
+                break
+        
+        await ctx.send(f'Your rating is {util.get_rating(ctx.author.id)}. You are ranked {rank} out of {len(all_players)} players.')
 
     @commands.command(aliases=['info'])
     @commands.cooldown(1, 4, commands.BucketType.default)
@@ -80,19 +102,22 @@ class Misc(commands.Cog):
                         inline=False)
         embed.add_field(name='Version', value=version, inline=True)
         embed.add_field(name="Info",
-                        value='Chess Bot is a bot that plays chess. $help for more information', inline=False)
+                        value='Chess Bot is a bot that plays chess. $help for a list of commands.', inline=False)
         
         users = 0
         for guild in self.client.guilds:
             users += guild.member_count
         
         embed.add_field(name="Stats", value="Stats", inline=False)
-        embed.add_field(name="Guild Count", value=str(len(self.client.guilds)), inline=True)
+        embed.add_field(name="Server Count", value=str(len(self.client.guilds)), inline=True)
         embed.add_field(name="Member Count", value=str(users), inline=True)
-        embed.add_field(name="Up time", value=f'{round((time.time() - self.start_time)*1000)/1000} seconds', inline=True)
+        embed.add_field(name="Up time", value=f'{util.pretty_time(time.time() - self.start_time)} seconds', inline=True)
+        
         owner = (await self.client.application_info()).owner
         embed.set_footer(text=f"Made by {owner}", icon_url=owner.avatar_url)
+        
         embed.set_thumbnail(url='https://i.imgur.com/n1jak68.png')
+        
         await ctx.send(embed=embed)
 
     @commands.command()

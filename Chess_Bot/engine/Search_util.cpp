@@ -1,7 +1,7 @@
 #include "Search.h"
 
 long long nodes, qsearch_nodes;
-long long tb_hits;
+long long tb_hits, qsearch_hits;
 
 int orig_eval;
 

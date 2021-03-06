@@ -67,7 +67,7 @@ class Timer(commands.Cog):
         await dm.send('You are low on time. Use `$time` to get how much time you have left.', embed=embed)
         
     async def send_no_time_message(self, person): 
-        user = self.client.fetch_user(person)
+        user = await self.client.fetch_user(person)
                
         util.games.pop(person)
         util.warned.pop(person)

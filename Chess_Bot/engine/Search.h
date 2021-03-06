@@ -12,7 +12,7 @@
 #define INF 1000000007
 
 extern long long nodes, qsearch_nodes;
-extern long long tb_hits;
+extern long long tb_hits, qsearch_hits;
 
 extern int orig_eval;
 

@@ -211,7 +211,7 @@ pdi qsearch(int alpha, int beta)
 
 	if (exists[curr_board_hash])
 	{
-		tb_hits++;
+		qsearch_hits++;
 		return pdi(best_eval[curr_board_hash], -3);
 	}
 
