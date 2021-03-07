@@ -111,24 +111,28 @@ class Timer(commands.Cog):
             
     @tasks.loop(seconds=10)
     async def low_time_warn(self):
-        people = util.last_moved.keys()
+        people = []
+        for person in util.last_moved.keys():
+            people.append(person)
         
-        for k in people:
-            time_left = util.last_moved[k] + MAX_TIME_PER_MOVE - time.time()
+        for person in people:
+            time_left = util.last_moved[person] + MAX_TIME_PER_MOVE - time.time()
             
-            if time_left < LOW_TIME_WARN and not util.warned[k]:
-                await self.send_low_time_warning(k)
-                util.warned[k] = True
+            if time_left < LOW_TIME_WARN and not util.warned[person]:
+                await self.send_low_time_warning(person)
+                util.warned[person] = True
                 
     @tasks.loop(seconds=10)
     async def no_time_check(self):
-        people = util.last_moved.keys()
+        people = []
+        for person in util.last_moved.keys():
+            people.append(person)
         
-        for k in people:
-            time_left = util.last_moved[k] + MAX_TIME_PER_MOVE - time.time()
+        for person in people:
+            time_left = util.last_moved[person] + MAX_TIME_PER_MOVE - time.time()
             
             if time_left < 0:
-                await self.send_no_time_message(k)
+                await self.send_no_time_message(person)
         
     @low_time_warn.before_loop
     @no_time_check.before_loop
