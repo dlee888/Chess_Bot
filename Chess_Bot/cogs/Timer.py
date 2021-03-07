@@ -60,11 +60,14 @@ class Timer(commands.Cog):
 
                 break
         
-        dm = user.dm_channel
-        if dm == None:
-            dm = await user.create_dm()
-            
-        await dm.send('You are low on time. Use `$time` to get how much time you have left.', embed=embed)
+        try:
+            dm = user.dm_channel
+            if dm == None:
+                dm = await user.create_dm()
+                
+            await dm.send('You are low on time. Use `$time` to get how much time you have left.', embed=embed)
+        except Exception as e:
+            print('Exception in send_low_time_warning:', e)
         
     async def send_no_time_message(self, person): 
         user = await self.client.fetch_user(person)
@@ -76,11 +79,14 @@ class Timer(commands.Cog):
         old_rating = util.get_rating(person)
         util.update_rating(person, 0)
         
-        dm = user.dm_channel
-        if dm == None:
-            dm = await user.create_dm()
-        
-        await dm.send(f'Your game was automatically forfeited on time. Your new rating is {util.get_rating(person)} ({old_rating} + {util.get_rating(person) - old_rating}')
+        try:
+            dm = user.dm_channel
+            if dm == None:
+                dm = await user.create_dm()
+            
+            await dm.send(f'Your game was automatically forfeited on time. Your new rating is {util.get_rating(person)} ({old_rating} + {util.get_rating(person) - old_rating}')
+        except Exception as e:
+            print('Exception in send_no_time_message:', e)
         
     @commands.command()
     async def time(self, ctx, *user : discord.Member):
