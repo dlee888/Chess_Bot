@@ -346,3 +346,4 @@ image-*
 token*
 
 message.txt
+.vscode/*

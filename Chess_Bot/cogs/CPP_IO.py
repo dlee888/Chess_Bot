@@ -35,13 +35,16 @@ def prepare_input(person, move=''):
     file_in = f'Chess_Bot/data/input-{person}.txt'
 
     f = open(file_in, 'w')
-    f.write(f'play\nyes2\n{get_game_str(person)}\n{util.time_control[person]}\n{whiteblack[1 - util.colors[person]]}\n{move}\nquit\nquit\n')
+    f.write(
+        f'play\nyes2\n{get_game_str(person)}\n{util.time_control[person]}\n{whiteblack[1 - util.colors[person]]}\n{move}\nquit\nquit\n')
     f.close()
 
+
 async def run_engine(file_in, file_out):
-    print('Running engine')
+    # print('Running engine')
     out, err, status = await util.run(f'./"Chess_Bot/a" < {file_in} > {file_out}')
-    print(f'Stdout: {out}\nStderr: {err}\n{status}')
+    # print(f'Stdout: {out}\nStderr: {err}\n{status}')
+
 
 async def output_move(ctx, person, client):
     user = await ctx.message.guild.fetch_member(person)
@@ -82,9 +85,9 @@ async def output_move(ctx, person, client):
                     continue
                 util.games[person].append(int(i))
             break
-    
+
     code = out[-3].strip()
-    
+
     if code == 'DRAW':
         embed.description = 'Draw'
     elif (code == 'COMPUTER RESIGNED' and util.colors[person] == 1) or code == 'WHITE WON':
@@ -93,12 +96,17 @@ async def output_move(ctx, person, client):
         embed.description = 'Black won.'
     elif code == 'ILLEGAL MOVE PLAYED':
         embed.description = f'{whiteblack[util.colors[person]].capitalize()} to move.\nIllegal move played.'
-        
+
     await ctx.message.reply(embed=embed)
     return code
 
 
 async def log(person, client, ctx):
     log_channel = client.get_channel(798277701210341459)
-    
-    await log_channel.send(f'Output for {ctx.author} (id = {ctx.author.id})\nRequest: {ctx.message.content}\n{ctx.message} ({ctx.message.jump_url})', file=discord.File(f'Chess_Bot/data/output-{person}.txt'))
+
+    await log_channel.send(f'''Output for {ctx.author} (id = {ctx.author.id})
+                           Request: {ctx.message.content}
+                           {ctx.message}
+                           Jump url: ({ctx.message.jump_url})''', files=[
+        discord.File(f'Chess_Bot/data/output-{person}.txt'),
+        discord.File(f'Chess_Bot/data/input-{person}.txt')])
