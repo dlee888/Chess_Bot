@@ -145,7 +145,7 @@ class Help(commands.Cog):
         await ctx.send(embed=embed)
         
     @help.command()
-    async def time(self, ctx):
+    async def rank(self, ctx):
         embed = await self.get_default_help_embed()
         embed.description = '''`$rank`
                                 Tells you what rank you are'''
