@@ -207,6 +207,9 @@ pdi qsearch(int alpha, int beta)
 {
 	qsearch_nodes++;
 
+	// printf("Qsearching with alpha = %d, beta = %d\n", alpha, beta);
+	// curr_state.print();
+
     unsigned long long curr_board_hash = curr_state.get_hash() % TABLE_SIZE;
 
 	if (exists[curr_board_hash])
@@ -291,6 +294,10 @@ pdi qsearch(int alpha, int beta)
             return pdi(curr_eval, -3);
         }
 
+		if (curr_eval >= alpha) {
+			alpha = curr_eval;
+		}
+
 		sort(ordered_moves.begin(), ordered_moves.end(), greater);
 
 		int best_move = -3;
@@ -298,12 +305,12 @@ pdi qsearch(int alpha, int beta)
 		{
 			int move = p.second;
 			curr_state.make_move(move);
-			//curr_state.print();
-			//printf("Made move %s. Eval = %lf\n", curr_state.move_to_string(move).c_str(), eval(curr_state, speed));
+			// curr_state.print();
+			// printf("Made move %s. Eval = %d\n", curr_state.move_to_string(move).c_str(), eval(curr_state));
 			auto x = qsearch(alpha, beta);
 			curr_state.unmake_move(move);
-			//curr_state.print();
-			//printf("Unmade move %s. Eval = %lf\n", curr_state.move_to_string(move).c_str(), eval(curr_state, speed));
+			// curr_state.print();
+			// printf("Unmade move %s. Eval = %d\n", curr_state.move_to_string(move).c_str(), eval(curr_state));
 			if (alpha < x.first)
 			{
 				alpha = x.first;
@@ -323,6 +330,10 @@ pdi qsearch(int alpha, int beta)
             return pdi(curr_eval, -3);
         }
 
+		if (curr_eval <= beta) {
+			beta = curr_eval;
+		}
+
 		sort(ordered_moves.begin(), ordered_moves.end(), less);
 
 		int best_move = -3;
@@ -330,12 +341,12 @@ pdi qsearch(int alpha, int beta)
 		{
 			int move = p.second;
 			curr_state.make_move(move);
-			//curr_state.print();
-			//printf("Made move %s. Eval = %lf\n", curr_state.move_to_string(move).c_str(), eval(curr_state, speed));
+			// curr_state.print();
+			// printf("Made move %s. Eval = %d\n", curr_state.move_to_string(move).c_str(), eval(curr_state));
 			auto x = qsearch(alpha, beta);
 			curr_state.unmake_move(move);
-			//curr_state.print();
-			//printf("Unmade move %s. Eval = %lf\n", curr_state.move_to_string(move).c_str(), eval(curr_state, speed));
+			// curr_state.print();
+			// printf("Unmade move %s. Eval = %d\n", curr_state.move_to_string(move).c_str(), eval(curr_state));
 			if (beta > x.first)
 			{
 				beta = x.first;
