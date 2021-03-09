@@ -99,13 +99,23 @@ class Engine(commands.Cog):
         util.games[person] = []
         util.colors[person] = random.randint(0, 1)  # 1 if white, 0 if black
         
-        util.time_control[person] = 60
+        util.time_control[person] = 30
         util.last_moved[person] = time.time()
         util.warned[person] = False
         
         for i in range(0, len(flags), 2):
             if flags[i] == '-t':
-                util.time_control[person] = int(flags[i+1])
+                try:
+                    time_control = int(flags[i + 1])
+                except ValueError:
+                    await ctx.send('That isn\'t even an integer lol')
+                    return
+
+                if time_control < 1 or time_control > 120:
+                    await ctx.send('Please enter an integer between 1 and 120')
+                    return
+
+                util.time_control[person] = time_control
 
         await ctx.send(f'Game started with Chess Bot\nYou are {whiteblack[util.colors[person]]}')
 
@@ -120,10 +130,10 @@ class Engine(commands.Cog):
         
         bot = await ctx.guild.fetch_member(self.client.user.id)
         await ctx.message.remove_reaction(thonk, bot)
-        util.thonking.remove(person)
         
         await log(person, self.client, ctx)
         await output_move(ctx, person, self.client)
+        util.thonking.remove(person)
 
 
     @commands.command()

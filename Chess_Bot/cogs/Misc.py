@@ -47,11 +47,17 @@ class Misc(commands.Cog):
         elif num == '-1':
             number = min(10, len(util.ratings.keys()))
         else:
-            number = int(num)
+            try:
+                number = int(num)
+            except ValueError:
+                await ctx.send('That isn\'t even an integer lol')
+                return
         
         if number > len(util.ratings.keys()):
             await ctx.send('There aren\'t even that many rated players lmao')
             return
+
+        number = min(number, 25)
 
         all_players = []
         

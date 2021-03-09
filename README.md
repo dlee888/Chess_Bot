@@ -11,6 +11,7 @@ It also has a built-in elo rating system.
  - move [person]:      Plays [move] against the computer
  - resign:    Resigns the game
  - view:      Views your current game
+ - time: Sends how much time you have left.
   
 ### Moderation
 These commands require special permissions
@@ -18,15 +19,9 @@ These commands require special permissions
  - refund [user] [points]: Refunds [user] [points] rating points
 
 ### Other:
- - botinfo:   Sends info about the bot
+ - botinfo:   Sends basic info and stats about the bot
  - ping:      Sends "Pong!" and gives latency
  - rating:    Tells you your rating
  - leaderboard: Shows top rated players
+ - rank: Shows your rank out of all rated players
  - help:      Sends a message with all of the commands
-
- Note: the following commands are for bot developers only:
- - update
- - shell
- - git_pull
- - restart
- - debug

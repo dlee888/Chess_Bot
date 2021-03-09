@@ -85,7 +85,7 @@ class Help(commands.Cog):
     async def fen(self, ctx):
         embed = await self.get_default_help_embed()
         embed.description = '''`$fen`
-                                Sends your current game in fen notation.
+                                Sends your current game in [fen notation](https://en.wikipedia.org/wiki/Forsyth%e2%80%93Edwards_Notation).
                                 `$fen <person>` to get <person>'s game'''
 
         await ctx.send(embed=embed)
@@ -108,7 +108,7 @@ class Help(commands.Cog):
                                 By default, shows 10 players.
                                 Use `$leaderboard <number>` to get the top <number> players
                                 Use `$leaderboard all` to get all players.
-                                Note: Leaderboard is really laggy with more than about 15 people'''
+                                Note: Leaderboard is really laggy with more than about 15 people, and can not hold over 25 people'''
 
         await ctx.send(embed=embed)
         
