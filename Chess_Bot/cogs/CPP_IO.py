@@ -41,9 +41,9 @@ def prepare_input(person, move=''):
 
 
 async def run_engine(file_in, file_out):
-    # print('Running engine')
+    print('Running engine')
     out, err, status = await util.run(f'./"Chess_Bot/a" < {file_in} > {file_out}')
-    # print(f'Stdout: {out}\nStderr: {err}\n{status}')
+    print(f'Stdout: {out}\nStderr: {err}\n{status}')
 
 
 async def output_move(ctx, person, client):
