@@ -40,11 +40,11 @@ class Engine(commands.Cog):
 
         await log(person, self.client, ctx)
         
+        code = await output_move(ctx, person, self.client)
+        
         bot = await ctx.guild.fetch_member(self.client.user.id)
         await ctx.message.remove_reaction(thonk, bot)
         util.thonking.remove(person)
-        
-        code = await output_move(ctx, person, self.client)
         
         if code == 'GAME STILL IN PROGRESS':
             util.last_moved[person] = time.time()
@@ -138,6 +138,7 @@ class Engine(commands.Cog):
 
         util.games.pop(ctx.author.id)
         util.last_moved.pop(ctx.author.id)
+        util.warned.pop(ctx.author.id)
         
         old_rating = util.get_rating(ctx.author.id)
         

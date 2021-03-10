@@ -1,3 +1,9 @@
 {
-    "python.pythonPath": "C:\\Users\\leewe.DESKTOP-R85QH5T\\AppData\\Local\\Programs\\Python\\Python38\\python.exe"
+    "python.pythonPath": "C:\\Users\\leewe.DESKTOP-R85QH5T\\AppData\\Local\\Programs\\Python\\Python38\\python.exe",
+    "files.associations": {
+        "utility": "cpp",
+        "thread": "cpp",
+        "xstring": "cpp",
+        "random": "cpp"
+    }
 }

@@ -97,5 +97,7 @@ int eval(state& s)
 		score -= bishop_pair_bonus;
 	}
 	
+	if (!curr_state.to_move) score *= -1;
+
 	return score;
 }

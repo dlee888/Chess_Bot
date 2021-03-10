@@ -140,7 +140,22 @@ public:
 		}
 		return false;
 	}
-	// bool operator<(const State &s){ return true; }
+
+	bool is_check() {
+		if (to_move) {
+			return attacking(whitekings[0].first, whitekings[0].second, true) != 7;
+		} else {
+			return attacking(blackkings[0].first, blackkings[0].second, false) != 7;
+		}
+	}
+	
+	bool king_attacked() {
+		if (!to_move) {
+			return attacking(whitekings[0].first, whitekings[0].second, true) != 7;
+		} else {
+			return attacking(blackkings[0].first, blackkings[0].second, false) != 7;
+		}
+	}
 };
 
 extern state curr_state;

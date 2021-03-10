@@ -3,8 +3,6 @@
 #include "Engine.h"
 #include "Bot_2_2.h"
 
-state curr_state;
-
 void init_everything()
 {
 	init_table();

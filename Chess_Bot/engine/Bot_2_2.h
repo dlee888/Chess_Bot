@@ -8,8 +8,6 @@
 #include "Openings.h"
 #include "Search.h"
 
-int RESIGN = 1000;
-
 void play()
 {
 	std::vector<int> game;
@@ -146,31 +144,33 @@ void play()
 					orig_eval = eval(curr_state);
 
 					int start_time = clock();
-					if (computer_is_white) best_move = search(curr_depth, -RESIGN, INF, best_move.second);
-					else best_move = search(curr_depth, -INF, RESIGN, best_move.second);
+					priority = best_move.second;
+					best_move = find_best_move(curr_depth);
 					time_taken = clock() - start_time;
 
 					double actual_eval = (double)best_move.first / 100;
 					printf("Best move is %s, EVAL = %lf\n%lf seconds taken, %lld nodes searched, %lld nodes qsearched\nSpeed = %lf nodes per second. %lld TB hits, %lld Qsearch TB hits\n",
 						   curr_state.move_to_string(best_move.second).c_str(),
 						   actual_eval, (double)time_taken / CLOCKS_PER_SEC, nodes, qsearch_nodes, ((double)nodes + qsearch_nodes) * CLOCKS_PER_SEC / time_taken, tb_hits, qsearch_hits);
-					if (abs(best_move.first) >= 100000)
+					
+					if (abs(best_move.first) >= MATE)
 						break;
+					
+					if (break_now) {
+						break;
+					}
+
 					curr_depth++;
 				}
 				move_i = best_move.second;
-				if (move_i == -2) {
+				if ((computer_is_white && best_move.first < -RESIGN) || (!computer_is_white && best_move.first > RESIGN))
+				{
 					error_msg = "COMPUTER RESIGNED";
 					break;
 				}
 				if (move_i == -1)
 				{
 					error_msg = "ILLEGAL MOVE PLAYED";
-					break;
-				}
-				if ((computer_is_white && best_move.first < -RESIGN) || (!computer_is_white && best_move.first > RESIGN))
-				{
-					error_msg = "COMPUTER RESIGNED";
 					break;
 				}
 				std::cout << "COMPUTER PLAYED " << curr_state.move_to_string(move_i) << std::endl

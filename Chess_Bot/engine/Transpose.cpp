@@ -8,11 +8,11 @@ bool exists[TABLE_SIZE];
 int depths[TABLE_SIZE];
 int best_eval[TABLE_SIZE];
 
-unsigned long long rand_bitstrings[64][13], color_bitstring, en_passant_bistrings[8], castling_bitstrings[4];
+Bitstring rand_bitstrings[64][13], color_bitstring, en_passant_bistrings[8], castling_bitstrings[4];
 
- void init_table()
+void init_table()
 {
-	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	Bitstring seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::mt19937 generator(seed);
 
 	std::memset(exists, 0, sizeof(exists));
@@ -31,6 +31,6 @@ unsigned long long rand_bitstrings[64][13], color_bitstring, en_passant_bistring
 	}
 }
 
- void clear_table() {
+void clear_table() {
 	std::memset(exists, 0, sizeof(exists));
 }

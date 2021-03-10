@@ -16,12 +16,23 @@ extern long long tb_hits, qsearch_hits;
 
 extern int orig_eval;
 
-extern int prune;
+extern int prune, RESIGN;
 
- bool greater(const pdi &a, const pdi &b);
- bool less(const pdi &a, const pdi &b);
+extern int priority;
 
-pdi search(int, int, int, int = -1);
+extern bool break_now;
 
-pdi qsearch(int, int);
+bool move_comparator(const int &a, const int &b);
+
+int search(int, int, int);
+
+int qsearch(int, int);
+
+pdi find_best_move(int);
+
+enum {
+	MATE = 100000,
+	MATED = -100000,
+	DRAWN = 0
+};
 #endif // !SEARCH_H_INCLUDED

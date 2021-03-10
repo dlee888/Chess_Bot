@@ -12,6 +12,8 @@ extern int BVAL;
 extern int NVAL;
 extern int PVAL;
 
+extern int vals[7];
+
 extern int devel_coeff, center_coeff, ksafety_coeff, castle_bonus, castle_right_bonus, pass_pawn_coeff,
     dpawn_coeff, activity_coeff, semi_open_bonus, open_bonus, bishop_pair_bonus;
 
