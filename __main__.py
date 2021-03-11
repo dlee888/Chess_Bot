@@ -10,6 +10,7 @@ from Chess_Bot.cogs.Development import *
 from Chess_Bot.cogs.Data import *
 from Chess_Bot.cogs.Help import *
 from Chess_Bot.cogs.Timer import *
+from Chess_Bot.cogs.Topgg import *
 
 import logging
 
@@ -30,6 +31,7 @@ bot.add_cog(Development(bot))
 bot.add_cog(Data(bot))
 bot.add_cog(Help(bot))
 bot.add_cog(Timer(bot))
+bot.add_cog(Topgg(bot))
 
 @bot.event
 async def on_error(error, *args, **kwargs):
