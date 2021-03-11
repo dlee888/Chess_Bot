@@ -21,11 +21,16 @@ class Topgg(commands.Cog):
         print('Vote recieved!')
         print(data)
         
+        gg_channel = await self.client.fetch_channel(819639514758643754)
+        gg_channel.send(f'Vote from {data[id]} found!\nThank you for voting! You have recieved a gift of 10 rating points.')
+        
+        util.ratings[data[id]] += 10
+        
     @commands.command()
     async def votes(self, ctx):
         
         if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            await ctx.send(f'You do not have permission to debug_load')
+            await ctx.send(f'You do not have permission to see votes')
             return
         
         voted = await self.dbl_client.get_bot_upvotes()
