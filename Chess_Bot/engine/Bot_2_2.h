@@ -230,6 +230,8 @@ void play()
 		}
 		
 		scramble_openings();
+
+		clear_table(); // to prevent collisions
 	}
 	if (error_msg.size() != 0)
 		std::cout << error_msg << std::endl;

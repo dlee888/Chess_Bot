@@ -14,5 +14,6 @@ extern int best_eval[TABLE_SIZE];
 
 extern Bitstring rand_bitstrings[64][13], color_bitstring, en_passant_bistrings[8], castling_bitstrings[4];
 
- void init_table();
+void init_table();
+void clear_table();
 #endif // !TRANSPOS_H_INCLUDED

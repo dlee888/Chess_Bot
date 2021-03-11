@@ -13,26 +13,33 @@ int RESIGN = 1000;
 
 int priority;
 
+namespace {
+	int danger[7] = {0, 5, 20, 20, 40, 60, 80};
+}
+
+int get_goodnes(int move) {
+	// TODO: Make better
+	
+	int piece = (move >> 12) & 3, piece_captured = (move >> 15) & 3;
+	int good = vals[piece_captured];
+	good -= danger[piece];
+	return good;
+}
+
 bool move_comparator(const int &a, const int &b)
 {
-    // TODO: make better and faster
-
     int good_a = 0, good_b = 0;
     
     if (a == priority) {
         good_a = INF;
     } else {
-        curr_state.make_move(a);
-        good_a = -eval(curr_state);
-        curr_state.unmake_move(a);
+        good_a = get_goodnes(a);
     }
     
     if (b == priority) {
         good_b = INF;
     } else {
-        curr_state.make_move(b);
-        good_b = -eval(curr_state);
-        curr_state.unmake_move(b);
+        good_b = get_goodnes(b);
     }
 
     return good_a > good_b;
