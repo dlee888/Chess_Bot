@@ -189,6 +189,17 @@ class Development(commands.Cog):
 		await ctx.send(file, file=discord.File(file))
 		
 	@commands.command()
-	async def troll_change(self, ctx, guild : int):
+	async def troll_change(self, ctx, guild : int, new_prefix):
 		if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
 			return
+
+		util.prefixes[guild] = new_prefix
+
+		await ctx.send('Prefix successfully updated')
+
+		bot = await (await self.client.fetch_guild(guild)).fetch_member(801501916810838066)
+
+		try:
+			await bot.edit(nick=f'[{new_prefix}] - Chess Bot')
+		except discord.Forbidden:
+			await ctx.send(f'Changing nickname to "[{new_prefix}] - Chess Bot" failed. Missing permissions')
