@@ -46,7 +46,7 @@ class Mooderation(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
-    @commands.has_any_role(['Admin', 'Moderator'])
+    @commands.has_permissions(administrator=True)
     async def prefix(self, ctx, new_prefix : str):
         util.prefixes[ctx.guild.id] = new_prefix
 
