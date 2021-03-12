@@ -59,7 +59,7 @@ class Data(commands.Cog):
         
         await ctx.send('Sucessfully pulled')
         
-    @tasks.loop(hours=1)
+    @tasks.loop(minutes=30)
     async def sync_data(self):
         self.push_data()
         

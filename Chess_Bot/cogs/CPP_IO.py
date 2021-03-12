@@ -97,7 +97,11 @@ async def output_move(ctx, person, client):
     elif code == 'ILLEGAL MOVE PLAYED':
         embed.description = f'{whiteblack[util.colors[person]].capitalize()} to move.\nIllegal move played.'
 
-    await ctx.message.reply(embed=embed)
+    try:
+        await ctx.message.reply(embed=embed)
+    except Exception as e:
+        if e == discord.Forbidden:
+            await ctx.send('Something went wrong. Are you sure Chess Bot has permission to send embeds?')
     return code
 
 

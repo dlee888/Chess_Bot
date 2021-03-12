@@ -39,12 +39,16 @@ class Engine(commands.Cog):
         await run_engine(file_in, file_out)
 
         await log(person, self.client, ctx)
-        
+    
         code = await output_move(ctx, person, self.client)
         
-        bot = await ctx.guild.fetch_member(self.client.user.id)
-        await ctx.message.remove_reaction(thonk, bot)
-        util.thonking.remove(person)
+        try:
+            bot = await ctx.guild.fetch_member(self.client.user.id)
+            await ctx.message.remove_reaction(thonk, bot)
+            util.thonking.remove(person)
+        except Exception as e:
+            if e == discord.Forbidden:
+                await ctx.send('Chess bot finished thinking but failed to remove the <:thonk:814285875265536001>')
         
         if code == 'GAME STILL IN PROGRESS':
             util.last_moved[person] = time.time()
