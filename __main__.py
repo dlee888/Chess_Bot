@@ -23,9 +23,9 @@ handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 
 async def get_prefix(bot, message):
-    if message.guild == None or (not message.guild in util.prefixes.keys()):
+    if message.guild == None or (not message.guild.id in util.prefixes.keys()):
         return '$'
-    return util.prefixes[message.guild]
+    return util.prefixes[message.guild.id]
 
 bot = commands.Bot(command_prefix=get_prefix, help_command=None)
 
