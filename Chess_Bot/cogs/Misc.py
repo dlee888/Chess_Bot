@@ -133,11 +133,4 @@ class Misc(commands.Cog):
         Sends invite link
         '''
         await ctx.send('https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=268815424&scope=bot')
-
-    @commands.command()
-    @commands.cooldown(1, 12 * 3600, commands.BucketType.default)
-    async def vote(self, ctx):
-        '''
-        Vote for Chess Bot!
-        '''
         
