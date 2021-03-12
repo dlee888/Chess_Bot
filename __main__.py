@@ -12,6 +12,8 @@ from Chess_Bot.cogs.Help import *
 from Chess_Bot.cogs.Timer import *
 from Chess_Bot.cogs.Topgg import *
 
+import Chess_Bot.cogs.Utility as util
+
 import logging
 
 logger = logging.getLogger('discord')
@@ -20,8 +22,12 @@ handler = logging.FileHandler(filename='debug.log', encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
+async def get_prefix(bot, message):
+    if message.guild == None or (not message.guild in util.prefixes.keys()):
+        return '$'
+    return util.prefixes[message.guild]
 
-bot = commands.Bot(command_prefix=commands.when_mentioned_or('$'), help_command=None)
+bot = commands.Bot(command_prefix=get_prefix, help_command=None)
 
 bot.add_cog(Engine(bot))
 bot.add_cog(Misc(bot))

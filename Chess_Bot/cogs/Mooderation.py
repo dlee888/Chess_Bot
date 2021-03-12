@@ -43,3 +43,18 @@ class Mooderation(commands.Cog):
         util.ratings[801501916810838066] -= points
         
         await ctx.send(f'{points} points refunded')
+
+    @commands.command()
+    @commands.cooldown(1, 3, commands.BucketType.default)
+    @commands.has_any_role(['Admin', 'Moderator'])
+    async def prefix(self, ctx, new_prefix : str):
+        util.prefixes[ctx.guild.id] = new_prefix
+
+        await ctx.send('Prefix successfully updated')
+
+        bot = await ctx.guild.fetch_member(801501916810838066)
+
+        try:
+            await bot.edit(nick=f'[{new_prefix}] - Chess Bot')
+        except discord.Forbidden:
+            await ctx.send(f'Changing nickname to "[{new_prefix}] - Chess Bot" failed. Missing permissions')
