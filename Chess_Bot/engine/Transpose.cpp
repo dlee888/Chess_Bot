@@ -12,10 +12,10 @@ Bitstring rand_bitstrings[64][13], color_bitstring, en_passant_bistrings[8], cas
 
 void init_table()
 {
+	clear_table();
+	
 	Bitstring seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::mt19937 generator(seed);
-
-	std::memset(exists, 0, sizeof(exists));
 
 	for (int square = 0; square < 64; square++) {
 		for (int piece = 0; piece < 13; piece++) {
@@ -33,4 +33,5 @@ void init_table()
 
 void clear_table() {
 	std::memset(exists, 0, sizeof(exists));
+	std::memset(depths, 0, sizeof(depths));
 }

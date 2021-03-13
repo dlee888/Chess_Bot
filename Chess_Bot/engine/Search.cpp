@@ -8,17 +8,11 @@ int search(int depth, int alpha, int beta)
 {
 	nodes++;
 
-	// printf("Searching depth = %d, alpha = %d, beta = %d\n", depth, alpha, beta);
-	// curr_state.print();
-
 	unsigned long long curr_board_hash = curr_state.get_hash() % TABLE_SIZE;
-
-	// printf("Board hash = %lld\n", curr_board_hash);
 
 	if (exists[curr_board_hash] && depths[curr_board_hash] >= depth)
 	{
 		tb_hits++;
-		// printf("TT hit\n");
 		return best_eval[curr_board_hash];
 	}
 
@@ -26,12 +20,10 @@ int search(int depth, int alpha, int beta)
 		return qsearch(alpha, beta);
 
 	if (curr_state.king_attacked()) {
-		// printf("King attacked\n");
 		return MATE;
 	}
 
 	if (break_now) {
-		// printf("Breaking now\n");
 		return eval(curr_state);
 	}
 
@@ -70,12 +62,6 @@ int search(int depth, int alpha, int beta)
 		int x = -search(depth - 1, -beta, -alpha);
 		curr_state.unmake_move(move);
 
-		if (abs(x) >= 70184952) {
-			break_now = true;
-			curr_state.print();
-			printf("Bug after %s\n", curr_state.move_to_string(move).c_str());
-		}
-
 		alpha = std::max(alpha, x);
 
 		if (alpha >= beta)
@@ -86,12 +72,6 @@ int search(int depth, int alpha, int beta)
 	depths[curr_board_hash] = depth;
 	best_eval[curr_board_hash] = alpha;
 
-	if (abs(alpha) >= 70184952) {
-		break_now = true;
-		curr_state.print();
-		printf("Search bug found\n");
-	}
-
 	return alpha;
 }
 
@@ -99,15 +79,11 @@ int search(int depth, int alpha, int beta)
 int qsearch(int alpha, int beta)
 {
 	qsearch_nodes++;
-
-	// printf("Qsearching alpha = %d, beta = %d\n", alpha, beta);
-	// curr_state.print();
 	
 	unsigned long long curr_board_hash = curr_state.get_hash() % TABLE_SIZE;
 
-	if (exists[curr_board_hash])
+	if (exists[curr_board_hash] && depths[curr_board_hash] >= 0)
 	{
-		// printf("Found in tt\n");
 		qsearch_hits++;
 		return best_eval[curr_board_hash];
 	}
@@ -135,11 +111,9 @@ int qsearch(int alpha, int beta)
 	if (mate)
 	{
 		if (curr_state.is_check()) {
-			// printf("Checkmate\n");
 			return MATED;
 		}
 		else {
-			// printf("Stalemate\n");
 			return DRAWN;
 		}
 	}
@@ -148,7 +122,6 @@ int qsearch(int alpha, int beta)
 
 	if (break_now || ordered_moves.size() == 0)
 	{
-		// printf("Returned static eval = %d\n", curr_eval);
 		return curr_eval;
 	}
 
@@ -167,12 +140,6 @@ int qsearch(int alpha, int beta)
 		curr_state.make_move(move);
 		int x = -qsearch(-beta, -alpha);
 		curr_state.unmake_move(move);
-
-		if (abs(x) >= 70184968) {
-			break_now = true;
-			curr_state.print();
-			printf("Qsearch bug after %s\n", curr_state.move_to_string(move).c_str());
-		}
 
 		alpha = std::max(alpha, x);
 
