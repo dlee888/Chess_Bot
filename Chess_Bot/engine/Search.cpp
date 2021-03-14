@@ -16,6 +16,9 @@ int search(int depth, int alpha, int beta)
 		return best_eval[curr_board_hash];
 	}
 
+	if (curr_state.adjucation())
+		return DRAWN;
+
 	if (depth <= 0)
 		return qsearch(alpha, beta);
 
@@ -88,6 +91,9 @@ int qsearch(int alpha, int beta)
 		return best_eval[curr_board_hash];
 	}
 
+	if (curr_state.adjucation())
+		return DRAWN;
+
 	if (curr_state.king_attacked())
 		return MATE;
 
@@ -150,5 +156,6 @@ int qsearch(int alpha, int beta)
 	exists[curr_board_hash] = true;
 	depths[curr_board_hash] = 0;
 	best_eval[curr_board_hash] = alpha;
+	
 	return alpha;
 }

@@ -28,53 +28,57 @@ int get_goodnes(int move) {
 
 bool move_comparator(const int &a, const int &b)
 {
-    int good_a = 0, good_b = 0;
-    
-    if (a == priority) {
-        good_a = INF;
-    } else {
-        good_a = get_goodnes(a);
-    }
-    
-    if (b == priority) {
-        good_b = INF;
-    } else {
-        good_b = get_goodnes(b);
-    }
+	int good_a = 0, good_b = 0;
+	
+	if (a == priority) {
+		good_a = INF;
+	} else {
+		good_a = get_goodnes(a);
+	}
+	
+	if (b == priority) {
+		good_b = INF;
+	} else {
+		good_b = get_goodnes(b);
+	}
 
-    return good_a > good_b;
+	return good_a > good_b;
 }
 
 pdi find_best_move(int depth) {
-    // TODO: Make multi-threaded
-    if (break_now) {
-        return {0, -69};
-    }
+	// TODO: Make multi-threaded
+	if (break_now) {
+		return {0, -69};
+	}
 
-    int best_move = -1, eval = -RESIGN;
+	nodes = 0; qsearch_nodes = 0;
+	tb_hits = 0; qsearch_hits = 0;
+	orig_eval = eval(curr_state);
 
-    std::vector <int> moves = curr_state.list_moves();
+	int best_move = -1, eval = -RESIGN;
 
-    sort(moves.begin(), moves.end(), move_comparator);
+	std::vector <int> moves = curr_state.list_moves();
 
-    for (int i : moves) {
-        // printf("Considering %s\n", curr_state.move_to_string(i).c_str());
+	sort(moves.begin(), moves.end(), move_comparator);
 
-        curr_state.make_move(i);
-        int x = -search(depth - 1, -INF, -eval);
-        curr_state.unmake_move(i);
+	for (int i : moves) {
+		// printf("Considering %s\n", curr_state.move_to_string(i).c_str());
 
-        if (x > eval) {
-            eval = x;
-            best_move = i;
-        }
+		curr_state.make_move(i);
+		int x = -search(depth - 1, -INF, -eval);
+		curr_state.unmake_move(i);
 
-        // printf("x = %d\n", x);
+		if (x > eval) {
+			eval = x;
+			best_move = i;
+		}
 
-        if (break_now) break;
-    }
+		// printf("x = %d\n", x);
 
-    if (!curr_state.to_move) eval *= -1;
+		if (break_now) break;
+	}
 
-    return {eval, best_move};
+	if (!curr_state.to_move) eval *= -1;
+
+	return {eval, best_move};
 }

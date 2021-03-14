@@ -139,10 +139,6 @@ void play()
 				{
 					printf("Searching depth %d\n", curr_depth);
 
-					nodes = 0; qsearch_nodes = 0;
-					tb_hits = 0; qsearch_hits = 0;
-					orig_eval = eval(curr_state);
-
 					int start_time = clock();
 					priority = best_move.second;
 					best_move = find_best_move(curr_depth);
@@ -163,7 +159,7 @@ void play()
 					curr_depth++;
 				}
 				move_i = best_move.second;
-				if ((computer_is_white && best_move.first < -RESIGN) || (!computer_is_white && best_move.first > RESIGN))
+				if ((computer_is_white && best_move.first <= -RESIGN) || (!computer_is_white && best_move.first >= RESIGN))
 				{
 					error_msg = "COMPUTER RESIGNED";
 					break;
