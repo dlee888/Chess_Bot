@@ -6,7 +6,7 @@
 #include "State.h"
 
 #define NUM_ALL 19
-#define NUM_WHITE 5
+#define NUM_WHITE 6
 #define NUM_BLACK 3
 
 class opening
@@ -58,8 +58,9 @@ std::string all[NUM_ALL][100] = {
 
 std::string white[NUM_WHITE][100] = {
 	{"French defense: Winnever variation", "e4", "e6", "d4", "d5", "Nc3", "Bb4", "Nf3"}, // petition to get rid of the french
-	{"Ruy lopez, morphy defense, caro", "e4", "e5", "Nf3", "Nc6", "Bb5", "a6", "Ba4", "b5", "Bb3", "Nf6", "d4", "exd4", "e5", "Qe7", "O-O"}, // ruy lopez oopening trap
+	{"Ruy lopez, morphy defense, caro", "e4", "e5", "Nf3", "Nc6", "Bb5", "a6", "Ba4", "b5", "Bb3", "Nf6", "d4", "exd4", "e5", "Qe7", "O-O"}, // ruy lopez opening trap
 	{"blah", "e4", "e5"}, 
+	{"Stafford Refutation line", "e4", "e5", "Nf3", "Nf6", "Nxe5", "Nc6", "Nxc6", "d3", "Bc5", "Be2", "h5", "c3", "Ng4", "d4", "Qh4", "g3", "Qf6", "f3", "h4", "Rg1"}, 
 	{"blah", "d4"}, 
 	{"blah", "d4"}
 };
