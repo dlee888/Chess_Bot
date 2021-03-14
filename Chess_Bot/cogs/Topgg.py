@@ -21,9 +21,11 @@ class Topgg(commands.Cog):
         print('Vote recieved!')
         print(data)
         
-        gg_channel = await self.client.fetch_channel(819639514758643754)
-        gg_channel.send(f'Vote from {data[id]} found!\nThank you for voting! You have recieved a gift of 10 rating points.')
+        gg_channel = self.client.get_channel(819639514758643754)
+        await gg_channel.send(f'data = {str(data)}')
+        await gg_channel.send(f'Vote from {data[id]} found!\nThank you for voting! You have recieved a gift of 10 rating points.')
         
+        util.get_rating(data[id])
         util.ratings[data[id]] += 10
         
     @commands.command()
