@@ -9,6 +9,7 @@ class Engine(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+        self.thonk = client.get_emoji(814285875265536001)
 
     @commands.command(aliases=['play'])
     @commands.cooldown(1, 5, commands.BucketType.default)
@@ -29,8 +30,7 @@ class Engine(commands.Cog):
 
         person = ctx.author.id
         
-        thonk = self.client.get_emoji(814285875265536001)
-        await ctx.message.add_reaction(thonk)
+        await ctx.message.add_reaction(self.thonk)
         util.thonking.append(person)
         
         file_in, file_out = prepare_files(person)
@@ -43,12 +43,11 @@ class Engine(commands.Cog):
         code = await output_move(ctx, person, self.client)
         
         try:
-            bot = await ctx.guild.fetch_member(self.client.user.id)
-            await ctx.message.remove_reaction(thonk, bot)
+            await ctx.message.remove_reaction(self.thonk, self.client.user)
             util.thonking.remove(person)
         except Exception as e:
             if e == discord.Forbidden:
-                await ctx.send('Chess bot finished thinking but failed to remove the <:thonk:814285875265536001>')
+                await ctx.send('Chess bot finished thinking but failed to remove the <:self.thonk:814285875265536001>')
         
         if code == 'GAME STILL IN PROGRESS':
             util.last_moved[person] = time.time()
@@ -123,8 +122,7 @@ class Engine(commands.Cog):
 
         await ctx.send(f'Game started with Chess Bot\nYou are {whiteblack[util.colors[person]]}')
 
-        thonk = self.client.get_emoji(814285875265536001)
-        await ctx.message.add_reaction(thonk)
+        await ctx.message.add_reaction(self.thonk)
         util.thonking.append(person)
         
         file_in, file_out = prepare_files(person)
@@ -132,8 +130,7 @@ class Engine(commands.Cog):
 
         await run_engine(file_in, file_out)
         
-        bot = await ctx.guild.fetch_member(self.client.user.id)
-        await ctx.message.remove_reaction(thonk, bot)
+        await ctx.message.remove_reaction(self.thonk, self.client.user)
         
         await log(person, self.client, ctx)
         await output_move(ctx, person, self.client)

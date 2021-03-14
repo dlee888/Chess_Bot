@@ -41,7 +41,7 @@ class Mooderation(commands.Cog):
             return
 
         util.ratings[user.id] += points
-        util.ratings[801501916810838066] -= points
+        util.ratings[self.client.user.id] -= points
 
         await ctx.send(f'{points} points refunded')
 
@@ -53,7 +53,7 @@ class Mooderation(commands.Cog):
 
         await ctx.send('Prefix successfully updated')
 
-        bot = await ctx.guild.fetch_member(801501916810838066)
+        bot = await ctx.guild.fetch_member(self.client.user.id)
 
         try:
             await bot.edit(nick=f'[{new_prefix}] - Chess Bot')
