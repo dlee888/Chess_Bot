@@ -84,7 +84,7 @@ class Timer(commands.Cog):
             if dm == None:
                 dm = await user.create_dm()
             
-            await dm.send(f'Game resigned. Your new rating is {round(util.get_rating(person))} ({round(old_rating)} + {round(util.get_rating(person) - old_rating)})')
+            await dm.send(f'You automatically forfeited on time. Your new rating is {round(util.get_rating(person))} ({round(old_rating)} + {round(util.get_rating(person) - old_rating)})')
         except Exception as e:
             print('Exception in send_no_time_message:', e)
         
