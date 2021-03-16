@@ -8,7 +8,7 @@ from Chess_Bot.cogs.CPP_IO import *
 class Engine(commands.Cog):
 
 	def __init__(self, client):
-			self.client = client
+		self.client = client
 		self.thonk = client.get_emoji(814285875265536001)
 
 	@commands.command(aliases=['play'])
