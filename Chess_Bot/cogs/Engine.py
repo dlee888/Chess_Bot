@@ -41,6 +41,7 @@ class Engine(commands.Cog):
 		await log(person, self.client, ctx)
 	
 		code = await output_move(ctx, person, self.client)
+		util.thonking.remove(person)
 		
 		if code == 'GAME STILL IN PROGRESS':
 			util.last_moved[person] = time.time()
