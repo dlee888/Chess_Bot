@@ -9,7 +9,6 @@ class Engine(commands.Cog):
 
 	def __init__(self, client):
 		self.client = client
-		self.thonk = client.get_emoji(814285875265536001)
 
 	@commands.command(aliases=['play'])
 	@commands.cooldown(1, 5, commands.BucketType.default)
@@ -30,7 +29,8 @@ class Engine(commands.Cog):
 
 		person = ctx.author.id
 		
-		await ctx.message.add_reaction(self.thonk)
+		thonk = self.client.get_emoji(814285875265536001)
+		await ctx.message.add_reaction(thonk)
 		util.thonking.append(person)
 		
 		file_in, file_out = prepare_files(person)
@@ -115,7 +115,8 @@ class Engine(commands.Cog):
 
 		await ctx.send(f'Game started with Chess Bot\nYou are {whiteblack[util.colors[person]]}')
 
-		await ctx.message.add_reaction(self.thonk)
+		thonk = self.client.get_emoji(814285875265536001)
+		await ctx.message.add_reaction(thonk)
 		util.thonking.append(person)
 		
 		file_in, file_out = prepare_files(person)
