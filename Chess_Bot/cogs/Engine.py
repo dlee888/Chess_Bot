@@ -122,7 +122,7 @@ class Engine(commands.Cog):
 
         await ctx.send(f'Game started with Chess Bot\nYou are {whiteblack[util.colors[person]]}')
 
-        await ctx.message.add_reaction(self.thonk)
+        await ctx.message.add_reaction(814285875265536001)
         util.thonking.append(person)
         
         file_in, file_out = prepare_files(person)
