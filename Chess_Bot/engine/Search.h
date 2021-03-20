@@ -35,4 +35,6 @@ enum {
 	MATED = -100000,
 	DRAWN = 0
 };
+
+const int RAZOR_MARGIN = 100, EXTENDED_RAZOR_MARGIN = 250;
 #endif // !SEARCH_H_INCLUDED

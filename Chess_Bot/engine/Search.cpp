@@ -52,23 +52,42 @@ int search(int depth, int alpha, int beta)
 
 	int curr_eval = eval(curr_state);
 
+	// Futility pruning
 	if (curr_eval < orig_eval - prune && depth <= 3)
 	{
 		return curr_eval;
 	}
 
+	// Razor pruning and extended razor pruning
+	if (depth == 1) {
+		if (curr_eval + RAZOR_MARGIN < beta) {
+			return std::max(curr_eval + RAZOR_MARGIN, qsearch(alpha, beta));
+		}
+	} else if (depth <= 3) {
+		if (curr_eval + EXTENDED_RAZOR_MARGIN < beta) {
+			return std::max(curr_eval + EXTENDED_RAZOR_MARGIN, qsearch(alpha, beta));
+		}
+	}
+	
 	sort(moves.begin(), moves.end(), move_comparator);
 
 	for (int move : moves)
 	{
 		curr_state.make_move(move);
+
+		// More razor pruning
+		if (depth <= 2 && eval(curr_state) + RAZOR_MARGIN < alpha) {
+			curr_state.unmake_move(move);
+			break;
+		}
+
 		int x = -search(depth - 1, -beta, -alpha);
 		curr_state.unmake_move(move);
 
 		alpha = std::max(alpha, x);
 
 		if (alpha >= beta)
-			break;
+			return alpha;
 	}
 
 	exists[curr_board_hash] = true;
@@ -150,7 +169,7 @@ int qsearch(int alpha, int beta)
 		alpha = std::max(alpha, x);
 
 		if (alpha >= beta)
-			break;
+			return alpha;
 	}
 
 	exists[curr_board_hash] = true;
