@@ -67,6 +67,7 @@ async def output_move(ctx, person, client):
         if out[i].startswith('-----'):
             util.get_image(person, i - 1)
 
+            file = discord.File(f'Chess_Bot/data/image-{person}.png')
             embed.set_image(url= f'attachment://Chess_Bot/data/image-{person}.png')
 
             break
@@ -93,7 +94,7 @@ async def output_move(ctx, person, client):
         embed.description = f'{whiteblack[util.colors[person]].capitalize()} to move.\nIllegal move played.'
 
     try:
-        await ctx.message.reply(file=discord.File(f'Chess_Bot/data/image-{person}.png'), embed=embed)
+        await ctx.message.reply(file=file, embed=embed)
     except Exception as e:
         if e == discord.Forbidden:
             await ctx.send('Something went wrong. Are you sure Chess Bot has permission to send embeds?')
