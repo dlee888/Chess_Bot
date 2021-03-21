@@ -67,8 +67,8 @@ async def output_move(ctx, person, client):
         if out[i].startswith('-----'):
             util.get_image(person, i - 1)
 
-            file = discord.File(f'Chess_Bot/data/image-{person}.png')
-            embed.set_image(url= f'attachment://image-{person}.png')
+            file = discord.File(f'Chess_Bot/data/image-{person}.png', filename = 'board.png')
+            embed.set_image(url= f'attachment://board.png')
 
             break
 
