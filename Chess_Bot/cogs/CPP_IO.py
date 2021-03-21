@@ -98,6 +98,9 @@ async def output_move(ctx, person, client):
     except Exception as e:
         if e == discord.Forbidden:
             await ctx.send('Something went wrong. Are you sure Chess Bot has permission to send embeds?')
+        else:
+            await ctx.send('Something went wrong.')
+            await ctx.send(str(e))
             
     return code
 
