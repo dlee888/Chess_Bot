@@ -1,6 +1,6 @@
 #include "State.h"
 
-std::string state::to_piece(int x)
+std::string state::_to_piece(int x)
 {
 	if (x == BK)
 		return "BK";
@@ -28,6 +28,35 @@ std::string state::to_piece(int x)
 		return "WP";
 	return "  ";
 }
+char state::to_piece(int x)
+{
+	if (x == BK)
+		return 'k';
+	if (x == BQ)
+		return 'q';
+	if (x == BR)
+		return 'r';
+	if (x == BB)
+		return 'b';
+	if (x == BN)
+		return 'n';
+	if (x == BP)
+		return 'p';
+	if (x == WK)
+		return 'K';
+	if (x == WQ)
+		return 'Q';
+	if (x == WR)
+		return 'R';
+	if (x == WB)
+		return 'B';
+	if (x == WN)
+		return 'N';
+	if (x == WP)
+		return 'P';
+	return ' ';
+}
+
 int state::piece_to_int(char c)
 {
 	if (c == 'P')
@@ -51,36 +80,26 @@ void state::print()
 	{
 		for (int j = 0; j < n; j++)
 		{
-			std::cout << "---";
-		}
-		std::cout << '\n';
-		for (int j = 0; j < n; j++)
-		{
 			std::cout << "|" << to_piece(board[i][j]);
 		}
 		std::cout << "|\n";
 	}
-	for (int j = 0; j < n; j++)
-	{
-		std::cout << "---";
-	}
-	std::cout << "\n";
 }
 
 std::string state::move_to_string(int move)
 {
 	if (move == 1835008)
 	{
-		return "O-O           (1835008)";
+		return "O-O (1835008)";
 	}
 	if (move == 2883584)
 	{
-		return "O-O-O         (2883584)";
+		return "O-O-O (2883584)";
 	}
 	int row_init = (move >> 3) & 7, row_final = (move >> 9) & 7, col_init = move & 7, col_final = (move >> 6) & 7;
 	int piece = (move >> 12) & 7;
 	std::string res;
-	res += to_piece(piece)[1];
+	res += _to_piece(piece)[1];
 	res += " on ";
 	res += col_init + 'a';
 	res += '8' - row_init;

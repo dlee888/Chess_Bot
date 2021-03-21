@@ -3,6 +3,7 @@
 int eval(state& s)
 {
 	int score = 0;
+
 	if ((9 * (cnts[BQ + 6] + cnts[WQ + 6]) + 5 * (cnts[BR + 6] + cnts[WR + 6]) +
 		3 * (cnts[BB + 6] + cnts[WB + 6] + cnts[BN + 6] + cnts[WN + 6])) > 30)
 	{
@@ -95,7 +96,7 @@ int eval(state& s)
 		score -= bishop_pair_bonus;
 	}
 	
-	if (!curr_state.to_move) score *= -1;
+	if (!s.to_move) score *= -1;
 
 	return score;
 }

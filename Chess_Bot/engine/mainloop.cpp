@@ -140,7 +140,7 @@ int main()
 				int last = -1;
 				for (int j = 0; j < 8; j++)
 				{
-					std::string piece = curr_state.to_piece(curr_state.board[i][j]);
+					std::string piece = curr_state._to_piece(curr_state.board[i][j]);
 					if (piece == "  ")
 					{
 						if (last == -1)

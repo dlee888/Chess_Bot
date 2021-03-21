@@ -44,10 +44,12 @@ int search(int depth, int alpha, int beta)
 	}
 	if (mate)
 	{
-		if (curr_state.is_check())
+		if (curr_state.is_check()) {
 			return MATED;
-		else
+		}
+		else {
 			return DRAWN;
+		}
 	}
 
 	int curr_eval = eval(curr_state);
@@ -69,7 +71,7 @@ int search(int depth, int alpha, int beta)
 		}
 	}
 	
-	sort(moves.begin(), moves.end(), move_comparator);
+	std::sort(moves.begin(), moves.end(), move_comparator);
 
 	for (int move : moves)
 	{
@@ -86,8 +88,9 @@ int search(int depth, int alpha, int beta)
 
 		alpha = std::max(alpha, x);
 
-		if (alpha >= beta)
+		if (alpha >= beta) {
 			return alpha;
+		}
 	}
 
 	exists[curr_board_hash] = true;
@@ -110,11 +113,13 @@ int qsearch(int alpha, int beta)
 		return best_eval[curr_board_hash];
 	}
 
-	if (curr_state.adjucation())
+	if (curr_state.adjucation()) {
 		return DRAWN;
+	}
 
-	if (curr_state.king_attacked())
+	if (curr_state.king_attacked()){
 		return MATE;
+	}
 
 	std::vector<int> ordered_moves;
 
@@ -157,9 +162,8 @@ int qsearch(int alpha, int beta)
 
 	alpha = std::max(alpha, curr_eval);
 
-	sort(ordered_moves.begin(), ordered_moves.end(), move_comparator);
+	std::sort(ordered_moves.begin(), ordered_moves.end(), move_comparator);
 
-	int best_move = -3;
 	for (int move : ordered_moves)
 	{
 		curr_state.make_move(move);
@@ -168,8 +172,9 @@ int qsearch(int alpha, int beta)
 
 		alpha = std::max(alpha, x);
 
-		if (alpha >= beta)
+		if (alpha >= beta) {
 			return alpha;
+		}
 	}
 
 	exists[curr_board_hash] = true;

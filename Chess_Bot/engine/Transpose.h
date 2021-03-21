@@ -2,7 +2,7 @@
 #define TRANSPOS_H_INCLUDED
 #include <map>
 
-#define TABLE_SIZE 7500013 // prime number
+#define TABLE_SIZE 10000019 // prime number
 
 typedef unsigned long long Bitstring;
 

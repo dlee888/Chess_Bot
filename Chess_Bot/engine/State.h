@@ -56,9 +56,9 @@ public:
 		board[row][col] = piece;
 	}
 
-	 unsigned long long get_hash()
+	unsigned long long get_hash()
 	{
-		return board_hash ^ (to_move ? color_bitstring : 0) ^ ((en_passant_target.top() == -1) ? 0 : en_passant_bistrings[en_passant_target.top() / 8]) ^
+		return board_hash ^ (to_move ? color_bitstring : 0) ^ ((en_passant_target.top() == -1) ? 0 : en_passant_bistrings[en_passant_target.top() >> 3]) ^
 			(wk_rights.top() ? castling_bitstrings[0] : 0) ^ (wq_rights.top() ? castling_bitstrings[1] : 0) ^ (bk_rights.top() ? castling_bitstrings[2] : 0) ^
 			(bq_rights.top() ? castling_bitstrings[3] : 0);
 	}
@@ -76,13 +76,15 @@ public:
 		full_move = 0;
 		to_move = true;
 
+		board_hash = 0;
+
 		std::memset(board, 0, sizeof(board));
 
-		for (int i = 0; i < 8; i++)
-			for (int j = 0; j < 8; j++)
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
 				replace_board(i, j, default_board[i][j]);
-
-		board_hash = 0;
+			}
+		}
 
 		wq_rights.push(true);
 		wk_rights.push(true);
@@ -92,30 +94,10 @@ public:
 		en_passant_target.push(-1);
 	}
 
-	std::string to_piece(int x);
+	std::string _to_piece(int x);
+	char to_piece(int x);
 	int piece_to_int(char c);
 	std::string move_to_string(int move);
-
-	bool operator==(state s)
-	{
-		if (s.to_move != to_move)
-			return false;
-		if (s.en_passant_target.top() != en_passant_target.top())
-			return false;
-		if (s.wk_rights.top() != wk_rights.top())
-			return false;
-		if (s.wq_rights.top() != wq_rights.top())
-			return false;
-		if (s.bk_rights.top() != bk_rights.top())
-			return false;
-		if (s.bq_rights.top() != bq_rights.top())
-			return false;
-		for (int i = 0; i < 8; i++)
-			for (int j = 0; j < 8; j++)
-				if (s.board[i][j] != board[i][j])
-					return false;
-		return true;
-	}
 
 	void print();
 
