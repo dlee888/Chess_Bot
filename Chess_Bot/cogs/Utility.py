@@ -28,43 +28,6 @@ async def run(cmd):
     return stdout, stderr, f'[{cmd!r} exited with {proc.returncode}]'
 
 
-def get_image(person, end):
-    game_file = f'Chess_Bot/data/output-{person}.txt'
-    F = open(game_file)
-    game = F.readlines()
-    F.close()
-
-    result = Image.open('Chess_Bot/images/blank_board.png')
-    result = result.resize((400, 400))
-
-    for i in range(end - 14, end + 2, 2):
-        for j in range(1, 25, 3):
-            square = 'Chess_Bot/images/'
-            if game[i][j:j+2] == '  ':
-                square += 'blank'
-            else:
-                square += game[i][j:j+2]
-            x = (i + 14 - end)//2
-            y = (j - 1)//3
-            if (x + y) % 2 == 0:
-                square += '-light.png'
-            else:
-                square += '-dark.png'
-
-            square_img = Image.open(square)
-            square_img = square_img.resize((50, 50), Image.ANTIALIAS)
-
-            x *= 50
-            y *= 50
-
-            if colors[person] == 1:
-                result.paste(square_img, (y, x, y + 50, x + 50))
-            else:
-                result.paste(square_img, (350 - y, 350 - x, 400 - y, 400 - x))
-
-    result.save(f'Chess_Bot/data/image-{person}.png')
-
-
 async def has_roles(person, roles, client):
     support_server = await client.fetch_guild(733762995372425337)
     try:
