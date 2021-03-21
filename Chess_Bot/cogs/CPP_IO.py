@@ -108,7 +108,7 @@ async def output_move(ctx, person, client):
     
     for i in range(len(out) - 1, 0, -1):
         if out[i].startswith('|'):
-            util.get_image(person, i)
+            get_image(person, i)
 
             file = discord.File(f'Chess_Bot/data/image-{person}.png', filename = 'board.png')
             embed.set_image(url= f'attachment://board.png')
