@@ -66,13 +66,8 @@ async def output_move(ctx, person, client):
     for i in range(len(out) - 1, 0, -1):
         if out[i].startswith('-----'):
             util.get_image(person, i - 1)
-
-            temp_channel = client.get_channel(806967405414187019)
-            image_msg = await temp_channel.send(file=discord.File(f'Chess_Bot/data/image-{person}.png'))
-
-            image_url = image_msg.attachments[0].url
-
-            embed.set_image(url=image_url)
+            
+            embed.set_image(url= f'attachment://Chess_Bot/data/image-{person}.png')
 
             break
 
