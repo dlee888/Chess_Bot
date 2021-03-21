@@ -62,7 +62,9 @@ async def output_move(ctx, person, client):
         if out[i].startswith('COMPUTER PLAYED'):
             embed.add_field(name='Computer moved', value=out[i][16:])
             break
-
+    
+    file = None
+    
     for i in range(len(out) - 1, 0, -1):
         if out[i].startswith('-----'):
             util.get_image(person, i - 1)
