@@ -1,8 +1,8 @@
 import os
 import discord
+from PIL import Image
 
 import Chess_Bot.cogs.Utility as util
-
 
 whiteblack = ['black', 'white']
 
@@ -46,6 +46,47 @@ async def run_engine(file_in, file_out):
     print(f'Stdout: {out}\nStderr: {err}\n{status}')
 
 
+def get_image(person, end):
+    game_file = f'Chess_Bot/data/output-{person}.txt'
+    F = open(game_file)
+    game = F.readlines()
+    F.close()
+
+    result = Image.open('Chess_Bot/images/blank_board.png')
+    result = result.resize((400, 400))
+
+    for i in range(end - 7, end + 1):
+        for j in range(1, 17, 2):
+            square = 'Chess_Bot/images/'
+            if game[i][j] == ' ':
+                square += 'blank'
+            elif game[i][j].islower():
+                square += 'B' + game[i][j].upper()
+            else:
+                square += 'W' + game[i][j]
+                
+            x = i + 7 - end
+            y = (j - 1)//2
+            
+            if (x + y) % 2 == 0:
+                square += '-light.png'
+            else:
+                square += '-dark.png'
+
+            square_img = Image.open(square)
+            square_img = square_img.resize((50, 50), Image.ANTIALIAS)
+
+            x *= 50
+            y *= 50
+
+            if util.colors[person] == 1:
+                result.paste(square_img, (y, x, y + 50, x + 50))
+            else:
+                result.paste(square_img, (350 - y, 350 - x, 400 - y, 400 - x))
+
+    result.save(f'Chess_Bot/data/image-{person}.png')
+    
+    
 async def output_move(ctx, person, client):
     user = await ctx.message.guild.fetch_member(person)
 
@@ -66,8 +107,8 @@ async def output_move(ctx, person, client):
     file = None
     
     for i in range(len(out) - 1, 0, -1):
-        if out[i].startswith('-----'):
-            util.get_image(person, i - 1)
+        if out[i].startswith('|'):
+            util.get_image(person, i)
 
             file = discord.File(f'Chess_Bot/data/image-{person}.png', filename = 'board.png')
             embed.set_image(url= f'attachment://board.png')
