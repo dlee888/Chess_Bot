@@ -68,7 +68,7 @@ async def output_move(ctx, person, client):
             util.get_image(person, i - 1)
 
             file = discord.File(f'Chess_Bot/data/image-{person}.png')
-            embed.set_image(url= f'attachment://Chess_Bot/data/image-{person}.png')
+            embed.set_image(url= f'attachment://image-{person}.png')
 
             break
 
