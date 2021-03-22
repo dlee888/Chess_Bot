@@ -8,21 +8,29 @@ int search(int depth, int alpha, int beta)
 {
 	nodes++;
 
+	// printf("search(%d, %d, %d)\n", depth, alpha, beta);
+	// curr_state.print();
+
 	unsigned long long curr_board_hash = curr_state.get_hash() % TABLE_SIZE;
 
 	if (exists[curr_board_hash] && depths[curr_board_hash] >= depth)
 	{
+		// printf("tt hit, %d\n", best_eval[curr_board_hash]);
 		tb_hits++;
 		return best_eval[curr_board_hash];
 	}
 
-	if (curr_state.adjucation())
+	if (curr_state.adjucation()) {
+		// printf("adjucation\n");
 		return DRAWN;
+	}
 
-	if (depth <= 0)
+	if (depth <= 0) {
 		return qsearch(alpha, beta);
+	}
 
 	if (curr_state.king_attacked()) {
+		// printf("king attacked\n");
 		return MATE;
 	}
 
@@ -31,23 +39,36 @@ int search(int depth, int alpha, int beta)
 	}
 
 	std::vector<int> moves = curr_state.list_moves();
+	eval_cache.clear();
 
 	bool mate = true;
 	for (int i : moves)
 	{
 		curr_state.make_move(i);
+
+		int hash = curr_state.get_hash() % TABLE_SIZE;
+		if (exists[hash]) {
+			eval_cache[i] = -best_eval[hash];
+		}
+		else {
+			eval_cache[i] = -eval(curr_state);
+		}
+
 		if (mate && !curr_state.king_attacked())
 		{
 			mate = false;
 		}
+
 		curr_state.unmake_move(i);
 	}
 	if (mate)
 	{
 		if (curr_state.is_check()) {
+			// printf("checkmate\n");
 			return MATED;
 		}
 		else {
+			// printf("stalemate\n");
 			return DRAWN;
 		}
 	}
@@ -57,16 +78,19 @@ int search(int depth, int alpha, int beta)
 	// Futility pruning
 	if (curr_eval < orig_eval - prune && depth <= 3)
 	{
+		// printf("futility prune: %d\n", curr_eval);
 		return curr_eval;
 	}
 
 	// Razor pruning and extended razor pruning
 	if (depth == 1) {
-		if (curr_eval + RAZOR_MARGIN < beta) {
+		if (curr_eval + RAZOR_MARGIN < alpha) {
+			// printf("razor prune\n");
 			return std::max(curr_eval + RAZOR_MARGIN, qsearch(alpha, beta));
 		}
 	} else if (depth <= 3) {
-		if (curr_eval + EXTENDED_RAZOR_MARGIN < beta) {
+		if (curr_eval + EXTENDED_RAZOR_MARGIN < alpha) {
+			// printf("extended razor prune\n");
 			return std::max(curr_eval + EXTENDED_RAZOR_MARGIN, qsearch(alpha, beta));
 		}
 	}
@@ -79,6 +103,7 @@ int search(int depth, int alpha, int beta)
 
 		// More razor pruning
 		if (depth <= 2 && eval(curr_state) + RAZOR_MARGIN < alpha) {
+			// printf("razor prune 2\n");
 			curr_state.unmake_move(move);
 			break;
 		}
@@ -89,6 +114,7 @@ int search(int depth, int alpha, int beta)
 		alpha = std::max(alpha, x);
 
 		if (alpha >= beta) {
+			// printf("alpha beta cutoff: %d\n", alpha);
 			return alpha;
 		}
 	}
@@ -96,6 +122,9 @@ int search(int depth, int alpha, int beta)
 	exists[curr_board_hash] = true;
 	depths[curr_board_hash] = depth;
 	best_eval[curr_board_hash] = alpha;
+
+	// printf("done searching, returned %d\n", alpha);
+	// curr_state.print();
 
 	return alpha;
 }
@@ -105,6 +134,9 @@ int qsearch(int alpha, int beta)
 {
 	qsearch_nodes++;
 	
+	// printf("qsearch(%d, %d)\n", alpha, beta);
+	// curr_state.print();
+
 	unsigned long long curr_board_hash = curr_state.get_hash() % TABLE_SIZE;
 
 	if (exists[curr_board_hash] && depths[curr_board_hash] >= 0)
@@ -114,10 +146,12 @@ int qsearch(int alpha, int beta)
 	}
 
 	if (curr_state.adjucation()) {
+		// printf("adjucation\n");
 		return DRAWN;
 	}
 
 	if (curr_state.king_attacked()){
+		// printf("king attacked\n");
 		return MATE;
 	}
 
@@ -141,9 +175,11 @@ int qsearch(int alpha, int beta)
 	if (mate)
 	{
 		if (curr_state.is_check()) {
+			// printf("checkmate\n");
 			return MATED;
 		}
 		else {
+			// printf("stalemate\n");
 			return DRAWN;
 		}
 	}
@@ -152,11 +188,13 @@ int qsearch(int alpha, int beta)
 
 	if (break_now || ordered_moves.size() == 0)
 	{
+		// printf("no moves: %d\n", curr_eval);
 		return curr_eval;
 	}
 
 	if (curr_eval >= beta)
 	{ // Standing pat
+		// printf("stand-pat: %d\n", curr_eval);
 		return curr_eval;
 	}
 
@@ -173,6 +211,7 @@ int qsearch(int alpha, int beta)
 		alpha = std::max(alpha, x);
 
 		if (alpha >= beta) {
+			// printf("alpha beta cutoff: %d\n", alpha);
 			return alpha;
 		}
 	}
@@ -181,5 +220,8 @@ int qsearch(int alpha, int beta)
 	depths[curr_board_hash] = 0;
 	best_eval[curr_board_hash] = alpha;
 	
+	// printf("done qsearching, returned %d\n", alpha);
+	// curr_state.print();
+
 	return alpha;
 }

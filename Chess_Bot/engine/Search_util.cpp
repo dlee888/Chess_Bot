@@ -1,4 +1,5 @@
 #include <thread>
+#include <map>
 
 #include "Search.h"
 
@@ -14,17 +15,10 @@ int RESIGN = 1000;
 int priority;
 
 namespace {
-	int danger[7] = {0, 5, 20, 20, 40, 60, 80};
+	int danger[7] = {0, 5, 15, 15, 25, 40, 70};
 }
 
-int get_goodnes(int move) {
-	// TODO: Make better
-	
-	int piece = (move >> 12) & 3, piece_captured = (move >> 15) & 3;
-	int good = vals[piece_captured];
-	good -= danger[piece];
-	return good;
-}
+std::map <int, int> eval_cache;
 
 bool move_comparator(const int &a, const int &b)
 {
@@ -33,13 +27,13 @@ bool move_comparator(const int &a, const int &b)
 	if (a == priority) {
 		good_a = INF;
 	} else {
-		good_a = get_goodnes(a);
+		good_a = eval_cache[a];
 	}
 	
 	if (b == priority) {
 		good_b = INF;
 	} else {
-		good_b = get_goodnes(b);
+		good_b = eval_cache[b];
 	}
 
 	return good_a > good_b;

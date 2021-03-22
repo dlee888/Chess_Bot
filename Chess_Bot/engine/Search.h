@@ -1,6 +1,7 @@
 #ifndef SEARCH_H_INCLUDED
 #define SEARCH_H_INCLUDED
 #include <vector>
+#include <map>
 #include <algorithm>
 #include <functional>
 #include <cassert>
@@ -37,4 +38,6 @@ enum {
 };
 
 const int RAZOR_MARGIN = 100, EXTENDED_RAZOR_MARGIN = 250;
+
+extern std::map <int, int> eval_cache;
 #endif // !SEARCH_H_INCLUDED

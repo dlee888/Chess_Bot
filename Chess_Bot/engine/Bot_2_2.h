@@ -149,8 +149,9 @@ void play()
 						   curr_state.move_to_string(best_move.second).c_str(),
 						   actual_eval, (double)time_taken / CLOCKS_PER_SEC, nodes, qsearch_nodes, ((double)nodes + qsearch_nodes) * CLOCKS_PER_SEC / time_taken, tb_hits, qsearch_hits);
 					
-					if (abs(best_move.first) >= MATE)
+					if (abs(best_move.first) >= MATE) {
 						break;
+					}
 					
 					if (break_now) {
 						break;
