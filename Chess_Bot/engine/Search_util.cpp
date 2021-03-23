@@ -49,21 +49,35 @@ pdi find_best_move(int depth) {
 	tb_hits = 0; qsearch_hits = 0;
 	orig_eval = eval(curr_state);
 
-	int best_move = -1, eval = -RESIGN;
+	int best_move = -1, evaluation = -RESIGN;
 
 	std::vector <int> moves = curr_state.list_moves();
+	eval_cache.clear();
+
+	for (int i : moves) {
+		curr_state.make_move(i);
+
+		int hash = curr_state.get_hash() % TABLE_SIZE;
+		if (exists[hash]) {
+			eval_cache[i] = -best_eval[hash];
+		} else {
+			eval_cache[i] = -eval(curr_state);
+		}
+
+		curr_state.unmake_move(i);
+	}
 
 	sort(moves.begin(), moves.end(), move_comparator);
 
 	for (int i : moves) {
-		// printf("Considering %s\n", curr_state.move_to_string(i).c_str());
+		// printf("Considering %s, %d\n", curr_state.move_to_string(i).c_str(), eval_cache[i]);
 
 		curr_state.make_move(i);
-		int x = -search(depth - 1, -INF, -eval);
+		int x = -search(depth - 1, -INF, -evaluation);
 		curr_state.unmake_move(i);
 
-		if (x > eval) {
-			eval = x;
+		if (x > evaluation) {
+			evaluation = x;
 			best_move = i;
 		}
 
@@ -72,7 +86,7 @@ pdi find_best_move(int depth) {
 		if (break_now) break;
 	}
 
-	if (!curr_state.to_move) eval *= -1;
+	if (!curr_state.to_move) evaluation *= -1;
 
-	return {eval, best_move};
+	return {evaluation, best_move};
 }

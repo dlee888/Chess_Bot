@@ -157,6 +157,8 @@ void play()
 						break;
 					}
 
+					// if (curr_depth == 3) break;
+
 					curr_depth++;
 				}
 				move_i = best_move.second;
