@@ -198,6 +198,8 @@ int qsearch(int alpha, int beta)
 		return curr_eval;
 	}
 
+	// printf("static eval = %d\n", curr_eval);
+
 	alpha = std::max(alpha, curr_eval);
 
 	std::sort(ordered_moves.begin(), ordered_moves.end(), move_comparator);
