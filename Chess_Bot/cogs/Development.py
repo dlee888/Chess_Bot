@@ -13,10 +13,6 @@ class Development(commands.Cog):
 	def __init__(self, client):
 		self.client = client
 
-	async def get_gcc(self):
-		out, err, status = await util.util.run('apt-get install g++')
-		print(f'stdout: {out}\nstderr: {err}\n{status}')
-
 	@commands.command()
 	@commands.cooldown(1, 15, commands.BucketType.default)
 	async def update(self, ctx, flags = ''):
@@ -29,16 +25,9 @@ class Development(commands.Cog):
 		if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
 			await ctx.send(f'You do not have permission to update')
 			return
-		
-		compile_cmd = 'g++ '
-		for filename in os.listdir('engine'):
-			if filename[-4:] == '.cpp' or filename[-2:] == '.h':
-				compile_cmd += f'engine/{filename} '
-		compile_cmd += flags
-		
-		await ctx.send(compile_cmd)
 
-		out, err, status = await util.run(compile_cmd)
+		await util.run('make clear')
+		out, err, status = await util.run('make')
 
 		message = f'Updated\nCompile Message: {out}\nStderr: {err}'
 		

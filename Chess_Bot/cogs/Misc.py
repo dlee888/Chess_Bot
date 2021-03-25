@@ -28,10 +28,16 @@ class Misc(commands.Cog):
         Tells you your rating
         '''
         
+        person = ctx.author
         if len(user) == 1:
-            await ctx.send(f'{user[0]}\'s rating is {util.get_rating(user[0].id)}')
+            person = user[0]
+        
+        result = util.get_rating(person.id)
+        
+        if result == None:
+            await ctx.send(f'{person} is unrated.')
         else:
-            await ctx.send(f'Your rating is {util.get_rating(ctx.message.author.id)}')
+            await ctx.send(f'{person}\'s rating is {result}')
         
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.default)
@@ -67,9 +73,10 @@ class Misc(commands.Cog):
         all_players.sort(reverse=True, key=lambda a: a[1])
         
         embed = discord.Embed(title="Leaderboard", color=0xffff69)
+        
         for i in range(number):
             user = await self.client.fetch_user(all_players[i][0])
-            embed.add_field(name= f'{i+1}: {user.name}#{user.discriminator}', value= f'{round(all_players[i][1])}', inline = True)
+            embed.add_field(name= f'{i+1}: {user}', value= f'{round(all_players[i][1])}', inline = True)
         
         await ctx.send(embed=embed)
         

@@ -46,25 +46,32 @@ async def has_roles(person, roles, client):
 def get_rating(user):
     if user in ratings.keys():
         return ratings[user]
-    ratings[user] = 1500
-    return 1500
+    return None
 
 
 def update_rating(user, outcome):
-    jamin_rating = get_rating(801501916810838066)
+    bot_rating = get_rating(801501916810838066)
+    
+    if bot_rating == None:
+        ratings[801501916810838066] = 1500
+        bot_rating = 1500
 
-    E = 1 / (1 + 10 ** ((jamin_rating - get_rating(user)) / 400))
+    if not user in ratings.keys():
+        ratings[user] = 1500
+    
+    E = 1 / (1 + 10 ** ((bot_rating - get_rating(user)) / 400))
+    
     if outcome == 1:
-        jamin_rating -= 32 * E
+        bot_rating -= 32 * E
         ratings[user] += 32 * E
     elif outcome == 0:
-        jamin_rating += 32 * E
+        bot_rating += 32 * E
         ratings[user] -= 32 * E
     else:
-        jamin_rating += 32 * (E - 0.5)
+        bot_rating += 32 * (E - 0.5)
         ratings[user] += 32 * (0.5 - E)
 
-    ratings[801501916810838066] = jamin_rating
+    ratings[801501916810838066] = bot_rating
 
 
 def pretty_time(time):
