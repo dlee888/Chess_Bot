@@ -59,3 +59,14 @@ class Mooderation(commands.Cog):
             await bot.edit(nick=f'[{new_prefix}] - Chess Bot')
         except discord.Forbidden:
             await ctx.send(f'Changing nickname to "[{new_prefix}] - Chess Bot" failed. Missing permissions')
+            
+    @commands.command()
+    @commands.cooldown(1, 3, commands.BucketType)
+    async def gift(self, ctx, person : discord.User, amount : float):
+        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+            await ctx.send('You do not have permission to gift rating')
+            return
+        
+        util.ratings[person.id] += amount
+        
+        await ctx.send(f'{amount} rating points gifted.')
