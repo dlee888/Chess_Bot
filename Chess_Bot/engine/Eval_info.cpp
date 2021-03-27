@@ -1,13 +1,5 @@
 #include "Eval_info.h"
 
-int QVAL = 930;
-int RVAL = 500;
-int BVAL = 320;
-int NVAL = 305;
-int PVAL = 100;
-
-int vals[7] = {0, 100, 305, 320, 500, 930, 100000};
-
 int devel_coeff = 6, center_coeff = 4, ksafety_coeff = 14, castle_bonus = 25, castle_right_bonus = 30, pass_pawn_coeff = 25,
 	   dpawn_coeff = 10, activity_coeff = 8, semi_open_bonus = 10, open_bonus = 16, bishop_pair_bonus = 43;
 

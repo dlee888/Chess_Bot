@@ -25,13 +25,13 @@ bool move_comparator(const int &a, const int &b)
 	int good_a = 0, good_b = 0;
 	
 	if (a == priority) {
-		good_a = INF;
+		good_a = VALUE_INFINITE;
 	} else {
 		good_a = eval_cache[a];
 	}
 	
 	if (b == priority) {
-		good_b = INF;
+		good_b = VALUE_INFINITE;
 	} else {
 		good_b = eval_cache[b];
 	}
@@ -73,7 +73,7 @@ pdi find_best_move(int depth) {
 		// printf("Considering %s, %d\n", curr_state.move_to_string(i).c_str(), eval_cache[i]);
 
 		curr_state.make_move(i);
-		int x = -search(depth - 1, -INF, -evaluation);
+		int x = -search(depth - 1, -VALUE_INFINITE, -evaluation);
 		curr_state.unmake_move(i);
 
 		if (x > evaluation) {

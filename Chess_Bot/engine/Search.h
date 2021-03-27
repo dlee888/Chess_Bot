@@ -10,8 +10,6 @@
 #include "Evaluate.h"
 #include "Transpose.h"
 
-#define INF 1000000007
-
 extern long long nodes, qsearch_nodes;
 extern long long tb_hits, qsearch_hits;
 
@@ -31,13 +29,7 @@ int qsearch(int, int);
 
 pdi find_best_move(int);
 
-enum {
-	MATE = 100000,
-	MATED = -100000,
-	DRAWN = 0
-};
-
-const int RAZOR_MARGIN = 100, EXTENDED_RAZOR_MARGIN = 250;
+const int RAZOR_MARGIN = 600;
 
 extern std::map <int, int> eval_cache;
 #endif // !SEARCH_H_INCLUDED

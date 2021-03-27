@@ -83,31 +83,18 @@ int search(int depth, int alpha, int beta)
 	}
 
 	// Razor pruning and extended razor pruning
-	// bery sus
-	// if (depth == 1) {
-	// 	if (curr_eval + RAZOR_MARGIN < alpha) {
-	// // 		printf("razor prune\n");
-	// 		return std::max(curr_eval + RAZOR_MARGIN, qsearch(alpha, beta));
-	// 	}
-	// } else if (depth <= 3) {
-	// 	if (curr_eval + EXTENDED_RAZOR_MARGIN < alpha) {
-	// // 		printf("extended razor prune\n");
-	// 		return std::max(curr_eval + EXTENDED_RAZOR_MARGIN, qsearch(alpha, beta));
-	// 	}
-	// }
+	if (depth < 1) {
+		if (curr_eval + RAZOR_MARGIN < alpha) {
+	// 		printf("razor prune\n");
+			return qsearch(alpha, beta);
+		}
+	} 
 	
 	std::sort(moves.begin(), moves.end(), move_comparator);
 
 	for (int move : moves)
 	{
 		curr_state.make_move(move);
-
-		// More razor pruning
-		// if (depth <= 2 && eval(curr_state) + RAZOR_MARGIN < alpha) {
-		// 	// printf("razor prune 2\n");
-		// 	curr_state.unmake_move(move);
-		// 	break;
-		// }
 
 		int x = -search(depth - 1, -beta, -alpha);
 		curr_state.unmake_move(move);

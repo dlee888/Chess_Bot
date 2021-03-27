@@ -7,12 +7,6 @@ int eval(state& s)
 	if ((9 * (cnts[BQ + 6] + cnts[WQ + 6]) + 5 * (cnts[BR + 6] + cnts[WR + 6]) +
 		3 * (cnts[BB + 6] + cnts[WB + 6] + cnts[BN + 6] + cnts[WN + 6])) > 30)
 	{
-		// This is opening and middlegame
-		RVAL = 500;
-		BVAL = 320;
-		NVAL = 310;
-		PVAL = 100;
-
 		// Development
 		score += devel_coeff * (white_devel - black_devel);
 		// printf("Development: %d\n", devel_coeff * (white_devel - black_devel));
@@ -38,15 +32,16 @@ int eval(state& s)
 		}
 		score += ksafety;
 		// printf("King safety: %d\n", ksafety_coeff * ksafety);
+
+		//material
+		int mat = PawnValueMg * (cnts[WP + 6] - cnts[BP + 6]) + KnightValueMg * (cnts[WN + 6] - cnts[BN + 6]) + 
+				BishopValueMg * (cnts[WB + 6] - cnts[BB + 6]) + RookValueMg * (cnts[WR + 6] - cnts[BR + 6]) + 
+				QueenValueMg * (cnts[WQ + 6] - cnts[BQ + 6]);
+		score += mat;
+		// printf("Material: %d\n", mat);
 	}
 	else
 	{
-		//This is for endgames
-		RVAL = 550;
-		BVAL = 350;
-		NVAL = 270;
-		PVAL = 130;
-
 		// Pushed pawns
 		score += pass_pawn_coeff * (whitepawn_row_sum - blackpawn_row_sum);
 
@@ -54,11 +49,14 @@ int eval(state& s)
 		int kactivity = 0;
 		kactivity += (king_activity[whitekings[0].first][whitekings[0].second] - king_activity[7 - blackkings[0].first][blackkings[0].second]);
 		score += activity_coeff * kactivity;
+			
+		//material
+		int mat = PawnValueEg * (cnts[WP + 6] - cnts[BP + 6]) + KnightValueEg * (cnts[WN + 6] - cnts[BN + 6]) + 
+				BishopValueEg * (cnts[WB + 6] - cnts[BB + 6]) + RookValueEg * (cnts[WR + 6] - cnts[BR + 6]) + 
+				QueenValueEg * (cnts[WQ + 6] - cnts[BQ + 6]);
+		score += mat;
+		// printf("Material: %d\n", mat);
 	}
-	//material
-	int mat = 100000 * (cnts[WK + 6] - cnts[BK + 6]) + QVAL * (cnts[WQ + 6] - cnts[BQ + 6]) + RVAL * (cnts[WR + 6] - cnts[BR + 6]) + BVAL * (cnts[WB + 6] - cnts[BB + 6]) + NVAL * (cnts[WN + 6] - cnts[BN + 6]) + PVAL * (cnts[WP + 6] - cnts[BP + 6]);
-	score += mat;
-	// printf("Material: %d\n", mat);
 
 	//doubled pawns
 	score -= dpawn_coeff * (doubled_white - doubled_black);
