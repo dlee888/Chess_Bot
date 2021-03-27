@@ -41,9 +41,9 @@ def prepare_input(person, move=''):
 
 
 async def run_engine(file_in, file_out):
-    print('Running engine')
+    # print('Running engine')
     out, err, status = await util.run(f'./engine < {file_in} > {file_out}')
-    print(f'Stdout: {out}\nStderr: {err}\n{status}')
+    # print(f'Stdout: {out}\nStderr: {err}\n{status}')
 
 
 def get_image(person, end):
@@ -87,7 +87,7 @@ def get_image(person, end):
     result.save(f'Chess_Bot/data/image-{person}.png')
     
     
-async def output_move(ctx, person, client):
+async def output_move(ctx, person):
     user = await ctx.message.guild.fetch_member(person)
 
     f = open(f'Chess_Bot/data/output-{person}.txt')
