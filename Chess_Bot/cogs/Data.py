@@ -1,6 +1,6 @@
-import sqlite3
+import psycopg2
 import time
-
+import os
 
 class Game:
 
@@ -24,7 +24,10 @@ class Game:
 class Data:
 
 	def __init__(self):
-		self.conn = self.create_connection('Chess_Bot/data/database.db')
+		self.DATABASE_URL = os.environ['DATABASE_URL']
+
+		self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
+  
 		create_games_table = '''CREATE TABLE IF NOT EXISTS games (
 										id integer NOT NULL PRIMARY KEY UNIQUE ON CONFLICT REPLACE,
 										moves text,
@@ -41,27 +44,11 @@ class Data:
 										id integer NOT NULL PRIMARY KEY UNIQUE ON CONFLICT REPLACE,
 										prefix text
 									);'''
-		try:
-			c = self.conn.cursor()
-			c.execute(create_games_table)
-			c.execute(create_ratings_table)
-			c.execute(create_prefix_table)
-		except sqlite3.Error as e:
-			print(e)
-
-	def create_connection(self, db_file):
-		""" create a database connection to the SQLite database
-				specified by db_file
-				:param db_file: database file
-				:return: Connection object or None
-		"""
-		conn = None
-		try:
-			conn = sqlite3.connect(db_file)
-		except sqlite3.Error as e:
-			print(e)
-
-		return conn
+         
+		cur = self.conn.cursor()
+		cur.execute(create_games_table)
+		cur.execute(create_ratings_table)
+		cur.execute(create_prefix_table)
 
 	def get_game(self, person):
 		cur = self.conn.cursor()
