@@ -1,3 +1,5 @@
+from logging import warn
+from re import A
 import discord
 import os
 from discord.ext import commands
@@ -82,8 +84,6 @@ class Development(commands.Cog):
 
 		await ctx.send(f'Restarting...')
 		
-		pickle.dump([util.games, util.colors, util.time_control, util.ratings, util.last_moved, util.warned], open('Chess_Bot/data/database', 'wb'))
-		
 		data_channel = await self.client.fetch_channel(814962871532257310)
 		
 		await data_channel.send(file=discord.File('Chess_Bot/data/database'))
@@ -97,15 +97,16 @@ class Development(commands.Cog):
 		Pulls from the github repository
 		(Bot developers only)
 		'''
-		await ctx.send(f'Executing command "git pull"...')
 
 		if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-			await ctx.send(f'You do not have permission to git_pull')
+			await ctx.send(f'You do not have permission to run "git pull"')
 			return
+
+		await ctx.send(f'Executing command "git pull"...')
 
 		stdout, stderr, status = await util.run(f'git pull')
 
-		message = f'Stdout: {stdout}\nStderr: {stderr}'
+		message = f'```\nStdout:\n{stdout}Stderr: {stderr}```'
 		
 		if len(message) >= 2000:
 			f = open('Chess_Bot/data/message.txt', 'w')
@@ -129,12 +130,13 @@ class Development(commands.Cog):
 			await ctx.send(f'You do not have permission to debug_load')
 			return
 
-		if not user.id in util.games.keys():
-			await ctx.send(f'<@{user.id}> does not have a game in progress')
+		game = data.data_manager.get_game(user.id)
+
+		if game == None:
+			await ctx.send(f'{user} does not have a game in progress')
 			return
 		
-		util.games[ctx.author.id] = util.games[user.id]
-		util.colors[ctx.author.id] = util.colors[user.id]
+		data.data_manager.change_game(ctx.author.id, game)
 		
 		await ctx.send(f'Succesfully loaded game')
 
@@ -176,6 +178,38 @@ class Development(commands.Cog):
 			return
 		
 		await ctx.send(file, file=discord.File(file))
+
+	@commands.command()
+	async def load_db(self, ctx):
+		data_channel = await self.client.fetch_channel(814962871532257310)
+		
+		await ctx.send('Downloading...')
+	
+		async for message in data_channel.history(limit=25):
+			for attachment in message.attachments:
+				if attachment.filename == 'database':
+					await attachment.save('Chess_Bot/data/database')
+					break
+
+		games, colors, time_control, ratings, last_moved, warned, prefixes = pickle.load(open('Chess_Bot/data/database', 'rb'))
+		print(games, colors, time_control, ratings, last_moved, warned, prefixes)
+		
+		await ctx.send('Loading games...')
+
+		for k in games.keys():
+			print(games[k])
+			print(' '.join(str(x) for x in games[k]))
+			data.data_manager.change_game(k, data.Game(colors[k], time_control[k], games[k], last_moved[k], warned[k]))
+		
+		await ctx.send('Loading ratings...')
+		for k in ratings.keys():
+			data.data_manager.change_rating(k, ratings[k])
+		
+		await ctx.send('Loading prefixes...')
+		for k in prefixes.keys():
+			data.data_manager.change_prefix(k, prefixes[k])
+			
+		await ctx.send('Loaded')
 		
 	@commands.command()
 	async def troll_change(self, ctx, guild : int, new_prefix):

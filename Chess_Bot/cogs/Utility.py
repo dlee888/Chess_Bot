@@ -3,22 +3,14 @@ from PIL import Image
 import asyncio
 
 
+from Chess_Bot.cogs import Data as data
+
+
 thonking = []
-
-games = {}
-colors = {}
-time_control = {}
-
-ratings = {}
-
-last_moved = {}
-warned = {}
-
-prefixes = {}
 
 async def run(cmd):
     proc = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE,
-                                                 stderr=asyncio.subprocess.PIPE)
+                                                stderr=asyncio.subprocess.PIPE)
 
     stdout, stderr = await proc.communicate()
 
@@ -43,35 +35,29 @@ async def has_roles(person, roles, client):
     return False
 
 
-def get_rating(user):
-    if user in ratings.keys():
-        return ratings[user]
-    return None
-
-
 def update_rating(user, outcome):
-    bot_rating = get_rating(801501916810838066)
+    bot_rating = data.data_manager.get_rating(801501916810838066)
+    person_rating = data.data_manager.get_rating(user)
     
     if bot_rating == None:
-        ratings[801501916810838066] = 1500
         bot_rating = 1500
-
-    if not user in ratings.keys():
-        ratings[user] = 1500
+    if person_rating == None:
+        person_rating = 1500
     
-    E = 1 / (1 + 10 ** ((bot_rating - get_rating(user)) / 400))
+    E = 1 / (1 + 10 ** ((bot_rating - person_rating) / 400))
     
     if outcome == 1:
         bot_rating -= 32 * E
-        ratings[user] += 32 * E
+        person_rating += 32 * E
     elif outcome == 0:
         bot_rating += 32 * E
-        ratings[user] -= 32 * E
+        person_rating -= 32 * E
     else:
         bot_rating += 32 * (E - 0.5)
-        ratings[user] += 32 * (0.5 - E)
+        person_rating += 32 * (0.5 - E)
 
-    ratings[801501916810838066] = bot_rating
+    data.data_manager.change_rating(801501916810838066, bot_rating)
+    data.data_manager.change_rating(user, person_rating)
 
 
 def pretty_time(time):
