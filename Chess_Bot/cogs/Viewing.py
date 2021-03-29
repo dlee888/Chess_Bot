@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 
 import Chess_Bot.cogs.Utility as util
+import Chess_Bot.cogs.Data as data
 from Chess_Bot.cogs.CPP_IO import *
 
 class Viewing(commands.Cog):
@@ -20,8 +21,10 @@ class Viewing(commands.Cog):
             person = user[0].id
         else:
             person = ctx.author.id
+            
+        game = data.data_manager.get_game(person)
 
-        if not person in util.games.keys():
+        if game == None:
             if len(user) == 1:
                 await ctx.send(f'{user[0]} does not have a game in progress')
             else:
@@ -37,7 +40,7 @@ class Viewing(commands.Cog):
         
         await run_engine(file_in, file_out)
         
-        await output_move(ctx, person, self.client)
+        await output_move(ctx, person)
 
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.default)
@@ -51,8 +54,10 @@ class Viewing(commands.Cog):
             person = user[0].id
         else:
             person = ctx.author.id
+            
+        game = data.data_manager.get_game(person)
 
-        if not person in util.games.keys():
+        if game == None:
             if len(user) == 1:
                 await ctx.send(f'{user[0]} does not have a game in progress')
             else:
@@ -66,7 +71,7 @@ class Viewing(commands.Cog):
         file_in, file_out = prepare_files(person)
 
         f = open(file_in, 'w')
-        f.write(f'fen\nyes2\n{get_game_str(person)}\nquit\n')
+        f.write(f'fen\nyes2\n{str(game)}\nquit\n')
         f.close()
         
         await run_engine(file_in, file_out)
@@ -75,4 +80,4 @@ class Viewing(commands.Cog):
         out = f.readlines()
         f.close()
 
-        await ctx.send(out[-2])
+        await ctx.send(f'```{out[-2]}```')

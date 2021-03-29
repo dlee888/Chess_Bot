@@ -16,18 +16,6 @@ class Topgg(commands.Cog):
     async def on_guild_post(self):
         print('Posted stats on top.gg')
         
-    @commands.Cog.listener()
-    async def on_dbl_vote(self, data):
-        print('Vote recieved!')
-        print(data)
-        
-        gg_channel = self.client.get_channel(819639514758643754)
-        await gg_channel.send(f'data = {str(data)}')
-        await gg_channel.send(f'Vote from {data.user} found!\nThank you for voting! You have recieved a gift of 10 rating points.')
-        
-        util.get_rating(data.user.id)
-        util.ratings[data.user.id] += 10
-        
     @commands.command()
     async def votes(self, ctx):
         

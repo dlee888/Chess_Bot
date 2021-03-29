@@ -3,6 +3,7 @@ from discord.ext import commands
 import time
 
 import Chess_Bot.cogs.Utility as util
+import Chess_Bot.cogs.Data as data
 
 version = '1.2.8'
 
@@ -23,7 +24,7 @@ class Misc(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
-    async def rating(self, ctx, *user : discord.Member):
+    async def rating(self, ctx, *user : discord.User):
         '''
         Tells you your rating
         '''
@@ -32,12 +33,12 @@ class Misc(commands.Cog):
         if len(user) == 1:
             person = user[0]
         
-        result = util.get_rating(person.id)
+        result = data.data_manager.get_rating(person.id)
         
         if result == None:
             await ctx.send(f'{person} is unrated.')
         else:
-            await ctx.send(f'{person}\'s rating is {result}')
+            await ctx.send(f'{person}\'s rating is {round(result, 2)}')
         
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.default)
@@ -47,11 +48,13 @@ class Misc(commands.Cog):
         '''
         
         number = 1
+
+        ratings = data.data_manager.get_ratings()
         
         if num == 'all':
-            number = len(util.ratings.keys())
+            number = len(ratings.keys())
         elif num == '-1':
-            number = min(10, len(util.ratings.keys()))
+            number = min(10, len(ratings.keys()))
         else:
             try:
                 number = int(num)
@@ -59,17 +62,17 @@ class Misc(commands.Cog):
                 await ctx.send('That isn\'t even an integer lol')
                 return
         
-        if number > len(util.ratings.keys()):
+        if number > len(ratings.keys()):
             await ctx.send('There aren\'t even that many rated players lmao')
             return
 
         number = min(number, 25)
-
+        
         all_players = []
         
-        for k in util.ratings.keys():
-            all_players.append((k, util.ratings[k]))
-        
+        for k in ratings.keys():
+            all_players.append((k, ratings[k]))
+            
         all_players.sort(reverse=True, key=lambda a: a[1])
         
         embed = discord.Embed(title="Leaderboard", color=0xffff69)
@@ -87,10 +90,12 @@ class Misc(commands.Cog):
         Shows highest rated players
         '''
 
+        ratings = data.data_manager.get_ratings()
+        
         all_players = []
         
-        for k in util.ratings.keys():
-            all_players.append((k, util.ratings[k]))
+        for k in ratings.keys():
+            all_players.append((k, ratings[k]))
         
         all_players.sort(reverse=True, key=lambda a: a[1])
         
@@ -100,7 +105,7 @@ class Misc(commands.Cog):
                 rank = i + 1
                 break
         
-        await ctx.send(f'Your rating is {util.get_rating(ctx.author.id)}. You are ranked {rank} out of {len(all_players)} players.')
+        await ctx.send(f'Your rating is {ratings[ctx.author.id]}. You are ranked {rank} out of {len(all_players)} players.')
 
     @commands.command(aliases=['info'])
     @commands.cooldown(1, 4, commands.BucketType.default)

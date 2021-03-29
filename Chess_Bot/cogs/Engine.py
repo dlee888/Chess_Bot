@@ -2,6 +2,7 @@ from discord.ext import commands
 import random
 import time
 
+import Chess_Bot.cogs.Data as data
 import Chess_Bot.cogs.Utility as util
 from Chess_Bot.cogs.CPP_IO import *
 
@@ -19,15 +20,18 @@ class Engine(commands.Cog):
 		For example, Nxe4, Nge5, c4, Ke2, etc
 		More about algebraic notation here: https://www.chess.com/article/view/chess-notation#algebraic-notation
 		'''
-		if not ctx.author.id in util.games.keys():
+
+		person = ctx.author.id
+		game = data.data_manager.get_game(person)
+  
+		if game == None:
 			await ctx.send('You do not have a game in progress with Chess Bot')
 			return
 
-		if ctx.author.id in util.thonking:
+		if person in util.thonking:
 			await ctx.send('Chess Bot is already thinking')
 			return
 
-		person = ctx.author.id
 		
 		thonk = self.client.get_emoji(814285875265536001)
 		await ctx.message.add_reaction(thonk)
@@ -40,19 +44,20 @@ class Engine(commands.Cog):
 
 		await log(person, self.client, ctx)
 	
-		code = await output_move(ctx, person, self.client)
+		code, game = await output_move(ctx, person)
 		util.thonking.remove(person)
 		
 		if code == 'GAME STILL IN PROGRESS':
-			util.last_moved[person] = time.time()
-			util.warned[person] = False
+			game.last_moved = time.time()
+			game.warned = False
+			data.data_manager.change_game(person, game)
 			return
 		
 		if code == 'ILLEGAL MOVE PLAYED':
 			await ctx.send('Illegal move played. Make sure your move is in algebraic notation.\nType "$help move" for more info')
 			return
 
-		old_rating = util.get_rating(ctx.author.id)
+		old_rating = data.data_manager.get_rating(person)
 		
 		if code == 'COMPUTER RESIGNED':
 			await ctx.send('Chess Bot resigned')
@@ -60,21 +65,20 @@ class Engine(commands.Cog):
 		elif code == 'DRAW':
 			util.update_rating(ctx.author.id, 1/2)
 			await ctx.send('Draw')
-		elif code[:5].lower() == whiteblack[util.colors[ctx.author.id]]:
+		elif code[:5].lower() == whiteblack[game.color]:
 			util.update_rating(ctx.author.id, 1)
 			await ctx.send('You won!')
-		elif code[:5].lower() == whiteblack[1 - util.colors[ctx.author.id]]:
+		elif code[:5].lower() == whiteblack[1 - game.color]:
 			util.update_rating(ctx.author.id, 0)
 			await ctx.send('You lost.')
 		else:
 			await ctx.send('Something went wrong. <:thonkery:532458240559153163>')
 			return
 
-		await ctx.send(f'Your new rating is {round(util.get_rating(ctx.author.id))} ({round(old_rating)} + {round(util.get_rating(person) - old_rating)})')
+		new_rating = data.data_manager.get_rating(person)
+		await ctx.send(f'Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
 		
-		util.games.pop(ctx.author.id)
-		util.last_moved.pop(person)
-		util.warned.pop(person)
+		data.data_manager.delete_game(person)
 
 
 	@commands.command()
@@ -86,35 +90,31 @@ class Engine(commands.Cog):
 		Flags:
 			-t to set time control (in seconds)
 		'''
-		if ctx.author.id in util.games.keys():
+  
+		person = ctx.author.id
+  
+		game = data.data_manager.get_game(person)
+		if game != None:
 			await ctx.send('You already have a game in progress')
 			return
-		
-		person = ctx.author.id
-		
 
-		util.games[person] = []
-		util.colors[person] = random.randint(0, 1)  # 1 if white, 0 if black
-		
-		util.time_control[person] = 30
-		util.last_moved[person] = time.time()
-		util.warned[person] = False
+		game = data.Game(random.randint(0, 1), 30)
 		
 		for i in range(0, len(flags), 2):
 			if flags[i] == '-t':
 				try:
-					time_control = int(flags[i + 1])
+					game.time_control = int(flags[i + 1])
 				except ValueError:
-					await ctx.send('That isn\'t even an integer lol')
+					await ctx.send('Bruh that isn\'t even an integer.')
 					return
 
-				if time_control < 1 or time_control > 120:
+				if game.time_control < 1 or game.time_control > 120:
 					await ctx.send('Please enter an integer between 1 and 120')
 					return
 
-				util.time_control[person] = time_control
-
-		await ctx.send(f'Game started with Chess Bot\nYou are {whiteblack[util.colors[person]]}')
+		data.data_manager.change_game(person, game)
+  
+		await ctx.send(f'Game started with Chess Bot\nYou play the {whiteblack[game.color]} pieces.')
 
 		thonk = self.client.get_emoji(814285875265536001)
 		await ctx.message.add_reaction(thonk)
@@ -126,8 +126,12 @@ class Engine(commands.Cog):
 		await run_engine(file_in, file_out)
 		
 		await log(person, self.client, ctx)
-		await output_move(ctx, person, self.client)
+		code, game = await output_move(ctx, person)
 		util.thonking.remove(person)
+  
+		game.last_moved = time.time()
+		game.warned = False
+		data.data_manager.change_game(person, game)
 
 
 	@commands.command()
@@ -136,16 +140,23 @@ class Engine(commands.Cog):
 		'''
 		Resigns the game
 		'''
-		if not ctx.author.id in util.games.keys():
+  
+		game = data.data_manager.get_game(ctx.author.id)
+  
+		if game == None:
 			await ctx.send('You do not have a game in progress')
 			return
 
-		util.games.pop(ctx.author.id)
-		util.last_moved.pop(ctx.author.id)
-		util.warned.pop(ctx.author.id)
+		data.data_manager.delete_game(ctx.author.id)
 		
-		old_rating = util.get_rating(ctx.author.id)
+		old_rating = data.data_manager.get_rating(ctx.author.id)
+  
+		if old_rating == None:
+			data.data_manager.change_rating(ctx.author.id, 1500)
+			old_rating = 1500
 		
 		util.update_rating(ctx.author.id, 0)
 		
-		await ctx.send(f'Game resigned. Your new rating is {round(util.get_rating(ctx.author.id))} ({round(old_rating)} + {round(util.get_rating(ctx.author.id) - old_rating)})')
+		new_rating = data.data_manager.get_rating(ctx.author.id)
+  
+		await ctx.send(f'Game resigned. Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
