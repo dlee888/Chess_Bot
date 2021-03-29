@@ -29,7 +29,7 @@ class Data:
 		self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
   
 		create_games_table = '''CREATE TABLE IF NOT EXISTS games (
-										id integer NOT NULL PRIMARY KEY UNIQUE ON CONFLICT REPLACE,
+										id integer NOT NULL PRIMARY KEY UNIQUE,
 										moves text,
 										color integer,
 										time_control integer,
@@ -37,11 +37,11 @@ class Data:
 										warned integer
 									);'''
 		create_ratings_table = '''CREATE TABLE IF NOT EXISTS ratings (
-										id integer NOT NULL PRIMARY KEY UNIQUE ON CONFLICT REPLACE,
+										id integer NOT NULL PRIMARY KEY UNIQUE,
 										rating real
 									);'''
 		create_prefix_table = '''CREATE TABLE IF NOT EXISTS prefixes (
-										id integer NOT NULL PRIMARY KEY UNIQUE ON CONFLICT REPLACE,
+										id integer NOT NULL PRIMARY KEY UNIQUE,
 										prefix text
 									);'''
          
