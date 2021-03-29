@@ -37,7 +37,7 @@ def prepare_input(person, move=''):
 
 async def run_engine(file_in, file_out):
 	# print('Running engine')
-	out, err, status = await util.run(f'.\\engine < {file_in} > {file_out}')
+	out, err, status = await util.run(f'./engine < {file_in} > {file_out}')
 	# print(f'Stdout: {out}\nStderr: {err}\n{status}')
 
 
