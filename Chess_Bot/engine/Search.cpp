@@ -8,20 +8,20 @@ Value search(Depth depth, Value alpha, Value beta)
 {
 	nodes++;
 
-	printf("search(%d, %d, %d)\n", depth, alpha, beta);
-	curr_state.print();
+	// printf("search(%d, %d, %d)\n", depth, alpha, beta);
+	// curr_state.print();
 
 	unsigned long long curr_board_hash = curr_state.get_hash() % TABLE_SIZE;
 
 	if (exists[curr_board_hash] && depths[curr_board_hash] >= depth)
 	{
-		printf("tt hit, %d\n", best_eval[curr_board_hash]);
+		// printf("tt hit, %d\n", best_eval[curr_board_hash]);
 		tb_hits++;
 		return best_eval[curr_board_hash];
 	}
 
 	if (curr_state.adjucation()) {
-		printf("adjucation\n");
+		// printf("adjucation\n");
 		return DRAWN;
 	}
 
@@ -30,7 +30,7 @@ Value search(Depth depth, Value alpha, Value beta)
 	}
 
 	if (curr_state.king_attacked()) {
-		printf("king attacked\n");
+		// printf("king attacked\n");
 		return MATE;
 	}
 
@@ -64,11 +64,11 @@ Value search(Depth depth, Value alpha, Value beta)
 	if (mate)
 	{
 		if (curr_state.is_check()) {
-			printf("checkmate\n");
+			// printf("checkmate\n");
 			return MATED;
 		}
 		else {
-			printf("stalemate\n");
+			// printf("stalemate\n");
 			return DRAWN;
 		}
 	}
@@ -85,14 +85,14 @@ Value search(Depth depth, Value alpha, Value beta)
 	// TODO: implement improving
 	if (depth < 7 && curr_eval < orig_eval - futility_margin(depth, false))
 	{
-		printf("futility prune: %d\n", curr_eval);
+		// printf("futility prune: %d\n", curr_eval);
 		return curr_eval;
 	}
 
 	// Razor pruning and extended razor pruning
 	if (depth < 1) {
 		if (curr_eval + RAZOR_MARGIN < alpha) {
-			printf("razor prune\n");
+			// printf("razor prune\n");
 			return qsearch(alpha, beta);
 		}
 	} 
@@ -101,8 +101,8 @@ Value search(Depth depth, Value alpha, Value beta)
 
 	for (int move : moves)
 	{
-		printf("Considering %s, eval cache is %d\n", curr_state.move_to_string(move).c_str(), eval_cache[move]);
-		
+		// printf("Considering %s, eval cache is %d\n", curr_state.move_to_string(move).c_str(), eval_cache[move]);
+
 		curr_state.make_move(move);
 
 		Value x = -search(depth - ONE_PLY, -beta, -alpha);
@@ -111,7 +111,7 @@ Value search(Depth depth, Value alpha, Value beta)
 		alpha = std::max(alpha, x);
 
 		if (alpha >= beta) {
-			printf("alpha beta cutoff: %d\n", alpha);
+			// printf("alpha beta cutoff: %d\n", alpha);
 			return alpha;
 		}
 	}
@@ -120,8 +120,8 @@ Value search(Depth depth, Value alpha, Value beta)
 	depths[curr_board_hash] = depth;
 	best_eval[curr_board_hash] = alpha;
 
-	printf("done searching, returned %d\n", alpha);
-	curr_state.print();
+	// printf("done searching, returned %d\n", alpha);
+	// curr_state.print();
 
 	return alpha;
 }
@@ -131,25 +131,25 @@ Value qsearch(Value alpha, Value beta)
 {
 	qsearch_nodes++;
 	
-	printf("qsearch(%d, %d)\n", alpha, beta);
-	curr_state.print();
+	// printf("qsearch(%d, %d)\n", alpha, beta);
+	// curr_state.print();
 
 	unsigned long long curr_board_hash = curr_state.get_hash() % TABLE_SIZE;
 
 	if (exists[curr_board_hash] && depths[curr_board_hash] >= DEPTH_QS_NO_CHECKS)
 	{
-		printf("tt hit: %d\n", best_eval[curr_board_hash]);
+		// printf("tt hit: %d\n", best_eval[curr_board_hash]);
 		qsearch_hits++;
 		return best_eval[curr_board_hash];
 	}
 
 	if (curr_state.adjucation()) {
-		printf("adjucation\n");
+		// printf("adjucation\n");
 		return DRAWN;
 	}
 
 	if (curr_state.king_attacked()){
-		printf("king attacked\n");
+		// printf("king attacked\n");
 		return MATE;
 	}
 
@@ -172,7 +172,7 @@ Value qsearch(Value alpha, Value beta)
 			
 			int hash = curr_state.get_hash() % TABLE_SIZE;
 			if (exists[hash]) {
-				printf("using tt for eval of move %s\n", curr_state.move_to_string(i).c_str());
+				// printf("using tt for eval of move %s\n", curr_state.move_to_string(i).c_str());
 				eval_cache[i] = -best_eval[hash];
 			}
 			else {
@@ -185,11 +185,11 @@ Value qsearch(Value alpha, Value beta)
 	if (mate)
 	{
 		if (curr_state.is_check()) {
-			printf("checkmate\n");
+			// printf("checkmate\n");
 			return MATED;
 		}
 		else {
-			printf("stalemate\n");
+			// printf("stalemate\n");
 			return DRAWN;
 		}
 	}
@@ -197,7 +197,7 @@ Value qsearch(Value alpha, Value beta)
 	Value curr_eval;
 	if (exists[curr_board_hash]) {
 		// tt entry can be used as more accurate static eval
-		printf("using tt static eval\n");
+		// printf("using tt static eval\n");
 		curr_eval = best_eval[curr_board_hash];
 	} else {
 		curr_eval = eval(curr_state);
@@ -205,17 +205,17 @@ Value qsearch(Value alpha, Value beta)
 
 	if (break_now || ordered_moves.size() == 0)
 	{
-		printf("no moves: %d\n", curr_eval);
+		// printf("no moves: %d\n", curr_eval);
 		return curr_eval;
 	}
 
 	if (curr_eval >= beta)
 	{ // Standing pat
-		printf("stand-pat: %d\n", curr_eval);
+		// printf("stand-pat: %d\n", curr_eval);
 		return curr_eval;
 	}
 
-	printf("static eval = %d\n", curr_eval);
+	// printf("static eval = %d\n", curr_eval);
 
 	alpha = std::max(alpha, curr_eval);
 
@@ -223,7 +223,7 @@ Value qsearch(Value alpha, Value beta)
 
 	for (int move : ordered_moves)
 	{
-		printf("Considering %s, eval cache is %d\n", curr_state.move_to_string(move).c_str(), eval_cache[move]);
+		// printf("Considering %s, eval cache is %d\n", curr_state.move_to_string(move).c_str(), eval_cache[move]);
 
 		curr_state.make_move(move);
 		Value x = -qsearch(-beta, -alpha);
@@ -232,7 +232,7 @@ Value qsearch(Value alpha, Value beta)
 		alpha = std::max(alpha, x);
 
 		if (alpha >= beta) {
-			printf("alpha beta cutoff: %d\n", alpha);
+			// printf("alpha beta cutoff: %d\n", alpha);
 			return alpha;
 		}
 	}
@@ -241,8 +241,8 @@ Value qsearch(Value alpha, Value beta)
 	depths[curr_board_hash] = DEPTH_QS_NO_CHECKS;
 	best_eval[curr_board_hash] = alpha;
 	
-	printf("done qsearching, returned %d\n", alpha);
-	curr_state.print();
+	// printf("done qsearching, returned %d\n", alpha);
+	// curr_state.print();
 
 	return alpha;
 }
