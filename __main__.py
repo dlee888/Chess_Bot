@@ -44,7 +44,7 @@ async def on_command_error(ctx, exc):
 	elif type(exc) == commands.errors.TooManyArguments:
 		await ctx.send(f'Bruh what why are there so many arguments?')
 	elif type(exc) == commands.errors.CommandOnCooldown:
-		await ctx.send(f'You are on cooldown. Try again in {util.pretty_time(exc.retry_after)}')
+		await ctx.send(f'You are on cooldown. Try again in {exc.retry_after} seconds')
 	elif type(exc) == commands.errors.CommandNotFound:
 		await ctx.send('Command not found.')
 	else:
