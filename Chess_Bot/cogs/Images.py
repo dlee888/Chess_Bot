@@ -98,8 +98,3 @@ def get_image(person, end):
 				result.paste(square_img, (350 - y, 350 - x, 400 - y, 400 - x))
 
 	result.save(f'Chess_Bot/data/image-{person}.png')
-
-
-# for testing
-if __name__ == '__main__':
-	load_all_themes()
