@@ -22,8 +22,6 @@ def load_theme(theme):
 		row = 6 - (piece // 4) * 2
 		col = (2 * piece) % 8
 
-		# print(piece, row, col)
-
 		squares = [(row + 1, col), (row + 1, col + 1),
 				(row, col), (row, col + 1)]
 
@@ -53,7 +51,7 @@ def load_all_themes():
 	print('Loading images...')
 	for file in os.listdir('Chess_Bot/images'):
 		if file.endswith('.png') and file != 'blank_board.png':
-			file = file.strip('.png')
+			file = file[:-4]
 			print(f'Loading theme {file}')
 			load_theme(file)
 
