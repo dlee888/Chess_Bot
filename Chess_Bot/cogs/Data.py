@@ -44,11 +44,16 @@ class Data:
 										id bigint NOT NULL PRIMARY KEY UNIQUE,
 										prefix text
 									);'''
+		create_themes_table = '''CREATE TABLE IF NOT EXISTS themes (
+										id bigint NOT NULL PRIMARY KEY UNIQUE,
+										theme text
+									);'''
          
 		cur = self.conn.cursor()
 		cur.execute(create_games_table)
 		cur.execute(create_ratings_table)
 		cur.execute(create_prefix_table)
+		cur.execute(create_themes_table)
 
 	def get_game(self, person):
 		cur = self.conn.cursor()
@@ -152,11 +157,27 @@ VALUES ({person}, '{moves_str}', {new_game.color}, {new_game.time_control}, {new
 
 		self.conn.commit()
 
+	def get_theme(self, person):
+		cur = self.conn.cursor()
+		cur.execute(f'SELECT * FROM themes WHERE id = {person};')
+		rows = cur.fetchall()
+
+		if len(rows) == 0:
+			return 'default'
+		return rows[0][1]
+
+	def change_theme(self, person, new_theme):
+		cur = self.conn.cursor()
+		cur.execute(f'DELETE FROM themes WHERE id = {person};')  
+		cur.execute(f'INSERT INTO themes VALUES ({person}, \'{new_theme}\');')
+
+		self.conn.commit()
+
 
 data_manager = Data()
 
 # for testing
-if __name__ == '__main__':
+# if __name__ == '__main__':
 	# data_manager.change_game(69, Game(0, 30))
-	print(data_manager.get_games())
-	print(data_manager.get_game(69))
+	# print(data_manager.get_games())
+	# print(data_manager.get_game(69))

@@ -13,15 +13,10 @@ from Chess_Bot.cogs.Topgg import *
 
 import Chess_Bot.cogs.Data as data
 import Chess_Bot.cogs.Utility as util
+import Chess_Bot.cogs.Images as image
 
 import logging
 import traceback
-
-logger = logging.getLogger('discord')
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='debug.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
 
 async def get_prefix(bot, message):
 	if message.guild == None:
@@ -30,23 +25,14 @@ async def get_prefix(bot, message):
 
 bot = commands.Bot(command_prefix=get_prefix, help_command=None)
 
-bot.add_cog(Engine(bot))
-bot.add_cog(Misc(bot))
-bot.add_cog(Viewing(bot))
-bot.add_cog(Mooderation(bot))
-bot.add_cog(Development(bot))
-bot.add_cog(Help(bot))
-bot.add_cog(Timer(bot))
-bot.add_cog(Topgg(bot))
 
-'''
 @bot.event
 async def on_error(error, *args, **kwargs):
 	print('error found')
 	print(error, type(error))
 	error_channel = bot.get_channel(799761964401819679)
 	await error_channel.send(f'Error: {str(error)}\nArgs: {args}\nkwargs: {kwargs}')
-'''
+
 @bot.event
 async def on_command_error(ctx, exc):
 	if type(exc) == commands.errors.BotMissingPermissions:
@@ -77,8 +63,8 @@ async def on_command_error(ctx, exc):
 		print(traceback_text)
 		
 		await ctx.send('''Uh oh. Something went wrong.
-If you feel that this is a bug, please contact the bot developers in the chess bot support server.
-https://discord.gg/Bm4zjtNTD2''')
+						If you feel that this is a bug, please contact the bot developers in the chess bot support server.
+						https://discord.gg/Bm4zjtNTD2''')
 		
 		error_channel = bot.get_channel(799761964401819679)
 		try:
@@ -88,8 +74,30 @@ https://discord.gg/Bm4zjtNTD2''')
 				file.write(traceback_text)
 			await error_channel.send(f'Command Error', discord.File('Chess_Bot/data/message.txt'))
 
-token = os.environ.get('BOT_TOKEN')
 
-# token = input('Token? ')
+def setup():
+	logger = logging.getLogger('discord')
+	logger.setLevel(logging.DEBUG)
+	handler = logging.FileHandler(filename='debug.log', encoding='utf-8', mode='w')
+	handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+	logger.addHandler(handler)
 
-bot.run(token)
+	image.load_all_themes()
+
+def main():
+	setup()
+	
+	bot.add_cog(Engine(bot))
+	bot.add_cog(Misc(bot))
+	bot.add_cog(Viewing(bot))
+	bot.add_cog(Mooderation(bot))
+	bot.add_cog(Development(bot))
+	bot.add_cog(Help(bot))
+	bot.add_cog(Timer(bot))
+	bot.add_cog(Topgg(bot))
+
+	token = os.environ.get('BOT_TOKEN')
+	bot.run(token)
+
+if __name__ == '__main__':
+	main()

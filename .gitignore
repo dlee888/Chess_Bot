@@ -10,3 +10,6 @@ image-*
 
 *.o
 *.exe
+
+*-light.png
+*-dark.png
