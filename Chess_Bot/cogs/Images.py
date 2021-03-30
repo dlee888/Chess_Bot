@@ -15,7 +15,7 @@ def load_theme(theme):
 	os.makedirs(f'Chess_Bot/images/{theme}', exist_ok=True)
 
 	size = im.size
-	square_len = size[0] // 8
+	square_len = size[0] / 8
 	piece_names = ['P', 'N', 'B', 'R', 'Q', 'K']
 
 	for piece in range(6):
@@ -52,7 +52,7 @@ def load_theme(theme):
 def load_all_themes():
 	print('Loading images...')
 	for file in os.listdir('Chess_Bot/images'):
-		if file.endswith('.png'):
+		if file.endswith('.png') and file != 'blank_board.png':
 			file = file.strip('.png')
 			print(f'Loading theme {file}')
 			load_theme(file)
