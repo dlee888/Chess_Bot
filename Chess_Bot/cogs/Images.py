@@ -72,7 +72,7 @@ def get_image(person, end):
 
 	for i in range(end - 7, end + 1):
 		for j in range(1, 17, 2):
-			square = f'Chess_Bot/images/{theme}'
+			square = f'Chess_Bot/images/{theme}/'
 			if game[i][j] == ' ':
 				square += 'blank'
 			elif game[i][j].islower():
