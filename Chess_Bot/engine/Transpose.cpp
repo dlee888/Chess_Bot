@@ -5,8 +5,8 @@
 #include "Transpose.h"
 
 bool exists[TABLE_SIZE];
-int depths[TABLE_SIZE];
-int best_eval[TABLE_SIZE];
+Depth depths[TABLE_SIZE];
+Value best_eval[TABLE_SIZE];
 
 Bitstring rand_bitstrings[64][13], color_bitstring, en_passant_bistrings[8], castling_bitstrings[4];
 

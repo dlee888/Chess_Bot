@@ -2,15 +2,13 @@
 #define TRANSPOS_H_INCLUDED
 #include <map>
 
+#include "types.h"
+
 #define TABLE_SIZE 10000019 // prime number
 
-typedef unsigned long long Bitstring;
-
-typedef std::pair<int, int> pdi;
-
 extern bool exists[TABLE_SIZE];
-extern int depths[TABLE_SIZE];
-extern int best_eval[TABLE_SIZE];
+extern Depth depths[TABLE_SIZE];
+extern Value best_eval[TABLE_SIZE];
 
 extern Bitstring rand_bitstrings[64][13], color_bitstring, en_passant_bistrings[8], castling_bitstrings[4];
 

@@ -85,8 +85,6 @@ def get_image(person, end):
 	
 	
 async def output_move(ctx, person):
-	user = await ctx.message.guild.fetch_member(person)
-
 	f = open(f'Chess_Bot/data/output-{person}.txt')
 	out = f.readlines()
 	f.close()
@@ -94,7 +92,7 @@ async def output_move(ctx, person):
 	game = data.data_manager.get_game(person)
 
 	embed = discord.Embed(
-		title=f'{user}\'s game', description=f'{whiteblack[game.color].capitalize()} to move.', color=0x5ef29c)
+		title=f'{ctx.author}\'s game', description=f'{whiteblack[game.color].capitalize()} to move.', color=0x5ef29c)
 	embed.set_footer(
 		text=f'Requested by {ctx.author}', icon_url=ctx.author.avatar_url)
 

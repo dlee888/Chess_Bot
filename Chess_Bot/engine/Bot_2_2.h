@@ -133,8 +133,9 @@ void play()
 			}
 			else
 			{
-				int time_taken = 0, curr_depth = 1;
-				pdi best_move = std::make_pair(0.0, -1);
+				int time_taken = 0;
+				Depth curr_depth = ONE_PLY;
+				pii best_move = std::make_pair(0.0, -1);
 				while ((double)time_taken / CLOCKS_PER_SEC * curr_state.list_moves().size() < 4 * time_limit)
 				{
 					printf("Searching depth %d\n", curr_depth);
@@ -159,7 +160,7 @@ void play()
 
 					// if (curr_depth == 3) break;
 
-					curr_depth++;
+					curr_depth += ONE_PLY;
 				}
 				move_i = best_move.second;
 				if ((computer_is_white && best_move.first <= -RESIGN) || (!computer_is_white && best_move.first >= RESIGN))

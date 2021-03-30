@@ -4,21 +4,7 @@
 #include <map>
 #include <cassert>
 
-typedef std::pair<int, int> pii;
-
-// Definitely not copied from SF
-enum Value : int {
-    VALUE_INFINITE = 1000000,
-	MATE = 100000,
-	MATED = -100000,
-	DRAWN = 0,
-
-	PawnValueMg   = 128,   PawnValueEg   = 213,
-	KnightValueMg = 782,   KnightValueEg = 865,
-	BishopValueMg = 830,   BishopValueEg = 918,
-	RookValueMg   = 1289,  RookValueEg   = 1378,
-	QueenValueMg  = 2529,  QueenValueEg  = 2687,
-};
+#include "types.h"
 
 extern int vals[7];
 

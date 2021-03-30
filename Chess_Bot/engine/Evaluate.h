@@ -3,6 +3,6 @@
 
 #include "State.h"
 
-int eval(state &s);
+Value eval(state &s);
 
 #endif // !EVALUATE_H_INCLUDED

@@ -1,8 +1,8 @@
 #include "Evaluate.h"
 
-int eval(state& s)
+Value eval(state& s)
 {
-	int score = 0;
+	Value score = VALUE_ZERO;
 
 	if ((9 * (cnts[BQ + 6] + cnts[WQ + 6]) + 5 * (cnts[BR + 6] + cnts[WR + 6]) +
 		3 * (cnts[BB + 6] + cnts[WB + 6] + cnts[BN + 6] + cnts[WN + 6])) > 30)

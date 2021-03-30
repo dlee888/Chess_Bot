@@ -8,9 +8,9 @@ long long tb_hits, qsearch_hits;
 
 int orig_eval;
 
-int prune = 500;
-
-int RESIGN = 1000;
+int futility_margin(int depth, bool improving) {
+	return (175 - 50 * improving) * depth;
+}
 
 int priority;
 
@@ -39,7 +39,7 @@ bool move_comparator(const int &a, const int &b)
 	return good_a > good_b;
 }
 
-pdi find_best_move(int depth) {
+pii find_best_move(Depth depth) {
 	// TODO: Make multi-threaded
 	if (break_now) {
 		return {0, -69};
@@ -49,7 +49,8 @@ pdi find_best_move(int depth) {
 	tb_hits = 0; qsearch_hits = 0;
 	orig_eval = eval(curr_state);
 
-	int best_move = -1, evaluation = -RESIGN;
+	int best_move = -1;
+	Value evaluation = -RESIGN;
 
 	std::vector <int> moves = curr_state.list_moves();
 	eval_cache.clear();
@@ -73,7 +74,7 @@ pdi find_best_move(int depth) {
 		// printf("Considering %s, %d\n", curr_state.move_to_string(i).c_str(), eval_cache[i]);
 
 		curr_state.make_move(i);
-		int x = -search(depth - 1, -VALUE_INFINITE, -evaluation);
+		Value x = -search(depth - ONE_PLY, -VALUE_INFINITE, -evaluation);
 		curr_state.unmake_move(i);
 
 		if (x > evaluation) {
