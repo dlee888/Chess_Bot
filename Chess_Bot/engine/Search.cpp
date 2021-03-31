@@ -101,7 +101,7 @@ Value search(Depth depth, Value alpha, Value beta)
 
 	for (int move : moves)
 	{
-		// printf("Considering %s, eval cache is %d\n", curr_state.move_to_string(move).c_str(), eval_cache[move]);
+		// printf("Considering %s\n", curr_state.move_to_string(move).c_str());
 
 		curr_state.make_move(move);
 
@@ -197,7 +197,6 @@ Value qsearch(Value alpha, Value beta)
 	Value curr_eval;
 	if (exists[curr_board_hash]) {
 		// tt entry can be used as more accurate static eval
-		// printf("using tt static eval\n");
 		curr_eval = best_eval[curr_board_hash];
 	} else {
 		curr_eval = eval(curr_state);
@@ -223,7 +222,7 @@ Value qsearch(Value alpha, Value beta)
 
 	for (int move : ordered_moves)
 	{
-		// printf("Considering %s, eval cache is %d\n", curr_state.move_to_string(move).c_str(), eval_cache[move]);
+		// printf("Considering %s\n", curr_state.move_to_string(move).c_str());
 
 		curr_state.make_move(move);
 		Value x = -qsearch(-beta, -alpha);

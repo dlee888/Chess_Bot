@@ -71,7 +71,7 @@ pii find_best_move(Depth depth) {
 	sort(moves.begin(), moves.end(), move_comparator);
 
 	for (int i : moves) {
-		// printf("Considering %s, %d\n", curr_state.move_to_string(i).c_str(), eval_cache[i]);
+		// printf("Considering %s\n", curr_state.move_to_string(i).c_str());
 
 		curr_state.make_move(i);
 		Value x = -search(depth - ONE_PLY, -VALUE_INFINITE, -evaluation);

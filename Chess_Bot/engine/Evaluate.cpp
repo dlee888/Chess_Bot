@@ -33,6 +33,30 @@ Value eval(state& s)
 		score += ksafety;
 		// printf("King safety: %d\n", ksafety_coeff * ksafety);
 
+		// open files
+		int files = 0;
+		for (pii& p : whiterooks) {
+			if (white_pawn_counts[p.second] == 0) {
+				if (black_pawn_counts[p.second] == 0) {
+					files += open_bonus;
+				}
+				else {
+					files += semi_open_bonus;
+				}
+			}
+		}
+		for (pii& p : blackrooks) {
+			if (black_pawn_counts[p.second] == 0) {
+				if (white_pawn_counts[p.second] == 0) {
+					files -= open_bonus;
+				}
+				else {
+					files -= semi_open_bonus;
+				}
+			}
+		}
+		score += files;
+		
 		//material
 		int mat = PawnValueMg * (cnts[WP + 6] - cnts[BP + 6]) + KnightValueMg * (cnts[WN + 6] - cnts[BN + 6]) + 
 				BishopValueMg * (cnts[WB + 6] - cnts[BB + 6]) + RookValueMg * (cnts[WR + 6] - cnts[BR + 6]) + 
@@ -62,30 +86,6 @@ Value eval(state& s)
 	score -= dpawn_coeff * (doubled_white - doubled_black);
 	// printf("Doubled pawns: %d\n", dpawn_coeff * (doubled_white - doubled_black));
 
-	// open files
-	int files = 0;
-	for (pii& p : whiterooks) {
-		if (white_pawn_counts[p.second] == 0) {
-			if (black_pawn_counts[p.second] == 0) {
-				files += open_bonus;
-			}
-			else {
-				files += semi_open_bonus;
-			}
-		}
-	}
-	for (pii& p : blackrooks) {
-		if (black_pawn_counts[p.second] == 0) {
-			if (white_pawn_counts[p.second] == 0) {
-				files -= open_bonus;
-			}
-			else {
-				files -= semi_open_bonus;
-			}
-		}
-	}
-	score += files;
-
 	// Bishop pair
 	if (whitebishops.size() >= 2) {
 		score += bishop_pair_bonus;
@@ -93,6 +93,8 @@ Value eval(state& s)
 	if (blackbishops.size() >= 2) {
 		score -= bishop_pair_bonus;
 	}
+
+	score += MATE * (cnts[WK + 6] - cnts[BK + 6]);
 	
 	if (!s.to_move) score *= -1;
 

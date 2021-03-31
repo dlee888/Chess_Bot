@@ -58,6 +58,8 @@ class Engine(commands.Cog):
 			return
 
 		old_rating = data.data_manager.get_rating(person)
+		if old_rating == None:
+			old_rating = 1500
 		
 		if code == 'COMPUTER RESIGNED':
 			await ctx.send('Chess Bot resigned')
