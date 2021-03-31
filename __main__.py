@@ -26,12 +26,13 @@ async def get_prefix(bot, message):
 bot = commands.Bot(command_prefix=get_prefix, help_command=None)
 
 
-@bot.event
-async def on_error(error, *args, **kwargs):
-	print('error found')
-	print(error, type(error))
-	error_channel = bot.get_channel(799761964401819679)
-	await error_channel.send(f'Error: {str(error)}\nArgs: {args}\nkwargs: {kwargs}')
+# @bot.event
+# async def on_error(error, *args, **kwargs):
+# 	print('error found')
+# 	print(error, type(error))
+# 	error_channel = bot.get_channel(799761964401819679)
+# 	await error_channel.send(f'Error: {str(error)}\nArgs: {args}\nkwargs: {kwargs}')
+
 
 @bot.event
 async def on_command_error(ctx, exc):
