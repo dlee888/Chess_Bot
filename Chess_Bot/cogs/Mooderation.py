@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import typing
 
 import Chess_Bot.cogs.Utility as util
 import Chess_Bot.cogs.Data as data
@@ -12,7 +13,7 @@ class Mooderation(commands.Cog):
 
 	@commands.command()
 	@commands.cooldown(1, 3, commands.BucketType.default)
-	async def abort(self, ctx, user: discord.User):
+	async def abort(self, ctx, user : typing.Union[discord.User, discord.Member]):
 		'''
 		Aborts a game
 		'''
@@ -31,7 +32,7 @@ class Mooderation(commands.Cog):
 
 	@commands.command()
 	@commands.cooldown(1, 3, commands.BucketType.default)
-	async def refund(self, ctx, person: discord.User, amount: float):
+	async def refund(self, ctx, person: typing.Union[discord.User, discord.Member], amount: float):
 		'''
 		Refunds rating points to a user
 		'''
@@ -67,7 +68,7 @@ class Mooderation(commands.Cog):
 			
 	@commands.command()
 	@commands.cooldown(1, 3, commands.BucketType.default)
-	async def gift(self, ctx, person : discord.User, amount : float):
+	async def gift(self, ctx, person : typing.Union[discord.User, discord.Member], amount : float):
 		if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
 			await ctx.send('You do not have permission to gift rating')
 			return

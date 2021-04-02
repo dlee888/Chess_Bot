@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import typing
 
 import Chess_Bot.cogs.Utility as util
 import Chess_Bot.cogs.Data as data
@@ -13,7 +14,7 @@ class Viewing(commands.Cog):
 
 	@commands.command()
 	@commands.cooldown(1, 10, commands.BucketType.default)
-	async def view(self, ctx, *user : discord.Member):
+	async def view(self, ctx, *user : typing.Union[discord.User, discord.Member]):
 		'''
 		Views your current game
 		'''
@@ -45,7 +46,7 @@ class Viewing(commands.Cog):
 
 	@commands.command()
 	@commands.cooldown(1, 10, commands.BucketType.default)
-	async def fen(self, ctx, *user : discord.Member):
+	async def fen(self, ctx, *user : typing.Union[discord.User, discord.Member]):
 		'''
 		Sends current game in FEN format
 		'''

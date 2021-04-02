@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import time
+import typing
 
 import Chess_Bot.cogs.Utility as util
 import Chess_Bot.cogs.Data as data
@@ -24,7 +25,7 @@ class Misc(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
-    async def rating(self, ctx, *user : discord.User):
+    async def rating(self, ctx, *user : typing.Union[discord.User, discord.Member]):
         '''
         Tells you your rating
         '''

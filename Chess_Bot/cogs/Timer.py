@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from discord.ext import tasks
 import time
+import typing
 
 import Chess_Bot.cogs.Utility as util
 import Chess_Bot.cogs.Data as data
@@ -78,7 +79,7 @@ class Timer(commands.Cog):
             print('Exception in send_no_time_message:', e)
         
     @commands.command()
-    async def time(self, ctx, *user : discord.Member):
+    async def time(self, ctx, *user : typing.Union[discord.User, discord.Member]):
         
         person = -1
         if len(user) == 1:

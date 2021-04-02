@@ -1,11 +1,10 @@
-from logging import warn
-from re import A
 import discord
 import os
 from discord.ext import commands
 import sys
 import time
 import pickle
+import typing
 
 import Chess_Bot.cogs.Utility as util
 from Chess_Bot.cogs.CPP_IO import *
@@ -120,7 +119,7 @@ class Development(commands.Cog):
 		
 	
 	@commands.command()
-	async def debug_load(self, ctx, user : discord.Member):
+	async def debug_load(self, ctx, user : typing.Union[discord.User, discord.Member]):
 		'''
 		Loads <user>'s game to your game
 		(Bot developers only)
@@ -181,15 +180,10 @@ class Development(commands.Cog):
 
 	@commands.command()
 	async def load_db(self, ctx):
-		data_channel = await self.client.fetch_channel(814962871532257310)
-		
-		await ctx.send('Downloading...')
-	
-		async for message in data_channel.history(limit=25):
-			for attachment in message.attachments:
-				if attachment.filename == 'database':
-					await attachment.save('Chess_Bot/data/database')
-					break
+		for attachment in ctx.message.attachments:
+			if attachment.filename == 'database':
+				await attachment.save('Chess_Bot/data/database')
+				break
 
 		games, colors, time_control, ratings, last_moved, warned, prefixes = pickle.load(open('Chess_Bot/data/database', 'rb'))
 		print(games, colors, time_control, ratings, last_moved, warned, prefixes)
