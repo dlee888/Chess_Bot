@@ -1,6 +1,6 @@
 ﻿#include <ctime>
 
-// #include "Engine.h"
+#include "Engine.h"
 #include "Bot_2_2.h"
 #include "types.h"
 
@@ -58,21 +58,21 @@ int main()
 		{
 			play();
 		}
-		// else if (cmnd == "analyse")
-		// {
-		// 	std::cout << "What depth do you want?\n";
-		// 	int depth;
-		// 	std::cin >> depth;
-		// 	analyse_game(depth);
-		// }
-		// else if (cmnd == "find_best_move")
-		// {
-		// 	get_best_move();
-		// }
-		// else if (cmnd == "find_best_move2")
-		// {
-		// 	get_best_move2();
-		// }
+		else if (cmnd == "analyse")
+		{
+			std::cout << "What depth do you want?\n";
+			int depth;
+			std::cin >> depth;
+			analyse_game(depth);
+		}
+		else if (cmnd == "find_best_move")
+		{
+			get_best_move();
+		}
+		else if (cmnd == "find_best_move2")
+		{
+			get_best_move2();
+		}
 		else if (cmnd == "help")
 		{
 			instructions();

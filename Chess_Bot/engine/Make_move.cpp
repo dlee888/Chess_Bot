@@ -17,8 +17,9 @@ void state::make_move(int move)
 	}
 
 	int color = -1;
-	if (to_move)
+	if (to_move) {
 		color = 1;
+	}
 
 	bool wk_pushed = false, bk_pushed = false, wq_pushed = false, bq_pushed = false;
 
@@ -37,11 +38,11 @@ void state::make_move(int move)
 				replace_board(7, 5, WR);
 				replace_board(7, 7, 0);
 				replace_board(7, 4, 0);
-				for (int i = 0; i < whiterooks.size(); i++)
+				for (pii& p : whiterooks)
 				{
-					if (whiterooks[i].first == 7 && whiterooks[i].second == 7)
+					if (p.first == 7 && p.second == 7)
 					{
-						whiterooks[i].second = 5;
+						p.second = 5;
 						break;
 					}
 				}
@@ -58,11 +59,11 @@ void state::make_move(int move)
 				replace_board(7, 0, 0);
 				replace_board(7, 4, 0);
 				whitekings[0].second = 2;
-				for (int i = 0; i < whiterooks.size(); i++)
+				for (pii& p : whiterooks)
 				{
-					if (whiterooks[i].first == 7 && whiterooks[i].second == 0)
+					if (p.first == 7 && p.second == 0)
 					{
-						whiterooks[i].second = 3;
+						p.second = 3;
 						break;
 					}
 				}
@@ -81,11 +82,11 @@ void state::make_move(int move)
 				replace_board(0, 5, BR);
 				replace_board(0, 7, 0);
 				replace_board(0, 4, 0);
-				for (int i = 0; i < blackrooks.size(); i++)
+				for (pii& p : blackrooks)
 				{
-					if (blackrooks[i].first == 0 && blackrooks[i].second == 7)
+					if (p.first == 0 && p.second == 7)
 					{
-						blackrooks[i].second = 5;
+						p.second = 5;
 						break;
 					}
 				}
@@ -101,11 +102,11 @@ void state::make_move(int move)
 				replace_board(0, 2, BK);
 				replace_board(0, 0, 0);
 				replace_board(0, 4, 0);
-				for (int i = 0; i < blackrooks.size(); i++)
+				for (pii& p : blackrooks)
 				{
-					if (blackrooks[i].first == 0 && blackrooks[i].second == 0)
+					if (p.first == 0 && p.second == 0)
 					{
-						blackrooks[i].second = 3;
+						p.second = 3;
 						break;
 					}
 				}

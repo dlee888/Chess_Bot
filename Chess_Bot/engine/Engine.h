@@ -30,13 +30,13 @@ void analyse_game(int depth)
 	}
 
 	init_eval_info();
-	std::vector<pdi> best_moves;
+	std::vector<pii> best_moves;
 	for (int i : game)
 	{
-		best_moves.push_back(find_best_move(depth));
+		best_moves.push_back(find_best_move(Depth(depth)));
 		curr_state.make_move(i);
 	}
-	best_moves.push_back(find_best_move(depth));
+	best_moves.push_back(find_best_move(Depth(depth)));
 
 	init_eval_info();
 	temp = state();
@@ -116,8 +116,9 @@ void get_best_move()
 	std::cout << "How much time do you want the program to take? ";
 	std::cin >> tlim;
 
-	int time_taken = 0, curr_depth = 1;
-	pdi best_move = std::make_pair(0.0, -1);
+	int time_taken = 0;
+	Depth curr_depth = ONE_PLY;
+	pii best_move = std::make_pair(0, -1);
 	while ((double)time_taken / CLOCKS_PER_SEC * curr_state.list_moves().size() < 2 * tlim)
 	{
 		printf("Searching depth %d\n", curr_depth);
@@ -132,7 +133,7 @@ void get_best_move()
 		if (abs(best_move.first + 1000.0) < 1)
 			break;
 		nodes = 0;
-		curr_depth++;
+		curr_depth += ONE_PLY;
 	}
 
 	std::cout << "Best move is " << curr_state.move_to_string(best_move.second) << ", EVAL = " << (double)best_move.first / 100 << std::endl;
@@ -167,7 +168,7 @@ void get_best_move2()
 	std::cout << "What depth do you want? ";
 	std::cin >> depth;
 
-	auto best_move = find_best_move(depth);
+	auto best_move = find_best_move(Depth(depth));
 	std::cout << "Best move is " << curr_state.move_to_string(best_move.second) << ", EVAL = " << (double)best_move.first / 100 << std::endl;
 }
 #endif // !ENGINE_H_INCLUDED

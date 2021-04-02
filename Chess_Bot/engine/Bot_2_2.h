@@ -1,7 +1,6 @@
 #ifndef BOT_H_INCLUDED
 #define BOT_H_INCLUDED
 
-#include <fstream>
 #include <ctime>
 #include <vector>
 
@@ -11,7 +10,7 @@
 void play()
 {
 	std::vector<int> game;
-	//std::map<state, int> draw;
+	// std::unordered_map <state, int> draw;
 	bool computer_is_white = false, is_draw = false;
 	int num_move = 0;
 	double time_limit;
@@ -33,8 +32,8 @@ void play()
 				break;
 			int move_i = curr_state.parse_move(move);
 			curr_state.make_move(move_i);
-			//draw[curr_state]++;
-			//if(draw[curr_state] >= 3) is_draw = true;
+			// draw[curr_state]++;
+			// if(draw[curr_state] >= 3) is_draw = true;
 			game.push_back(move_i);
 			num_move++;
 			for (int i = 0; i < openings.size(); i++)
@@ -50,7 +49,6 @@ void play()
 	else if (move == "yes2")
 	{
 		std::cout << "Please enter the game:\n";
-		//loading by typing in moves, such as 1. e4 e5 2. d4 ...
 		while (!(move == "*"))
 		{
 			if (num_move % 2 == 0)
@@ -62,8 +60,8 @@ void play()
 				break;
 			int move_i = std::stoi(move);
 			curr_state.make_move(move_i);
-			//draw[curr_state]++;
-			//if(draw[curr_state] >= 3) is_draw = true;
+			// draw[curr_state]++;
+			// if(draw[curr_state] >= 3) is_draw = true;
 			game.push_back(move_i);
 			num_move++;
 			for (int i = 0; i < openings.size(); i++)
@@ -245,8 +243,9 @@ void play()
 	else
 	{
 		int m = curr_state.mate();
-		if (m == 1 || curr_state.adjucation() || is_draw)
+		if (m == 1 || curr_state.adjucation() || is_draw) {
 			printf("DRAW\n");
+		}
 		else
 		{
 			if (m == 2)

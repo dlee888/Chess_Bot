@@ -15,7 +15,7 @@ std::vector<int> state::list_moves()
 		{
 			res.push_back(2883584);
 		}
-		for (pii p : whitepawns)
+		for (const pii& p : whitepawns)
 		{
 			if (board[p.first - 1][p.second] == 0)
 			{
@@ -109,87 +109,81 @@ std::vector<int> state::list_moves()
 				}
 			}
 		}
-		for (pii p : whiteknights)
+		for (const pii& p : whiteknights)
 		{
 			for (int i = 0; i < 8; i++)
 			{
 				int row_final = p.first + dr_knight[i], col_final = p.second + dc_knight[i];
-				if (!out_of_bounds(row_final, col_final))
+				if (!out_of_bounds(row_final, col_final) && board[row_final][col_final] <= 0)
 				{
-					if (board[row_final][col_final] <= 0)
-					{
-						res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
-							(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
-					}
+					res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
+						(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
 				}
 			}
 		}
-		for (pii p : whitebishops)
+		for (const pii& p : whitebishops)
 		{
 			for (int j = 0; j < 4; j++)
 			{
 				for (int i = 1; i < 8; i++)
 				{
 					int row_final = p.first + dr_bishop[j] * i, col_final = p.second + dc_bishop[j] * i;
-					if (out_of_bounds(row_final, col_final))
+					if (out_of_bounds(row_final, col_final) || board[row_final][col_final] > 0) {
 						break;
-					if (board[row_final][col_final] > 0)
-						break;
+					}
 					res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
 						(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
-					if (board[row_final][col_final] != 0)
+					if (board[row_final][col_final] != 0) {
 						break;
+					}
 				}
 			}
 		}
-		for (pii p : whiterooks)
+		for (const pii& p : whiterooks)
 		{
 			for (int j = 0; j < 4; j++)
 			{
 				for (int i = 1; i < 8; i++)
 				{
 					int row_final = p.first + dr_rook[j] * i, col_final = p.second + dc_rook[j] * i;
-					if (out_of_bounds(row_final, col_final))
+					if (out_of_bounds(row_final, col_final) || board[row_final][col_final] > 0) {
 						break;
-					if (board[row_final][col_final] > 0)
-						break;
+					}
 					res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
 						(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
-					if (board[row_final][col_final] != 0)
+					if (board[row_final][col_final] != 0) {
 						break;
+					}
 				}
 			}
 		}
-		for (pii p : whitequeens)
+		for (const pii& p : whitequeens)
 		{
 			for (int j = 0; j < 8; j++)
 			{
 				for (int i = 1; i < 8; i++)
 				{
 					int row_final = p.first + dr_queen[j] * i, col_final = p.second + dc_queen[j] * i;
-					if (out_of_bounds(row_final, col_final))
+					if (out_of_bounds(row_final, col_final) || board[row_final][col_final] > 0) {
 						break;
-					if (board[row_final][col_final] > 0)
-						break;
+					}
 					res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
 						(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
-					if (board[row_final][col_final] != 0)
+					if (board[row_final][col_final] != 0) {
 						break;
+					}
 				}
 			}
 		}
-		for (pii p : whitekings)
+		for (const pii& p : whitekings)
 		{
 			for (int i = 0; i < 8; i++)
 			{
 				int row_final = p.first + dr_king[i], col_final = p.second + dc_king[i];
-				if (!out_of_bounds(row_final, col_final))
+				if (!out_of_bounds(row_final, col_final) && board[row_final][col_final] <= 0)
 				{
-					if (board[row_final][col_final] <= 0)
-					{
-						res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
-							(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
-					}
+					res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
+						(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
 				}
 			}
 		}
@@ -206,7 +200,7 @@ std::vector<int> state::list_moves()
 		{
 			res.push_back(2883584);
 		}
-		for (pii p : blackpawns)
+		for (const pii& p : blackpawns)
 		{
 			if (board[p.first + 1][p.second] == 0)
 			{
@@ -303,7 +297,7 @@ std::vector<int> state::list_moves()
 				}
 			}
 		}
-		for (pii p : blackknights)
+		for (const pii& p : blackknights)
 		{
 			for (int i = 0; i < 8; i++)
 			{
@@ -318,17 +312,16 @@ std::vector<int> state::list_moves()
 				}
 			}
 		}
-		for (pii p : blackbishops)
+		for (const pii& p : blackbishops)
 		{
 			for (int j = 0; j < 4; j++)
 			{
 				for (int i = 1; i < 8; i++)
 				{
 					int row_final = p.first + dr_bishop[j] * i, col_final = p.second + dc_bishop[j] * i;
-					if (out_of_bounds(row_final, col_final))
+					if (out_of_bounds(row_final, col_final) || board[row_final][col_final] < 0) {
 						break;
-					if (board[row_final][col_final] < 0)
-						break;
+					}
 					res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
 						(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
 					if (board[row_final][col_final] != 0)
@@ -338,54 +331,51 @@ std::vector<int> state::list_moves()
 				}
 			}
 		}
-		for (pii p : blackrooks)
+		for (const pii& p : blackrooks)
 		{
 			for (int j = 0; j < 4; j++)
 			{
 				for (int i = 1; i < 8; i++)
 				{
 					int row_final = p.first + dr_rook[j] * i, col_final = p.second + dc_rook[j] * i;
-					if (out_of_bounds(row_final, col_final))
+					if (out_of_bounds(row_final, col_final) || board[row_final][col_final] < 0) {
 						break;
-					if (board[row_final][col_final] < 0)
-						break;
+					}
 					res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
 						(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
-					if (board[row_final][col_final] != 0)
+					if (board[row_final][col_final] != 0) {
 						break;
+					}
 				}
 			}
 		}
-		for (pii p : blackqueens)
+		for (const pii& p : blackqueens)
 		{
 			for (int j = 0; j < 8; j++)
 			{
 				for (int i = 1; i < 8; i++)
 				{
 					int row_final = p.first + dr_queen[j] * i, col_final = p.second + dc_queen[j] * i;
-					if (out_of_bounds(row_final, col_final))
+					if (out_of_bounds(row_final, col_final) || board[row_final][col_final] < 0) {
 						break;
-					if (board[row_final][col_final] < 0)
-						break;
+					}
 					res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
 						(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
-					if (board[row_final][col_final] != 0)
+					if (board[row_final][col_final] != 0) {
 						break;
+					}
 				}
 			}
 		}
-		for (pii p : blackkings)
+		for (const pii& p : blackkings)
 		{
 			for (int i = 0; i < 8; i++)
 			{
 				int row_final = p.first + dr_king[i], col_final = p.second + dc_king[i];
-				if (!out_of_bounds(row_final, col_final))
+				if (!out_of_bounds(row_final, col_final) && board[row_final][col_final] >= 0)
 				{
-					if (board[row_final][col_final] >= 0)
-					{
-						res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
-							(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
-					}
+					res.push_back((p.first << 3) + p.second + (((row_final << 3) + col_final) << 6) +
+						(abs(board[p.first][p.second]) << 12) + (abs(board[row_final][col_final]) << 15));
 				}
 			}
 		}
