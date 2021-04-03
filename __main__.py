@@ -1,6 +1,7 @@
 import discord
 import os
 from discord.ext import commands
+from discord.ext.commands.errors import ExpectedClosingQuoteError
 
 from Chess_Bot.cogs.Misc import *
 from Chess_Bot.cogs.Engine import *
@@ -40,12 +41,13 @@ async def on_command_error(ctx, exc):
 		await ctx.send(f'Chess Bot is missing permissions.\nThe missing permissions are: {" ".join(exc.missing_perms)}')
 	elif type(exc) == commands.errors.MissingRequiredArgument:
 		await ctx.send(f'Missing required argument.\nPlease enter a value for: {exc.param}')
-	elif type(exc) == commands.errors.ArgumentParsingError:
+	elif (type(exc) == commands.errors.ArgumentParsingError or
+ 		  type(exc) == commands.errors.ExpectedClosingQuoteError):
 		await ctx.send(f'There was an error parsing your argument')
 	elif type(exc) == commands.errors.TooManyArguments:
 		await ctx.send(f'Bruh what why are there so many arguments?')
 	elif type(exc) == commands.errors.CommandOnCooldown:
-		await ctx.send(f'You are on cooldown. Try again in {exc.retry_after} seconds')
+		await ctx.send(f'You are on cooldown. Try again in {round(exc.retry_after, 3)} seconds')
 	elif type(exc) == commands.errors.CommandNotFound:
 		await ctx.send('Command not found.')
 	else:
