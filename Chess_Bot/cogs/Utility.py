@@ -50,8 +50,8 @@ def update_rating(user, outcome):
         bot_rating -= 32 * E
         person_rating += 32 * E
     elif outcome == 0:
-        bot_rating += 32 * E
-        person_rating -= 32 * E
+        bot_rating += 32 * (1 - E)
+        person_rating -= 32 * (1 - E)
     else:
         bot_rating += 32 * (E - 0.5)
         person_rating += 32 * (0.5 - E)

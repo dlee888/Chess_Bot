@@ -106,7 +106,7 @@ class Misc(commands.Cog):
                 rank = i + 1
                 break
         
-        await ctx.send(f'Your rating is {ratings[ctx.author.id]}. You are ranked {rank} out of {len(all_players)} players.')
+        await ctx.send(f'Your rating is {data.data_manager.get_rating(ctx.author.id)}. You are ranked {rank} out of {len(all_players)} players.')
 
     @commands.command(aliases=['info'])
     @commands.cooldown(1, 4, commands.BucketType.default)
