@@ -65,9 +65,12 @@ async def on_command_error(ctx, exc):
 		
 		print(traceback_text)
 		
-		await ctx.send('''Uh oh. Something went wrong.
-If you feel that this is a bug, please contact the bot developers in the chess bot support server.
-https://discord.gg/Bm4zjtNTD2''')
+		if await util.has_roles(ctx.author, ['Debugger', 'Tester', 'Mooderator'], bot):
+			await ctx.send(f'Command Error:\n```\n{traceback_text}\n```')
+		else:
+			await ctx.send('''Uh oh. Something went wrong.
+	If you feel that this is a bug, please contact the bot developers in the chess bot support server.
+	https://discord.gg/Bm4zjtNTD2''')
 		
 		error_channel = bot.get_channel(799761964401819679)
 		try:
