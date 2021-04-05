@@ -24,7 +24,6 @@ def prepare_files(person):
 	return file_in, file_out
 
 
-
 def prepare_input(person, move=''):
 	file_in = f'Chess_Bot/data/input-{person}.txt'
 
@@ -41,8 +40,7 @@ async def run_engine(file_in, file_out):
 	out, err, status = await util.run(f'./engine < {file_in} > {file_out}')
 	# print(f'Stdout: {out}\nStderr: {err}\n{status}')
 
-	
-	
+
 async def output_move(ctx, person):
 	f = open(f'Chess_Bot/data/output-{person}.txt')
 	out = f.readlines()
@@ -59,15 +57,16 @@ async def output_move(ctx, person):
 		if out[i].startswith('COMPUTER PLAYED'):
 			embed.add_field(name='Computer moved', value=out[i][16:])
 			break
-	
+
 	file = None
-	
+
 	for i in range(len(out) - 1, 0, -1):
 		if out[i].startswith('|'):
 			get_image(person, i)
 
-			file = discord.File(f'Chess_Bot/data/image-{person}.png', filename = 'board.png')
-			embed.set_image(url= f'attachment://board.png')
+			file = discord.File(
+				f'Chess_Bot/data/image-{person}.png', filename='board.png')
+			embed.set_image(url=f'attachment://board.png')
 
 			break
 
@@ -103,18 +102,15 @@ async def output_move(ctx, person):
 		else:
 			await ctx.send('Something went wrong.')
 			await ctx.send(str(e))
-			
+
 	return code, game
 
 
 async def log(person, client, ctx):
 	log_channel = client.get_channel(798277701210341459)
 
-	message = await log_channel.send(f'''Output for {ctx.author} (id = {ctx.author.id})
-Request: {ctx.message.content}
-{ctx.message}
-Jump url: ({ctx.message.jump_url})''', files=[
+	await log_channel.send(f'''Output for {ctx.author} (id = {ctx.author.id})
+Request: {ctx.message.content}''', files=[
 		discord.File(f'Chess_Bot/data/output-{person}.txt'),
-		discord.File(f'Chess_Bot/data/input-{person}.txt')])
-
-	await message.edit(supress=True)
+		discord.File(f'Chess_Bot/data/input-{person}.txt'),
+  		discord.File(f'Chess_Bot/data/image-{person}.png')])

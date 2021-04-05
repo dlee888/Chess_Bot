@@ -5,6 +5,10 @@ import sys
 import time
 import pickle
 import typing
+import io
+import textwrap
+import traceback
+from contextlib import redirect_stdout
 
 import Chess_Bot.cogs.Utility as util
 from Chess_Bot.cogs.CPP_IO import *
@@ -139,29 +143,64 @@ class Development(commands.Cog):
 		
 		await ctx.send(f'Succesfully loaded game')
 
-	@commands.command()
-	async def debug(self, ctx, *, code):
-		'''
-		Runs python code
-		'''
+	def cleanup_code(self, content):
+		"""Automatically removes code blocks from the code."""
+		# remove ```py\n```
+		if content.startswith('```') and content.endswith('```'):
+			return '\n'.join(content.split('\n')[1:-1])
+
+		# remove `foo`
+		return content.strip('` \n')
+
+	@commands.command(pass_context=True, hidden=True, name='eval')
+	async def _eval(self, ctx, *, body: str):
+		"""Evaluates a code"""
+
 		if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-			await ctx.send(f'You do not have permission to debug')
 			return
-		
-		await ctx.send(eval(code))
 
-	@commands.command()
-	async def execute(self, ctx, *, code):
-		'''
-		Runs python code
-		'''
-		if ctx.author.id != 716070916550819860:
-			await ctx.send('Geniosity limit exceeded. Try again later')
-			return
-		
-		exec(code)
+		env = {
+			'bot': self.bot,
+			'ctx': ctx,
+			'channel': ctx.channel,
+			'author': ctx.author,
+			'guild': ctx.guild,
+			'message': ctx.message,
+			'_': self._last_result
+		}
 
-		await ctx.send('Code done executing')
+		env.update(globals())
+
+		body = self.cleanup_code(body)
+		stdout = io.StringIO()
+
+		to_compile = f'async def func():\n{textwrap.indent(body, "  ")}'
+
+		try:
+			exec(to_compile, env)
+		except Exception as e:
+			return await ctx.send(f'```py\n{e.__class__.__name__}: {e}\n```')
+
+		func = env['func']
+		try:
+			with redirect_stdout(stdout):
+				ret = await func()
+		except Exception as e:
+			value = stdout.getvalue()
+			await ctx.send(f'```py\n{value}{traceback.format_exc()}\n```')
+		else:
+			value = stdout.getvalue()
+			try:
+				await ctx.message.add_reaction('\u2705')
+			except:
+				pass
+
+			if ret is None:
+				if value:
+					await ctx.send(f'```py\n{value}\n```')
+			else:
+				self._last_result = ret
+				await ctx.send(f'```py\n{value}{ret}\n```')
 		
 	@commands.command()
 	async def gimme(self, ctx, file):
@@ -210,7 +249,7 @@ class Development(commands.Cog):
 		if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
 			return
 
-		util.prefixes[guild] = new_prefix
+		data.data_manager.change_prefix(guild, new_prefix)
 
 		await ctx.send('Prefix successfully updated')
 
