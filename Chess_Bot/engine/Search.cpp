@@ -11,7 +11,7 @@ Value search(Depth depth, Value alpha, Value beta)
 	// printf("search(%d, %d, %d)\n", depth, alpha, beta);
 	// curr_state.print();
 
-	unsigned long long curr_board_hash = curr_state.get_hash() % TABLE_SIZE;
+	Bitstring curr_board_hash = curr_state.get_hash() % TABLE_SIZE;
 
 	if (exists[curr_board_hash] && depths[curr_board_hash] >= depth)
 	{
@@ -51,7 +51,7 @@ Value search(Depth depth, Value alpha, Value beta)
 		} else {
 			mate = false;
 
-			int hash = curr_state.get_hash() % TABLE_SIZE;
+			Bitstring hash = curr_state.get_hash() % TABLE_SIZE;
 			if (exists[hash]) {
 				eval_cache[i] = -best_eval[hash];
 			}
@@ -84,11 +84,11 @@ Value search(Depth depth, Value alpha, Value beta)
 
 	// Futility pruning
 	// TODO: implement improving
-	if (depth < 7 && curr_eval < orig_eval - futility_margin(depth, false))
-	{
-		// printf("futility prune: %d\n", curr_eval);
-		return curr_eval;
-	}
+	// if (depth < 7 && curr_eval < orig_eval - futility_margin(depth, false))
+	// {
+	// 	// printf("futility prune: %d\n", curr_eval);
+	// 	return curr_eval;
+	// }
 
 	// Razor pruning and extended razor pruning
 	if (depth < 1) {
@@ -130,7 +130,7 @@ Value search(Depth depth, Value alpha, Value beta)
 	// printf("done searching, returned %d\n", alpha);
 	// curr_state.print();
 
-	return alpha;
+	return value;
 }
 
 // Only searches captures and queen promotions to avoid horizon effect
@@ -141,7 +141,7 @@ Value qsearch(Value alpha, Value beta)
 	// printf("qsearch(%d, %d)\n", alpha, beta);
 	// curr_state.print();
 
-	unsigned long long curr_board_hash = curr_state.get_hash() % TABLE_SIZE;
+	Bitstring curr_board_hash = curr_state.get_hash() % TABLE_SIZE;
 
 	if (exists[curr_board_hash] && depths[curr_board_hash] >= DEPTH_QS_NO_CHECKS)
 	{
@@ -177,7 +177,7 @@ Value qsearch(Value alpha, Value beta)
 		{
 			ordered_moves.push_back(i);
 			
-			int hash = curr_state.get_hash() % TABLE_SIZE;
+			Bitstring hash = curr_state.get_hash() % TABLE_SIZE;
 			if (exists[hash]) {
 				// printf("using tt for eval of move %s\n", curr_state.move_to_string(i).c_str());
 				eval_cache[i] = -best_eval[hash];
@@ -252,5 +252,5 @@ Value qsearch(Value alpha, Value beta)
 	// printf("done qsearching, returned %d\n", alpha);
 	// curr_state.print();
 
-	return alpha;
+	return value;
 }
