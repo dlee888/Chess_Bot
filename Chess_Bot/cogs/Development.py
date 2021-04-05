@@ -152,15 +152,15 @@ class Development(commands.Cog):
 		# remove `foo`
 		return content.strip('` \n')
 
-	@commands.command(pass_context=True, hidden=True, name='eval')
-	async def _eval(self, ctx, *, body: str):
+	@commands.command(pass_context=True, hidden=True)
+	async def debug(self, ctx, *, body: str):
 		"""Evaluates a code"""
 
 		if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
 			return
 
 		env = {
-			'bot': self.bot,
+			'bot': self.client,
 			'ctx': ctx,
 			'channel': ctx.channel,
 			'author': ctx.author,
