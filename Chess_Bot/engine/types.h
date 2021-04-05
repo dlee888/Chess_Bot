@@ -15,11 +15,11 @@ enum Value : int {
 	MATED = -100000,
 	DRAWN = 0,
 
-	PawnValueMg   =  100,  PawnValueEg   =  133,
-	KnightValueMg =  325,  KnightValueEg =  300,
+	PawnValueMg   =  100,  PawnValueEg   =  126,
+	KnightValueMg =  325,  KnightValueEg =  310,
 	BishopValueMg =  371,  BishopValueEg =  380,
-	RookValueMg   =  563,  RookValueEg   =  669,
-	QueenValueMg  = 1000,  QueenValueEg  = 1033,
+	RookValueMg   =  563,  RookValueEg   =  609,
+	QueenValueMg  = 1000,  QueenValueEg  = 1353,
 
 	RESIGN = 1000
 };

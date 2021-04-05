@@ -156,7 +156,7 @@ void play()
 						break;
 					}
 
-					// if (curr_depth == 3) break;
+					// if (curr_depth == 2) break;
 
 					curr_depth += ONE_PLY;
 				}
@@ -195,7 +195,7 @@ void play()
 
 		num_move++;
 		curr_state.print();
-		std::cout << "HERUISTIC EVAL: " << (double)eval(curr_state) / 100 << std::endl;
+		std::cout << "HERUISTIC EVAL: " << (double)eval(curr_state, true) / 100 * (curr_state.to_move ? 1 : -1) << std::endl;
 		for (int i = 0; i < openings.size(); i++)
 		{
 			if (openings[i].moves[num_move - 1] != move_i || openings[i].moves[num_move] == -1)

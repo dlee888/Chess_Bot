@@ -46,17 +46,18 @@ Value search(Depth depth, Value alpha, Value beta)
 	{
 		curr_state.make_move(i);
 
-		int hash = curr_state.get_hash() % TABLE_SIZE;
-		if (exists[hash]) {
-			eval_cache[i] = -best_eval[hash];
-		}
-		else {
-			eval_cache[i] = -eval(curr_state);
-		}
-
-		if (mate && !curr_state.king_attacked())
-		{
+		if (curr_state.king_attacked()) {
+			eval_cache[i] = MATED;
+		} else {
 			mate = false;
+
+			int hash = curr_state.get_hash() % TABLE_SIZE;
+			if (exists[hash]) {
+				eval_cache[i] = -best_eval[hash];
+			}
+			else {
+				eval_cache[i] = -eval(curr_state);
+			}
 		}
 
 		curr_state.unmake_move(i);
@@ -98,17 +99,23 @@ Value search(Depth depth, Value alpha, Value beta)
 	} 
 	
 	std::sort(moves.begin(), moves.end(), move_comparator);
+	Value value = -VALUE_INFINITE;
 
 	for (int move : moves)
 	{
 		// printf("Considering %s\n", curr_state.move_to_string(move).c_str());
 
 		curr_state.make_move(move);
-
 		Value x = -search(depth - ONE_PLY, -beta, -alpha);
 		curr_state.unmake_move(move);
 
-		alpha = std::max(alpha, x);
+		if (x == MATED) {
+			// We have probably started to make illegal moves
+			break;
+		}
+
+		value = std::max(value, x);
+		alpha = std::max(alpha, value);
 
 		if (alpha >= beta) {
 			// printf("alpha beta cutoff: %d\n", alpha);
@@ -118,7 +125,7 @@ Value search(Depth depth, Value alpha, Value beta)
 
 	exists[curr_board_hash] = true;
 	depths[curr_board_hash] = depth;
-	best_eval[curr_board_hash] = alpha;
+	best_eval[curr_board_hash] = value;
 
 	// printf("done searching, returned %d\n", alpha);
 	// curr_state.print();
@@ -216,7 +223,8 @@ Value qsearch(Value alpha, Value beta)
 
 	// printf("static eval = %d\n", curr_eval);
 
-	alpha = std::max(alpha, curr_eval);
+	Value value = curr_eval;
+	alpha = std::max(alpha, value);
 
 	std::sort(ordered_moves.begin(), ordered_moves.end(), move_comparator);
 
@@ -228,7 +236,8 @@ Value qsearch(Value alpha, Value beta)
 		Value x = -qsearch(-beta, -alpha);
 		curr_state.unmake_move(move);
 
-		alpha = std::max(alpha, x);
+		value = std::max(value, x);
+		alpha = std::max(alpha, value);
 
 		if (alpha >= beta) {
 			// printf("alpha beta cutoff: %d\n", alpha);
@@ -238,7 +247,7 @@ Value qsearch(Value alpha, Value beta)
 
 	exists[curr_board_hash] = true;
 	depths[curr_board_hash] = DEPTH_QS_NO_CHECKS;
-	best_eval[curr_board_hash] = alpha;
+	best_eval[curr_board_hash] = value;
 	
 	// printf("done qsearching, returned %d\n", alpha);
 	// curr_state.print();
