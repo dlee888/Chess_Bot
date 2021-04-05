@@ -17,6 +17,7 @@ class Development(commands.Cog):
 
 	def __init__(self, client):
 		self.client = client
+		self._last_result = None
 
 	@commands.command()
 	@commands.cooldown(1, 15, commands.BucketType.default)
