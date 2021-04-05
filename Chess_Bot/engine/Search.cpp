@@ -84,11 +84,11 @@ Value search(Depth depth, Value alpha, Value beta)
 
 	// Futility pruning
 	// TODO: implement improving
-	if (depth < 7 && (curr_eval - futility_margin(depth, false) >= beta))
-	{
-		// printf("futility prune: %d\n", curr_eval);
-		return curr_eval;
-	}
+	// if (depth < 7 && (curr_eval - futility_margin(depth, false) >= beta))
+	// {
+	// 	// printf("futility prune: %d\n", curr_eval);
+	// 	return curr_eval;
+	// }
 
 	// Razor pruning and extended razor pruning
 	if (depth < 1) {
@@ -109,10 +109,10 @@ Value search(Depth depth, Value alpha, Value beta)
 		Value x = -search(depth - ONE_PLY, -beta, -alpha);
 		curr_state.unmake_move(move);
 
-		if (x == MATED) {
-			// We have probably started to make illegal moves
-			break;
-		}
+		// if (x == MATED) {
+		// 	// We have probably started to make illegal moves
+		// 	break;
+		// }
 
 		value = std::max(value, x);
 		alpha = std::max(alpha, value);
