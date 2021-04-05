@@ -84,11 +84,11 @@ Value search(Depth depth, Value alpha, Value beta)
 
 	// Futility pruning
 	// TODO: implement improving
-	// if (depth < 7 && curr_eval < orig_eval - futility_margin(depth, false))
-	// {
-	// 	// printf("futility prune: %d\n", curr_eval);
-	// 	return curr_eval;
-	// }
+	if (depth < 7 && (curr_eval - futility_margin(depth, false) >= beta))
+	{
+		// printf("futility prune: %d\n", curr_eval);
+		return curr_eval;
+	}
 
 	// Razor pruning and extended razor pruning
 	if (depth < 1) {

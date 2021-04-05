@@ -13,8 +13,6 @@
 extern long long nodes, qsearch_nodes;
 extern long long tb_hits, qsearch_hits;
 
-extern int orig_eval;
-
 extern int priority;
 
 extern bool break_now;

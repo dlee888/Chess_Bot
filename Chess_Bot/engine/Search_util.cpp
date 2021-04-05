@@ -6,8 +6,6 @@
 long long nodes, qsearch_nodes;
 long long tb_hits, qsearch_hits;
 
-int orig_eval;
-
 int futility_margin(int depth, bool improving) {
 	return (175 - 50 * improving) * depth;
 }
@@ -47,7 +45,6 @@ pii find_best_move(Depth depth) {
 
 	nodes = 0; qsearch_nodes = 0;
 	tb_hits = 0; qsearch_hits = 0;
-	orig_eval = eval(curr_state);
 
 	int best_move = -1;
 	Value evaluation = -RESIGN;

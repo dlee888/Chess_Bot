@@ -1,6 +1,6 @@
 #include "State.h"
 
- bool state::adjucation()
+bool state::adjucation()
 {
 	if (fifty_move >= 50)
 		return true;
@@ -22,7 +22,7 @@
 }
 
 // returns 2 if checkmate, 1 if stalemate, and 0 otherwise
- int state::mate()
+int state::mate()
 {
 	for (int i : list_moves())
 	{
@@ -62,7 +62,7 @@
 }
 
 //lowest piece of the opposite color that is attacking a square
- int state::attacking(int row, int col, bool color)
+int state::attacking(int row, int col, bool color)
 {
 	if (color)
 	{
@@ -193,134 +193,3 @@
 	return 7;
 }
 
- int state::num_attack(int row, int col, bool color)
-{
-	int num_attack = 0;
-	if (color)
-	{
-		if (!out_of_bounds(row - 1, col - 1))
-		{
-			if (board[row - 1][col - 1] == BP)
-				num_attack++;
-		}
-		if (!out_of_bounds(row - 1, col + 1))
-		{
-			if (board[row - 1][col + 1] == BP)
-				num_attack++;
-		}
-		for (int i = 0; i < 8; i++)
-		{
-			if (out_of_bounds(row + dr_knight[i], col + dc_knight[i]))
-				continue;
-			if (board[row + dr_knight[i]][col + dc_knight[i]] == BN)
-				num_attack++;
-		}
-		for (int j = 0; j < 4; j++)
-		{
-			for (int i = 1; i < 8; i++)
-			{
-				if (out_of_bounds(row + dr_bishop[j] * i, col + dc_bishop[j] * i))
-					break;
-				if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] == BB)
-					num_attack++;
-				if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] != 0)
-					break;
-			}
-		}
-		for (int j = 0; j < 4; j++)
-		{
-			for (int i = 1; i < 8; i++)
-			{
-				if (out_of_bounds(row + dr_rook[j] * i, col + dc_rook[j] * i))
-					break;
-				if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] == BR)
-					num_attack++;
-				if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] != 0)
-					break;
-			}
-		}
-		for (int j = 0; j < 8; j++)
-		{
-			for (int i = 1; i < 8; i++)
-			{
-				if (out_of_bounds(row + dr_queen[j] * i, col + dc_queen[j] * i))
-					break;
-				if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] == BQ)
-					num_attack++;
-				if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] != 0)
-					break;
-			}
-		}
-		for (int i = 0; i < 8; i++)
-		{
-			if (out_of_bounds(row + dr_king[i], col + dc_king[i]))
-				continue;
-			if (board[row + dr_king[i]][col + dc_king[i]] == BK)
-				num_attack++;
-		}
-	}
-	else
-	{
-		if (!out_of_bounds(row + 1, col - 1))
-		{
-			if (board[row + 1][col - 1] == WP)
-				num_attack++;
-		}
-		if (!out_of_bounds(row + 1, col + 1))
-		{
-			if (board[row + 1][col + 1] == WP)
-				num_attack++;
-		}
-		for (int i = 0; i < 8; i++)
-		{
-			if (out_of_bounds(row + dr_knight[i], col + dc_knight[i]))
-				continue;
-			if (board[row + dr_knight[i]][col + dc_knight[i]] == WN)
-				num_attack++;
-		}
-		for (int j = 0; j < 4; j++)
-		{
-			for (int i = 1; i < 8; i++)
-			{
-				if (out_of_bounds(row + dr_bishop[j] * i, col + dc_bishop[j] * i))
-					break;
-				if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] == WB)
-					num_attack++;
-				if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] != 0)
-					break;
-			}
-		}
-		for (int j = 0; j < 4; j++)
-		{
-			for (int i = 1; i < 8; i++)
-			{
-				if (out_of_bounds(row + dr_rook[j] * i, col + dc_rook[j] * i))
-					break;
-				if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] == WR)
-					num_attack++;
-				if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] != 0)
-					break;
-			}
-		}
-		for (int j = 0; j < 8; j++)
-		{
-			for (int i = 1; i < 8; i++)
-			{
-				if (out_of_bounds(row + dr_queen[j] * i, col + dc_queen[j] * i))
-					break;
-				if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] == WQ)
-					num_attack++;
-				if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] != 0)
-					break;
-			}
-		}
-		for (int i = 0; i < 8; i++)
-		{
-			if (out_of_bounds(row + dr_king[i], col + dc_king[i]))
-				continue;
-			if (board[row + dr_king[i]][col + dc_king[i]] == WK)
-				num_attack++;
-		}
-	}
-	return num_attack;
-}

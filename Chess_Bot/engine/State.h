@@ -47,7 +47,7 @@ public:
 	}
 
 	int board[8][8];
-	unsigned long long board_hash;
+	Bitstring board_hash;
 
 	void replace_board(int row, int col, int piece)
 	{
@@ -56,7 +56,7 @@ public:
 		board[row][col] = piece;
 	}
 
-	unsigned long long get_hash()
+	Bitstring get_hash()
 	{
 		return board_hash ^ (to_move ? color_bitstring : 0) ^ ((en_passant_target.top() == -1) ? 0 : en_passant_bistrings[en_passant_target.top() >> 3]) ^
 			(wk_rights.top() ? castling_bitstrings[0] : 0) ^ (wq_rights.top() ? castling_bitstrings[1] : 0) ^ (bk_rights.top() ? castling_bitstrings[2] : 0) ^
@@ -107,7 +107,6 @@ public:
 	void unmake_move(int move);
 
 	int attacking(int row, int col, bool color);
-	int num_attack(int row, int col, bool color);
 
 	std::vector<int> list_moves();
 
