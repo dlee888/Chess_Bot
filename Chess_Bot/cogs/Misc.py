@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord.ext import tasks
 import time
 import typing
 
@@ -147,3 +148,13 @@ class Misc(commands.Cog):
         '''
         await ctx.send('https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=268815424&scope=bot')
         
+    
+    # Data manager connection check
+    @tasks.loop(seconds=5)
+    async def check_conn(self):
+        await data.data_manager.conn_check()
+
+    @check_conn.before_loop()
+    async def wait_until_ready(self):
+        print('Waiting for bot to get ready')
+        await self.client.wait_until_ready()

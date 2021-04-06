@@ -29,7 +29,7 @@ class Help(commands.Cog):
         embed.add_field(
             name='Rating', value='`rating`, `leaderboard`, `rank`', inline=False)
         embed.add_field(
-            name='Other', value='`ping`, `help`, `botinfo`, `invite`, `prefix`')
+            name='Other', value='`ping`, `help`, `botinfo`, `invite`, `prefix`, `theme`')
         
         if await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             embed.add_field(
@@ -157,6 +157,16 @@ class Help(commands.Cog):
         embed = await self.get_default_help_embed()
         embed.description = '''`$prefix`
                                 Sets a custom bot prefix for the server. Must have admin permission'''
+
+        await ctx.send(embed=embed)
+        
+        
+    @help.command()
+    async def theme(self, ctx):
+        embed = await self.get_default_help_embed()
+        embed.description = '''`$theme`
+                                Sets a theme.
+                                Use `$theme` to see your current theme and use `$theme <new theme>` to change your theme.'''
 
         await ctx.send(embed=embed)
         

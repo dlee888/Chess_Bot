@@ -1,7 +1,7 @@
 import psycopg2
 import time
 import os
-import asyncio
+
 
 class Game:
 
@@ -28,7 +28,7 @@ class Data:
 		self.DATABASE_URL = os.environ['DATABASE_URL']
 
 		self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
-  
+
 		create_games_table = '''CREATE TABLE IF NOT EXISTS games (
 										id bigint NOT NULL PRIMARY KEY UNIQUE,
 										moves text,
@@ -49,24 +49,17 @@ class Data:
 										id bigint NOT NULL PRIMARY KEY UNIQUE,
 										theme text
 									);'''
-         
+
 		cur = self.conn.cursor()
 		cur.execute(create_games_table)
 		cur.execute(create_ratings_table)
 		cur.execute(create_prefix_table)
 		cur.execute(create_themes_table)
 
-		asyncio.create_task(self.conn_check())
-
-
 	async def conn_check(self):
-		while True:
-			if self.conn.closed:
-				print('Connection is closed. Restarting...')
-				self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
-			
-			asyncio.sleep(5)
-
+		if self.conn.closed:
+			print('Connection is closed. Restarting...')
+			self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
 
 	def get_game(self, person):
 		cur = self.conn.cursor()
@@ -115,7 +108,7 @@ class Data:
 		update_sql = f'''INSERT INTO games
 VALUES ({person}, '{moves_str}', {new_game.color}, {new_game.time_control}, {new_game.last_moved}, {int(new_game.warned)});'''
 
-		cur.execute(f'DELETE FROM games WHERE id = {person};')  
+		cur.execute(f'DELETE FROM games WHERE id = {person};')
 		cur.execute(update_sql)
 
 		self.conn.commit()
@@ -137,13 +130,13 @@ VALUES ({person}, '{moves_str}', {new_game.color}, {new_game.time_control}, {new
 		ratings = {}
 		for row in rows:
 			ratings[row[0]] = row[1]
-   
+
 		return ratings
 
 	def change_rating(self, person, new_rating):
 		cur = self.conn.cursor()
 
-		cur.execute(f'DELETE FROM ratings WHERE id = {person};')  
+		cur.execute(f'DELETE FROM ratings WHERE id = {person};')
 		cur.execute(f'INSERT INTO ratings VALUES ({person}, {new_rating});')
 
 		self.conn.commit()
@@ -159,8 +152,9 @@ VALUES ({person}, '{moves_str}', {new_game.color}, {new_game.time_control}, {new
 
 	def change_prefix(self, guild, new_prefix):
 		cur = self.conn.cursor()
-		cur.execute(f'DELETE FROM prefixes WHERE id = {guild};')  
-		cur.execute(f'INSERT INTO prefixes VALUES ({guild}, \'{new_prefix}\');')
+		cur.execute(f'DELETE FROM prefixes WHERE id = {guild};')
+		cur.execute(
+			f'INSERT INTO prefixes VALUES ({guild}, \'{new_prefix}\');')
 
 		self.conn.commit()
 
@@ -181,16 +175,10 @@ VALUES ({person}, '{moves_str}', {new_game.color}, {new_game.time_control}, {new
 
 	def change_theme(self, person, new_theme):
 		cur = self.conn.cursor()
-		cur.execute(f'DELETE FROM themes WHERE id = {person};')  
+		cur.execute(f'DELETE FROM themes WHERE id = {person};')
 		cur.execute(f'INSERT INTO themes VALUES ({person}, \'{new_theme}\');')
 
 		self.conn.commit()
 
 
 data_manager = Data()
-
-# for testing
-# if __name__ == '__main__':
-	# data_manager.change_game(69, Game(0, 30))
-	# print(data_manager.get_games())
-	# print(data_manager.get_game(69))

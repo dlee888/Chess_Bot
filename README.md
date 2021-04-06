@@ -45,13 +45,13 @@ Use `$time` to see how much time you have left.
 
 - challenge: Challenges Chess Bot to a game
 
-- fen:       Sends current game in FEN format
+- fen: Sends current game in FEN format
 
-- move [move]:      Plays [move] against the computer
+- move [move]: Plays [move] against the computer
 
-- resign:    Resigns the game
+- resign: Resigns the game
 
-- view:      Views your current game
+- view: Views your current game
 
 - time: Sends how much time you have left.
   
@@ -59,7 +59,7 @@ Use `$time` to see how much time you have left.
 
 These commands require special permissions
 
-- abort:     Aborts a game. At least "Debugger" in Chess Bot support server required.
+- abort: Aborts a game. At least "Debugger" in Chess Bot support server required.
 
 - refund [user] [points]: Refunds [user] [points] amount of rating points. At least "Moderator" in Chess Bot support server required.
 
@@ -67,14 +67,16 @@ These commands require special permissions
 
 ### Other
 
-- botinfo:   Sends basic info and stats about the bot
+- botinfo: Sends basic info and stats about the bot
 
-- ping:      Sends "Pong!" and gives latency
+- ping: Sends "Pong!" and gives latency
 
-- rating:    Tells you your rating
+- rating: Tells you your rating
 
 - leaderboard: Shows top rated players
 
 - rank: Shows your rank out of all rated players
 
-- help:      Sends a message with all of the commands
+- help: Sends a message with all of the commands
+
+- theme: Change your board theme
