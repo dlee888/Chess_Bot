@@ -42,9 +42,8 @@ class Engine(commands.Cog):
 
 		await run_engine(file_in, file_out)
 
-		await log(person, self.client, ctx)
-	
 		code, game = await output_move(ctx, person)
+		await log(person, self.client, ctx)
 		util.thonking.remove(person)
 		
 		if code == 'GAME STILL IN PROGRESS':
@@ -127,8 +126,8 @@ class Engine(commands.Cog):
 
 		await run_engine(file_in, file_out)
 		
-		await log(person, self.client, ctx)
 		code, game = await output_move(ctx, person)
+		await log(person, self.client, ctx)
 		util.thonking.remove(person)
   
 		game.last_moved = time.time()
