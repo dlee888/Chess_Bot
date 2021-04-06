@@ -1,6 +1,7 @@
 import psycopg2
 import time
 import os
+import asyncio
 
 class Game:
 
@@ -54,6 +55,18 @@ class Data:
 		cur.execute(create_ratings_table)
 		cur.execute(create_prefix_table)
 		cur.execute(create_themes_table)
+
+		asyncio.create_task(self.conn_check())
+
+
+	async def conn_check(self):
+		while True:
+			if self.conn.closed:
+				print('Connection is closed. Restarting...')
+				self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
+			
+			asyncio.sleep(5)
+
 
 	def get_game(self, person):
 		cur = self.conn.cursor()

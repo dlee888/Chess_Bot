@@ -212,7 +212,7 @@ int main()
 			else
 			{
 				int targ = curr_state.en_passant_target.top();
-				res += targ & 7 + 'a';
+				res += (targ & 7) + 'a';
 				res += '8' - (targ >> 3);
 				res += ' ';
 			}
