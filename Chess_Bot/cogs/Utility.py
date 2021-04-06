@@ -46,15 +46,8 @@ def update_rating(user, outcome):
     
     E = 1 / (1 + 10 ** ((bot_rating - person_rating) / 400))
     
-    if outcome == 1:
-        bot_rating -= 32 * E
-        person_rating += 32 * E
-    elif outcome == 0:
-        bot_rating += 32 * (1 - E)
-        person_rating -= 32 * (1 - E)
-    else:
-        bot_rating += 32 * (E - 0.5)
-        person_rating += 32 * (0.5 - E)
+    bot_rating += 32 * (E - outcome)
+    person_rating += 32 * (outcome - E)
 
     data.data_manager.change_rating(801501916810838066, bot_rating)
     data.data_manager.change_rating(user, person_rating)
