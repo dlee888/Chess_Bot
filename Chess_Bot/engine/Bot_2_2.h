@@ -15,6 +15,10 @@ void play()
 	int num_move = 0;
 	double time_limit;
 	std::string move;
+	std::cout << "Do you want the computer to play black or white?\n";
+	std::cin >> move;
+	if (move == "white")
+		computer_is_white = true;
 	std::cout << "Do you want to load a game in progress?\n";
 	std::cin >> move;
 	if (move == "yes")
@@ -36,14 +40,8 @@ void play()
 			// if(draw[curr_state] >= 3) is_draw = true;
 			game.push_back(move_i);
 			num_move++;
-			for (int i = 0; i < openings.size(); i++)
-			{
-				if (openings[i].moves[num_move - 1] != move_i)
-				{
-					openings.erase(openings.begin() + i);
-					i--;
-				}
-			}
+			
+			remove_openings(num_move, move_i, computer_is_white);
 		}
 	}
 	else if (move == "yes2")
@@ -64,22 +62,11 @@ void play()
 			// if(draw[curr_state] >= 3) is_draw = true;
 			game.push_back(move_i);
 			num_move++;
-			for (int i = 0; i < openings.size(); i++)
-			{
-				if (openings[i].moves[num_move - 1] != move_i)
-				{
-					openings.erase(openings.begin() + i);
-					i--;
-				}
-			}
+			remove_openings(num_move, move_i, computer_is_white);
 		}
 	}
 	std::cout << "How much time (max) do you want the program to take (seconds)?\n";
 	std::cin >> time_limit;
-	std::cout << "Do you want the computer to play black or white?\n";
-	std::cin >> move;
-	if (move == "white")
-		computer_is_white = true;
 
 	int move_i = -1;
 
@@ -196,37 +183,8 @@ void play()
 		num_move++;
 		curr_state.print();
 		std::cout << "HERUISTIC EVAL: " << (double)eval(curr_state, true) / 100 * (curr_state.to_move ? 1 : -1) << std::endl;
-		for (int i = 0; i < openings.size(); i++)
-		{
-			if (openings[i].moves[num_move - 1] != move_i || openings[i].moves[num_move] == -1)
-			{
-				openings.erase(openings.begin() + i);
-				i--;
-			}
-		}
-		if (computer_is_white)
-		{
-			for (int i = 0; i < white_openings.size(); i++)
-			{
-				if (white_openings[i].moves[num_move - 1] != move_i || white_openings[i].moves[num_move] == -1)
-				{
-					white_openings.erase(white_openings.begin() + i);
-					i--;
-				}
-			}
-		}
-		else
-		{
-			for (int i = 0; i < black_openings.size(); i++)
-			{
-				if (black_openings[i].moves[num_move - 1] != move_i || black_openings[i].moves[num_move] == -1)
-				{
-					black_openings.erase(black_openings.begin() + i);
-					i--;
-				}
-			}
-		}
 		
+		remove_openings(num_move, move_i, computer_is_white);
 		scramble_openings();
 
 		clear_table(); // to prevent collisions

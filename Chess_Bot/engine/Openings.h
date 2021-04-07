@@ -101,4 +101,37 @@ void scramble_openings()
 				std::swap(black_openings[ind], black_openings[ind + 1]);
 }
 
+void remove_openings(int num_move, int move_i, bool computer_is_white) {
+	for (int i = 0; i < openings.size(); i++)
+	{
+		if (openings[i].moves[num_move - 1] != move_i || openings[i].moves[num_move] == -1)
+		{
+			openings.erase(openings.begin() + i);
+			i--;
+		}
+	}
+	if (computer_is_white)
+	{
+		for (int i = 0; i < white_openings.size(); i++)
+		{
+			if (white_openings[i].moves[num_move - 1] != move_i || white_openings[i].moves[num_move] == -1)
+			{
+				white_openings.erase(white_openings.begin() + i);
+				i--;
+			}
+		}
+	}
+	else
+	{
+		for (int i = 0; i < black_openings.size(); i++)
+		{
+			if (black_openings[i].moves[num_move - 1] != move_i || black_openings[i].moves[num_move] == -1)
+			{
+				black_openings.erase(black_openings.begin() + i);
+				i--;
+			}
+		}
+	}
+}
+
 #endif // !OPENINGS_H_INCLUDED
