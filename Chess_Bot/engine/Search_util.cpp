@@ -37,54 +37,94 @@ bool move_comparator(const int &a, const int &b)
 	return good_a > good_b;
 }
 
-pii find_best_move(Depth depth) {
+pii find_best_move(double time_limit, Depth depth_limit) {
 	// TODO: Make multi-threaded
-	if (break_now) {
-		return {0, -69};
-	}
 
-	nodes = 0; qsearch_nodes = 0;
-	tb_hits = 0; qsearch_hits = 0;
+	Depth curr_depth = ONE_PLY;
+	pii result = std::make_pair(0.0, -1);
 
-	int best_move = -1;
-	Value evaluation = -RESIGN;
+	while (true)
+	{
+		printf("Searching depth %d\n", curr_depth);
 
-	std::vector <int> moves = curr_state.list_moves();
-	eval_cache.clear();
+		nodes = 0; qsearch_nodes = 0;
+		tb_hits = 0; qsearch_hits = 0;
 
-	for (int i : moves) {
-		curr_state.make_move(i);
+		int start_time = clock();
 
-		int hash = curr_state.get_hash() % TABLE_SIZE;
-		if (exists[hash]) {
-			eval_cache[i] = -best_eval[hash];
-		} else {
-			eval_cache[i] = -eval(curr_state);
+		priority = result.second;
+
+		std::vector <int> moves = curr_state.list_moves();
+
+		if (moves.size() == 1) {
+			// Break if there is only one legal move
+			result.second = moves[0];
+			break;
 		}
 
-		curr_state.unmake_move(i);
-	}
+		eval_cache.clear();
+		for (int i : moves) {
+			curr_state.make_move(i);
 
-	sort(moves.begin(), moves.end(), move_comparator);
+			int hash = curr_state.get_hash() % TABLE_SIZE;
+			if (exists[hash]) {
+				eval_cache[i] = -best_eval[hash];
+			} else {
+				eval_cache[i] = -eval(curr_state);
+			}
 
-	for (int i : moves) {
-		// printf("Considering %s\n", curr_state.move_to_string(i).c_str());
-
-		curr_state.make_move(i);
-		Value x = -search(depth - ONE_PLY, -VALUE_INFINITE, -evaluation);
-		curr_state.unmake_move(i);
-
-		if (x > evaluation) {
-			evaluation = x;
-			best_move = i;
+			curr_state.unmake_move(i);
 		}
 
-		// printf("x = %d\n", x);
+		std::stable_sort(moves.begin(), moves.end(), move_comparator);
 
-		if (break_now) break;
+		int best_move = -1;
+		Value evaluation = -RESIGN;
+		for (int i : moves) {
+			// printf("Considering %s\n", curr_state.move_to_string(i).c_str());
+
+			curr_state.make_move(i);
+			Value x = -search(curr_depth, -VALUE_INFINITE, -evaluation);
+			curr_state.unmake_move(i);
+
+			if (x > evaluation) {
+				evaluation = x;
+				best_move = i;
+			}
+
+			// printf("x = %d\n", x);
+
+			if (break_now) break;
+		}
+
+		int time_taken = clock() - start_time;
+
+		double actual_eval = (double)evaluation / 100;
+		printf("Best move is %s, EVAL = %lf\n%lf seconds taken, %lld nodes searched, %lld nodes qsearched\nSpeed = %lf nodes per second. %lld TB hits, %lld Qsearch TB hits\n",
+				curr_state.move_to_string(best_move).c_str(),
+				actual_eval, (double)time_taken / CLOCKS_PER_SEC, nodes, qsearch_nodes, 
+				((double)nodes + qsearch_nodes) * CLOCKS_PER_SEC / time_taken, tb_hits, qsearch_hits);
+		
+		result = std::make_pair(evaluation, best_move);
+
+		if (abs(evaluation) >= MATE) {
+			break;
+		}
+		
+		if (break_now || (time_taken * curr_state.list_moves().size() > 4 * time_limit * CLOCKS_PER_SEC)) {
+			printf("Done searching\n");
+			break;
+		}
+
+		if (curr_depth >= depth_limit) {
+			printf("Max depth reached\n");
+			break;
+		}
+
+		curr_depth += ONE_PLY;
 	}
 
-	if (!curr_state.to_move) evaluation *= -1;
+	if (!curr_state.to_move) result.first *= -1;
 
-	return {evaluation, best_move};
+	return result;
 }

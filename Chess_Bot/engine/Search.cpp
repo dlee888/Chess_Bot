@@ -127,7 +127,7 @@ Value search(Depth depth, Value alpha, Value beta)
 	depths[curr_board_hash] = depth;
 	best_eval[curr_board_hash] = value;
 
-	// printf("done searching, returned %d\n", alpha);
+	// printf("done searching, returned %d\n", value);
 	// curr_state.print();
 
 	return value;
@@ -249,7 +249,7 @@ Value qsearch(Value alpha, Value beta)
 	depths[curr_board_hash] = DEPTH_QS_NO_CHECKS;
 	best_eval[curr_board_hash] = value;
 	
-	// printf("done qsearching, returned %d\n", alpha);
+	// printf("done qsearching, returned %d\n", value);
 	// curr_state.print();
 
 	return value;

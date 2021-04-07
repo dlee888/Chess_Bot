@@ -1,7 +1,6 @@
 ﻿#include <ctime>
 
-#include "Engine.h"
-#include "Bot_2_2.h"
+#include "Bot_2_5.h"
 #include "types.h"
 
 void init_everything()
@@ -11,37 +10,6 @@ void init_everything()
 	load_openings();
 	scramble_openings();
 	init_eval_info();
-}
-
-void instructions()
-{
-	printf("Beat Jamin supports 3 commands: analyse, play, and find_best_move\n\nanalyse requires you to input a game and a depth.\n"
-		   "Depth 4 is recommended, since anything higher would take more than a few seconds per move. Depth 7 may take up to a few hours per move, though it is sometimes faster.\n\n"
-		   "play lets you play against the program.\n\n"
-		   "find_best_move finds the best move in a given position. You will be required to enter a game in progress.\n"
-		   "find_best_move also has a second version, activated by entering find_best_move2. This will ask for a specific depth to search instead of asking for how long you want it to think for.\n\n"
-		   "When entering a game, enter it in this format: 1. [white\'s move] [black\'s move] 2. [white\'s move] [black\'s move] 3. ... *\n"
-		   "For example, to enter the main line of the french defense advance variation, you would enter: 1. e4 e6 2. d4 d5 3. e5 c5 4. c3 *\n\n"
-		   "You can view this message by typing \'help\'.\n\n"
-		   "You can exit the program by typing \'quit\'\n\n\n");
-}
-
-void intro()
-{
-	printf(
-		".----------------.  .----------------.  .----------------.  .----------------.        .----------------.  .----------------.  .----------------.  .----------------.  .---------------- - .\n"
-		"| .--------------. || .--------------. || .--------------. || .--------------. |      | .--------------. || .--------------. || .--------------. || .--------------. || .--------------. | \n"
-		"| |   ______     | || |  _________   | || |      __      | || |  _________   | |      | |     _____    | || |      __      | || | ____    ____ | || |     _____    | || | ____  _____  | |\n"
-		"| |  |_   _ \\    | || | |_   ___  |  | || |     /  \\     | || | |  _   _  |  | |      | |    |_   _|   | || |     /  \\     | || ||_   \\  / _|| ||   |    |_   _|   | || ||_   \\ | _   _| |\n"
-		"| |    | |_) |   | || |   | |_  \\_|  | || |    / /\\ \\    | || | |_/ | | \\_|  | |      | |      | |     | || |    / /\\ \\    | || |  |   \\/   |  | || |      | |     | || |  |   \\ | |   | |\n"
-		"| |    |  __\'.   | || |   |  _|  _   | || |   / ____ \\   | || |     | |      | |      | |   _  | |     | || |   / ____ \\   | || |  | |\\  /| |  | || |      | |     | || |  | |\\ \\| |   | |\n"
-		"| |   _| |__) |  | || |  _| |___/ |  | || | _/ /    \\ \\_ | || |    _| |_     | |      | |  | |_\' |     | || | _/ /    \\ \\_ | || | _| |_\\/_| |_ | || |     _| |_    | || | _| |_\\   |_  | |\n"
-		"| |  |_______/   | || | |_________|  | || ||____|  |____|| || |   |_____|    | |      | |  `.___.'     | || ||____|  |____|| || ||_____||_____|| || |    |_____|   | || ||_____|\\____| | |\n"
-		"| |              | || |              | || |              | || |              | |      | |              | || |              | || |              | || |              | || |              | |\n"
-		"| \'--------------\' || \'--------------\' || \'--------------\' || \'--------------\' |      | \'--------------\' || \'--------------\' || \'--------------\' || \'--------------\' || \'--------------\' | \n"
-		"\'----------------\'  \'----------------\'  \'----------------\'  \'----------------\'        \'----------------\'  \'----------------\'  \'----------------\'  \'----------------\'  \'----------------\'\n\n");
-	printf("Version 2.2.11");
-	instructions();
 }
 
 int main()
@@ -57,25 +25,6 @@ int main()
 		if (cmnd == "play")
 		{
 			play();
-		}
-		else if (cmnd == "analyse")
-		{
-			std::cout << "What depth do you want?\n";
-			int depth;
-			std::cin >> depth;
-			analyse_game(depth);
-		}
-		else if (cmnd == "find_best_move")
-		{
-			get_best_move();
-		}
-		else if (cmnd == "find_best_move2")
-		{
-			get_best_move2();
-		}
-		else if (cmnd == "help")
-		{
-			instructions();
 		}
 		else if (cmnd == "fen")
 		{
@@ -112,29 +61,19 @@ int main()
 			else if (move == "yes2")
 			{
 				std::cout << "Please enter the game:\n";
-				//loading by typing in moves, such as 1. e4 e5 2. d4 ...
-				while (!(move == "*"))
+				int move_i;
+				while (true)
 				{
-					if (num_move % 2 == 0)
-						std::cin >> move;
-					if (move == "*")
+					std::cin >> move_i;
+					if (move_i == -1) {
 						break;
-					std::cin >> move;
-					if (move == "*")
-						break;
-					int move_i = std::stoi(move);
+					}
+
 					curr_state.make_move(move_i);
 					num_move++;
-					for (int i = 0; i < openings.size(); i++)
-					{
-						if (openings[i].moves[num_move - 1] != move_i)
-						{
-							openings.erase(openings.begin() + i);
-							i--;
-						}
-					}
 				}
 			}
+
 			std::string res;
 			for (int i = 0; i < 8; i++)
 			{
@@ -212,8 +151,8 @@ int main()
 			else
 			{
 				int targ = curr_state.en_passant_target.top();
-				res += (targ & 7) + 'a';
-				res += '8' - (targ >> 3);
+				res += (char)((targ & 7) + 'a');
+				res += (char)('8' - (targ >> 3));
 				res += ' ';
 			}
 			res += std::to_string(curr_state.fifty_move) + " ";

@@ -13,12 +13,8 @@ class Game:
 		self.warned = warned
 
 	def __str__(self):
-		game_str = ''
-		for i in range(len(self.moves)):
-			if i % 2 == 0:
-				game_str += str(i//2+1) + '. '
-			game_str += str(self.moves[i]) + ' '
-		game_str += '*'
+		game_str = ' '.join(str(i) for i in self.moves)
+		game_str += ' -1'
 		return game_str
 
 

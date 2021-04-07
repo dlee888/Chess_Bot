@@ -28,7 +28,9 @@ enum Depth : int {
 	ONE_PLY = 1,
 
 	DEPTH_ZERO          =  0,
-	DEPTH_QS_NO_CHECKS  = -1
+	DEPTH_QS_NO_CHECKS  = -1,
+
+	MAX_DEPTH = 69
 };
 
 #define ENABLE_BASE_OPERATORS_ON(T)                                \

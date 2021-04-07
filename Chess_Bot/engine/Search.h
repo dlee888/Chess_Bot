@@ -23,7 +23,7 @@ Value search(Depth, Value, Value);
 
 Value qsearch(Value, Value);
 
-pii find_best_move(Depth);
+pii find_best_move(double, Depth = MAX_DEPTH);
 
 const int RAZOR_MARGIN = 600;
 
