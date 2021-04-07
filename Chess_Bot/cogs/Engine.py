@@ -31,7 +31,6 @@ class Engine(commands.Cog):
 		if person in util.thonking:
 			await ctx.send('Chess Bot is already thinking')
 			return
-
 		
 		thonk = self.client.get_emoji(814285875265536001)
 		await ctx.message.add_reaction(thonk)
