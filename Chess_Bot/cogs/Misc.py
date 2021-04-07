@@ -154,7 +154,7 @@ class Misc(commands.Cog):
     async def check_conn(self):
         await data.data_manager.conn_check()
 
-    @check_conn.before_loop()
+    @check_conn.before_loop
     async def wait_until_ready(self):
         print('Waiting for bot to get ready')
         await self.client.wait_until_ready()
