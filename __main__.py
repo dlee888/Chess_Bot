@@ -42,7 +42,9 @@ async def on_command_error(ctx, exc):
 	elif type(exc) == commands.errors.MissingRequiredArgument:
 		await ctx.send(f'Missing required argument.\nPlease enter a value for: {exc.param}')
 	elif (type(exc) == commands.errors.ArgumentParsingError or
- 		  type(exc) == commands.errors.ExpectedClosingQuoteError):
+ 		  type(exc) == commands.errors.ExpectedClosingQuoteErrortype(exc) or
+     	  type(exc) == commands.errors.BadUnionArgument or
+          type(exc) == commands.errors.UserInputError):
 		await ctx.send(f'There was an error parsing your argument')
 	elif type(exc) == commands.errors.TooManyArguments:
 		await ctx.send(f'Bruh what why are there so many arguments?')
