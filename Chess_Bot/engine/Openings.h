@@ -73,7 +73,7 @@ std::string white[NUM_WHITE][100] = {
 
 std::string black[NUM_BLACK][100] = {
 	{"Sodium attack", "Na3", "d5", "c4"}, // temporary holder
-	{"blah", "e4"}, // temporary holder
+	{"King's gambit", "e4", "e5", "f4", "exf4", "Nf3"}, // temporary holder
 };
 
 std::vector<opening> openings, black_openings, white_openings;

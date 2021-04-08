@@ -1,7 +1,8 @@
 #include "Eval_info.h"
 
 int devel_coeff = 6, center_coeff = 4, ksafety_coeff = 14, castle_bonus = 25, castle_right_bonus = 30, pass_pawn_coeff = 25,
-	   dpawn_coeff = 10, activity_coeff = 8, semi_open_bonus = 10, open_bonus = 16, bishop_pair_bonus = 43;
+	   dpawn_coeff = 10, activity_coeff = 8, semi_open_bonus = 10, open_bonus = 16, bishop_pair_bonus = 43,
+	   seventh_rooks[2] = {96, 213};
 
 int default_cnts[13] = {1, 1, 2, 2, 2, 8, 32, 8, 2, 2, 2, 1, 1}, cnts[13];
 

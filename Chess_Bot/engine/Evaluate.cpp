@@ -33,31 +33,6 @@ Value eval(state& s, bool trace)
 		}
 		score += ksafety;
 		if (trace) printf("King safety: %d\n", ksafety);
-
-		// open files
-		int files = 0;
-		for (pii& p : whiterooks) {
-			if (white_pawn_counts[p.second] == 0) {
-				if (black_pawn_counts[p.second] == 0) {
-					files += open_bonus;
-				}
-				else {
-					files += semi_open_bonus;
-				}
-			}
-		}
-		for (pii& p : blackrooks) {
-			if (black_pawn_counts[p.second] == 0) {
-				if (white_pawn_counts[p.second] == 0) {
-					files -= open_bonus;
-				}
-				else {
-					files -= semi_open_bonus;
-				}
-			}
-		}
-		score += files;
-		if (trace) printf("Open files: %d\n", files);
 		
 		//material
 		int mat = PawnValueMg * (cnts[WP + 6] - cnts[BP + 6]) + KnightValueMg * (cnts[WN + 6] - cnts[BN + 6]) + 
@@ -91,6 +66,37 @@ Value eval(state& s, bool trace)
 	//doubled pawns
 	score -= dpawn_coeff * (doubled_white - doubled_black);
 	if (trace) printf("Doubled pawns: %d\n", -dpawn_coeff * (doubled_white - doubled_black));
+
+	// open files and rooks on the seventh
+	int files = 0, wrooks = 0, brooks = 0;
+	for (pii& p : whiterooks) {
+		if (white_pawn_counts[p.second] == 0) {
+			if (black_pawn_counts[p.second] == 0) {
+				files += open_bonus;
+			}
+			else {
+				files += semi_open_bonus;
+			}
+		}
+		if (p.first == 6) wrooks++;
+	}
+	for (pii& p : blackrooks) {
+		if (black_pawn_counts[p.second] == 0) {
+			if (white_pawn_counts[p.second] == 0) {
+				files -= open_bonus;
+			}
+			else {
+				files -= semi_open_bonus;
+			}
+		}
+		if (p.first == 1) brooks++;
+	}
+	score += files;
+	if (trace) printf("Open files: %d\n", files);
+
+	int rook7 = seventh_rooks[wrooks] - seventh_rooks[brooks];
+	score += rook7;
+	if (trace) printf("Rooks on the seventh: %d\n", rook7);
 
 	// Bishop pair
 	int bpair = 0;
