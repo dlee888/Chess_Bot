@@ -37,7 +37,7 @@ class Timer(commands.Cog):
         
         for i in range(len(out) - 1, 0, -1):
             if out[i].startswith('-----'):
-                util.get_image(person, i - 1)
+                get_image(person, i - 1)
 
                 temp_channel = self.client.get_channel(806967405414187019)
                 image_msg = await temp_channel.send(file=discord.File(f'Chess_Bot/data/image-{person}.png'))
