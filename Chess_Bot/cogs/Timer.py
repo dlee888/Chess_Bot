@@ -35,16 +35,15 @@ class Timer(commands.Cog):
         embed = discord.Embed(
             title=f'{user}\'s game', description=f'{whiteblack[game.color].capitalize()} to move.\nYou are low on time.', color=0x5ef29c)
         
+        file = None
+
         for i in range(len(out) - 1, 0, -1):
-            if out[i].startswith('-----'):
-                get_image(person, i - 1)
+            if out[i].startswith('|'):
+                get_image(person, i)
 
-                temp_channel = self.client.get_channel(806967405414187019)
-                image_msg = await temp_channel.send(file=discord.File(f'Chess_Bot/data/image-{person}.png'))
-
-                image_url = image_msg.attachments[0].url
-
-                embed.set_image(url=image_url)
+                file = discord.File(
+                    f'Chess_Bot/data/image-{person}.png', filename='board.png')
+                embed.set_image(url=f'attachment://board.png')
 
                 break
         
@@ -53,7 +52,7 @@ class Timer(commands.Cog):
             if dm == None:
                 dm = await user.create_dm()
                 
-            await dm.send('You are low on time. Use `$time` to get how much time you have left.', embed=embed)
+            await dm.send('You are low on time. Use `$time` to get how much time you have left.', embed=embed, file=file)
         except Exception as e:
             print('Exception in send_low_time_warning:', e)
         
