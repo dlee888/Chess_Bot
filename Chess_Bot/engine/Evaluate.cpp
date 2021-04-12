@@ -78,7 +78,7 @@ Value eval(state& s, bool trace)
 				files += semi_open_bonus;
 			}
 		}
-		if (p.first == 6) wrooks++;
+		if (p.first == 1) wrooks++;
 	}
 	for (pii& p : blackrooks) {
 		if (black_pawn_counts[p.second] == 0) {
@@ -89,7 +89,7 @@ Value eval(state& s, bool trace)
 				files -= semi_open_bonus;
 			}
 		}
-		if (p.first == 1) brooks++;
+		if (p.first == 6) brooks++;
 	}
 	score += files;
 	if (trace) printf("Open files: %d\n", files);
