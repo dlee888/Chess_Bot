@@ -67,8 +67,8 @@ pii find_best_move(double time_limit, Depth depth_limit) {
 			curr_state.make_move(i);
 
 			int hash = curr_state.get_hash() % TABLE_SIZE;
-			if (exists[hash]) {
-				eval_cache[i] = -best_eval[hash];
+			if (tt_exists[hash]) {
+				eval_cache[i] = -tt_evals[hash];
 			} else {
 				eval_cache[i] = -eval(curr_state);
 			}

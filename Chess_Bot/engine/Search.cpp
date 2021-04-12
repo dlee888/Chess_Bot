@@ -11,13 +11,14 @@ Value search(Depth depth, Value alpha, Value beta)
 	// printf("search(%d, %d, %d)\n", depth, alpha, beta);
 	// curr_state.print();
 
-	Bitstring curr_board_hash = curr_state.get_hash() % TABLE_SIZE;
+	Bitstring curr_board_hash = curr_state.get_hash();
+	Bitstring key = curr_board_hash % TABLE_SIZE;
 
-	if (exists[curr_board_hash] && depths[curr_board_hash] >= depth)
+	if (tt_exists[key] && tt_depths[key] >= depth && tt_hashes[key] == curr_board_hash)
 	{
-		// printf("tt hit, %d\n", best_eval[curr_board_hash]);
+		// printf("tt hit, %d\n", tt_evals[key]);
 		tb_hits++;
-		return best_eval[curr_board_hash];
+		return tt_evals[key];
 	}
 
 	if (curr_state.adjucation()) {
@@ -52,8 +53,8 @@ Value search(Depth depth, Value alpha, Value beta)
 			mate = false;
 
 			Bitstring hash = curr_state.get_hash() % TABLE_SIZE;
-			if (exists[hash]) {
-				eval_cache[i] = -best_eval[hash];
+			if (tt_exists[hash]) {
+				eval_cache[i] = -tt_evals[hash];
 			}
 			else {
 				eval_cache[i] = -eval(curr_state);
@@ -75,9 +76,9 @@ Value search(Depth depth, Value alpha, Value beta)
 	}
 
 	Value curr_eval;
-	if (exists[curr_board_hash]) {
+	if (tt_exists[key]) {
 		// tt entry can be used as more accurate static eval
-		curr_eval = best_eval[curr_board_hash];
+		curr_eval = tt_evals[key];
 	} else {
 		curr_eval = eval(curr_state);
 	}
@@ -109,11 +110,6 @@ Value search(Depth depth, Value alpha, Value beta)
 		Value x = -search(depth - ONE_PLY, -beta, -alpha);
 		curr_state.unmake_move(move);
 
-		// if (x == MATED) {
-		// 	// We have probably started to make illegal moves
-		// 	break;
-		// }
-
 		value = std::max(value, x);
 		alpha = std::max(alpha, value);
 
@@ -123,9 +119,10 @@ Value search(Depth depth, Value alpha, Value beta)
 		}
 	}
 
-	exists[curr_board_hash] = true;
-	depths[curr_board_hash] = depth;
-	best_eval[curr_board_hash] = value;
+	tt_exists[key] = true;
+	tt_depths[key] = depth;
+	tt_evals[key] = value;
+	tt_hashes[key] = curr_board_hash;
 
 	// printf("done searching, returned %d\n", value);
 	// curr_state.print();
@@ -141,13 +138,14 @@ Value qsearch(Value alpha, Value beta)
 	// printf("qsearch(%d, %d)\n", alpha, beta);
 	// curr_state.print();
 
-	Bitstring curr_board_hash = curr_state.get_hash() % TABLE_SIZE;
+	Bitstring curr_board_hash = curr_state.get_hash();
+	Bitstring key = curr_board_hash % TABLE_SIZE;
 
-	if (exists[curr_board_hash] && depths[curr_board_hash] >= DEPTH_QS_NO_CHECKS)
+	if (tt_exists[key] && tt_depths[key] >= DEPTH_QS_NO_CHECKS && tt_hashes[key] == curr_board_hash)
 	{
-		// printf("tt hit: %d\n", best_eval[curr_board_hash]);
+		// printf("tt hit: %d\n", tt_evals[key]);
 		qsearch_hits++;
-		return best_eval[curr_board_hash];
+		return tt_evals[key];
 	}
 
 	if (curr_state.adjucation()) {
@@ -178,9 +176,9 @@ Value qsearch(Value alpha, Value beta)
 			ordered_moves.push_back(i);
 			
 			Bitstring hash = curr_state.get_hash() % TABLE_SIZE;
-			if (exists[hash]) {
+			if (tt_exists[hash]) {
 				// printf("using tt for eval of move %s\n", curr_state.move_to_string(i).c_str());
-				eval_cache[i] = -best_eval[hash];
+				eval_cache[i] = -tt_evals[hash];
 			}
 			else {
 				eval_cache[i] = -eval(curr_state);
@@ -202,9 +200,9 @@ Value qsearch(Value alpha, Value beta)
 	}
 	
 	Value curr_eval;
-	if (exists[curr_board_hash]) {
+	if (tt_exists[key]) {
 		// tt entry can be used as more accurate static eval
-		curr_eval = best_eval[curr_board_hash];
+		curr_eval = tt_evals[key];
 	} else {
 		curr_eval = eval(curr_state);
 	}
@@ -245,9 +243,10 @@ Value qsearch(Value alpha, Value beta)
 		}
 	}
 
-	exists[curr_board_hash] = true;
-	depths[curr_board_hash] = DEPTH_QS_NO_CHECKS;
-	best_eval[curr_board_hash] = value;
+	tt_exists[key] = true;
+	tt_depths[key] = DEPTH_QS_NO_CHECKS;
+	tt_evals[key] = value;
+	tt_hashes[key] = curr_board_hash;
 	
 	// printf("done qsearching, returned %d\n", value);
 	// curr_state.print();
