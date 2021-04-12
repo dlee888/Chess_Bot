@@ -5,27 +5,27 @@ import os
 
 class Game:
 
-	def __init__(self, color, time_control, moves=[], last_moved=time.time(), warned=False):
-		self.moves = moves
-		self.color = color
-		self.time_control = time_control
-		self.last_moved = last_moved
-		self.warned = warned
+    def __init__(self, color, time_control, moves=[], last_moved=time.time(), warned=False):
+        self.moves = moves
+        self.color = color
+        self.time_control = time_control
+        self.last_moved = last_moved
+        self.warned = warned
 
-	def __str__(self):
-		game_str = ' '.join(str(i) for i in self.moves)
-		game_str += ' -1'
-		return game_str
+    def __str__(self):
+        game_str = ' '.join(str(i) for i in self.moves)
+        game_str += ' -1'
+        return game_str
 
 
 class Data:
 
-	def __init__(self):
-		self.DATABASE_URL = os.environ['DATABASE_URL']
+    def __init__(self):
+        self.DATABASE_URL = os.environ['DATABASE_URL']
 
-		self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
+        self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
 
-		create_games_table = '''CREATE TABLE IF NOT EXISTS games (
+        create_games_table = '''CREATE TABLE IF NOT EXISTS games (
 										id bigint NOT NULL PRIMARY KEY UNIQUE,
 										moves text,
 										color integer,
@@ -33,148 +33,149 @@ class Data:
 										last_moved real,
 										warned integer
 									);'''
-		create_ratings_table = '''CREATE TABLE IF NOT EXISTS ratings (
+        create_ratings_table = '''CREATE TABLE IF NOT EXISTS ratings (
 										id bigint NOT NULL PRIMARY KEY UNIQUE,
 										rating real
 									);'''
-		create_prefix_table = '''CREATE TABLE IF NOT EXISTS prefixes (
+        create_prefix_table = '''CREATE TABLE IF NOT EXISTS prefixes (
 										id bigint NOT NULL PRIMARY KEY UNIQUE,
 										prefix text
 									);'''
-		create_themes_table = '''CREATE TABLE IF NOT EXISTS themes (
+        create_themes_table = '''CREATE TABLE IF NOT EXISTS themes (
 										id bigint NOT NULL PRIMARY KEY UNIQUE,
 										theme text
 									);'''
 
-		cur = self.conn.cursor()
-		cur.execute(create_games_table)
-		cur.execute(create_ratings_table)
-		cur.execute(create_prefix_table)
-		cur.execute(create_themes_table)
+        cur = self.get_conn().cursor()
+        cur.execute(create_games_table)
+        cur.execute(create_ratings_table)
+        cur.execute(create_prefix_table)
+        cur.execute(create_themes_table)
 
-	async def conn_check(self):
-		if self.conn.closed:
-			print('Connection is closed. Restarting...')
-			self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
+    def get_conn(self):
+        if self.conn.closed:
+            print('Connection is closed. Restarting...')
+            self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
+        return self.conn
 
-	def get_game(self, person):
-		cur = self.conn.cursor()
-		cur.execute(f'SELECT * FROM games WHERE id = {person};')
-		rows = cur.fetchall()
+    def get_game(self, person):
+        cur = self.get_conn().cursor()
+        cur.execute(f'SELECT * FROM games WHERE id = {person};')
+        rows = cur.fetchall()
 
-		if len(rows) == 0:
-			return None
+        if len(rows) == 0:
+            return None
 
-		row = rows[0]
+        row = rows[0]
 
-		moves_str = row[1].split(' ')
-		moves = []
-		for move in moves_str:
-			try:
-				moves.append(int(move))
-			except:
-				pass
+        moves_str = row[1].split(' ')
+        moves = []
+        for move in moves_str:
+            try:
+                moves.append(int(move))
+            except:
+                pass
 
-		return Game(row[2], row[3], moves, row[4], row[5])
+        return Game(row[2], row[3], moves, row[4], row[5])
 
-	def get_games(self):
-		cur = self.conn.cursor()
-		cur.execute('SELECT * FROM games')
-		rows = cur.fetchall()
+    def get_games(self):
+        cur = self.get_conn().cursor()
+        cur.execute('SELECT * FROM games')
+        rows = cur.fetchall()
 
-		games = {}
+        games = {}
 
-		for row in rows:
-			moves_str = row[1].split(' ')
-			moves = []
-			for move in moves_str:
-				try:
-					moves.append(int(move))
-				except:
-					pass
+        for row in rows:
+            moves_str = row[1].split(' ')
+            moves = []
+            for move in moves_str:
+                try:
+                    moves.append(int(move))
+                except:
+                    pass
 
-			games[row[0]] = Game(row[2], row[3], moves, row[4], row[5])
+            games[row[0]] = Game(row[2], row[3], moves, row[4], row[5])
 
-		return games
+        return games
 
-	def change_game(self, person, new_game: Game):
-		cur = self.conn.cursor()
-		moves_str = ' '.join(str(move) for move in new_game.moves)
+    def change_game(self, person, new_game: Game):
+        cur = self.get_conn().cursor()
+        moves_str = ' '.join(str(move) for move in new_game.moves)
 
-		update_sql = f'''INSERT INTO games
+        update_sql = f'''INSERT INTO games
 VALUES ({person}, '{moves_str}', {new_game.color}, {new_game.time_control}, {new_game.last_moved}, {int(new_game.warned)});'''
 
-		cur.execute(f'DELETE FROM games WHERE id = {person};')
-		cur.execute(update_sql)
+        cur.execute(f'DELETE FROM games WHERE id = {person};')
+        cur.execute(update_sql)
 
-		self.conn.commit()
+        self.conn.commit()
 
-	def get_rating(self, person):
-		cur = self.conn.cursor()
-		cur.execute(f'SELECT * FROM ratings WHERE id = {person};')
-		rows = cur.fetchall()
+    def get_rating(self, person):
+        cur = self.get_conn().cursor()
+        cur.execute(f'SELECT * FROM ratings WHERE id = {person};')
+        rows = cur.fetchall()
 
-		if len(rows) == 0:
-			return None
-		return rows[0][1]
+        if len(rows) == 0:
+            return None
+        return rows[0][1]
 
-	def get_ratings(self):
-		cur = self.conn.cursor()
-		cur.execute(f'SELECT * FROM ratings;')
-		rows = cur.fetchall()
+    def get_ratings(self):
+        cur = self.get_conn().cursor()
+        cur.execute(f'SELECT * FROM ratings;')
+        rows = cur.fetchall()
 
-		ratings = {}
-		for row in rows:
-			ratings[row[0]] = row[1]
+        ratings = {}
+        for row in rows:
+            ratings[row[0]] = row[1]
 
-		return ratings
+        return ratings
 
-	def change_rating(self, person, new_rating):
-		cur = self.conn.cursor()
+    def change_rating(self, person, new_rating):
+        cur = self.get_conn().cursor()
 
-		cur.execute(f'DELETE FROM ratings WHERE id = {person};')
-		cur.execute(f'INSERT INTO ratings VALUES ({person}, {new_rating});')
+        cur.execute(f'DELETE FROM ratings WHERE id = {person};')
+        cur.execute(f'INSERT INTO ratings VALUES ({person}, {new_rating});')
 
-		self.conn.commit()
+        self.conn.commit()
 
-	def get_prefix(self, guild):
-		cur = self.conn.cursor()
-		cur.execute(f'SELECT * FROM prefixes WHERE id = {guild};')
-		rows = cur.fetchall()
+    def get_prefix(self, guild):
+        cur = self.get_conn().cursor()
+        cur.execute(f'SELECT * FROM prefixes WHERE id = {guild};')
+        rows = cur.fetchall()
 
-		if len(rows) == 0:
-			return '$'
-		return rows[0][1]
+        if len(rows) == 0:
+            return '$'
+        return rows[0][1]
 
-	def change_prefix(self, guild, new_prefix):
-		cur = self.conn.cursor()
-		cur.execute(f'DELETE FROM prefixes WHERE id = {guild};')
-		cur.execute(
-			f'INSERT INTO prefixes VALUES ({guild}, \'{new_prefix}\');')
+    def change_prefix(self, guild, new_prefix):
+        cur = self.get_conn().cursor()
+        cur.execute(f'DELETE FROM prefixes WHERE id = {guild};')
+        cur.execute(
+            f'INSERT INTO prefixes VALUES ({guild}, \'{new_prefix}\');')
 
-		self.conn.commit()
+        self.conn.commit()
 
-	def delete_game(self, person):
-		cur = self.conn.cursor()
-		cur.execute(f'DELETE FROM games WHERE id = {person};')
+    def delete_game(self, person):
+        cur = self.get_conn().cursor()
+        cur.execute(f'DELETE FROM games WHERE id = {person};')
 
-		self.conn.commit()
+        self.conn.commit()
 
-	def get_theme(self, person):
-		cur = self.conn.cursor()
-		cur.execute(f'SELECT * FROM themes WHERE id = {person};')
-		rows = cur.fetchall()
+    def get_theme(self, person):
+        cur = self.get_conn().cursor()
+        cur.execute(f'SELECT * FROM themes WHERE id = {person};')
+        rows = cur.fetchall()
 
-		if len(rows) == 0:
-			return 'default'
-		return rows[0][1]
+        if len(rows) == 0:
+            return 'default'
+        return rows[0][1]
 
-	def change_theme(self, person, new_theme):
-		cur = self.conn.cursor()
-		cur.execute(f'DELETE FROM themes WHERE id = {person};')
-		cur.execute(f'INSERT INTO themes VALUES ({person}, \'{new_theme}\');')
+    def change_theme(self, person, new_theme):
+        cur = self.get_conn().cursor()
+        cur.execute(f'DELETE FROM themes WHERE id = {person};')
+        cur.execute(f'INSERT INTO themes VALUES ({person}, \'{new_theme}\');')
 
-		self.conn.commit()
+        self.conn.commit()
 
 
 data_manager = Data()
