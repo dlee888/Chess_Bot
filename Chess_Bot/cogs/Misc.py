@@ -49,6 +49,8 @@ class Misc(commands.Cog):
         Shows highest rated players
         '''
         
+        ignore = [716070916550819860, 721043620060201051]
+        
         number = 1
 
         ratings = data.data_manager.get_ratings()
@@ -73,6 +75,9 @@ class Misc(commands.Cog):
         all_players = []
         
         for k in ratings.keys():
+            if k in ignore:
+                continue
+            
             all_players.append((k, ratings[k]))
             
         all_players.sort(reverse=True, key=lambda a: a[1])
@@ -92,11 +97,16 @@ class Misc(commands.Cog):
         Shows highest rated players
         '''
 
+        ignore = [716070916550819860, 721043620060201051]
+        
         ratings = data.data_manager.get_ratings()
         
         all_players = []
         
         for k in ratings.keys():
+            if k in ignore:
+                continue
+            
             all_players.append((k, ratings[k]))
         
         all_players.sort(reverse=True, key=lambda a: a[1])
