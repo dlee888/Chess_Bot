@@ -86,7 +86,7 @@ class Misc(commands.Cog):
         
         for i in range(number):
             user = await self.client.fetch_user(all_players[i][0])
-            embed.add_field(name= f'{i+1}: {user}', value= f'{round(all_players[i][1])}', inline = True)
+            embed.add_field(name= f'{i+1}: {user}', value= f'{round(all_players[i][1], 2)}', inline = True)
         
         await ctx.send(embed=embed)
         
@@ -117,7 +117,7 @@ class Misc(commands.Cog):
                 rank = i + 1
                 break
         
-        await ctx.send(f'Your rating is {data.data_manager.get_rating(ctx.author.id)}. You are ranked {rank} out of {len(all_players)} players.')
+        await ctx.send(f'Your rating is {round(data.data_manager.get_rating(ctx.author.id), 2)}. You are ranked {rank} out of {len(all_players)} players.')
 
     @commands.command(aliases=['info'])
     @commands.cooldown(1, 4, commands.BucketType.default)

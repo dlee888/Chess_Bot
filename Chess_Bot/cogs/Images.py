@@ -7,6 +7,7 @@ import Chess_Bot.cogs.Data as data
 themes_available = []
 
 
+# 8/8/8/8/qqkk4/QQKK4/ppnnbbrr/PPNNBBRR w - - 0 1
 def load_theme(theme):
 	themes_available.append(theme)
 	
@@ -52,7 +53,6 @@ def load_all_themes():
 	for file in os.listdir('Chess_Bot/images'):
 		if file.endswith('.png') and file != 'blank_board.png':
 			file = file[:-4]
-			print(f'Loading theme {file}')
 			load_theme(file)
 
 
