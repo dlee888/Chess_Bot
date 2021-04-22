@@ -5,7 +5,7 @@ from discord.ext import commands, tasks
 import os
 
 import Chess_Bot.cogs.Utility as util
-
+import Chess_Bot.cogs.Data as data
 class Topgg(commands.Cog):
     
     def __init__(self, client):
@@ -29,7 +29,19 @@ class Topgg(commands.Cog):
         
     
     @commands.command()
+    @commands.cooldown(1, 12 * 3600, commands.BucketType.default)
     async def vote(self, ctx):
-        status = await self.dbl_client.get_user_vote(ctx.author.id)
+        voted = await self.dbl_client.get_user_vote(ctx.author.id)
         
-        await ctx.send(status)
+        if not voted:
+            await ctx.send('You have not voted!\nPlease vote for Chess Bot at https://top.gg/bot/801501916810838066/vote')
+            ctx.command.reset_cooldown(ctx)
+            
+        rating = data.data_manager.get_rating(ctx.author.id)
+        if rating == None:
+            rating = 1500
+        
+        rating += 5
+        data.data_manager.change_rating(ctx.author.id, rating)
+        
+        await ctx.send('Thank you for voting for Chess Bot! You have been gifted 5 rating points.')
