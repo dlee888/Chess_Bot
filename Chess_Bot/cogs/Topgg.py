@@ -36,6 +36,7 @@ class Topgg(commands.Cog):
         if not voted:
             await ctx.send('You have not voted!\nPlease vote for Chess Bot at https://top.gg/bot/801501916810838066/vote')
             ctx.command.reset_cooldown(ctx)
+            return
             
         rating = data.data_manager.get_rating(ctx.author.id)
         if rating == None:
