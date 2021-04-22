@@ -26,3 +26,10 @@ class Topgg(commands.Cog):
         voted = await self.dbl_client.get_bot_upvotes()
         print(voted)
         await ctx.send(str(voted))
+        
+    
+    @commands.command()
+    async def vote(self, ctx):
+        status = await self.dbl_client.get_user_vote(ctx.author.id)
+        
+        await ctx.send(status)
