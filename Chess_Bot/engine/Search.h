@@ -17,11 +17,13 @@ extern int priority;
 
 extern bool break_now;
 
+extern Depth depth_qsearched;
+
 bool move_comparator(const int &a, const int &b);
 
 Value search(Depth, Value, Value);
 
-Value qsearch(Value, Value);
+Value qsearch(Value, Value, Depth);
 
 pii find_best_move(double, Depth = MAX_DEPTH);
 

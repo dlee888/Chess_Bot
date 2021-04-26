@@ -26,9 +26,6 @@ Value search(Depth depth, Value alpha, Value beta)
 		return DRAWN;
 	}
 
-	if (depth <= DEPTH_ZERO) {
-		return qsearch(alpha, beta);
-	}
 
 	if (curr_state.king_attacked()) {
 		// printf("king attacked\n");
@@ -38,6 +35,34 @@ Value search(Depth depth, Value alpha, Value beta)
 	if (break_now) {
 		return eval(curr_state);
 	}
+
+	if (depth <= DEPTH_ZERO) {
+		return qsearch(alpha, beta, depth);
+	}
+
+	Value curr_eval;
+	if (tt_exists[key] && tt_hashes[key] == curr_board_hash) {
+		// tt entry can be used as more accurate static eval
+		curr_eval = tt_evals[key];
+	} else {
+		curr_eval = eval(curr_state);
+	}
+
+	// Futility pruning
+	// TODO: implement improving
+	if (depth < 7 && (curr_eval - futility_margin(depth, false) >= beta))
+	{
+		// printf("futility prune: %d\n", curr_eval);
+		return curr_eval;
+	}
+
+	// Razor pruning and extended razor pruning
+	if (depth < 1) {
+		if (curr_eval + RAZOR_MARGIN < alpha) {
+			// printf("razor prune\n");
+			return qsearch(alpha, beta, DEPTH_ZERO);
+		}
+	} 
 
 	std::vector<int> moves = curr_state.list_moves();
 	eval_cache.clear();
@@ -52,9 +77,9 @@ Value search(Depth depth, Value alpha, Value beta)
 		} else {
 			mate = false;
 
-			Bitstring hash = curr_state.get_hash() % TABLE_SIZE;
-			if (tt_exists[hash]) {
-				eval_cache[i] = -tt_evals[hash];
+			Bitstring hash = curr_state.get_hash();
+			if (tt_exists[hash % TABLE_SIZE] && tt_hashes[hash % TABLE_SIZE] == hash) {
+				eval_cache[i] = -tt_evals[hash % TABLE_SIZE];
 			}
 			else {
 				eval_cache[i] = -eval(curr_state);
@@ -74,30 +99,6 @@ Value search(Depth depth, Value alpha, Value beta)
 			return DRAWN;
 		}
 	}
-
-	Value curr_eval;
-	if (tt_exists[key]) {
-		// tt entry can be used as more accurate static eval
-		curr_eval = tt_evals[key];
-	} else {
-		curr_eval = eval(curr_state);
-	}
-
-	// Futility pruning
-	// TODO: implement improving
-	// if (depth < 7 && (curr_eval - futility_margin(depth, false) >= beta))
-	// {
-	// 	// printf("futility prune: %d\n", curr_eval);
-	// 	return curr_eval;
-	// }
-
-	// Razor pruning and extended razor pruning
-	if (depth < 1) {
-		if (curr_eval + RAZOR_MARGIN < alpha) {
-			// printf("razor prune\n");
-			return qsearch(alpha, beta);
-		}
-	} 
 	
 	std::sort(moves.begin(), moves.end(), move_comparator);
 	Value value = -VALUE_INFINITE;
@@ -131,9 +132,11 @@ Value search(Depth depth, Value alpha, Value beta)
 }
 
 // Only searches captures and queen promotions to avoid horizon effect
-Value qsearch(Value alpha, Value beta)
+Value qsearch(Value alpha, Value beta, Depth depth)
 {
 	qsearch_nodes++;
+
+	depth_qsearched = std::min(depth_qsearched, depth);
 	
 	// printf("qsearch(%d, %d)\n", alpha, beta);
 	// curr_state.print();
@@ -157,6 +160,25 @@ Value qsearch(Value alpha, Value beta)
 		// printf("king attacked\n");
 		return MATE;
 	}
+	
+	Value curr_eval;
+	if (tt_exists[key] && tt_hashes[key] == curr_board_hash) {
+		// tt entry can be used as more accurate static eval
+		curr_eval = tt_evals[key];
+	} else {
+		curr_eval = eval(curr_state);
+	}
+
+	if (depth < QS_MIN_DEPTH) {
+		return curr_eval;
+	}
+
+	// Futility pruning
+	if (depth - QS_MIN_DEPTH < 5 && (curr_eval - futility_margin(depth - QS_MIN_DEPTH, false) >= beta))
+	{
+		// printf("futility prune: %d\n", curr_eval);
+		return curr_eval;
+	}
 
 	std::vector<int> ordered_moves;
 
@@ -175,10 +197,10 @@ Value qsearch(Value alpha, Value beta)
 		{
 			ordered_moves.push_back(i);
 			
-			Bitstring hash = curr_state.get_hash() % TABLE_SIZE;
-			if (tt_exists[hash]) {
+			Bitstring hash = curr_state.get_hash();
+			if (tt_exists[hash % TABLE_SIZE] && tt_hashes[hash % TABLE_SIZE] == hash) {
 				// printf("using tt for eval of move %s\n", curr_state.move_to_string(i).c_str());
-				eval_cache[i] = -tt_evals[hash];
+				eval_cache[i] = -tt_evals[hash % TABLE_SIZE];
 			}
 			else {
 				eval_cache[i] = -eval(curr_state);
@@ -197,14 +219,6 @@ Value qsearch(Value alpha, Value beta)
 			// printf("stalemate\n");
 			return DRAWN;
 		}
-	}
-	
-	Value curr_eval;
-	if (tt_exists[key]) {
-		// tt entry can be used as more accurate static eval
-		curr_eval = tt_evals[key];
-	} else {
-		curr_eval = eval(curr_state);
 	}
 
 	if (break_now || ordered_moves.size() == 0)
@@ -231,7 +245,7 @@ Value qsearch(Value alpha, Value beta)
 		// printf("Considering %s\n", curr_state.move_to_string(move).c_str());
 
 		curr_state.make_move(move);
-		Value x = -qsearch(-beta, -alpha);
+		Value x = -qsearch(-beta, -alpha, depth - ONE_PLY);
 		curr_state.unmake_move(move);
 
 		value = std::max(value, x);

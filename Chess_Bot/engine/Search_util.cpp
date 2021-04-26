@@ -6,6 +6,8 @@
 long long nodes, qsearch_nodes;
 long long tb_hits, qsearch_hits;
 
+Depth depth_qsearched;
+
 int futility_margin(int depth, bool improving) {
 	return (175 - 50 * improving) * depth;
 }
@@ -49,6 +51,7 @@ pii find_best_move(double time_limit, Depth depth_limit) {
 
 		nodes = 0; qsearch_nodes = 0;
 		tb_hits = 0; qsearch_hits = 0;
+		depth_qsearched = DEPTH_ZERO;
 
 		int start_time = clock();
 
@@ -100,6 +103,7 @@ pii find_best_move(double time_limit, Depth depth_limit) {
 		int time_taken = clock() - start_time;
 
 		double actual_eval = (double)evaluation / 100;
+		std::cout << "Done searching, actual depth = " << curr_depth - depth_qsearched << std::endl;
 		printf("Best move is %s, EVAL = %lf\n%lf seconds taken, %lld nodes searched, %lld nodes qsearched\nSpeed = %lf nodes per second. %lld TB hits, %lld Qsearch TB hits\n",
 				curr_state.move_to_string(best_move).c_str(),
 				actual_eval, (double)time_taken / CLOCKS_PER_SEC, nodes, qsearch_nodes, 
@@ -112,7 +116,7 @@ pii find_best_move(double time_limit, Depth depth_limit) {
 		}
 		
 		if (break_now || (time_taken * curr_state.list_moves().size() > 4 * time_limit * CLOCKS_PER_SEC)) {
-			printf("Done searching\n");
+			printf("Breaking\n");
 			break;
 		}
 
