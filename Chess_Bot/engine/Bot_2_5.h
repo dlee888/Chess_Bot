@@ -1,6 +1,6 @@
 #ifndef BOT_H_INCLUDED
 #define BOT_H_INCLUDED
-
+#include <map>
 #include <ctime>
 #include <vector>
 
@@ -13,6 +13,9 @@ void play()
 	bool computer_is_white = false;
 	int num_move = 0;
 	double time_limit;
+
+	std::map <Bitstring, int> repetition_cnt;
+	bool is_draw = false;
 
 	std::string move;
 	
@@ -39,8 +42,8 @@ void play()
 				break;
 			int move_i = curr_state.parse_move(move);
 			curr_state.make_move(move_i);
-			// draw[curr_state]++;
-			// if(draw[curr_state] >= 3) is_draw = true;
+			repetition_cnt[curr_state.get_hash()]++;
+			if(repetition_cnt[curr_state.get_hash()] >= 3) is_draw = true;
 			game.push_back(move_i);
 			num_move++;
 			
@@ -78,7 +81,7 @@ void play()
 		if (move == "resign" || move == "quit") {
 			break;
 		}
-		if (curr_state.mate() || curr_state.adjucation()) {
+		if (curr_state.mate() || curr_state.adjucation() || is_draw) {
 			break;
 		}
 
@@ -141,8 +144,6 @@ void play()
 		
 		remove_openings(num_move, move_i, computer_is_white);
 		scramble_openings();
-
-		clear_table(); // to prevent collisions
 	}
 
 	if (error_msg.size() != 0) {
@@ -160,7 +161,7 @@ void play()
 	else
 	{
 		int m = curr_state.mate();
-		if (m == 1 || curr_state.adjucation()) {
+		if (m == 1 || curr_state.adjucation() || is_draw) {
 			printf("DRAW\n");
 		}
 		else if (m == 2)

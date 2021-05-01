@@ -14,10 +14,6 @@ int futility_margin(int depth, bool improving) {
 
 int priority;
 
-namespace {
-	int danger[7] = {0, 5, 15, 15, 25, 40, 70};
-}
-
 std::map <int, int> eval_cache;
 
 bool move_comparator(const int &a, const int &b)
