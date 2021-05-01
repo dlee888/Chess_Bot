@@ -24,7 +24,7 @@ async def get_prefix(bot, message):
 		return ['$', f'<@{bot.user.id}> ', f'<@!{bot.user.id}> ']
 	return [data.data_manager.get_prefix(message.guild.id), f'<@{bot.user.id}> ', f'<@!{bot.user.id}> ']
 
-bot = commands.Bot(command_prefix=get_prefix, help_command=None)
+bot = commands.Bot(command_prefix=get_prefix, help_command=None, status='$help for commands, $botinfo for more information')
 
 
 # @bot.event

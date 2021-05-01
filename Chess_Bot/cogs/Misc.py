@@ -15,6 +15,13 @@ class Misc(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.start_time = time.time()
+        
+    @commands.Cog.listener()
+    async def on_ready(self):
+        game = discord.Game("chess")
+        await self.client.change_presence(status=discord.Status.dnd, activity=game)
+
+        print('Bot is ready')
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
