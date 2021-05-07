@@ -8,9 +8,10 @@ from Chess_Bot.cogs import Data as data
 
 thonking = []
 
+
 async def run(cmd):
     proc = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE,
-                                                stderr=asyncio.subprocess.PIPE)
+                                                 stderr=asyncio.subprocess.PIPE)
 
     stdout, stderr = await proc.communicate()
 
@@ -38,14 +39,14 @@ async def has_roles(person, roles, client):
 def update_rating(user, outcome):
     bot_rating = data.data_manager.get_rating(801501916810838066)
     person_rating = data.data_manager.get_rating(user)
-    
+
     if bot_rating == None:
         bot_rating = 1500
     if person_rating == None:
         person_rating = 1500
-    
+
     E = 1 / (1 + 10 ** ((bot_rating - person_rating) / 400))
-    
+
     bot_rating += 32 * (E - outcome)
     person_rating += 32 * (outcome - E)
 
