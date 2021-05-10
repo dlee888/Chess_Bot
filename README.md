@@ -1,6 +1,6 @@
 # Chess Bot
 
-Chess Bot is a bot that plays chess.
+Chess Bot is a discord bot that plays chess.
 It also has a built-in elo rating system.
 
 ## Links
@@ -19,23 +19,25 @@ It also has a built-in elo rating system.
 
 You can use the command `$challenge` to challenge the bot to a game of chess.
 
-Use `$move` to make a move. Make sure your move is in SAN (Standard Algebraic Notation)
+Use `$move` to make a move. Make sure your move is in SAN (Standard Algebraic Notation). Otherwise, the bot will not understand it.
 
 Use `$view` to view your game.
 
 ### Chess Bot engine
 
-Chess Bot uses a custom built engine to determine which moves it plays. (It's not very good though, because I built it).
+Chess Bot uses a custom built engine to determine which moves it plays. (It's not very good though, because I built it, and I'm bad at coding).
 
 The default time it thinks for is 30 seconds, although you can specify otherwise with the `-t` flag when using `$challenge`.
 
 For example, `$challenge -t 60` to make the bot think for one minute.
 
-### Time
+The time you enter must be an integer from 5 to 120.
+
+### Timer
 
 To prevent people from abandoning a the game without loss of rating, you will automatically resign if you do not make a move for 3 days.
 
-You will receive a warning when you only have 1 day left.
+You will receive a low time warning when you only have 1 day left.
 
 Use `$time` to see how much time you have left.
 
@@ -80,3 +82,5 @@ These commands require special permissions
 - help: Sends a message with all of the commands
 
 - theme: Change your board theme
+
+To get more information about any command, use `$help <command>`

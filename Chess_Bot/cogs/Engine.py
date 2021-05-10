@@ -108,8 +108,8 @@ class Engine(commands.Cog):
 					await ctx.send('Bruh that isn\'t even an integer.')
 					return
 
-				if game.time_control < 1 or game.time_control > 120:
-					await ctx.send('Please enter an integer between 1 and 120')
+				if game.time_control < 5 or game.time_control > 120:
+					await ctx.send('Please enter an integer between 5 and 120')
 					return
 
 		data.data_manager.change_game(person, game)

@@ -20,8 +20,8 @@ class Game:
 
 class Data:
 
-    def __init__(self):
-        self.DATABASE_URL = os.environ['DATABASE_URL']
+    def __init__(self, url):
+        self.DATABASE_URL = url
 
         self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
 
@@ -178,4 +178,4 @@ VALUES ({person}, '{moves_str}', {new_game.color}, {new_game.time_control}, {new
         self.conn.commit()
 
 
-data_manager = Data()
+data_manager = Data(os.environ['DATABASE_URL'])

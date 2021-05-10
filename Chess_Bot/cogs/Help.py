@@ -30,7 +30,7 @@ class Help(commands.Cog):
             name='Rating', value='`rating`, `leaderboard`, `rank`', inline=False)
         embed.add_field(
             name='Other', value='`ping`, `help`, `botinfo`, `invite`, `prefix`, `theme`')
-        
+
         if await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             embed.add_field(
                 name='Development', value='Note: some developer commands do not work on heroku: `git_pull` and `update`\n`debug`, `debug_load`, `gimme`, `git_pull`, `restart`, `update`', inline=False
@@ -90,7 +90,6 @@ class Help(commands.Cog):
 
         await ctx.send(embed=embed)
 
-
     @help.command()
     async def rating(self, ctx):
         embed = await self.get_default_help_embed()
@@ -99,7 +98,7 @@ class Help(commands.Cog):
                                 `$rating <person>` to get <person>'s rating'''
 
         await ctx.send(embed=embed)
-        
+
     @help.command()
     async def leaderboard(self, ctx):
         embed = await self.get_default_help_embed()
@@ -111,7 +110,7 @@ class Help(commands.Cog):
                                 Note: Leaderboard is really laggy with more than about 15 people, and can not hold over 25 people'''
 
         await ctx.send(embed=embed)
-        
+
     @help.command()
     async def ping(self, ctx):
         embed = await self.get_default_help_embed()
@@ -119,7 +118,7 @@ class Help(commands.Cog):
                                 Sends "pong" and tells you the latency'''
 
         await ctx.send(embed=embed)
-        
+
     @help.command()
     async def botinfo(self, ctx):
         embed = await self.get_default_help_embed()
@@ -127,7 +126,7 @@ class Help(commands.Cog):
                                 Sends basic info and stats about the bot'''
 
         await ctx.send(embed=embed)
-        
+
     @help.command()
     async def invite(self, ctx):
         embed = await self.get_default_help_embed()
@@ -135,7 +134,7 @@ class Help(commands.Cog):
                                 Sends a invite link'''
 
         await ctx.send(embed=embed)
-        
+
     @help.command()
     async def time(self, ctx):
         embed = await self.get_default_help_embed()
@@ -143,7 +142,7 @@ class Help(commands.Cog):
                                 Sends how much time you have left'''
 
         await ctx.send(embed=embed)
-        
+
     @help.command()
     async def rank(self, ctx):
         embed = await self.get_default_help_embed()
@@ -151,7 +150,7 @@ class Help(commands.Cog):
                                 Tells you what rank you are'''
 
         await ctx.send(embed=embed)
-        
+
     @help.command()
     async def prefix(self, ctx):
         embed = await self.get_default_help_embed()
@@ -159,8 +158,7 @@ class Help(commands.Cog):
                                 Sets a custom bot prefix for the server. Must have admin permission'''
 
         await ctx.send(embed=embed)
-        
-        
+
     @help.command()
     async def theme(self, ctx):
         embed = await self.get_default_help_embed()
@@ -169,4 +167,3 @@ class Help(commands.Cog):
                                 Use `$theme` to see your current theme and use `$theme <new theme>` to change your theme.'''
 
         await ctx.send(embed=embed)
-        
