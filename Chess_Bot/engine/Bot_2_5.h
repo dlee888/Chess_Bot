@@ -62,6 +62,8 @@ void play()
 			}
 
 			curr_state.make_move(move_i);
+			repetition_cnt[curr_state.get_hash()]++;
+			if(repetition_cnt[curr_state.get_hash()] >= 3) is_draw = true;
 			game.push_back(move_i);
 			num_move++;
 			remove_openings(num_move, move_i, computer_is_white);
