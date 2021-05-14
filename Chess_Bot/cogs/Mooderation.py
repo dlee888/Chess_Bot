@@ -56,7 +56,11 @@ class Mooderation(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
     @commands.has_permissions(administrator=True)
-    async def prefix(self, ctx, new_prefix: str):
+    async def prefix(self, ctx, new_prefix: str = None):
+        if new_prefix is None:
+            await ctx.send(f'This guild\'s prefix is "{data.data_manager.get_prefix(ctx.guild.id)}"')
+            return
+
         data.data_manager.change_prefix(ctx.guild.id, new_prefix)
 
         await ctx.send('Prefix successfully updated')

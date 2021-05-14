@@ -7,7 +7,7 @@ import typing
 import Chess_Bot.cogs.Utility as util
 import Chess_Bot.cogs.Data as data
 
-version = '1.2.8'
+version = '1.3.0'
 
 
 class Misc(commands.Cog):
