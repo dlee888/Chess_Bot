@@ -62,6 +62,8 @@ void play()
 			}
 
 			curr_state.make_move(move_i);
+			repetition_cnt[curr_state.get_hash()]++;
+			if(repetition_cnt[curr_state.get_hash()] >= 3) is_draw = true;
 			game.push_back(move_i);
 			num_move++;
 			remove_openings(num_move, move_i, computer_is_white);
@@ -81,7 +83,7 @@ void play()
 		if (move == "resign" || move == "quit") {
 			break;
 		}
-		if (curr_state.mate() || curr_state.adjucation() || is_draw) {
+		if (curr_state.mate() || curr_state.adjucation()) {
 			break;
 		}
 
@@ -137,6 +139,8 @@ void play()
 		}
 		curr_state.make_move(move_i);
 		game.push_back(move_i);
+		repetition_cnt[curr_state.get_hash()]++;
+		if(repetition_cnt[curr_state.get_hash()] >= 3) is_draw = true;
 
 		num_move++;
 		curr_state.print();
@@ -144,6 +148,8 @@ void play()
 		
 		remove_openings(num_move, move_i, computer_is_white);
 		scramble_openings();
+
+		if (is_draw) break;
 	}
 
 	if (error_msg.size() != 0) {
