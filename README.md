@@ -83,4 +83,6 @@ These commands require special permissions
 
 - theme: Change your board theme
 
+- vote: Gifts you 5 rating points after voting for Chess Bot on top.gg
+
 To get more information about any command, use `$help <command>`

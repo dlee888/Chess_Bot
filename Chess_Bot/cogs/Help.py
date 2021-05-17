@@ -29,15 +29,7 @@ class Help(commands.Cog):
         embed.add_field(
             name='Rating', value='`rating`, `leaderboard`, `rank`', inline=False)
         embed.add_field(
-            name='Other', value='`ping`, `help`, `botinfo`, `invite`, `prefix`, `theme`')
-
-        if await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            embed.add_field(
-                name='Development', value='Note: some developer commands do not work on heroku: `git_pull` and `update`\n`debug`, `debug_load`, `gimme`, `git_pull`, `restart`, `update`', inline=False
-            )
-            embed.add_field(
-                name='Moderation', value='`abort`, `refund`'
-            )
+            name='Other', value='`ping`, `help`, `botinfo`, `invite`, `prefix`, `theme`, `vote`')
 
         await ctx.send(embed=embed)
 
@@ -165,5 +157,14 @@ class Help(commands.Cog):
         embed.description = '''`$theme`
                                 Sets a theme.
                                 Use `$theme` to see your current theme and use `$theme <new theme>` to change your theme.'''
+
+        await ctx.send(embed=embed)
+
+    @help.command()
+    async def vote(self, ctx):
+        embed = await self.get_default_help_embed()
+        embed.description = '''`$vote`
+                                Gifts you 5 rating points after voting for Chess Bot on top.gg
+                                Note: `$vote` will only give you rating points if you have voted within the last 12 hours. If not, then vote and then use the command again.'''
 
         await ctx.send(embed=embed)

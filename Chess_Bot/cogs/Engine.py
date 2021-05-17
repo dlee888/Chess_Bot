@@ -98,7 +98,7 @@ class Engine(commands.Cog):
 			await ctx.send('You already have a game in progress')
 			return
 
-		game = data.Game(random.randint(0, 1), 30)
+		game = data.Game(random.randint(0, 1), 15)
 		
 		for i in range(0, len(flags), 2):
 			if flags[i] == '-t':
@@ -109,7 +109,7 @@ class Engine(commands.Cog):
 					return
 
 				if game.time_control < 5 or game.time_control > 120:
-					await ctx.send('Please enter an integer between 5 and 120')
+					await ctx.send('Please enter an integer between 5 and 120 (inclusive).')
 					return
 
 		data.data_manager.change_game(person, game)
