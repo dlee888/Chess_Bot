@@ -54,6 +54,8 @@ async def on_command_error(ctx, exc):
         await ctx.send(f'You are on cooldown. Try again in {round(exc.retry_after, 3)} seconds')
     elif type(exc) == commands.errors.CommandNotFound:
         await ctx.send('Command not found.')
+    elif type(exc) == commands.errors.MissingPermissions:
+        await ctx.send(f'You are missing permissions.\nThe missing permissions are: {" ".join(exc.missing_perms)}')
     else:
         print('Command error found')
 
@@ -72,18 +74,16 @@ async def on_command_error(ctx, exc):
         if await util.has_roles(ctx.author, ['Debugger', 'Tester', 'Mooderator'], bot):
             await ctx.send(f'Command Error:\n```\n{traceback_text}\n```')
         else:
-            await ctx.send('Uh oh. Something went wrong.`'
-                           'If you feel that this is a bug, please contact the bot developers in the chess bot support server.'
+            await ctx.send('Uh oh. Something went wrong.\n'
+                           'If you feel that this is a bug, please contact the bot developers in the chess bot support server.\n'
                            'https://discord.gg/Bm4zjtNTD2')
 
         error_channel = bot.get_channel(799761964401819679)
         try:
-            await error_channel.send('Command Error:'
-                                     f'Author: {ctx.author} ({ctx.author.id})'
-                                     f'Guild: {ctx.guild} ({ctx.guild.id})'
-                                     '```\n'
-                                     f'{traceback_text}'
-                                     '```')
+            await error_channel.send('Command Error:\n'
+                                     f'Author: {ctx.author} ({ctx.author.id})\n'
+                                     f'Guild: {ctx.guild} ({ctx.guild.id})\n'
+                                     f'```\n{traceback_text}\n```')
         except:
             with open('Chess_Bot/data/message.txt', 'w') as file:
                 file.write(traceback_text)

@@ -55,10 +55,13 @@ class Mooderation(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.default)
-    @commands.has_permissions(administrator=True)
     async def prefix(self, ctx, new_prefix: str = None):
         if new_prefix is None:
-            await ctx.send(f'This guild\'s prefix is "{data.data_manager.get_prefix(ctx.guild.id)}"')
+            await ctx.send(f'This server\'s prefix is "{data.data_manager.get_prefix(ctx.guild.id)}"')
+            return
+
+        if ctx.author.guild_permissions.administrator == False:
+            await ctx.send(f'You do not have permission to change this server\'s custom prefix')
             return
 
         data.data_manager.change_prefix(ctx.guild.id, new_prefix)
