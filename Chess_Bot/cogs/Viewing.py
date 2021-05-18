@@ -89,16 +89,17 @@ class Viewing(commands.Cog):
     async def theme(self, ctx, new_theme=None):
         if new_theme == None:
             cur_theme = data.data_manager.get_theme(ctx.author.id)
-            await ctx.send(f'Your current theme is "{cur_theme}"'
-                           f'Use `$theme <new theme>` to change your theme.'
-                           'Available themes are:'
+            await ctx.send(f'Your current theme is "{cur_theme}"\n'
+                           f'Use `$theme <new theme>` to change your theme.\n'
+                           'Available themes are:\n'
                            f'`{"`, `".join(image.themes_available)}`')
             return
 
         if not new_theme in image.themes_available:
-            await ctx.send(f'That theme is not available'
-                           'Available themes are:'
+            await ctx.send(f'That theme is not available.\n'
+                           'Available themes are:\n'
                            f'`{"`, `".join(image.themes_available)}`')
+            return
 
         data.data_manager.change_theme(ctx.author.id, new_theme)
         await ctx.send('Theme sucessfully updated')
