@@ -88,10 +88,6 @@ class Development(commands.Cog):
 
         await ctx.send(f'Restarting...')
 
-        data_channel = await self.client.fetch_channel(814962871532257310)
-
-        await data_channel.send(file=discord.File('Chess_Bot/data/database'))
-
         sys.exit()
 
     @commands.command()
