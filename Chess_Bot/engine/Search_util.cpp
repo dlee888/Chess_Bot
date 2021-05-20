@@ -12,29 +12,6 @@ int futility_margin(int depth, bool improving) {
 	return (175 - 50 * improving) * depth;
 }
 
-int priority;
-
-std::map <int, int> eval_cache;
-
-bool move_comparator(const int &a, const int &b)
-{
-	int good_a = 0, good_b = 0;
-	
-	if (a == priority) {
-		good_a = VALUE_INFINITE;
-	} else {
-		good_a = eval_cache[a];
-	}
-	
-	if (b == priority) {
-		good_b = VALUE_INFINITE;
-	} else {
-		good_b = eval_cache[b];
-	}
-
-	return good_a > good_b;
-}
-
 pii find_best_move(double time_limit, Depth depth_limit) {
 	// TODO: Make multi-threaded
 
@@ -51,8 +28,6 @@ pii find_best_move(double time_limit, Depth depth_limit) {
 
 		int start_time = clock();
 
-		priority = result.second;
-
 		std::vector <int> moves = curr_state.list_moves();
 
 		if (moves.size() == 1) {
@@ -61,34 +36,41 @@ pii find_best_move(double time_limit, Depth depth_limit) {
 			break;
 		}
 
-		eval_cache.clear();
-		for (int i : moves) {
+		std::vector<pii> ordered_moves;
+
+		for (int i : moves)
+		{
 			curr_state.make_move(i);
 
-			int hash = curr_state.get_hash() % TABLE_SIZE;
-			if (tt_exists[hash]) {
-				eval_cache[i] = -tt_evals[hash];
-			} else {
-				eval_cache[i] = -eval(curr_state);
+			if (!curr_state.king_attacked()) {
+				Bitstring hash = curr_state.get_hash();
+				if (tt_exists[hash % TABLE_SIZE] && tt_hashes[hash % TABLE_SIZE] == hash) {
+					ordered_moves.push_back({tt_evals[hash % TABLE_SIZE], i});
+				}
+				else {
+					ordered_moves.push_back({eval(curr_state), i});
+				}
 			}
 
 			curr_state.unmake_move(i);
 		}
 
-		std::stable_sort(moves.begin(), moves.end(), move_comparator);
-
+		std::stable_sort(ordered_moves.begin(), ordered_moves.end());
+		
 		int best_move = -1;
 		Value evaluation = -RESIGN;
-		for (int i : moves) {
+		for (const pii& p : ordered_moves)
+		{
+			int move = p.second;
 			// printf("Considering %s\n", curr_state.move_to_string(i).c_str());
 
-			curr_state.make_move(i);
+			curr_state.make_move(move);
 			Value x = -search(curr_depth, -VALUE_INFINITE, -evaluation);
-			curr_state.unmake_move(i);
+			curr_state.unmake_move(move);
 
 			if (x > evaluation) {
 				evaluation = x;
-				best_move = i;
+				best_move = move;
 			}
 
 			// printf("x = %d\n", x);

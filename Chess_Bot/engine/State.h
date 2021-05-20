@@ -117,7 +117,15 @@ public:
 	bool legal_check(int move) {
 		std::vector <int> moves = list_moves();
 		for (int i : moves) {
-			if (move == i) return true;
+			if (move == i) {
+				make_move(move);
+				if (king_attacked()) {
+					unmake_move(move);
+					return false;
+				}
+				unmake_move(move);
+				return true;
+			}
 		}
 		return false;
 	}
