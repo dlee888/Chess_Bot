@@ -36,12 +36,13 @@ class Help(commands.Cog):
     @help.command()
     async def challenge(self, ctx):
         embed = await self.get_default_help_embed()
-        embed.description = '''`$challenge <flags>`
+        embed.description = '''`$challenge [flags]`
                               Challenges Chess bot to a game. Color is assigned randomly.
                               Flags:
                                 `-t` to set the time control (in seconds). 
-                                For example, `$challenge -t 5` to indicate that you want the computer to think for about 5 seconds
-                                If no time is specified, the default time is 60 seconds'''
+                                The time you enter must be an integer from 5 to 120.
+                                For example, `$challenge -t 5` to indicate that you want the computer to think for about 5 seconds.
+                                If no time is specified, the default time is 15 seconds.'''
 
         await ctx.send(embed=embed)
 
@@ -52,7 +53,7 @@ class Help(commands.Cog):
                                 Plays <move> against the computer
                                 Please enter the move in algebraic notation
                                 For example, `$move Ke2`
-                                More about algebraic notation in [this chess.com article](https://www.chess.com/article/view/chess-notation#algebraic-notation)'''
+                                More about algebraic notation in [this chess.com article](https://www.chess.com/article/view/chess-notation#algebraic-notation).'''
 
         await ctx.send(embed=embed)
 
@@ -60,7 +61,7 @@ class Help(commands.Cog):
     async def resign(self, ctx):
         embed = await self.get_default_help_embed()
         embed.description = '''`$resign`
-                                Resigns your game'''
+                                Resigns your game.'''
 
         await ctx.send(embed=embed)
 
@@ -69,7 +70,7 @@ class Help(commands.Cog):
         embed = await self.get_default_help_embed()
         embed.description = '''`$view`
                                 Views your current game.
-                                `$view <person>` to view <person>'s game'''
+                                `$view <person>` to view <person>'s game.'''
 
         await ctx.send(embed=embed)
 
@@ -78,7 +79,7 @@ class Help(commands.Cog):
         embed = await self.get_default_help_embed()
         embed.description = '''`$fen`
                                 Sends your current game in [fen notation](https://en.wikipedia.org/wiki/Forsyth%e2%80%93Edwards_Notation).
-                                `$fen <person>` to get <person>'s game'''
+                                `$fen <person>` to get <person>'s game.'''
 
         await ctx.send(embed=embed)
 
@@ -87,7 +88,7 @@ class Help(commands.Cog):
         embed = await self.get_default_help_embed()
         embed.description = '''`$rating`
                                 Sends your rating.
-                                `$rating <person>` to get <person>'s rating'''
+                                `$rating <person>` to get <person>'s rating.'''
 
         await ctx.send(embed=embed)
 
@@ -97,9 +98,9 @@ class Help(commands.Cog):
         embed.description = '''`$leaderboard`
                                 Shows top rated players.
                                 By default, shows 10 players.
-                                Use `$leaderboard <number>` to get the top <number> players
+                                Use `$leaderboard <number>` to get the top <number> players. For example, `$leaderboard 13` will give the top 13 instead of the top 10.
                                 Use `$leaderboard all` to get all players.
-                                Note: Leaderboard is really laggy with more than about 15 people, and can not hold over 25 people'''
+                                Note: Leaderboard can not hold over 25 people. If there are more than 25 players, not all of them will be shown.'''
 
         await ctx.send(embed=embed)
 
@@ -115,7 +116,7 @@ class Help(commands.Cog):
     async def botinfo(self, ctx):
         embed = await self.get_default_help_embed()
         embed.description = '''`$botinfo`
-                                Sends basic info and stats about the bot'''
+                                Sends basic info and stats about the bot.'''
 
         await ctx.send(embed=embed)
 
@@ -123,7 +124,7 @@ class Help(commands.Cog):
     async def invite(self, ctx):
         embed = await self.get_default_help_embed()
         embed.description = '''`$invite`
-                                Sends a invite link'''
+                                Sends a invite link.'''
 
         await ctx.send(embed=embed)
 
@@ -131,7 +132,7 @@ class Help(commands.Cog):
     async def time(self, ctx):
         embed = await self.get_default_help_embed()
         embed.description = '''`$time`
-                                Sends how much time you have left'''
+                                Sends how much time you have left before you will automatically resign.'''
 
         await ctx.send(embed=embed)
 
@@ -139,15 +140,18 @@ class Help(commands.Cog):
     async def rank(self, ctx):
         embed = await self.get_default_help_embed()
         embed.description = '''`$rank`
-                                Tells you what rank you are'''
+                                Tells you what rank you are out of all rated players.'''
 
         await ctx.send(embed=embed)
 
     @help.command()
     async def prefix(self, ctx):
         embed = await self.get_default_help_embed()
-        embed.description = '''`$prefix`
-                                Sets a custom bot prefix for the server. Must have admin permission'''
+        embed.description = '''`$prefix <new prefix>`
+                                Sets a custom bot prefix for the server. You must have admin permission to change the prefix.
+                                If you want to figure out what the prefix is, use `$prefix`.
+                                Note: while the prefix can be changed, the bot will always to respond to `@Chess Bot`.
+                                If you are unsure of what the prefix is, you should use `@Chess Bot prefix`'''
 
         await ctx.send(embed=embed)
 

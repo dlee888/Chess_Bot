@@ -27,7 +27,7 @@ Use `$view` to view your game.
 
 Chess Bot uses a custom built engine to determine which moves it plays. (It's not very good though, because I built it, and I'm bad at coding).
 
-The default time it thinks for is 30 seconds, although you can specify otherwise with the `-t` flag when using `$challenge`.
+The default time it thinks for is 15 seconds, although you can specify otherwise with the `-t` flag when using `$challenge`.
 
 For example, `$challenge -t 60` to make the bot think for one minute.
 
