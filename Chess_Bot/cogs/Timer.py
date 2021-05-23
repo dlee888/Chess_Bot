@@ -79,6 +79,7 @@ class Timer(commands.Cog):
             print('Exception in send_no_time_message:', e)
 
     @commands.command()
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def time(self, ctx, *user: typing.Union[discord.User, discord.Member]):
 
         person = -1

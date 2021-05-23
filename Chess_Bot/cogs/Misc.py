@@ -24,7 +24,7 @@ class Misc(commands.Cog):
         print('Bot is ready')
 
     @commands.command()
-    @commands.cooldown(1, 3, commands.BucketType.default)
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def ping(self, ctx):
         '''
         Sends "Pong!"
@@ -32,7 +32,7 @@ class Misc(commands.Cog):
         await ctx.send(f'Pong!\nLatency: {round(self.client.latency*1000000)/1000}ms')
 
     @commands.command()
-    @commands.cooldown(1, 3, commands.BucketType.default)
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def rating(self, ctx, *user: typing.Union[discord.User, discord.Member]):
         '''
         Tells you your rating
@@ -50,7 +50,7 @@ class Misc(commands.Cog):
             await ctx.send(f'{person}\'s rating is {round(result, 2)}')
 
     @commands.command()
-    @commands.cooldown(1, 5, commands.BucketType.default)
+    @commands.cooldown(1, 7, commands.BucketType.user)
     async def leaderboard(self, ctx, num='-1'):
         '''
         Shows highest rated players
@@ -99,7 +99,7 @@ class Misc(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
-    @commands.cooldown(1, 5, commands.BucketType.default)
+    @commands.cooldown(1, 7, commands.BucketType.user)
     async def rank(self, ctx):
         '''
         Shows highest rated players
@@ -128,7 +128,7 @@ class Misc(commands.Cog):
         await ctx.send(f'Your rating is {round(data.data_manager.get_rating(ctx.author.id), 2)}. You are ranked {rank} out of {len(all_players)} players.')
 
     @commands.command(aliases=['info'])
-    @commands.cooldown(1, 4, commands.BucketType.default)
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def botinfo(self, ctx):
         '''
         Basic info about Chess Bot
@@ -161,7 +161,7 @@ class Misc(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
-    @commands.cooldown(1, 3, commands.BucketType.default)
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def invite(self, ctx):
         '''
         Sends invite link

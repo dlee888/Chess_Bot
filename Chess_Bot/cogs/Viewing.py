@@ -14,7 +14,7 @@ class Viewing(commands.Cog):
         self.client = client
 
     @commands.command()
-    @commands.cooldown(1, 10, commands.BucketType.default)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def view(self, ctx, *user: typing.Union[discord.User, discord.Member]):
         '''
         Views your current game
@@ -46,7 +46,7 @@ class Viewing(commands.Cog):
         await output_move(ctx, person)
 
     @commands.command()
-    @commands.cooldown(1, 10, commands.BucketType.default)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def fen(self, ctx, *user: typing.Union[discord.User, discord.Member]):
         '''
         Sends current game in FEN format
@@ -86,6 +86,7 @@ class Viewing(commands.Cog):
         await ctx.send(f'```{out[-2]}```')
 
     @commands.command()
+    @commands.cooldown(1, 2, commands.BucketType.user)
     async def theme(self, ctx, new_theme=None):
         if new_theme == None:
             cur_theme = data.data_manager.get_theme(ctx.author.id)

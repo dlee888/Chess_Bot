@@ -12,7 +12,7 @@ class Mooderation(commands.Cog):
         self.client = client
 
     @commands.command()
-    @commands.cooldown(1, 3, commands.BucketType.default)
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def abort(self, ctx, user: typing.Union[discord.User, discord.Member]):
         '''
         Aborts a game
@@ -31,7 +31,7 @@ class Mooderation(commands.Cog):
         await ctx.send('Game aborted')
 
     @commands.command()
-    @commands.cooldown(1, 3, commands.BucketType.default)
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def refund(self, ctx, person: typing.Union[discord.User, discord.Member], amount: float):
         '''
         Refunds rating points to a user
@@ -54,7 +54,7 @@ class Mooderation(commands.Cog):
         await ctx.send(f'{amount} points refunded')
 
     @commands.command()
-    @commands.cooldown(1, 3, commands.BucketType.default)
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def prefix(self, ctx, new_prefix: str = None):
         if new_prefix is None:
             await ctx.send(f'This server\'s prefix is "{data.data_manager.get_prefix(ctx.guild.id)}"')
@@ -76,7 +76,7 @@ class Mooderation(commands.Cog):
             await ctx.send(f'Changing nickname to "[{new_prefix}] - Chess Bot" failed. Missing permissions')
 
     @commands.command()
-    @commands.cooldown(1, 3, commands.BucketType.default)
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def gift(self, ctx, person: typing.Union[discord.User, discord.Member], amount: float):
         if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
             await ctx.send('You do not have permission to gift rating')

@@ -13,7 +13,7 @@ class Engine(commands.Cog):
         self.client = client
 
     @commands.command(aliases=['play'])
-    @commands.cooldown(1, 3, commands.BucketType.default)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def move(self, ctx, move):
         '''
         Plays <move> against the computer
@@ -82,7 +82,7 @@ class Engine(commands.Cog):
         data.data_manager.delete_game(person)
 
     @commands.command()
-    @commands.cooldown(1, 3, commands.BucketType.default)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def challenge(self, ctx, *flags):
         '''
         Challenges Chess Bot to a game
@@ -134,7 +134,7 @@ class Engine(commands.Cog):
         data.data_manager.change_game(person, game)
 
     @commands.command()
-    @commands.cooldown(1, 3, commands.BucketType.default)
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def resign(self, ctx):
         '''
         Resigns the game

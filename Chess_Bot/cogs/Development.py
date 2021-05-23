@@ -21,7 +21,7 @@ class Development(commands.Cog):
         self._last_result = None
 
     @commands.command()
-    @commands.cooldown(1, 15, commands.BucketType.default)
+    @commands.cooldown(1, 15, commands.BucketType.user)
     async def update(self, ctx, flags=''):
         '''
         Compiles the latest version of Chess Bot
@@ -75,7 +75,7 @@ class Development(commands.Cog):
         await ctx.send(status)
 
     @commands.command()
-    @commands.cooldown(1, 15, commands.BucketType.default)
+    @commands.cooldown(1, 15, commands.BucketType.user)
     async def restart(self, ctx):
         '''
         Restarts the bot
@@ -91,7 +91,6 @@ class Development(commands.Cog):
         sys.exit()
 
     @commands.command()
-    @commands.has_any_role('Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger')
     async def git_pull(self, ctx):
         '''
         Pulls from the github repository

@@ -45,12 +45,16 @@ class Data:
 										id bigint NOT NULL PRIMARY KEY UNIQUE,
 										theme text
 									);'''
+        create_votes_table = '''CREATE TABLE IF NOT EXISTS votes (
+										id bigint NOT NULL PRIMARY KEY UNIQUE
+									);'''
 
         cur = self.get_conn().cursor()
         cur.execute(create_games_table)
         cur.execute(create_ratings_table)
         cur.execute(create_prefix_table)
         cur.execute(create_themes_table)
+        cur.execute(create_votes_table)
 
     def get_conn(self):
         if self.conn.closed:
@@ -102,8 +106,7 @@ class Data:
         cur = self.get_conn().cursor()
         moves_str = ' '.join(str(move) for move in new_game.moves)
 
-        update_sql = f'''INSERT INTO games
-VALUES ({person}, '{moves_str}', {new_game.color}, {new_game.time_control}, {new_game.last_moved}, {int(new_game.warned)});'''
+        update_sql = f'''INSERT INTO games VALUES ({person}, '{moves_str}', {new_game.color}, {new_game.time_control}, {new_game.last_moved}, {int(new_game.warned)});'''
 
         cur.execute(f'DELETE FROM games WHERE id = {person};')
         cur.execute(update_sql)
@@ -175,6 +178,30 @@ VALUES ({person}, '{moves_str}', {new_game.color}, {new_game.time_control}, {new
         cur.execute(f'DELETE FROM themes WHERE id = {person};')
         cur.execute(f'INSERT INTO themes VALUES ({person}, \'{new_theme}\');')
 
+        self.conn.commit()
+
+    def has_claimed(self, person):
+        cur = self.get_conn().cursor()
+        cur.execute(f'SELECT * FROM votes WHERE id = {person}')
+        rows = cur.fetchall()
+
+        return len(rows) == 1
+
+    def get_claimed(self):
+        cur = self.get_conn().cursor()
+        cur.execute(f'SELECT * FROM votes')
+        rows = cur.fetchall()
+        return rows
+    
+    def add_vote(self, person):
+        cur = self.get_conn().cursor()
+        cur.execute(f'DELETE FROM votes WHERE id = {person}')
+        cur.execute(f'INSERT INTO votes VALUES ({person})')
+        self.conn.commit()
+
+    def remove_vote(self, person):
+        cur = self.get_conn().cursor()
+        cur.execute(f'DELETE FROM votes WHERE id = {person}')
         self.conn.commit()
 
 
