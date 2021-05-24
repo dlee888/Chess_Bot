@@ -105,6 +105,10 @@ class Misc(commands.Cog):
         Shows highest rated players
         '''
 
+        if data.data_manager.get_rating(ctx.author.id) is None:
+            await ctx.send('You are unrated.')
+            return
+
         ignore = [716070916550819860, 721043620060201051]
 
         ratings = data.data_manager.get_ratings()
