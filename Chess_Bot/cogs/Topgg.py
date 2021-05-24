@@ -16,18 +16,17 @@ class Topgg(commands.Cog):
         self.password = os.environ.get('DBL_PASSWORD')
         self.dbl_client = dbl.DBLClient(
             self.client, self.dbl_token, autopost=True, webhook_path='/dblwebhook', webhook_auth=self.password, webhook_port=5000)
+        self.reset_votes.start()
 
     async def on_guild_post(self):
         print('Posted stats on top.gg')
 
     @commands.command()
-    @commands.cooldown(1, 12 * 3600, commands.BucketType.user)
     async def vote(self, ctx):
         voted = await self.dbl_client.get_user_vote(ctx.author.id)
 
         if not voted:
             await ctx.send('You have not voted!\nPlease vote for Chess Bot at https://top.gg/bot/801501916810838066/vote')
-            ctx.command.reset_cooldown(ctx)
             return
         
         claimed = data.data_manager.has_claimed(ctx.author.id)
@@ -43,6 +42,18 @@ class Topgg(commands.Cog):
         data.data_manager.add_vote(ctx.author.id)
 
         await ctx.send('Thank you for voting for Chess Bot! You have been gifted 5 rating points.')
+        
+    @tasks.loop(seconds=3)
+    async def reset_votes(self):
+        votes = data.data_manager.get_claimed()
+        for row in votes:
+            status = await self.dbl_client.get_user_vote(row[0])
+            if status == False:
+                data.data_manager.remove_vote(row[0])
+
+    @reset_votes.before_loop()
+    async def wait_until_ready(self):
+        await self.client.wait_until_ready()
 
     @commands.Cog.listener()
     async def on_dbl_vote(data):
