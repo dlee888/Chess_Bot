@@ -51,7 +51,7 @@ class Topgg(commands.Cog):
             if status == False:
                 data.data_manager.remove_vote(row[0])
 
-    @reset_votes.before_loop()
+    @reset_votes.before_loop
     async def wait_until_ready(self):
         await self.client.wait_until_ready()
 
