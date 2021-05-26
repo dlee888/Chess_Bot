@@ -32,6 +32,23 @@ class Engine(commands.Cog):
         if person in util.thonking:
             await ctx.send('Chess Bot is already thinking')
             return
+        
+        if 'resign' in move.lower():
+            data.data_manager.delete_game(ctx.author.id)
+            if ctx.author.id in util.thonking:
+                util.thonking.remove(ctx.author.id)
+
+            old_rating = data.data_manager.get_rating(ctx.author.id)
+            if old_rating == None:
+                data.data_manager.change_rating(ctx.author.id, 1500)
+                old_rating = 1500
+
+            util.update_rating(ctx.author.id, 0)
+            new_rating = data.data_manager.get_rating(ctx.author.id)
+
+            await ctx.send(f'Game resigned. Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})'
+                           'Tip: Trying to resign? You can also use the `$resign` command.')
+            return
 
         thonk = self.client.get_emoji(814285875265536001)
         await ctx.message.add_reaction(thonk)
@@ -151,7 +168,6 @@ class Engine(commands.Cog):
             util.thonking.remove(ctx.author.id)
 
         old_rating = data.data_manager.get_rating(ctx.author.id)
-
         if old_rating == None:
             data.data_manager.change_rating(ctx.author.id, 1500)
             old_rating = 1500
