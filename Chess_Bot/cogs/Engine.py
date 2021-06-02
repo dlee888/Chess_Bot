@@ -43,7 +43,7 @@ class Engine(commands.Cog):
                 data.data_manager.change_rating(ctx.author.id, 1200)
                 old_rating = 1200
 
-            util.update_rating(ctx.author.id, 0)
+            util.update_rating(ctx.author.id, 0, game.bot)
             new_rating = data.data_manager.get_rating(ctx.author.id)
 
             await ctx.send(f'Game resigned. Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)}).\n'
@@ -76,15 +76,15 @@ class Engine(commands.Cog):
 
         if code == 'COMPUTER RESIGNED':
             await ctx.send('Chess Bot resigned')
-            util.update_rating(ctx.author.id, 1)
+            util.update_rating(ctx.author.id, 1, game.bot)
         elif code == 'DRAW':
-            util.update_rating(ctx.author.id, 1/2)
+            util.update_rating(ctx.author.id, 1/2, game.bot)
             await ctx.send('Draw')
         elif code[:5].lower() == whiteblack[game.color]:
-            util.update_rating(ctx.author.id, 1)
+            util.update_rating(ctx.author.id, 1, game.bot)
             await ctx.send('You won!')
         elif code[:5].lower() == whiteblack[1 - game.color]:
-            util.update_rating(ctx.author.id, 0)
+            util.update_rating(ctx.author.id, 0, game.bot)
             await ctx.send('You lost.')
         else:
             await ctx.send('Something went wrong. <:thonkery:532458240559153163>')
@@ -153,7 +153,7 @@ class Engine(commands.Cog):
             data.data_manager.change_rating(ctx.author.id, 1200)
             old_rating = 1200
 
-        util.update_rating(ctx.author.id, 0)
+        util.update_rating(ctx.author.id, 0, game.bot)
         new_rating = data.data_manager.get_rating(ctx.author.id)
 
         await ctx.send(f'Game resigned. Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')

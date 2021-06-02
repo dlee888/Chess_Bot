@@ -6,6 +6,7 @@ import typing
 
 import Chess_Bot.cogs.Utility as util
 import Chess_Bot.cogs.Data as data
+from Chess_Bot.cogs.Profiles import Profile, ProfileNames
 
 version = '1.3.0'
 
@@ -92,9 +93,13 @@ class Misc(commands.Cog):
         embed = discord.Embed(title="Leaderboard", color=0xffff69)
 
         for i in range(number):
-            user = await self.client.fetch_user(all_players[i][0])
-            embed.add_field(
-                name=f'{i+1}: {user}', value=f'{round(all_players[i][1], 2)}', inline=True)
+            if all_players[i][0] < 10:
+                embed.add_field(
+                    name=f'{i+1}: {ProfileNames[Profile(all_players[i][0]).name].value}', value=f'{round(all_players[i][1], 2)}', inline=True)
+            else:
+                user = await self.client.fetch_user(all_players[i][0])
+                embed.add_field(
+                    name=f'{i+1}: {user}', value=f'{round(all_players[i][1], 2)}', inline=True)
 
         await ctx.send(embed=embed)
 
