@@ -44,7 +44,7 @@ class Help(commands.Cog):
     @help.command()
     async def profiles(self, ctx):
         embed = await self.get_default_help_embed()
-        embed.description = 'Sends a list of the Chess Bot computers that you can challenge.\nUse `$profile <bot tag> for more information on a bot. For example, `$profile cb1`.'
+        embed.description = 'Sends a list of the Chess Bot computers that you can challenge.\nUse `$profile <bot tag>` for more information on a bot. For example, `$profile cb1`.'
 
         await ctx.send(embed=embed)
 

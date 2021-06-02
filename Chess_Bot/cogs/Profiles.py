@@ -33,7 +33,7 @@ class Profiles(commands.Cog):
     @commands.group(invoke_without_command=True, alias=['profiles', 'levels'])
     async def profile(self, ctx):
         embed = await self.get_default_embed()
-        embed.description = 'These are the Chess Bot computers that you can challenge.\nUse `$profile <bot tag> for more information on a bot. For example, `$profile cb1`.'
+        embed.description = 'These are the Chess Bot computers that you can challenge.\nUse `$profile <bot tag>` for more information on a bot. For example, `$profile cb1`.'
         embed.add_field(
             name='Chess Bot', value='`cb1 (Chess Bot level 1)`, `cb2 (Chess Bot level 2)`, `cb3 (Chess Bot level 3)`')
         await ctx.send(embed=embed)
