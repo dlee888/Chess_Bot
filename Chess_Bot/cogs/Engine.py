@@ -115,7 +115,7 @@ class Engine(commands.Cog):
 
         data.data_manager.change_game(person, game)
 
-        await ctx.send(f'Game started with {ProfileNames(botid).value}\nYou play the {whiteblack[game.color]} pieces.')
+        await ctx.send(f'Game started with {ProfileNames[bot].value}\nYou play the {whiteblack[game.color]} pieces.')
 
         thonk = self.client.get_emoji(814285875265536001)
         await ctx.message.add_reaction(thonk)

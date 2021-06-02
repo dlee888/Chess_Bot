@@ -35,13 +35,13 @@ async def output_move(ctx, person):
     game = data.data_manager.get_game(person)
 
     embed = discord.Embed(
-        title=f'{ctx.author}\'s game against {ProfileNames(Profile(game.bot).name).value}', description=f'{whiteblack[game.color].capitalize()} to move.', color=0x5ef29c)
+        title=f'{ctx.author}\'s game against {ProfileNames[Profile(game.bot).name].value}', description=f'{whiteblack[game.color].capitalize()} to move.', color=0x5ef29c)
     embed.set_footer(
         text=f'Requested by {ctx.author}', icon_url=ctx.author.avatar_url)
 
     for i in range(len(out) - 1, 0, -1):
         if out[i].startswith('COMPUTER PLAYED'):
-            embed.add_field(name=f'{ProfileNames(Profile(game.bot).name).value} moved', value=out[i][16:])
+            embed.add_field(name=f'{ProfileNames[Profile(game.bot).name].value} moved', value=out[i][16:])
             break
 
     file = None
