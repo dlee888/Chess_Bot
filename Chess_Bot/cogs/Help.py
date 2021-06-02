@@ -25,7 +25,7 @@ class Help(commands.Cog):
         embed.description = 'List of commands. Type "$help [command]" for more information about a certain command'
 
         embed.add_field(
-            name='Playing', value='`challenge`, `move`, `resign`, `view`, `fen`, `time`', inline=False)
+            name='Playing', value='`challenge`, `profiles`, `move`, `resign`, `view`, `fen`, `time`', inline=False)
         embed.add_field(
             name='Rating', value='`rating`, `leaderboard`, `rank`', inline=False)
         embed.add_field(
@@ -38,6 +38,13 @@ class Help(commands.Cog):
         embed = await self.get_default_help_embed()
         embed.description = '''`$challenge <bot>`
                               Challenges Chess bot to a game. Color is assigned randomly.'''
+
+        await ctx.send(embed=embed)
+        
+    @help.command()
+    async def profiles(self, ctx):
+        embed = await self.get_default_help_embed()
+        embed.description = 'Sends a list of the Chess Bot computers that you can challenge.\nUse `$profile <bot tag> for more information on a bot. For example, `$profile cb1`.'
 
         await ctx.send(embed=embed)
 

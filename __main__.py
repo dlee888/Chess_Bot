@@ -1,7 +1,7 @@
+
 import discord
 import os
 from discord.ext import commands
-from discord.ext.commands.errors import ExpectedClosingQuoteError
 
 from Chess_Bot.cogs.Misc import *
 from Chess_Bot.cogs.Engine import *
@@ -11,6 +11,7 @@ from Chess_Bot.cogs.Development import *
 from Chess_Bot.cogs.Help import *
 from Chess_Bot.cogs.Timer import *
 from Chess_Bot.cogs.Topgg import *
+from Chess_Bot.cogs.Profiles import *
 
 import Chess_Bot.cogs.Data as data
 import Chess_Bot.cogs.Utility as util
@@ -113,6 +114,7 @@ def main():
     bot.add_cog(Help(bot))
     bot.add_cog(Timer(bot))
     bot.add_cog(Topgg(bot))
+    bot.add_cog(Profiles(bot))
 
     token = os.environ.get('BOT_TOKEN')
     bot.run(token)
