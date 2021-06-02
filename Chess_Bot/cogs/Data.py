@@ -106,7 +106,7 @@ class Data:
         cur = self.get_conn().cursor()
         moves_str = ' '.join(str(move) for move in new_game.moves)
 
-        update_sql = f'''INSERT INTO games VALUES ({person}, '{moves_str}', {new_game.color}, {new_game.time_control}, {new_game.last_moved}, {int(new_game.warned)});'''
+        update_sql = f'''INSERT INTO games VALUES ({person}, '{moves_str}', {new_game.bot}, {new_game.color}, {new_game.last_moved}, {int(new_game.warned)});'''
 
         cur.execute(f'DELETE FROM games WHERE id = {person};')
         cur.execute(update_sql)
