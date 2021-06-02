@@ -20,11 +20,9 @@ class Timer(commands.Cog):
         self.low_time_warn.start()
 
     async def send_low_time_warning(self, person):
-        file_in, file_out = prepare_files(person)
-        prepare_input(person)
+        await run_engine(person, 0)
 
-        await run_engine(file_in, file_out)
-
+        file_out = f'Chess_Bot/data/output-{person}.txt'
         f = open(file_out)
         out = f.readlines()
         f.close()
@@ -64,8 +62,8 @@ class Timer(commands.Cog):
 
         old_rating = data.data_manager.get_rating(person)
         if old_rating == None:
-            old_rating = 1500
-            data.data_manager.change_rating(person, 1500)
+            old_rating = 1200
+            data.data_manager.change_rating(person, 1200)
         util.update_rating(person, 0)
         new_rating = data.data_manager.get_rating(person)
 

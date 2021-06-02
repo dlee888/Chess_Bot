@@ -36,21 +36,21 @@ async def has_roles(person, roles, client):
     return False
 
 
-def update_rating(user, outcome):
-    bot_rating = data.data_manager.get_rating(801501916810838066)
+def update_rating(user, outcome, bot):
+    bot_rating = data.data_manager.get_rating(bot)
     person_rating = data.data_manager.get_rating(user)
 
     if bot_rating == None:
-        bot_rating = 1500
+        bot_rating = 1200
     if person_rating == None:
-        person_rating = 1500
+        person_rating = 1200
 
     E = 1 / (1 + 10 ** ((bot_rating - person_rating) / 400))
 
     bot_rating += 32 * (E - outcome)
     person_rating += 32 * (outcome - E)
 
-    data.data_manager.change_rating(801501916810838066, bot_rating)
+    data.data_manager.change_rating(bot, bot_rating)
     data.data_manager.change_rating(user, person_rating)
 
 
@@ -59,4 +59,4 @@ def pretty_time(time):
     time -= 3600 * hours
     minutes = time//60
     time -= 60 * minutes
-    return f'{int(hours)} hours, {int(minutes)} minutes, {round(time)} seconds'
+    return f'{int(hours)} hours, {int(minutes)} minutes, {round(time, 3)} seconds'

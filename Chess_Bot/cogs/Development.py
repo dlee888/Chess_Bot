@@ -22,7 +22,7 @@ class Development(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 15, commands.BucketType.user)
-    async def update(self, ctx, flags=''):
+    async def update(self, ctx):
         '''
         Compiles the latest version of Chess Bot
         Compiler: g++
@@ -49,7 +49,7 @@ class Development(commands.Cog):
         await ctx.send(status)
 
     @commands.command()
-    async def shell(self, ctx, cmd):
+    async def shell(self, ctx, *, cmd):
         '''
         Executes shell commands
         (Bot developers only)

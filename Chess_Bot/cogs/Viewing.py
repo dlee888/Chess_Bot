@@ -37,12 +37,8 @@ class Viewing(commands.Cog):
         if person in util.thonking:
             await ctx.send('Chess Bot is in the middle of thinking. Try again later.')
             return
-
-        file_in, file_out = prepare_files(person)
-        prepare_input(person)
-
-        await run_engine(file_in, file_out)
-
+        
+        await run_engine(person, 0)
         await output_move(ctx, person)
 
     @commands.command()
@@ -71,7 +67,8 @@ class Viewing(commands.Cog):
             await ctx.send('Chess Bot is in the middle of thinking. Try again later.')
             return
 
-        file_in, file_out = prepare_files(person)
+        file_in = f'Chess_Bot/data/input-{person}.txt'
+        file_out = f'Chess_Bot/data/output-{person}.txt'
 
         f = open(file_in, 'w')
         f.write(f'fen\nyes2\n{str(game)}\nquit\n')

@@ -42,9 +42,9 @@ class Mooderation(commands.Cog):
             return
 
         if data.data_manager.get_rating(person.id) == None:
-            data.data_manager.change_rating(person.id, 1500)
+            data.data_manager.change_rating(person.id, 1200)
         if data.data_manager.get_rating(801501916810838066) == None:
-            data.data_manager.change_rating(801501916810838066, 1500)
+            data.data_manager.change_rating(801501916810838066, 1200)
 
         data.data_manager.change_rating(
             person.id, data.data_manager.get_rating(person.id) + amount)
@@ -83,7 +83,7 @@ class Mooderation(commands.Cog):
             return
 
         if data.data_manager.get_rating(person.id) == None:
-            data.data_manager.change_rating(person.id, 1500)
+            data.data_manager.change_rating(person.id, 1200)
 
         data.data_manager.change_rating(
             person.id, data.data_manager.get_rating(person.id) + amount)

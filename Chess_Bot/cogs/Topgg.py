@@ -36,7 +36,7 @@ class Topgg(commands.Cog):
 
         rating = data.data_manager.get_rating(ctx.author.id)
         if rating == None:
-            rating = 1500
+            rating = 1200
         rating += 5
         data.data_manager.change_rating(ctx.author.id, rating)
         data.data_manager.add_vote(ctx.author.id)

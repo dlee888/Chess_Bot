@@ -36,20 +36,15 @@ class Help(commands.Cog):
     @help.command()
     async def challenge(self, ctx):
         embed = await self.get_default_help_embed()
-        embed.description = '''`$challenge [flags]`
-                              Challenges Chess bot to a game. Color is assigned randomly.
-                              Flags:
-                                `-t` to set the time control (in seconds). 
-                                The time you enter must be an integer from 5 to 120.
-                                For example, `$challenge -t 5` to indicate that you want the computer to think for about 5 seconds.
-                                If no time is specified, the default time is 15 seconds.'''
+        embed.description = '''`$challenge <bot>`
+                              Challenges Chess bot to a game. Color is assigned randomly.'''
 
         await ctx.send(embed=embed)
 
     @help.command(aliases=['play'])
     async def move(self, ctx):
         embed = await self.get_default_help_embed()
-        embed.description = '''`$move <move>` / `$play <move>`
+        embed.description = '''`$move <move>` or `$play <move>`
                                 Plays <move> against the computer
                                 Please enter the move in algebraic notation
                                 For example, `$move Ke2`

@@ -6,39 +6,25 @@ import time
 import Chess_Bot.cogs.Data as data
 import Chess_Bot.cogs.Utility as util
 from Chess_Bot.cogs.Images import *
+from Chess_Bot.cogs.Profiles import Profile, ProfileNames
+
 
 whiteblack = ['black', 'white']
 
 
-def prepare_files(person):
-    file_in = f'Chess_Bot/data/input-{person}.txt'
-    file_out = f'Chess_Bot/data/output-{person}.txt'
+async def run_engine(person, bot, move=''):
+    if bot in [Profile.cb1.value, Profile.cb2.value, Profile.cb3.value]:
+        file_in = f'Chess_Bot/data/input-{person}.txt'
+        file_out = f'Chess_Bot/data/output-{person}.txt'
 
-    if not file_in[15:] in os.listdir('Chess_Bot/data'):
-        f = open(file_in, 'x')
+        game = data.data_manager.get_game(person)
+
+        f = open(file_in, 'w')
+        time_control = [1, 5, 20]
+        f.write(
+            f'play\n{whiteblack[1 - game.color]}\nyes2\n{str(game)}\n{time_control[bot]}\n{move}\nquit\nquit\n')
         f.close()
-    if not file_out[15:] in os.listdir('Chess_Bot/data'):
-        f = open(file_out, 'x')
-        f.close()
-
-    return file_in, file_out
-
-
-def prepare_input(person, move=''):
-    file_in = f'Chess_Bot/data/input-{person}.txt'
-
-    game = data.data_manager.get_game(person)
-
-    f = open(file_in, 'w')
-    f.write(
-        f'play\n{whiteblack[1 - game.color]}\nyes2\n{str(game)}\n{game.time_control}\n{move}\nquit\nquit\n')
-    f.close()
-
-
-async def run_engine(file_in, file_out):
-    # print('Running engine')
-    out, err, status = await util.run(f'./engine < {file_in} > {file_out}')
-    # print(f'Stdout: {out}\nStderr: {err}\n{status}')
+        await util.run(f'./engine < {file_in} > {file_out}')
 
 
 async def output_move(ctx, person):
@@ -49,13 +35,13 @@ async def output_move(ctx, person):
     game = data.data_manager.get_game(person)
 
     embed = discord.Embed(
-        title=f'{ctx.author}\'s game', description=f'{whiteblack[game.color].capitalize()} to move.', color=0x5ef29c)
+        title=f'{ctx.author}\'s game against {ProfileNames(Profile(game.bot).name).value}', description=f'{whiteblack[game.color].capitalize()} to move.', color=0x5ef29c)
     embed.set_footer(
         text=f'Requested by {ctx.author}', icon_url=ctx.author.avatar_url)
 
     for i in range(len(out) - 1, 0, -1):
         if out[i].startswith('COMPUTER PLAYED'):
-            embed.add_field(name='Computer moved', value=out[i][16:])
+            embed.add_field(name=f'{ProfileNames(Profile(game.bot).name).value} moved', value=out[i][16:])
             break
 
     file = None

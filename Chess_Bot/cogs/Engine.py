@@ -5,7 +5,7 @@ import time
 import Chess_Bot.cogs.Data as data
 import Chess_Bot.cogs.Utility as util
 from Chess_Bot.cogs.CPP_IO import *
-
+from Chess_Bot.cogs.Profiles import Profile, ProfileNames
 
 class Engine(commands.Cog):
 
@@ -40,24 +40,21 @@ class Engine(commands.Cog):
 
             old_rating = data.data_manager.get_rating(ctx.author.id)
             if old_rating == None:
-                data.data_manager.change_rating(ctx.author.id, 1500)
-                old_rating = 1500
+                data.data_manager.change_rating(ctx.author.id, 1200)
+                old_rating = 1200
 
             util.update_rating(ctx.author.id, 0)
             new_rating = data.data_manager.get_rating(ctx.author.id)
 
-            await ctx.send(f'Game resigned. Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})'
+            await ctx.send(f'Game resigned. Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)}).\n'
                            'Tip: Trying to resign? You can also use the `$resign` command.')
             return
 
         thonk = self.client.get_emoji(814285875265536001)
         await ctx.message.add_reaction(thonk)
         util.thonking.append(person)
-
-        file_in, file_out = prepare_files(person)
-        prepare_input(person, move)
-
-        await run_engine(file_in, file_out)
+        
+        await run_engine(person, game.bot, move)
 
         code, game = await output_move(ctx, person)
         await log(person, self.client, ctx)
@@ -75,7 +72,7 @@ class Engine(commands.Cog):
 
         old_rating = data.data_manager.get_rating(person)
         if old_rating == None:
-            old_rating = 1500
+            old_rating = 1200
 
         if code == 'COMPUTER RESIGNED':
             await ctx.send('Chess Bot resigned')
@@ -100,12 +97,10 @@ class Engine(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def challenge(self, ctx, *flags):
+    async def challenge(self, ctx, bot):
         '''
         Challenges Chess Bot to a game
         Your color is assigned randomly.
-        Flags:
-                -t to set time control (in seconds)
         '''
 
         person = ctx.author.id
@@ -115,32 +110,18 @@ class Engine(commands.Cog):
             await ctx.send('You already have a game in progress')
             return
 
-        game = data.Game(random.randint(0, 1), 15)
-
-        for i in range(0, len(flags), 2):
-            if flags[i] == '-t':
-                try:
-                    game.time_control = int(flags[i + 1])
-                except ValueError:
-                    await ctx.send('Bruh that isn\'t even an integer.')
-                    return
-
-                if game.time_control < 5 or game.time_control > 120:
-                    await ctx.send('Please enter an integer between 5 and 120 (inclusive).')
-                    return
+        botid = Profile(bot).value
+        game = data.Game(random.randint(0, 1), botid)
 
         data.data_manager.change_game(person, game)
 
-        await ctx.send(f'Game started with Chess Bot\nYou play the {whiteblack[game.color]} pieces.')
+        await ctx.send(f'Game started with {ProfileNames(bot).value}\nYou play the {whiteblack[game.color]} pieces.')
 
         thonk = self.client.get_emoji(814285875265536001)
         await ctx.message.add_reaction(thonk)
         util.thonking.append(person)
 
-        file_in, file_out = prepare_files(person)
-        prepare_input(person)
-
-        await run_engine(file_in, file_out)
+        await run_engine(person, game.bot)
 
         code, game = await output_move(ctx, person)
         await log(person, self.client, ctx)
@@ -169,8 +150,8 @@ class Engine(commands.Cog):
 
         old_rating = data.data_manager.get_rating(ctx.author.id)
         if old_rating == None:
-            data.data_manager.change_rating(ctx.author.id, 1500)
-            old_rating = 1500
+            data.data_manager.change_rating(ctx.author.id, 1200)
+            old_rating = 1200
 
         util.update_rating(ctx.author.id, 0)
         new_rating = data.data_manager.get_rating(ctx.author.id)

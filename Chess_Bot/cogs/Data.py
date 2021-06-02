@@ -5,12 +5,12 @@ import os
 
 class Game:
 
-    def __init__(self, color, time_control, moves=[], last_moved=time.time(), warned=False):
+    def __init__(self, color, bot, moves=[], last_moved=time.time(), warned=False):
         self.moves = moves
         self.color = color
-        self.time_control = time_control
         self.last_moved = last_moved
         self.warned = warned
+        self.bot = bot
 
     def __str__(self):
         game_str = ' '.join(str(i) for i in self.moves)
@@ -28,8 +28,8 @@ class Data:
         create_games_table = '''CREATE TABLE IF NOT EXISTS games (
 										id bigint NOT NULL PRIMARY KEY UNIQUE,
 										moves text,
+                                        bot integer,
 										color integer,
-										time_control integer,
 										last_moved real,
 										warned integer
 									);'''
@@ -192,7 +192,7 @@ class Data:
         cur.execute(f'SELECT * FROM votes')
         rows = cur.fetchall()
         return rows
-    
+
     def add_vote(self, person):
         cur = self.get_conn().cursor()
         cur.execute(f'DELETE FROM votes WHERE id = {person}')
