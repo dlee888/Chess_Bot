@@ -80,7 +80,7 @@ class Data:
             except:
                 pass
 
-        return Game(row[2], row[3], moves, row[4], row[5])
+        return Game(row[3], row[2], moves, row[4], row[5])
 
     def get_games(self):
         cur = self.get_conn().cursor()
@@ -98,7 +98,7 @@ class Data:
                 except:
                     pass
 
-            games[row[0]] = Game(row[2], row[3], moves, row[4], row[5])
+            games[row[0]] = Game(row[3], row[2], moves, row[4], row[5])
 
         return games
 
