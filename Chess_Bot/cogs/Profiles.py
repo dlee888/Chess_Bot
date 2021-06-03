@@ -4,6 +4,7 @@ from discord.ext import commands
 
 import enum
 
+from Chess_Bot.cogs import Data as data
 
 class Profile(enum.Enum):
     cb1 = 0
@@ -30,7 +31,7 @@ class Profiles(commands.Cog):
 
         return embed
 
-    @commands.group(invoke_without_command=True, alias=['profiles', 'levels'])
+    @commands.group(invoke_without_command=True, aliases=['profiles', 'levels'])
     async def profile(self, ctx):
         embed = await self.get_default_embed()
         embed.description = 'These are the Chess Bot computers that you can challenge.\nUse `$profile <bot tag>` for more information on a bot. For example, `$profile cb1`.'
@@ -43,7 +44,11 @@ class Profiles(commands.Cog):
         embed = await self.get_default_embed()
         embed.add_field(name='Chess Bot level 1',
                         value='Level 1 of the Chess Bot engine.')
-        embed.add_field(name='Tag', value='cb1')
+        embed.add_field(name='Tag', value='`cb1`')
+        embed.add_field(name='Stats', value='Stats about this bot.', inline=False)
+        embed.add_field(name='Rating', value=str(round(data.data_manager.get_rating(0), 3)))
+        lost, won, drew = data.data_manager.get_stats(0)
+        embed.add_field(name='Games lost', value=str(lost)).add_field(name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
         await ctx.send(embed=embed)
 
     @profile.command()
@@ -51,7 +56,10 @@ class Profiles(commands.Cog):
         embed = await self.get_default_embed()
         embed.add_field(name='Chess Bot level 2',
                         value='Level 2 of the Chess Bot engine.')
-        embed.add_field(name='Tag', value='cb2')
+        embed.add_field(name='Tag', value='`cb2`')
+        embed.add_field(name='Rating', value=str(round(data.data_manager.get_rating(1), 3)))
+        lost, won, drew = data.data_manager.get_stats(1)
+        embed.add_field(name='Games lost', value=str(lost)).add_field(name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
         await ctx.send(embed=embed)
 
     @profile.command()
@@ -59,5 +67,8 @@ class Profiles(commands.Cog):
         embed = await self.get_default_embed()
         embed.add_field(name='Chess Bot level 3s',
                         value='Level 3 of the Chess Bot engine.')
-        embed.add_field(name='Tag', value='cb3')
+        embed.add_field(name='Tag', value='`cb3`')
+        embed.add_field(name='Rating', value=str(round(data.data_manager.get_rating(2), 3)))
+        lost, won, drew = data.data_manager.get_stats(2)
+        embed.add_field(name='Games lost', value=str(lost)).add_field(name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
         await ctx.send(embed=embed)

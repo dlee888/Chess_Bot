@@ -48,6 +48,12 @@ class Data:
         create_votes_table = '''CREATE TABLE IF NOT EXISTS votes (
 										id bigint NOT NULL PRIMARY KEY UNIQUE
 									);'''
+        create_stats_table = '''CREATE TABLE IF NOT EXISTS stats (
+										id bigint NOT NULL PRIMARY KEY UNIQUE,
+                                        lost int,
+                                        won int,
+                                        drew int
+									);'''
 
         cur = self.get_conn().cursor()
         cur.execute(create_games_table)
@@ -55,6 +61,7 @@ class Data:
         cur.execute(create_prefix_table)
         cur.execute(create_themes_table)
         cur.execute(create_votes_table)
+        cur.execute(create_stats_table)
 
     def get_conn(self):
         if self.conn.closed:
@@ -158,10 +165,45 @@ class Data:
 
         self.conn.commit()
 
-    def delete_game(self, person):
+    def get_stats(self, person):
         cur = self.get_conn().cursor()
-        cur.execute(f'DELETE FROM games WHERE id = {person};')
+        cur.execute(f'SELECT * FROM stats WHERE id = {person};')
+        rows = cur.fetchall()
+        if len(rows) == 0:
+            return 0, 0
+        return rows[0][1], rows[0][2], rows[0][3]
+    
+    def change_stats(self, person, lost, won, drew):
+        cur = self.get_conn().cursor()
+        cur.execute(f'DELETE FROM stats WHERE id = {person};')
+        cur.execute(
+            f'INSERT INTO stats VALUES ({person}, {lost}, {won}, {drew});')
+        self.conn.commit()
+        
+    def total_games(self):
+        cur = self.get_conn().cursor()
+        cur.execute(f'SELECT * FROM stats;')
+        rows = cur.fetchall()
+        ans = 0
+        for row in rows:
+            ans += row[1] + row[2] + row[3]
+        return ans
 
+    def delete_game(self, person, won):
+        cur = self.get_conn().cursor()
+        game = self.get_game(person)
+        num_lost, num_won, num_draw = self.get_stats(person)
+        bot_lost, bot_won, bot_draw = self.get_stats(game.bot)
+        if won is None:
+            self.change_stats(person, num_lost, num_won, num_draw + 1)
+            self.change_stats(game.bot, bot_lost, bot_won, bot_draw + 1)
+        elif won:
+            self.change_stats(person, num_lost, num_won + 1, num_draw)
+            self.change_stats(game.bot, bot_lost + 1, bot_won, bot_draw)
+        else:
+            self.change_stats(person, num_lost + 1, num_won, num_draw)
+            self.change_stats(game.bot, bot_lost, bot_won + 1, bot_draw)
+        cur.execute(f'DELETE FROM games WHERE id = {person};')
         self.conn.commit()
 
     def get_theme(self, person):

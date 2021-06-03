@@ -44,7 +44,7 @@ class Engine(commands.Cog):
                 old_rating = 1200
 
             util.update_rating(ctx.author.id, 0, game.bot)
-            new_rating = data.data_manager.get_rating(ctx.author.id)
+            new_rating = data.data_manager.delete_game(person, False)
 
             await ctx.send(f'Game resigned. Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)}).\n'
                            'Tip: Trying to resign? You can also use the `$resign` command.')
@@ -77,14 +77,18 @@ class Engine(commands.Cog):
         if code == 'COMPUTER RESIGNED':
             await ctx.send('Chess Bot resigned')
             util.update_rating(ctx.author.id, 1, game.bot)
+            data.data_manager.delete_game(person, True)
         elif code == 'DRAW':
             util.update_rating(ctx.author.id, 1/2, game.bot)
             await ctx.send('Draw')
+            data.data_manager.delete_game(person, None)
         elif code[:5].lower() == whiteblack[game.color]:
             util.update_rating(ctx.author.id, 1, game.bot)
+            data.data_manager.delete_game(person, True)
             await ctx.send('You won!')
         elif code[:5].lower() == whiteblack[1 - game.color]:
             util.update_rating(ctx.author.id, 0, game.bot)
+            data.data_manager.delete_game(person, False)
             await ctx.send('You lost.')
         else:
             await ctx.send('Something went wrong. <:thonkery:532458240559153163>')
@@ -93,7 +97,6 @@ class Engine(commands.Cog):
         new_rating = data.data_manager.get_rating(person)
         await ctx.send(f'Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
 
-        data.data_manager.delete_game(person)
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -144,7 +147,7 @@ class Engine(commands.Cog):
             await ctx.send('You do not have a game in progress')
             return
 
-        data.data_manager.delete_game(ctx.author.id)
+        data.data_manager.delete_game(ctx.author.id, False)
         if ctx.author.id in util.thonking:
             util.thonking.remove(ctx.author.id)
 

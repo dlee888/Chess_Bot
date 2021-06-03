@@ -8,7 +8,7 @@ import Chess_Bot.cogs.Utility as util
 import Chess_Bot.cogs.Data as data
 from Chess_Bot.cogs.Profiles import Profile, ProfileNames
 
-version = '1.3.0'
+version = '2.0.0'
 
 
 class Misc(commands.Cog):
@@ -34,14 +34,13 @@ class Misc(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def rating(self, ctx, *user: typing.Union[discord.User, discord.Member]):
+    async def rating(self, ctx, person: typing.Union[discord.User, discord.Member] = None):
         '''
         Tells you your rating
         '''
 
-        person = ctx.author
-        if len(user) == 1:
-            person = user[0]
+        if person is None:
+            person = ctx.author
 
         result = data.data_manager.get_rating(person.id)
 
@@ -160,8 +159,9 @@ class Misc(commands.Cog):
             len(self.client.guilds)), inline=True)
         embed.add_field(name="Member Count", value=str(users), inline=True)
         embed.add_field(
-            name="Up time", value=f'{util.pretty_time(time.time() - self.start_time)}', inline=False)
-
+            name="Up time", value=f'{util.pretty_time(time.time() - self.start_time)}', inline=True)
+        embed.add_field(name='Games in progress', value=str(len(data.data_manager.get_games())), inline=True)
+        embed.add_field(name='Games finished', value=str(data.data_manager.total_games()), inline=True)
         owner = (await self.client.application_info()).owner
         embed.set_footer(text=f"Made by {owner}", icon_url=owner.avatar_url)
 
@@ -176,3 +176,15 @@ class Misc(commands.Cog):
         Sends invite link
         '''
         await ctx.send('https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=268815424&scope=bot')
+
+    @commands.command()
+    async def stats(self, ctx, person: typing.Union[discord.Member, discord.User] = None):
+        if person is None:
+            person = ctx.author
+        lost, won, drew = data.data_manager.get_stats(person.id)
+        embed = discord.Embed(title=f'{person}\'s stats', color=0xfc26e0)
+        embed.add_field(name='Games Played', value=str(lost+won+drew))
+        embed.add_field(name='Lost', value=str(lost))
+        embed.add_field(name='Won', value=str(won))
+        embed.add_field(name='Drew', value=str(drew))
+        await ctx.send(embed)
