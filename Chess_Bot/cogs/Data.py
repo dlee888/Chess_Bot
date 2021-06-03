@@ -170,7 +170,7 @@ class Data:
         cur.execute(f'SELECT * FROM stats WHERE id = {person};')
         rows = cur.fetchall()
         if len(rows) == 0:
-            return 0, 0
+            return 0, 0, 0
         return rows[0][1], rows[0][2], rows[0][3]
     
     def change_stats(self, person, lost, won, drew):
