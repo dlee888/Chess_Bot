@@ -57,7 +57,8 @@ class Profiles(commands.Cog):
         embed.add_field(name='Chess Bot level 2',
                         value='Level 2 of the Chess Bot engine.')
         embed.add_field(name='Tag', value='`cb2`')
-        embed.add_field(name='Rating', value=str(round(data.data_manager.get_rating(1), 3)))
+        embed.add_field(name='Stats', value='Stats about this bot.', inline=False)
+        embed.add_field(name='Rating', value=str(round(data.data_manager.get_rating(1), 3)), inline=False)
         lost, won, drew = data.data_manager.get_stats(1)
         embed.add_field(name='Games lost', value=str(lost)).add_field(name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
         await ctx.send(embed=embed)
@@ -65,10 +66,11 @@ class Profiles(commands.Cog):
     @profile.command()
     async def cb3(self, ctx):
         embed = await self.get_default_embed()
-        embed.add_field(name='Chess Bot level 3s',
+        embed.add_field(name='Chess Bot level 3',
                         value='Level 3 of the Chess Bot engine.')
         embed.add_field(name='Tag', value='`cb3`')
-        embed.add_field(name='Rating', value=str(round(data.data_manager.get_rating(2), 3)))
+        embed.add_field(name='Stats', value='Stats about this bot.', inline=False)
+        embed.add_field(name='Rating', value=str(round(data.data_manager.get_rating(2), 3)), inline=False)
         lost, won, drew = data.data_manager.get_stats(2)
         embed.add_field(name='Games lost', value=str(lost)).add_field(name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
         await ctx.send(embed=embed)

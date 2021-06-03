@@ -37,7 +37,8 @@ class Help(commands.Cog):
     async def challenge(self, ctx):
         embed = await self.get_default_help_embed()
         embed.description = '''`$challenge <bot>`
-                              Challenges Chess bot to a game. Color is assigned randomly.'''
+                              Challenges Chess bot to a game. Color is assigned randomly.
+                              Use `$profiles` to see which bots you can challenge.'''
 
         await ctx.send(embed=embed)
         

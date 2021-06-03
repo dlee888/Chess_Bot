@@ -187,4 +187,4 @@ class Misc(commands.Cog):
         embed.add_field(name='Lost', value=str(lost))
         embed.add_field(name='Won', value=str(won))
         embed.add_field(name='Drew', value=str(drew))
-        await ctx.send(embed)
+        await ctx.send(embed=embed)
