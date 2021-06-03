@@ -112,8 +112,13 @@ class Engine(commands.Cog):
         if game != None:
             await ctx.send('You already have a game in progress')
             return
-
-        botid = Profile[bot].value
+        
+        try:
+            botid = Profile[bot].value
+        except ValueError:
+            await ctx.send(f'"{bot}" is not the valid tag of a bot. Use `$profiles` to see which bots you can challenge.')
+            return
+        
         game = data.Game(random.randint(0, 1), botid)
 
         data.data_manager.change_game(person, game)
