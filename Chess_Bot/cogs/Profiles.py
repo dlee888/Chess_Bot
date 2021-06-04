@@ -48,6 +48,7 @@ class Profiles(commands.Cog):
         embed.add_field(name='Stats', value='Stats about this bot.', inline=False)
         embed.add_field(name='Rating', value=str(round(data.data_manager.get_rating(0), 3)))
         lost, won, drew = data.data_manager.get_stats(0)
+        embed.add_field(name='Games played', value=str(lost + won + drew), inline=False)
         embed.add_field(name='Games lost', value=str(lost)).add_field(name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
         await ctx.send(embed=embed)
 
@@ -60,6 +61,7 @@ class Profiles(commands.Cog):
         embed.add_field(name='Stats', value='Stats about this bot.', inline=False)
         embed.add_field(name='Rating', value=str(round(data.data_manager.get_rating(1), 3)), inline=False)
         lost, won, drew = data.data_manager.get_stats(1)
+        embed.add_field(name='Games played', value=str(lost + won + drew), inline=False)
         embed.add_field(name='Games lost', value=str(lost)).add_field(name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
         await ctx.send(embed=embed)
 
@@ -72,5 +74,6 @@ class Profiles(commands.Cog):
         embed.add_field(name='Stats', value='Stats about this bot.', inline=False)
         embed.add_field(name='Rating', value=str(round(data.data_manager.get_rating(2), 3)), inline=False)
         lost, won, drew = data.data_manager.get_stats(2)
+        embed.add_field(name='Games played', value=str(lost + won + drew), inline=False)
         embed.add_field(name='Games lost', value=str(lost)).add_field(name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
         await ctx.send(embed=embed)

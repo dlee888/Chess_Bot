@@ -115,7 +115,7 @@ class Engine(commands.Cog):
         
         try:
             botid = Profile[bot].value
-        except ValueError:
+        except KeyError:
             await ctx.send(f'"{bot}" is not the valid tag of a bot. Use `$profiles` to see which bots you can challenge.')
             return
         

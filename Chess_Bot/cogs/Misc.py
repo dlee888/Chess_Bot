@@ -160,8 +160,10 @@ class Misc(commands.Cog):
         embed.add_field(name="Member Count", value=str(users), inline=True)
         embed.add_field(
             name="Up time", value=f'{util.pretty_time(time.time() - self.start_time)}', inline=True)
-        embed.add_field(name='Games in progress', value=str(len(data.data_manager.get_games())), inline=True)
-        embed.add_field(name='Games finished', value=str(data.data_manager.total_games()), inline=True)
+        embed.add_field(name='Games in progress', value=str(
+            len(data.data_manager.get_games())), inline=True)
+        embed.add_field(name='Games finished', value=str(
+            data.data_manager.total_games()), inline=True)
         owner = (await self.client.application_info()).owner
         embed.set_footer(text=f"Made by {owner}", icon_url=owner.avatar_url)
 
@@ -183,8 +185,11 @@ class Misc(commands.Cog):
             person = ctx.author
         lost, won, drew = data.data_manager.get_stats(person.id)
         embed = discord.Embed(title=f'{person}\'s stats', color=0xfc26e0)
-        embed.add_field(name='Games Played', value=str(lost+won+drew))
+        embed.add_field(name='Rating', value=str(
+            data.data_manager.get_rating(person.id)), inline=False)
+        embed.add_field(name='Games Played', value=str(
+            lost+won+drew), inline=False)
         embed.add_field(name='Lost', value=str(lost))
         embed.add_field(name='Won', value=str(won))
-        embed.add_field(name='Drew', value=str(drew))
+        embed.add_field(name='Drawn', value=str(drew))
         await ctx.send(embed=embed)
