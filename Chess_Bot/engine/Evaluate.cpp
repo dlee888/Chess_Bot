@@ -2,8 +2,6 @@
 
 Value eval(state& s, bool trace)
 {
-	std::mt19937 rnd(std::chrono::system_clock::now().time_since_epoch().count());
-
 	Value score = VALUE_ZERO;
 
 	if ((10 * (cnts[BQ + 6] + cnts[WQ + 6]) + 5 * (cnts[BR + 6] + cnts[WR + 6]) +

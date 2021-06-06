@@ -3,10 +3,11 @@
 #include <string>
 #include <cstring>
 #include <random>
+#include <chrono>
 
 #include "State.h"
 
-#define NUM_ALL 27
+#define NUM_ALL 28
 #define NUM_WHITE 4
 #define NUM_BLACK 2
 
@@ -62,7 +63,8 @@ std::string all[NUM_ALL][100] = {
 	{"Sicilian defense: French variation", "e4", "c5", "Nf3", "e6", "d4", "cxd4", "Nxd4"},
 	{"English Opening: Four Knights Variation", "c4", "e5", "Nc3", "Nf6", "Nf3", "Nc6", "g3"},
 	{"English Opening: Four Knights Variation, quiet variation", "c4", "e5", "Nc3", "Nf6", "Nf3", "Nc6", "e3"},
-	{"Giuoco Piano Game: Main Line", "e4", "e5", "Nf3", "Nc6", "Bc4", "Bc5", "c3", "Nf6", "d4", "exd4", "e5"}
+	{"Giuoco Piano Game: Main Line", "e4", "e5", "Nf3", "Nc6", "Bc4", "Bc5", "c3", "Nf6", "d4", "exd4", "e5"},
+	{"English Opening: King's English Variation", "c4", "e5", "g3", "Nf6", "Bg2", "d5", "cxd5", "Nxd5", "Nc3"}
 };
 
 std::string white[NUM_WHITE][100] = {
@@ -73,8 +75,8 @@ std::string white[NUM_WHITE][100] = {
 };
 
 std::string black[NUM_BLACK][100] = {
-	{"Sodium attack", "Na3", "d5", "c4"}, // temporary holder
-	{"King's gambit", "e4", "e5", "f4", "exf4", "Nf3"}, // temporary holder
+	{"Sodium attack", "Na3", "d5", "c4"},
+	{"King's gambit", "e4", "e5", "f4", "exf4", "Nf3"},
 };
 
 std::vector<opening> openings, black_openings, white_openings;
