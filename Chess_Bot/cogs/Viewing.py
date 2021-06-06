@@ -38,7 +38,7 @@ class Viewing(commands.Cog):
         if person in util.thonking:
             await ctx.send('Chess Bot is in the middle of thinking. Try again later.')
             return
-        
+
         await run_engine(person, 0)
         await output_move(ctx, person)
 
@@ -67,7 +67,10 @@ class Viewing(commands.Cog):
         if game.bot in [Profile.cb1.value, Profile.cb2.value, Profile.cb3.value]:
             board = chess.Board()
             for move in game.moves:
-                board.push_uci(util.cb_to_uci(move))
+                try:
+                    board.push_uci(util.cb_to_uci(move))
+                except ValueError:
+                    board.push_san(util.cb_to_uci(move))
             await ctx.send(f'```{board.fen}```')
 
     @commands.command()

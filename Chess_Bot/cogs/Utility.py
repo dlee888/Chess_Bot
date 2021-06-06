@@ -62,6 +62,11 @@ def pretty_time(time):
     return f'{int(hours)} hours, {int(minutes)} minutes, {round(time, 3)} seconds'
 
 def cb_to_uci(cb_move):
+    if cb_move == 1835008:
+        return "O-O"
+    elif cb_move == 2883584:
+        return "O-O-O"
+    
     start_square = cb_move % 64
     end_square = (cb_move // 64) % 64
 
@@ -75,7 +80,7 @@ def cb_to_uci(cb_move):
 
     res = cols[start_col] + rows[start_row] + cols[end_col] + rows[end_row]
 
-    if cb_move // (2 ** 18) % 4 == 1:
+    if cb_move // (2 ** 18) % 4 == 2:
         promote_to = 'nbrq'
         res += promote_to[cb_move // (2 ** 20)]
 

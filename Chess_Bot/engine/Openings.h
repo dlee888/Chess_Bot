@@ -4,39 +4,37 @@
 #include <cstring>
 #include <random>
 #include <chrono>
+#include <vector>
 
 #include "State.h"
 
-#define NUM_ALL 28
+#define NUM_ALL 29
 #define NUM_WHITE 4
-#define NUM_BLACK 2
+#define NUM_BLACK 3
 
 class opening
 {
 public:
 	std::string name;
-	int moves[100];
-	opening(std::string _name, std::string m[100])
+	std::vector <int> moves;
+
+	opening(std::vector <std::string> vec)
 	{
-		name = _name;
-		memset(moves, -1, sizeof(moves));
+		name = vec[0];
+		vec.erase(vec.begin());
+
 		init_eval_info();
 		state temp = state();
-		for (int i = 0; i < 100; i++)
+		for (auto move : vec)
 		{
-			if (m[i].size() < 2)
-				break;
-			moves[i] = temp.parse_move(m[i]);
-			temp.make_move(moves[i]);
+			int move_i = temp.parse_move(move);
+			moves.push_back(move_i);
+			temp.make_move(move_i);
 		}
-	}
-	opening()
-	{
-		memset(moves, -1, sizeof(moves));
 	}
 };
 
-std::string all[NUM_ALL][100] = {
+std::vector <std::string> all[NUM_ALL] = {
 	{"Queen's gambit declined, modern variation", "d4", "d5", "c4", "e6", "Nc3", "Nf6", "Bg5", "Be7", "e3", "O-O", "Nf3", "h6", "Bh4"}, 
 	{"Tarrasach defense, two knights variation", "d4", "d5", "c4", "e6", "Nc3", "c5", "cxd5", "exd5", "Nf3", "Nc6", "g3"}, 
 	{"Semi slav defense", "d4", "d5", "c4", "c6", "Nf3", "Nf6", "Nc3", "e6", "e3", "Nbd7", "Bd3", "dxc4", "Bxc4"}, 
@@ -64,19 +62,21 @@ std::string all[NUM_ALL][100] = {
 	{"English Opening: Four Knights Variation", "c4", "e5", "Nc3", "Nf6", "Nf3", "Nc6", "g3"},
 	{"English Opening: Four Knights Variation, quiet variation", "c4", "e5", "Nc3", "Nf6", "Nf3", "Nc6", "e3"},
 	{"Giuoco Piano Game: Main Line", "e4", "e5", "Nf3", "Nc6", "Bc4", "Bc5", "c3", "Nf6", "d4", "exd4", "e5"},
-	{"English Opening: King's English Variation", "c4", "e5", "g3", "Nf6", "Bg2", "d5", "cxd5", "Nxd5", "Nc3"}
+	{"English Opening: King's English Variation", "c4", "e5", "g3", "Nf6", "Bg2", "d5", "cxd5", "Nxd5", "Nc3"},
+	{"London System", "d4", "d5", "Nf3", "Nf6", "Bf4", "c5", "e3"}
 };
 
-std::string white[NUM_WHITE][100] = {
+std::vector <std::string> white[NUM_WHITE] = {
 	{"French defense: Winnever variation", "e4", "e6", "d4", "d5", "Nc3", "Bb4", "e5"}, // petition to get rid of the french
 	{"Ruy lopez, morphy defense, caro", "e4", "e5", "Nf3", "Nc6", "Bb5", "a6", "Ba4", "b5", "Bb3", "Nf6", "d4", "exd4", "e5", "Qe7", "O-O"}, // ruy lopez opening trap
 	{"Stafford Refutation line", "e4", "e5", "Nf3", "Nf6", "Nxe5", "Nc6", "Nxc6", "d3", "Bc5", "Be2", "h5", "c3", "Ng4", "d4", "Qh4", "g3", "Qf6", "f3", "h4", "Rg1"},
 	{"Scandinavian Defense", "e4", "d5", "exd5", "Qxd5", "Nc3"}
 };
 
-std::string black[NUM_BLACK][100] = {
+std::vector <std::string> black[NUM_BLACK] = {
 	{"Sodium attack", "Na3", "d5", "c4"},
 	{"King's gambit", "e4", "e5", "f4", "exf4", "Nf3"},
+	{"Stafford gambit", "e4", "e5", "Nf3", "Nf6", "Nxe5", "Nc6", "Nxc6", "dxc6", "Nc3", "Bc5", "Qe2"}
 };
 
 std::vector<opening> openings, black_openings, white_openings;
@@ -85,12 +85,25 @@ std::vector<opening> openings, black_openings, white_openings;
 
 void load_openings()
 {
-	for (int i = 0; i < NUM_ALL; i++)
-		openings.push_back(opening(all[i][0], all[i] + 1));
+	for (int i = 0; i < NUM_ALL; i++) {
+		openings.push_back(opening(all[i]));
+
+		init_eval_info();
+		state temp = state();
+		for (int move : openings.back().moves) {
+			temp.make_move(move);
+			Bitstring hash = temp.get_hash();
+			tt_exists[hash % TABLE_SIZE] = true;
+			tt_depths[hash % TABLE_SIZE] = MAX_DEPTH;
+			tt_evals[hash % TABLE_SIZE] = VALUE_ZERO;
+			tt_hashes[hash % TABLE_SIZE] = hash;
+		}
+	}
+
 	for (int i = 0; i < NUM_WHITE; i++)
-		white_openings.push_back(opening(white[i][0], white[i] + 1));
+		white_openings.push_back(opening(white[i]));
 	for (int i = 0; i < NUM_BLACK; i++)
-		black_openings.push_back(opening(black[i][0], black[i] + 1));
+		black_openings.push_back(opening(black[i]));
 }
 
 void scramble_openings()
