@@ -29,7 +29,7 @@ class Help(commands.Cog):
         embed.add_field(
             name='Rating', value='`rating`, `leaderboard`, `rank`', inline=False)
         embed.add_field(
-            name='Other', value='`ping`, `help`, `botinfo`, `invite`, `prefix`, `theme`, `vote`')
+            name='Other', value='`ping`, `help`, `botinfo`, `invite`, `prefix`, `theme`, `vote`, `stats`')
 
         await ctx.send(embed=embed)
 
@@ -92,6 +92,15 @@ class Help(commands.Cog):
         embed.description = '''`$rating`
                                 Sends your rating.
                                 `$rating <person>` to get <person>'s rating.'''
+
+        await ctx.send(embed=embed)
+
+    @help.command()
+    async def stats(self, ctx):
+        embed = await self.get_default_help_embed()
+        embed.description = '''`$stats`
+                                Sends your stats. (Note: stats are counted starting 6/4/2021, when Chess Bot was updated to version 2.0)
+                                `$stats <person>` to get <person>'s stats.'''
 
         await ctx.send(embed=embed)
 

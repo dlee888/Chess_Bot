@@ -1,5 +1,7 @@
 # Chess Bot
 
+README for version 2.0.0
+
 Chess Bot is a discord bot that plays chess.
 It also has a built-in elo rating system.
 
@@ -23,15 +25,14 @@ Use `$move` to make a move. Make sure your move is in SAN (Standard Algebraic No
 
 Use `$view` to view your game.
 
-### Chess Bot engine
+### Chess Bot profiles
+
+You can challenge multiple levels of the bot. Make sure to specify which level you want to play when using the `$challenge` command.
+
+Use the `$profiles` command to see a list of all levels you can challenge, and use `$profile <tag>` to learn more about a specific bot.
+Note: the tag of a bot is _not_ the same as it's name. For example, the tag of the bot "Chess Bot level 1" is `cb1`.
 
 Chess Bot uses a custom built engine to determine which moves it plays. (It's not very good though, because I built it, and I'm bad at coding).
-
-The default time it thinks for is 15 seconds, although you can specify otherwise with the `-t` flag when using `$challenge`.
-
-For example, `$challenge -t 60` to make the bot think for one minute.
-
-The time you enter must be an integer from 5 to 120.
 
 ### Timer
 
@@ -45,25 +46,23 @@ Use `$time` to see how much time you have left.
 
 ### Playing
 
-- challenge: Challenges Chess Bot to a game
+- challenge: Challenges Chess Bot to a game.
 
-- fen: Sends current game in FEN format
+- move [move]: Plays [move] against the computer.
 
-- move [move]: Plays [move] against the computer
+- resign: Resigns the game.
 
-- resign: Resigns the game
-
-- view: Views your current game
+- view: Views your current game.
 
 - time: Sends how much time you have left.
+
+- profiles: Sends a list of which profiles you can challenge.
+
+- fen: Sends current game in [FEN format](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation).
   
 ### Moderation
 
-These commands require special permissions
-
-- abort: Aborts a game. At least "Debugger" in Chess Bot support server required.
-
-- refund [user] [points]: Refunds [user] [points] amount of rating points. At least "Moderator" in Chess Bot support server required.
+These commands require special permissions.
 
 - prefix [prefix]: Makes or changes the server's server specific prefix. Must have administrator permission in the server.
 
@@ -84,5 +83,7 @@ These commands require special permissions
 - theme: Change your board theme
 
 - vote: Gifts you 5 rating points after voting for Chess Bot on top.gg
+
+- stats: Sends your stats.
 
 To get more information about any command, use `$help <command>`
