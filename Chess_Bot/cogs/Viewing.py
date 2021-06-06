@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import typing
+import chess
 
 import Chess_Bot.cogs.Utility as util
 import Chess_Bot.cogs.Data as data
@@ -63,24 +64,11 @@ class Viewing(commands.Cog):
                 await ctx.send('You do not have a game in progress')
             return
 
-        if person in util.thonking:
-            await ctx.send('Chess Bot is in the middle of thinking. Try again later.')
-            return
-
-        file_in = f'Chess_Bot/data/input-{person}.txt'
-        file_out = f'Chess_Bot/data/output-{person}.txt'
-
-        f = open(file_in, 'w')
-        f.write(f'fen\nyes2\n{str(game)}\nquit\n')
-        f.close()
-
-        await run_engine(file_in, file_out)
-
-        f = open(file_out)
-        out = f.readlines()
-        f.close()
-
-        await ctx.send(f'```{out[-2]}```')
+        if game.bot in [Profile.cb1.value, Profile.cb2.value, Profile.cb3.value]:
+            board = chess.Board()
+            for move in game.moves:
+                board.push_uci(util.cb_to_uci(move))
+            await ctx.send(f'```{board.fen}```')
 
     @commands.command()
     @commands.cooldown(1, 2, commands.BucketType.user)

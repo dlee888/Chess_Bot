@@ -2,3 +2,4 @@ discord.py
 pillow
 dblpy
 psycopg2
+python-chess
