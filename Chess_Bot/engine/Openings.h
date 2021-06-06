@@ -2,6 +2,7 @@
 #define OPENINGS_H_INCLUDED
 #include <string>
 #include <cstring>
+#include <random>
 
 #include "State.h"
 
@@ -92,17 +93,18 @@ void load_openings()
 
 void scramble_openings()
 {
+	std::mt19937 rnd(std::chrono::system_clock::now().time_since_epoch().count());
 	for (int iter = 0; iter < (int)openings.size(); iter++)
 		for (int ind = iter; ind < (int)openings.size() - 1; ind++)
-			if (rand()&1)
+			if (unsigned(rnd())&1)
 				std::swap(openings[ind], openings[ind + 1]);
 	for (int iter = 0; iter < (int) white_openings.size(); iter++)
 		for (int ind = iter; ind < (int) white_openings.size() - 1; ind++)
-			if (rand()&1)
+			if (unsigned(rnd())&1)
 				std::swap(white_openings[ind], white_openings[ind + 1]);
 	for (int iter = 0; iter < (int) black_openings.size(); iter++)
 		for (int ind = iter; ind < (int) black_openings.size() - 1; ind++)
-			if (rand()&1)
+			if (unsigned(rnd())&1)
 				std::swap(black_openings[ind], black_openings[ind + 1]);
 }
 
