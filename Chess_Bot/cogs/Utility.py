@@ -60,3 +60,23 @@ def pretty_time(time):
     minutes = time//60
     time -= 60 * minutes
     return f'{int(hours)} hours, {int(minutes)} minutes, {round(time, 3)} seconds'
+
+def cb_to_uci(cb_move):
+    start_square = cb_move % 64
+    end_square = (cb_move // 64) % 64
+
+    start_row = start_square // 8
+    start_col = start_square % 8
+    end_row = end_square // 8
+    end_col = end_square % 8
+
+    rows = '87654321'
+    cols = 'abcdefgh'
+
+    res = cols[start_col] + rows[start_row] + cols[end_col] + rows[end_row]
+
+    if cb_move // (2 ** 18) % 4 == 1:
+        promote_to = 'nbrq'
+        res += promote_to[cb_move // (2 ** 20)]
+
+    return res
