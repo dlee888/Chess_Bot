@@ -71,7 +71,7 @@ class Viewing(commands.Cog):
                     board.push_uci(util.cb_to_uci(move))
                 except ValueError:
                     board.push_san(util.cb_to_uci(move))
-            await ctx.send(f'```{board.fen}```')
+            await ctx.send(f'```{board.fen()}```')
 
     @commands.command()
     @commands.cooldown(1, 2, commands.BucketType.user)
