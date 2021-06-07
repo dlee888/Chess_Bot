@@ -4,9 +4,8 @@ from discord.ext import commands, tasks
 
 import os
 
-import Chess_Bot.cogs.Utility as util
-import Chess_Bot.cogs.Data as data
-
+import Chess_Bot.util.Data as data
+from Chess_Bot import constants
 
 class Topgg(commands.Cog):
 
@@ -28,7 +27,7 @@ class Topgg(commands.Cog):
         if not voted:
             await ctx.send('You have not voted!\nPlease vote for Chess Bot at https://top.gg/bot/801501916810838066/vote')
             return
-        
+
         claimed = data.data_manager.has_claimed(ctx.author.id)
         if claimed:
             await ctx.send('You have already claimed your rating points. Vote again to claim more.')
@@ -36,13 +35,13 @@ class Topgg(commands.Cog):
 
         rating = data.data_manager.get_rating(ctx.author.id)
         if rating == None:
-            rating = 1200
+            rating = constants.DEFAULT_RATING
         rating += 5
         data.data_manager.change_rating(ctx.author.id, rating)
         data.data_manager.add_vote(ctx.author.id)
 
         await ctx.send('Thank you for voting for Chess Bot! You have been gifted 5 rating points.')
-        
+
     @tasks.loop(seconds=3)
     async def reset_votes(self):
         votes = data.data_manager.get_claimed()

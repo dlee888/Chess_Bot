@@ -1,8 +1,8 @@
 from PIL import Image
 import os
 
-import Chess_Bot.cogs.Data as data
-
+import Chess_Bot.util.Data as data
+from Chess_Bot import constants
 
 themes_available = []
 
@@ -11,9 +11,9 @@ themes_available = []
 def load_theme(theme):
     themes_available.append(theme)
 
-    im = Image.open(f'Chess_Bot/images/{theme}.png')
+    im = Image.open(os.path.join(constants.THEMES_DIR, theme + '.png'))
 
-    os.makedirs(f'Chess_Bot/images/{theme}', exist_ok=True)
+    os.makedirs(os.path.join(constants.THEMES_DIR, theme), exist_ok=True)
 
     size = im.size
     square_len = size[0] / 8
@@ -40,24 +40,24 @@ def load_theme(theme):
             piece_img = im.crop((squares[square][1] * square_len, squares[square][0] * square_len,
                                  squares[square][1] * square_len + square_len, squares[square][0] * square_len + square_len))
 
-            piece_img.save(f'Chess_Bot/images/{theme}/{name}')
+            piece_img.save(os.path.join(constants.THEMES_DIR, theme, name))
 
     blank_light = im.crop((0, 0, square_len, square_len))
     blank_dark = im.crop((0, square_len, square_len, 2 * square_len))
-    blank_light.save(f'Chess_Bot/images/{theme}/blank-light.png')
-    blank_dark.save(f'Chess_Bot/images/{theme}/blank-dark.png')
+    blank_light.save(os.path.join(constants.THEMES_DIR, theme, 'blank-light.png'))
+    blank_dark.save(os.path.join(constants.THEMES_DIR, theme, 'blank-dark.png'))
 
 
 def load_all_themes():
     print('Loading images...')
-    for file in os.listdir('Chess_Bot/images'):
-        if file.endswith('.png') and file != 'blank_board.png':
+    for file in os.listdir(constants.THEMES_DIR):
+        if file.endswith('.png'):
             file = file[:-4]
             load_theme(file)
 
 
 def get_image(person, end):
-    game_file = f'Chess_Bot/data/output-{person}.txt'
+    game_file = os.path.join(constants.TEMP_DIR, f'output-{person}.txt')
     F = open(game_file)
     game = F.readlines()
     F.close()
@@ -65,12 +65,12 @@ def get_image(person, end):
     color = data.data_manager.get_game(person).color
     theme = data.data_manager.get_theme(person)
 
-    result = Image.open('Chess_Bot/images/blank_board.png')
+    result = Image.open(os.path.join(constants.ASSETS_DIR, 'blank_board.png'))
     result = result.resize((400, 400))
 
     for i in range(end - 7, end + 1):
         for j in range(1, 17, 2):
-            square = f'Chess_Bot/images/{theme}/'
+            square = ''
             if game[i][j] == ' ':
                 square += 'blank'
             elif game[i][j].islower():
@@ -86,7 +86,7 @@ def get_image(person, end):
             else:
                 square += '-dark.png'
 
-            square_img = Image.open(square)
+            square_img = Image.open(os.path.join(constants.THEMES_DIR, theme, square))
             square_img = square_img.resize((50, 50), Image.ANTIALIAS)
 
             x *= 50
@@ -97,4 +97,4 @@ def get_image(person, end):
             else:
                 result.paste(square_img, (350 - y, 350 - x, 400 - y, 400 - x))
 
-    result.save(f'Chess_Bot/data/image-{person}.png')
+    result.save(os.path.join(constants.TEMP_DIR, f'image-{person}.txt'))

@@ -10,8 +10,8 @@ import textwrap
 import traceback
 from contextlib import redirect_stdout
 
-import Chess_Bot.cogs.Utility as util
-from Chess_Bot.cogs.CPP_IO import *
+import Chess_Bot.util.Utility as util
+from Chess_Bot.util.CPP_IO import *
 
 
 class Development(commands.Cog):
@@ -39,10 +39,10 @@ class Development(commands.Cog):
         message = f'Updated\nCompile Message: {out}\nStderr: {err}'
 
         if len(message) >= 2000:
-            f = open('Chess_Bot/data/message.txt', 'w')
+            f = open(os.path.join(constants.TEMP_DIR, 'message.txt'), 'w')
             f.write(message)
             f.close()
-            await ctx.send(file=discord.File('Chess_Bot/data/message.txt'))
+            await ctx.send(file=discord.File(os.path.join(constants.TEMP_DIR, 'message.txt')))
         else:
             await ctx.send(message)
 
@@ -54,21 +54,21 @@ class Development(commands.Cog):
         Executes shell commands
         (Bot developers only)
         '''
-        await ctx.send(f'Executing command "{cmd}"...')
 
         if ctx.author.id != 716070916550819860:
             await ctx.send('Geniosity limit exceeded. Try again later')
             return
 
+        await ctx.send(f'Executing command "{cmd}"...')
         stdout, stderr, status = await util.run(cmd)
 
         message = f'Stdout: {stdout}\nStderr: {stderr}'
 
         if len(message) >= 2000:
-            f = open('Chess_Bot/data/message.txt', 'w')
+            f = open(os.path.join(constants.TEMP_DIR, 'message.txt'), 'w')
             f.write(message)
             f.close()
-            await ctx.send(file=discord.File('Chess_Bot/data/message.txt'))
+            await ctx.send(file=discord.File(os.path.join(constants.TEMP_DIR, 'message.txt')))
         else:
             await ctx.send(message)
 
@@ -108,10 +108,10 @@ class Development(commands.Cog):
         message = f'```\nStdout:\n{stdout}Stderr: {stderr}```'
 
         if len(message) >= 2000:
-            f = open('Chess_Bot/data/message.txt', 'w')
+            f = open(os.path.join(constants.TEMP_DIR, 'message.txt'), 'w')
             f.write(message)
             f.close()
-            await ctx.send(file=discord.File('Chess_Bot/data/message.txt'))
+            await ctx.send(file=discord.File(os.path.join(constants.TEMP_DIR, 'message.txt')))
         else:
             await ctx.send(message)
 
@@ -216,11 +216,11 @@ class Development(commands.Cog):
     async def load_db(self, ctx):
         for attachment in ctx.message.attachments:
             if attachment.filename == 'database':
-                await attachment.save('Chess_Bot/data/database')
+                await attachment.save(os.path.join(constants.TEMP_DIR, 'database'))
                 break
 
         games, colors, time_control, ratings, last_moved, warned, prefixes = pickle.load(
-            open('Chess_Bot/data/database', 'rb'))
+            open(os.path.join(constants.TEMP_DIR, 'database'), 'rb'))
         print(games, colors, time_control, ratings,
               last_moved, warned, prefixes)
 

@@ -4,9 +4,10 @@ from discord.ext import tasks
 import time
 import typing
 
-import Chess_Bot.cogs.Utility as util
-import Chess_Bot.cogs.Data as data
-from Chess_Bot.cogs.CPP_IO import *
+import Chess_Bot.util.Utility as util
+import Chess_Bot.util.Data as data
+from Chess_Bot.util.CPP_IO import *
+from Chess_Bot import constants
 
 MAX_TIME_PER_MOVE = 3 * 24 * 60 * 60
 LOW_TIME_WARN = 24 * 60 * 60
@@ -22,7 +23,7 @@ class Timer(commands.Cog):
     async def send_low_time_warning(self, person):
         await run_engine(person, 0)
 
-        file_out = f'Chess_Bot/data/output-{person}.txt'
+        file_out = os.path.join(constants.TEMP_DIR, f'output-{person}.txt')
         f = open(file_out)
         out = f.readlines()
         f.close()
@@ -41,7 +42,7 @@ class Timer(commands.Cog):
                 get_image(person, i)
 
                 file = discord.File(
-                    f'Chess_Bot/data/image-{person}.png', filename='board.png')
+                    os.path.join(constants.TEMP_DIR, f'image-{person}.txt'), filename='board.png')
                 embed.set_image(url=f'attachment://board.png')
 
                 break
@@ -62,8 +63,8 @@ class Timer(commands.Cog):
 
         old_rating = data.data_manager.get_rating(person)
         if old_rating == None:
-            old_rating = 1200
-            data.data_manager.change_rating(person, 1200)
+            old_rating = constants.DEFAULT_RATING
+            data.data_manager.change_rating(person, constants.DEFAULT_RATING)
         util.update_rating(person, 0, game.bot)
         new_rating = data.data_manager.get_rating(person)
 
@@ -78,27 +79,18 @@ class Timer(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def time(self, ctx, *user: typing.Union[discord.User, discord.Member]):
+    async def time(self, ctx, person: typing.Union[discord.User, discord.Member] = None):
 
-        person = -1
-        if len(user) == 1:
-            person = user[0].id
-        else:
-            person = ctx.author.id
+        if person is None:
+            person = ctx.author
 
-        game = data.data_manager.get_game(person)
+        game = data.data_manager.get_game(person.id)
 
         if game == None:
-            if len(user) == 1:
-                await ctx.send(f'{user[0]} does not have a game in progress')
-            else:
-                await ctx.send('You do not have a game in progress')
+            await ctx.send(f'{person} does not have a game in progress')
             return
 
-        if len(user) == 1:
-            await ctx.send(f'{user[0]} has {util.pretty_time(game.last_moved + MAX_TIME_PER_MOVE - time.time())} left.')
-        else:
-            await ctx.send(f'You have {util.pretty_time(game.last_moved + MAX_TIME_PER_MOVE - time.time())} left.')
+        await ctx.send(f'{person} has {util.pretty_time(game.last_moved + MAX_TIME_PER_MOVE - time.time())} left.')
 
     @tasks.loop(seconds=10)
     async def low_time_warn(self):

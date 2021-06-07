@@ -1,8 +1,7 @@
 import discord
 from discord.ext import commands
 
-
-import Chess_Bot.cogs.Utility as util
+from Chess_Bot import constants
 
 
 class Help(commands.Cog):
@@ -15,7 +14,7 @@ class Help(commands.Cog):
 
         owner = (await self.client.application_info()).owner
         embed.set_footer(text=f"Made by {owner}", icon_url=owner.avatar_url)
-        embed.set_thumbnail(url='https://i.imgur.com/n1jak68.png')
+        embed.set_thumbnail(url=constants.AVATAR_URL)
 
         return embed
 
@@ -41,7 +40,7 @@ class Help(commands.Cog):
                               Use `$profiles` to see which bots you can challenge.'''
 
         await ctx.send(embed=embed)
-        
+
     @help.command()
     async def profiles(self, ctx):
         embed = await self.get_default_help_embed()

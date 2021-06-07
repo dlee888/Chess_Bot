@@ -1,1 +1,1 @@
-worker: python3.8 __main__.py
+worker: python3.8 -m Chess_Bot

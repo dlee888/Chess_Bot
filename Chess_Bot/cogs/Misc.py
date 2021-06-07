@@ -4,9 +4,10 @@ from discord.ext import tasks
 import time
 import typing
 
-import Chess_Bot.cogs.Utility as util
-import Chess_Bot.cogs.Data as data
+import Chess_Bot.util.Utility as util
+import Chess_Bot.util.Data as data
 from Chess_Bot.cogs.Profiles import Profile, ProfileNames
+from Chess_Bot import constants
 
 version = '2.0.0'
 
@@ -56,8 +57,6 @@ class Misc(commands.Cog):
         Shows highest rated players
         '''
 
-        ignore = [716070916550819860, 721043620060201051]
-
         number = 1
 
         ratings = data.data_manager.get_ratings()
@@ -82,9 +81,8 @@ class Misc(commands.Cog):
         all_players = []
 
         for k in ratings.keys():
-            if k in ignore:
+            if k in constants.LEADERBOARD_IGNORE:
                 continue
-
             all_players.append((k, ratings[k]))
 
         all_players.sort(reverse=True, key=lambda a: a[1])
@@ -113,16 +111,13 @@ class Misc(commands.Cog):
             await ctx.send('You are unrated.')
             return
 
-        ignore = [716070916550819860, 721043620060201051]
-
         ratings = data.data_manager.get_ratings()
 
         all_players = []
 
         for k in ratings.keys():
-            if k in ignore:
+            if k in constants.LEADERBOARD_IGNORE:
                 continue
-
             all_players.append((k, ratings[k]))
 
         all_players.sort(reverse=True, key=lambda a: a[1])
@@ -144,11 +139,11 @@ class Misc(commands.Cog):
         '''
         embed = discord.Embed(title="Bot Info", color=0xff0000)
         embed.add_field(name="Links",
-                        value="[Github](https://github.com/jeffarjeffar/Chess_Bot) | [Invite](https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=268815424&scope=bot) | [Join the discord server](https://discord.gg/Bm4zjtNTD2) | [Top.gg](https://top.gg/bot/801501916810838066/vote)",
+                        value=f"[Github]({constants.GITHUB_LINK}) | [Invite]({constants.INVITE_LINK}) | [Join the discord server]({constants.SUPPORT_SERVER_INVITE}) | [Top.gg]({constants.TOPGG_LINK})",
                         inline=False)
         embed.add_field(name='Version', value=version, inline=True)
         embed.add_field(name="Info",
-                        value='Chess Bot is a bot that plays chess. $help for a list of commands.', inline=False)
+                        value='Chess Bot is a bot that plays chess. `$help` for a list of commands.', inline=False)
 
         users = 0
         for guild in self.client.guilds:
@@ -167,7 +162,7 @@ class Misc(commands.Cog):
         owner = (await self.client.application_info()).owner
         embed.set_footer(text=f"Made by {owner}", icon_url=owner.avatar_url)
 
-        embed.set_thumbnail(url='https://i.imgur.com/n1jak68.png')
+        embed.set_thumbnail(url=constants.AVATAR_URL)
 
         await ctx.send(embed=embed)
 
@@ -177,7 +172,7 @@ class Misc(commands.Cog):
         '''
         Sends invite link
         '''
-        await ctx.send('https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=268815424&scope=bot')
+        await ctx.send(constants.INVITE_LINK)
 
     @commands.command()
     async def stats(self, ctx, person: typing.Union[discord.Member, discord.User] = None):

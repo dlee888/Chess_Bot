@@ -2,10 +2,12 @@ from discord.ext import commands
 import random
 import time
 
-import Chess_Bot.cogs.Data as data
-import Chess_Bot.cogs.Utility as util
-from Chess_Bot.cogs.CPP_IO import *
+import Chess_Bot.util.Data as data
+import Chess_Bot.util.Utility as util
+from Chess_Bot.util.CPP_IO import *
 from Chess_Bot.cogs.Profiles import Profile, ProfileNames
+from Chess_Bot import constants
+
 
 class Engine(commands.Cog):
 
@@ -32,7 +34,7 @@ class Engine(commands.Cog):
         if person in util.thonking:
             await ctx.send('Chess Bot is already thinking')
             return
-        
+
         if 'resign' in move.lower():
             data.data_manager.delete_game(ctx.author.id)
             if ctx.author.id in util.thonking:
@@ -40,8 +42,9 @@ class Engine(commands.Cog):
 
             old_rating = data.data_manager.get_rating(ctx.author.id)
             if old_rating == None:
-                data.data_manager.change_rating(ctx.author.id, 1200)
-                old_rating = 1200
+                data.data_manager.change_rating(
+                    ctx.author.id, constants.DEFAULT_RATING)
+                old_rating = constants.DEFAULT_RATING
 
             util.update_rating(ctx.author.id, 0, game.bot)
             new_rating = data.data_manager.delete_game(person, False)
@@ -50,10 +53,10 @@ class Engine(commands.Cog):
                            'Tip: Trying to resign? You can also use the `$resign` command.')
             return
 
-        thonk = self.client.get_emoji(814285875265536001)
+        thonk = self.client.get_emoji(constants.THONK_EMOJI_ID)
         await ctx.message.add_reaction(thonk)
         util.thonking.append(person)
-        
+
         await run_engine(person, game.bot, move)
 
         code, game = await output_move(ctx, person)
@@ -67,12 +70,12 @@ class Engine(commands.Cog):
             return
 
         if code == 'ILLEGAL MOVE PLAYED':
-            await ctx.send('Illegal move played. Make sure your move is in algebraic notation.\nType "$help move" for more info')
+            await ctx.send('Illegal move played. Make sure your move is in algebraic notation.\nUse `$help move` for more info')
             return
 
         old_rating = data.data_manager.get_rating(person)
         if old_rating == None:
-            old_rating = 1200
+            old_rating = constants.DEFAULT_RATING
 
         if code == 'COMPUTER RESIGNED':
             await ctx.send('Chess Bot resigned')
@@ -97,7 +100,6 @@ class Engine(commands.Cog):
         new_rating = data.data_manager.get_rating(person)
         await ctx.send(f'Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
 
-
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def challenge(self, ctx, bot):
@@ -112,20 +114,20 @@ class Engine(commands.Cog):
         if game != None:
             await ctx.send('You already have a game in progress')
             return
-        
+
         try:
             botid = Profile[bot].value
         except KeyError:
             await ctx.send(f'"{bot}" is not the valid tag of a bot. Use `$profiles` to see which bots you can challenge.')
             return
-        
+
         game = data.Game(random.randint(0, 1), botid)
 
         data.data_manager.change_game(person, game)
 
         await ctx.send(f'Game started with {ProfileNames[bot].value}\nYou play the {whiteblack[game.color]} pieces.')
 
-        thonk = self.client.get_emoji(814285875265536001)
+        thonk = self.client.get_emoji(constants.THONK_EMOJI_ID)
         await ctx.message.add_reaction(thonk)
         util.thonking.append(person)
 
@@ -158,8 +160,9 @@ class Engine(commands.Cog):
 
         old_rating = data.data_manager.get_rating(ctx.author.id)
         if old_rating == None:
-            data.data_manager.change_rating(ctx.author.id, 1200)
-            old_rating = 1200
+            data.data_manager.change_rating(
+                ctx.author.id, constants.DEFAULT_RATING)
+            old_rating = constants.DEFAULT_RATING
 
         util.update_rating(ctx.author.id, 0, game.bot)
         new_rating = data.data_manager.get_rating(ctx.author.id)

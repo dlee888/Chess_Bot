@@ -3,10 +3,10 @@ from discord.ext import commands
 import typing
 import chess
 
-import Chess_Bot.cogs.Utility as util
-import Chess_Bot.cogs.Data as data
-import Chess_Bot.cogs.Images as image
-from Chess_Bot.cogs.CPP_IO import *
+import Chess_Bot.util.Utility as util
+import Chess_Bot.util.Data as data
+import Chess_Bot.util.Images as image
+from Chess_Bot.util.CPP_IO import *
 
 
 class Viewing(commands.Cog):

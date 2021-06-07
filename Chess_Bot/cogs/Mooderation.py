@@ -2,8 +2,9 @@ import discord
 from discord.ext import commands
 import typing
 
-import Chess_Bot.cogs.Utility as util
-import Chess_Bot.cogs.Data as data
+import Chess_Bot.util.Utility as util
+import Chess_Bot.util.Data as data
+from Chess_Bot import constants
 
 
 class Mooderation(commands.Cog):
@@ -60,7 +61,7 @@ class Mooderation(commands.Cog):
             return
 
         if data.data_manager.get_rating(person.id) == None:
-            data.data_manager.change_rating(person.id, 1200)
+            data.data_manager.change_rating(person.id, constants.DEFAULT_RATING)
 
         data.data_manager.change_rating(
             person.id, data.data_manager.get_rating(person.id) + amount)
