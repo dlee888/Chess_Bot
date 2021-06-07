@@ -10,6 +10,7 @@ import Chess_Bot.util.Images as image
 from Chess_Bot import constants
 
 import logging
+from logging.handlers import TimedRotatingFileHandler
 import traceback
 from pathlib import Path
 
@@ -77,13 +78,11 @@ def setup():
     for path in constants.ALL_DIRS:
         os.makedirs(path, exist_ok=True)
 
-    logger = logging.getLogger('discord')
-    logger.setLevel(logging.DEBUG)
-    handler = logging.FileHandler(
-        filename=constants.LOG_FILE_PATH, encoding='utf-8', mode='w')
-    handler.setFormatter(logging.Formatter(
-        '%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-    logger.addHandler(handler)
+    logging.basicConfig(format='{asctime}:{levelname}:{name}:{message}', style='{',
+                    datefmt='%d-%m-%Y %H:%M:%S', level=logging.INFO,
+                    handlers=[logging.StreamHandler(),
+                                TimedRotatingFileHandler(constants.LOG_FILE_PATH, when='D',
+                                                        backupCount=3, utc=True)])
 
     image.load_all_themes()
 
@@ -91,9 +90,9 @@ def setup():
 def main():
     setup()
 
-    cogs = [file.stem for file in Path('tle', 'cogs').glob('*.py')]
+    cogs = [file.stem for file in Path('Chess_Bot', 'cogs').glob('*.py')]
     for extension in cogs:
-        bot.load_extension(f'tle.cogs.{extension}')
+        bot.load_extension(f'Chess_Bot.cogs.{extension}')
     logging.info(f'Cogs loaded: {", ".join(bot.cogs)}')
 
     token = os.environ.get('BOT_TOKEN')
