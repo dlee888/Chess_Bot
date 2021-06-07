@@ -97,4 +97,4 @@ def get_image(person, end):
             else:
                 result.paste(square_img, (350 - y, 350 - x, 400 - y, 400 - x))
 
-    result.save(os.path.join(constants.TEMP_DIR, f'image-{person}.txt'))
+    result.save(os.path.join(constants.TEMP_DIR, f'image-{person}.png'))

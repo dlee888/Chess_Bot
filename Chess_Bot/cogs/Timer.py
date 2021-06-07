@@ -21,38 +21,14 @@ class Timer(commands.Cog):
         self.low_time_warn.start()
 
     async def send_low_time_warning(self, person):
-        await run_engine(person, 0)
-
-        file_out = os.path.join(constants.TEMP_DIR, f'output-{person}.txt')
-        f = open(file_out)
-        out = f.readlines()
-        f.close()
-
-        game = data.data_manager.get_game(person)
-
         user = await self.client.fetch_user(person)
-
-        embed = discord.Embed(
-            title=f'{user}\'s game', description=f'{whiteblack[game.color].capitalize()} to move.\nYou are low on time.', color=0x5ef29c)
-
-        file = None
-
-        for i in range(len(out) - 1, 0, -1):
-            if out[i].startswith('|'):
-                get_image(person, i)
-
-                file = discord.File(
-                    os.path.join(constants.TEMP_DIR, f'image-{person}.txt'), filename='board.png')
-                embed.set_image(url=f'attachment://board.png')
-
-                break
 
         try:
             dm = user.dm_channel
             if dm == None:
                 dm = await user.create_dm()
 
-            await dm.send('You are low on time. Use `$time` to get how much time you have left.', embed=embed, file=file)
+            await dm.send('You are low on time. Use `$time` to get how much time you have left before you automatically forfeit you game.')
         except Exception as e:
             print('Exception in send_low_time_warning:', e)
 

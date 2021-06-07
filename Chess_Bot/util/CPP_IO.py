@@ -51,7 +51,7 @@ async def output_move(ctx, person):
             get_image(person, i)
 
             file = discord.File(
-                os.path.join(constants.TEMP_DIR, f'image-{person}.txt'), filename='board.png')
+                os.path.join(constants.TEMP_DIR, f'image-{person}.png'), filename='board.png')
             embed.set_image(url=f'attachment://board.png')
 
             break
@@ -93,4 +93,4 @@ async def log(person, client, ctx):
                                    os.path.join(constants.TEMP_DIR, f'input-{person}.txt')),
                                discord.File(
                                    os.path.join(constants.TEMP_DIR, f'output-{person}.txt')),
-                               discord.File(os.path.join(constants.TEMP_DIR, f'image-{person}.txt'))])
+                               discord.File(os.path.join(constants.TEMP_DIR, f'image-{person}.png'))])
