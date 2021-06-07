@@ -92,3 +92,7 @@ class Viewing(commands.Cog):
 
         data.data_manager.change_theme(ctx.author.id, new_theme)
         await ctx.send('Theme sucessfully updated')
+
+
+def setup(bot):
+    bot.add_cog(Viewing(bot))

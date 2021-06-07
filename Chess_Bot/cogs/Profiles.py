@@ -93,3 +93,7 @@ class Profiles(commands.Cog):
         embed.add_field(name='Games lost', value=str(lost)).add_field(
             name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
         await ctx.send(embed=embed)
+
+
+def setup(bot):
+    bot.add_cog(Profiles(bot))

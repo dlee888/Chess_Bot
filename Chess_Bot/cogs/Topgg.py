@@ -7,6 +7,7 @@ import os
 import Chess_Bot.util.Data as data
 from Chess_Bot import constants
 
+
 class Topgg(commands.Cog):
 
     def __init__(self, client):
@@ -63,3 +64,7 @@ class Topgg(commands.Cog):
     async def on_dbl_test(data):
         """An event that is called whenever someone tests the webhook system for your bot on top.gg."""
         print(f"Received a test upvote:\n{data}")
+
+
+def setup(bot):
+    bot.add_cog(Topgg(bot))

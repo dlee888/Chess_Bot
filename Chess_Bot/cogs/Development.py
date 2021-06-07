@@ -241,3 +241,7 @@ class Development(commands.Cog):
             data.data_manager.change_prefix(k, prefixes[k])
 
         await ctx.send('Loaded')
+
+
+def setup(bot):
+    bot.add_cog(Development(bot))

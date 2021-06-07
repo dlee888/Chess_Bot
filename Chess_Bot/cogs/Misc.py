@@ -188,3 +188,7 @@ class Misc(commands.Cog):
         embed.add_field(name='Won', value=str(won))
         embed.add_field(name='Drawn', value=str(drew))
         await ctx.send(embed=embed)
+
+
+def setup(bot):
+    bot.add_cog(Misc(bot))

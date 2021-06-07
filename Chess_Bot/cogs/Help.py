@@ -183,3 +183,7 @@ class Help(commands.Cog):
                                 Note: `$vote` will only give you rating points if you have voted within the last 12 hours. If not, then vote and then use the command again.'''
 
         await ctx.send(embed=embed)
+
+
+def setup(bot):
+    bot.add_cog(Help(bot))

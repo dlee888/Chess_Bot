@@ -168,3 +168,7 @@ class Engine(commands.Cog):
         new_rating = data.data_manager.get_rating(ctx.author.id)
 
         await ctx.send(f'Game resigned. Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
+
+
+def setup(bot):
+    bot.add_cog(Engine(bot))

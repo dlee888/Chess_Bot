@@ -61,9 +61,14 @@ class Mooderation(commands.Cog):
             return
 
         if data.data_manager.get_rating(person.id) == None:
-            data.data_manager.change_rating(person.id, constants.DEFAULT_RATING)
+            data.data_manager.change_rating(
+                person.id, constants.DEFAULT_RATING)
 
         data.data_manager.change_rating(
             person.id, data.data_manager.get_rating(person.id) + amount)
 
         await ctx.send(f'{amount} rating points gifted.')
+
+
+def setup(bot):
+    bot.add_cog(Mooderation(bot))
