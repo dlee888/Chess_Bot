@@ -38,7 +38,7 @@ class Viewing(commands.Cog):
         embed.set_footer(
             text=f'Requested by {ctx.author}', icon_url=ctx.author.avatar_url)
         file = discord.File(
-                os.path.join(constants.TEMP_DIR, f'image-{person}.png'), filename='board.png')
+                os.path.join(constants.TEMP_DIR, f'image-{person.id}.png'), filename='board.png')
         embed.set_image(url=f'attachment://board.png')
         await ctx.message.reply(embed=embed, file=file)
 
