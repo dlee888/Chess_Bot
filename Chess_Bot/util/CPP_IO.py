@@ -25,7 +25,7 @@ async def run_engine(person):
         time_control = [1, 5, 20]
         max_depth = [5, 10, 69]
         f.write(
-            f'setoption time_limit {time_control[game.bot]}\nsetoption depth_limit {max_depth[game.bot]}\ngo {game.fen}')
+            f'setoption time_limit {time_control[game.bot]}\nsetoption depth_limit {max_depth[game.bot]}\ngo {game.fen}\nquit')
         f.close()
         await util.run(f'./engine < {file_in} > {file_out}')
         

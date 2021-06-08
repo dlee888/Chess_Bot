@@ -22,6 +22,7 @@ void state::unmake_move(int move)
 	en_passant_target.pop();
 
 	if (!to_move) full_move--;
+	fifty_move.pop();
 
 	if (((move >> 18) & 3) == 3)
 	{
@@ -299,8 +300,6 @@ void state::unmake_move(int move)
 			replace_board(row_init, col_init, WP);
 			replace_board(row_final + 1, col_final, BP);
 
-			fifty_move = 0;
-
 			cnts[BP + 6]++;
 
 			white_center -= pawn_center[row_final][col_final] - pawn_center[row_init][col_init];
@@ -343,8 +342,6 @@ void state::unmake_move(int move)
 			replace_board(row_final, col_final, 0);
 			replace_board(row_init, col_init, BP);
 			replace_board(row_final - 1, col_final, WP);
-
-			fifty_move = 0;
 
 			cnts[WP + 6]++;
 

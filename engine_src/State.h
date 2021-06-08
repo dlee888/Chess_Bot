@@ -61,13 +61,13 @@ public:
 	std::stack<bool> wq_rights, bq_rights, wk_rights, bk_rights; // Castling rights
 	std::stack<int> en_passant_target;							 // En passant target square
 	bool white_castled = false, black_castled = false;
-	int fifty_move;
+	std::stack <int> fifty_move;
 	bool to_move; // true if white to move
 	int full_move;
 
 	state()
 	{
-		fifty_move = 0;
+		fifty_move.push(0);
 		full_move = 0;
 		to_move = true;
 

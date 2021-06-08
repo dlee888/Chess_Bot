@@ -66,7 +66,9 @@ void state::load(std::string fen) {
 		en_passant_target.push((row << 3) + col);
 	}
 
-	ss >> fifty_move >> full_move;
+	int fm;
+	ss >> fm >> full_move;
+	fifty_move.push(fm);
 }
 std::string state::to_fen() {
 	std::stringstream res;
@@ -118,7 +120,7 @@ std::string state::to_fen() {
 		int targ = curr_state.en_passant_target.top();
 		res << (char)((targ & 7) + 'a') << (char)('8' - (targ >> 3)) << " ";
 	}
-	res << fifty_move << " " << full_move;
+	res << fifty_move.top() << " " << full_move;
 	return res.str();
 }
 
