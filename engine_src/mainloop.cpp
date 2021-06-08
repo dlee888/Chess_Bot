@@ -1,7 +1,8 @@
 ﻿#include <ctime>
 
-#include "Bot_2_5.h"
-#include "types.h"
+#include "search.h"
+#include "Openings.h"
+#include "options.h"
 
 void init_everything()
 {
@@ -12,152 +13,54 @@ void init_everything()
 	init_eval_info();
 }
 
+std::string read_fen() {
+	std::string pos, turn, castle, ep, fiftymove, fullmove;
+	std::cin >> pos >> turn >> castle >> ep >> fiftymove >> fullmove;
+	return pos + " " + turn + " " + castle + " " + ep + " " + fiftymove + " " + fullmove;
+}
+
 int main()
 {
 	srand(time(NULL));
-	//intro();
+	set_default_options();
 	std::string cmnd;
 	while (cmnd != "exit")
 	{
 		init_everything();
-		std::cout << ">>>\n";
+		// std::cout << ">>>\n";
 		std::cin >> cmnd;
-		if (cmnd == "play")
+		if (cmnd == "go")
 		{
-			play();
-		}
-		else if (cmnd == "fen")
-		{
-			int num_move = 0;
-			std::string move;
-			std::cout << "Do you want to load a game in progress?\n";
-			std::cin >> move;
-			if (move == "yes")
+			std::string pos = read_fen();
+			curr_state.load(pos);
+			curr_state.print();
+			std::cout << eval(curr_state, true) << std::endl;
+			pii best_move = find_best_move(options["time_limit"], (Depth)options["depth_limit"]);
+			if ((curr_state.to_move && best_move.first <= -RESIGN) || (!curr_state.to_move && best_move.first >= RESIGN))
 			{
-				std::cout << "Please enter the game:\n";
-				//loading by typing in moves, such as 1. e4 e5 2. d4 ...
-				while (!(move == "*"))
-				{
-					if (num_move % 2 == 0)
-						std::cin >> move;
-					if (move == "*")
-						break;
-					std::cin >> move;
-					if (move == "*")
-						break;
-					int move_i = curr_state.parse_move(move);
-					curr_state.make_move(move_i);
-					num_move++;
-					for (int i = 0; i < openings.size(); i++)
-					{
-						if (openings[i].moves[num_move - 1] != move_i)
-						{
-							openings.erase(openings.begin() + i);
-							i--;
-						}
-					}
-				}
+				std::cout << "COMPUTER PLAYED RESIGN" << std::endl;
+				continue;
 			}
-			else if (move == "yes2")
-			{
-				std::cout << "Please enter the game:\n";
-				int move_i;
-				while (true)
-				{
-					std::cin >> move_i;
-					if (move_i == -1) {
-						break;
-					}
-
-					curr_state.make_move(move_i);
-					num_move++;
-				}
-			}
-
-			std::string res;
-			for (int i = 0; i < 8; i++)
-			{
-				int last = -1;
-				for (int j = 0; j < 8; j++)
-				{
-					std::string piece = curr_state._to_piece(curr_state.board[i][j]);
-					if (piece == "  ")
-					{
-						if (last == -1)
-						{
-							last = j;
-						}
-					}
-					else
-					{
-						if (last != -1)
-						{
-							res += std::to_string(j - last);
-							last = -1;
-						}
-						if (piece[0] == 'B')
-						{
-							res += piece[1] - 'A' + 'a';
-						}
-						else
-						{
-							res += piece[1];
-						}
-					}
-				}
-				if (last != -1)
-				{
-					res += std::to_string(8 - last);
-				}
-				if (i != 7)
-					res += '/';
-			}
-			res += ' ';
-
-			if (curr_state.to_move)
-			{
-				res += "w ";
-			}
-			else
-			{
-				res += "b ";
-			}
-
-			if (curr_state.wk_rights.top())
-			{
-				res += 'K';
-			}
-			if (curr_state.wq_rights.top())
-			{
-				res += 'Q';
-			}
-			if (curr_state.bk_rights.top())
-			{
-				res += 'k';
-			}
-			if (curr_state.bq_rights.top())
-			{
-				res += 'q';
-			}
-			if (res[res.size() - 1] == ' ')
-			{
-				res += '-';
-			}
-			res += ' ';
-			if (curr_state.en_passant_target.top() == -1)
-			{
-				res += "- ";
-			}
-			else
-			{
-				int targ = curr_state.en_passant_target.top();
-				res += (char)((targ & 7) + 'a');
-				res += (char)('8' - (targ >> 3));
-				res += ' ';
-			}
-			res += std::to_string(curr_state.fifty_move) + " ";
-			res += std::to_string(curr_state.full_move);
-			std::cout << res << std::endl;
+			std::cout << "COMPUTER PLAYED " << curr_state.move_to_string(best_move.second) << std::endl
+				<< "EVAL: " << (double)best_move.first / 100 << std::endl;
+			curr_state.make_move(best_move.second);
+			curr_state.print();
+			std::cout << "GAME: " << curr_state.to_fen() << std::endl;
+		} 
+		else if (cmnd == "setoption") {
+			std::string option_name;
+			int value;
+			std::cin >> option_name >> value;
+			options[option_name] = value;
+		} 
+		else if (cmnd == "debug") {
+			// std::string pos = read_fen();
+			// curr_state.load(pos);
+			// curr_state.print();
+			// for (int p : curr_state.list_moves()) {
+			// 	// std::cout << p.first << " " << p.second << std::endl;
+			// 	std::cout << p << std::endl;
+			// }
 		}
 		else if (cmnd == "quit")
 		{
@@ -165,7 +68,7 @@ int main()
 		}
 		else
 		{
-			std::cout << "COMMAND NOT RECOGNIZED\n";
+			// std::cout << "COMMAND NOT RECOGNIZED\n";
 		}
 	}
 	return 0;

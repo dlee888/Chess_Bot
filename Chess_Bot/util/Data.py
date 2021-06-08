@@ -5,17 +5,15 @@ import os
 
 class Game:
 
-    def __init__(self, color, bot, moves=[], last_moved=time.time(), warned=False):
-        self.moves = moves
-        self.color = color
-        self.last_moved = last_moved
-        self.warned = warned
-        self.bot = bot
+    def __init__(self, row = [-1, 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 0, 0, time.time(), False]):
+        self.fen = row[1]
+        self.color = row[3]
+        self.last_moved = row[4]
+        self.warned = row[5]
+        self.bot = row[2]
 
     def __str__(self):
-        game_str = ' '.join(str(i) for i in self.moves)
-        game_str += ' -1'
-        return game_str
+        return self.fen
 
 
 class Data:
@@ -27,7 +25,7 @@ class Data:
 
         create_games_table = '''CREATE TABLE IF NOT EXISTS games (
 										id bigint NOT NULL PRIMARY KEY UNIQUE,
-										moves text,
+										position text,
                                         bot integer,
 										color integer,
 										last_moved real,
@@ -77,17 +75,7 @@ class Data:
         if len(rows) == 0:
             return None
 
-        row = rows[0]
-
-        moves_str = row[1].split(' ')
-        moves = []
-        for move in moves_str:
-            try:
-                moves.append(int(move))
-            except:
-                pass
-
-        return Game(row[3], row[2], moves, row[4], row[5])
+        return Game(rows[0])
 
     def get_games(self):
         cur = self.get_conn().cursor()
@@ -105,15 +93,14 @@ class Data:
                 except:
                     pass
 
-            games[row[0]] = Game(row[3], row[2], moves, row[4], row[5])
+            games[row[0]] = Game(row)
 
         return games
 
     def change_game(self, person, new_game: Game):
         cur = self.get_conn().cursor()
-        moves_str = ' '.join(str(move) for move in new_game.moves)
 
-        update_sql = f'''INSERT INTO games VALUES ({person}, '{moves_str}', {new_game.bot}, {new_game.color}, {new_game.last_moved}, {int(new_game.warned)});'''
+        update_sql = f'''INSERT INTO games VALUES ({person}, '{new_game.fen}', {new_game.bot}, {new_game.color}, {new_game.last_moved}, {int(new_game.warned)});'''
 
         cur.execute(f'DELETE FROM games WHERE id = {person};')
         cur.execute(update_sql)

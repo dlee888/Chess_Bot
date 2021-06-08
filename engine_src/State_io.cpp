@@ -1,33 +1,127 @@
+#include <sstream>
+
 #include "State.h"
 
-std::string state::_to_piece(int x)
-{
-	if (x == BK)
-		return "BK";
-	if (x == BQ)
-		return "BQ";
-	if (x == BR)
-		return "BR";
-	if (x == BB)
-		return "BB";
-	if (x == BN)
-		return "BN";
-	if (x == BP)
-		return "BP";
-	if (x == WK)
-		return "WK";
-	if (x == WQ)
-		return "WQ";
-	if (x == WR)
-		return "WR";
-	if (x == WB)
-		return "WB";
-	if (x == WN)
-		return "WN";
-	if (x == WP)
-		return "WP";
-	return "  ";
+void state::load(std::string fen) {
+	whitepawns.clear();
+	whiteknights.clear();
+	whitebishops.clear();
+	whiterooks.clear();
+	whitequeens.clear();
+	whitekings.clear();
+	blackpawns.clear();
+	blackknights.clear();
+	blackbishops.clear();
+	blackrooks.clear();
+	blackqueens.clear();
+	blackkings.clear();
+	board_hash = 0;
+
+	std::memset(board, 0, sizeof(board));
+	std::memset(cnts, 0, sizeof(cnts));
+
+	std::stringstream ss(fen);
+	for (int row = 0; row < 8; row++) {
+		for (int col = 0; col < 8; col++) {
+			char c;
+			ss >> c;
+			if (c <= '8' && c >= '1') {
+				col += c - '1';
+			} else if (c <= 'Z' && c >= 'A') {
+				_replace_board(row, col, piece_to_int(c));
+			} else {
+				_replace_board(row, col, -piece_to_int(c - 'a' + 'A'));
+			}
+		}
+		if (row != 7) {
+			char c;
+			ss >> c;
+		}
+	}
+
+	char turn;
+	ss >> turn;
+	to_move = turn == 'w';
+
+	bool wk = false, wq = false, bk = false, bq = false;
+	std::string castlerights;
+	ss >> castlerights;
+	for (char c : castlerights) {
+		if (c == 'K') wk = true;
+		if (c == 'Q') wq = true;
+		if (c == 'k') bk = true;
+		if (c == 'q') bq = true;
+	}
+	wk_rights.push(wk);
+	wq_rights.push(wq);
+	bk_rights.push(bk);
+	bq_rights.push(bq);
+
+	std::string ep_target;
+	ss >> ep_target;
+	if (ep_target == "-") {
+		en_passant_target.push(-1);
+	} else {
+		int row = '8' - ep_target[1], col = ep_target[0] - 'a';
+		en_passant_target.push((row << 3) + col);
+	}
+
+	ss >> fifty_move >> full_move;
 }
+std::string state::to_fen() {
+	std::stringstream res;
+	for (int i = 0; i < 8; i++)
+	{
+		int last = -1;
+		for (int j = 0; j < 8; j++)
+		{
+			if (board[i][j] == 0)
+			{
+				if (last == -1)
+				{
+					last = j;
+				}
+			}
+			else
+			{
+				if (last != -1)
+				{
+					res << j - last;
+					last = -1;
+				}
+				res << to_piece(board[i][j]);
+			}
+		}
+		if (last != -1)
+		{
+			res << 8 - last;
+		}
+		if (i != 7)
+			res << '/';
+	}
+	res << " " << "bw"[to_move] << " ";
+
+	res << (wk_rights.top() ? "K" : "") << (wq_rights.top() ? "Q" : "") << (bk_rights.top() ? "k" : "") << (bq_rights.top() ? "q" : "");
+	
+	if (res.str()[res.str().size() - 1] == ' ')
+	{
+		res << '-';
+	}
+	res << ' ';
+	
+	if (curr_state.en_passant_target.top() == -1)
+	{
+		res << "- ";
+	}
+	else
+	{
+		int targ = curr_state.en_passant_target.top();
+		res << (char)((targ & 7) + 'a') << (char)('8' - (targ >> 3)) << " ";
+	}
+	res << fifty_move << " " << full_move;
+	return res.str();
+}
+
 char state::to_piece(int x)
 {
 	if (x == BK)
@@ -78,7 +172,7 @@ void state::print()
 {
 	for (int i = 0; i < 8; i++)
 	{
-		for (int j = 0; j < n; j++)
+		for (int j = 0; j < 8; j++)
 		{
 			std::cout << "|" << to_piece(board[i][j]);
 		}
@@ -99,7 +193,7 @@ std::string state::move_to_string(int move)
 	int row_init = (move >> 3) & 7, row_final = (move >> 9) & 7, col_init = move & 7, col_final = (move >> 6) & 7;
 	int piece = (move >> 12) & 7;
 	std::string res;
-	res += _to_piece(piece)[1];
+	res += to_piece(abs(piece));
 	res += " on ";
 	res += col_init + 'a';
 	res += '8' - row_init;

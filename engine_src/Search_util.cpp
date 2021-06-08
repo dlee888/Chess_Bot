@@ -1,22 +1,30 @@
 #include <thread>
 #include <map>
+#include <algorithm>
 
 #include "Search.h"
 
 long long nodes, qsearch_nodes;
 long long tb_hits, qsearch_hits;
 
-Depth depth_qsearched;
+Depth depth_qsearched, qs_depth_floor;
 
 int futility_margin(int depth, bool improving) {
 	return (175 - 50 * improving) * depth;
 }
+
+// void break_after(double time) {
+// 	std::sleep(time);
+// 	break_now = true;
+// }
 
 pii find_best_move(double time_limit, Depth depth_limit) {
 	// TODO: Make multi-threaded
 
 	Depth curr_depth = ONE_PLY;
 	pii result = std::make_pair(0.0, -1);
+
+	// auto timer = std::thread(break_after, time_limit);
 
 	while (true)
 	{
@@ -25,6 +33,7 @@ pii find_best_move(double time_limit, Depth depth_limit) {
 		nodes = 0; qsearch_nodes = 0;
 		tb_hits = 0; qsearch_hits = 0;
 		depth_qsearched = DEPTH_ZERO;
+		qs_depth_floor = std::max(-2 * curr_depth, (Depth)-7);
 
 		int start_time = clock();
 

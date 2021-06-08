@@ -16,62 +16,49 @@ class Viewing(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def view(self, ctx, *user: typing.Union[discord.User, discord.Member]):
+    async def view(self, ctx, person: typing.Union[discord.User, discord.Member] = None):
         '''
         Views your current game
         '''
-        person = -1
-        if len(user) == 1:
-            person = user[0].id
-        else:
-            person = ctx.author.id
+        
+        if person is None:
+            person = ctx.author
 
-        game = data.data_manager.get_game(person)
+        game = data.data_manager.get_game(person.id)
 
         if game == None:
-            if len(user) == 1:
-                await ctx.send(f'{user[0]} does not have a game in progress')
-            else:
-                await ctx.send('You do not have a game in progress')
+            await ctx.send(f'{person} does not have a game in progress')
             return
-
-        if person in util.thonking:
-            await ctx.send('Chess Bot is in the middle of thinking. Try again later.')
-            return
-
-        await run_engine(person, 0)
-        await output_move(ctx, person)
+        
+        get_image(person.id)
+        embed = discord.Embed(
+            title=f'{ctx.author}\'s game against {ProfileNames[Profile(game.bot).name].value}', description=f'{whiteblack[game.color].capitalize()} to move.', color=0x5ef29c)
+        if person.id in util.thonking:
+            embed.description = f'{ProfileNames[Profile(game.bot).name].value} is thinking...'
+        embed.set_footer(
+            text=f'Requested by {ctx.author}', icon_url=ctx.author.avatar_url)
+        file = discord.File(
+                os.path.join(constants.TEMP_DIR, f'image-{person}.png'), filename='board.png')
+        embed.set_image(url=f'attachment://board.png')
+        await ctx.message.reply(embed=embed, file=file)
 
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def fen(self, ctx, *user: typing.Union[discord.User, discord.Member]):
+    async def fen(self, ctx, person: typing.Union[discord.User, discord.Member] = None):
         '''
         Sends current game in FEN format
         '''
 
-        person = -1
-        if len(user) == 1:
-            person = user[0].id
-        else:
-            person = ctx.author.id
+        if person is None:
+	        person = ctx.author
 
-        game = data.data_manager.get_game(person)
+        game = data.data_manager.get_game(person.id)
 
         if game == None:
-            if len(user) == 1:
-                await ctx.send(f'{user[0]} does not have a game in progress')
-            else:
-                await ctx.send('You do not have a game in progress')
+            await ctx.send(f'{person} does not have a game in progress')
             return
 
-        if game.bot in [Profile.cb1.value, Profile.cb2.value, Profile.cb3.value]:
-            board = chess.Board()
-            for move in game.moves:
-                try:
-                    board.push_uci(util.cb_to_uci(move))
-                except ValueError:
-                    board.push_san(util.cb_to_uci(move))
-            await ctx.send(f'```{board.fen()}```')
+        await ctx.send(f'```{game.fen}```')
 
     @commands.command()
     @commands.cooldown(1, 2, commands.BucketType.user)

@@ -11,7 +11,6 @@
 #include "Eval_info.h"
 #include "Transpose.h"
 
-#define n 8
 #define BP -1
 #define WP 1
 #define BN -2
@@ -39,9 +38,9 @@ public:
 			return true;
 		if (column < 0)
 			return true;
-		if (row >= n)
+		if (row >= 8)
 			return true;
-		if (column >= n)
+		if (column >= 8)
 			return true;
 		return false;
 	}
@@ -49,12 +48,8 @@ public:
 	int board[8][8];
 	Bitstring board_hash;
 
-	void replace_board(int row, int col, int piece)
-	{
-		board_hash ^= rand_bitstrings[(row << 3) + col][board[row][col] + 6];
-		board_hash ^= rand_bitstrings[(row << 3) + col][piece + 6];
-		board[row][col] = piece;
-	}
+	void replace_board(int row, int col, int piece);
+	void _replace_board(int row, int col, int piece);
 
 	Bitstring get_hash()
 	{
@@ -93,8 +88,9 @@ public:
 
 		en_passant_target.push(-1);
 	}
+	void load(std::string fen);
+	std::string to_fen();
 
-	std::string _to_piece(int x);
 	char to_piece(int x);
 	int piece_to_int(char c);
 	std::string move_to_string(int move);

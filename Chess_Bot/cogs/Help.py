@@ -55,7 +55,8 @@ class Help(commands.Cog):
                                 Plays <move> against the computer
                                 Please enter the move in algebraic notation
                                 For example, `$move Ke2`
-                                More about algebraic notation in [this chess.com article](https://www.chess.com/article/view/chess-notation#algebraic-notation).'''
+                                More about algebraic notation in [this chess.com article](https://www.chess.com/article/view/chess-notation#algebraic-notation).
+                                You can also send your move in UCI notation. For example, `$move e1e2`'''
 
         await ctx.send(embed=embed)
 

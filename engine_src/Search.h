@@ -15,7 +15,7 @@ extern long long tb_hits, qsearch_hits;
 
 extern bool break_now;
 
-extern Depth depth_qsearched;
+extern Depth depth_qsearched, qs_depth_floor;
 
 Value search(Depth, Value, Value);
 

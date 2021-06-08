@@ -167,12 +167,12 @@ Value qsearch(Value alpha, Value beta, Depth depth)
 		curr_eval = eval(curr_state);
 	}
 
-	if (depth < QS_MIN_DEPTH) {
+	if (depth < qs_depth_floor) {
 		return curr_eval;
 	}
 
 	// Futility pruning
-	if (depth - QS_MIN_DEPTH < 5 && (curr_eval - futility_margin(depth - QS_MIN_DEPTH, false) >= beta))
+	if (depth - qs_depth_floor < 5 && (curr_eval - futility_margin(depth - qs_depth_floor, false) >= beta))
 	{
 		// printf("futility prune: %d\n", curr_eval);
 		return curr_eval;
@@ -252,7 +252,7 @@ Value qsearch(Value alpha, Value beta, Depth depth)
 	}
 
 	tt_exists[key] = true;
-	tt_depths[key] = DEPTH_QS_NO_CHECKS;
+	tt_depths[key] = depth - qs_depth_floor - Depth(10);
 	tt_evals[key] = value;
 	tt_hashes[key] = curr_board_hash;
 	

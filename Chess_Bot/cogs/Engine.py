@@ -53,52 +53,58 @@ class Engine(commands.Cog):
                            'Tip: Trying to resign? You can also use the `$resign` command.')
             return
 
+        board = chess.Board(game.fen)
+        try:
+            board.push_san(move)
+        except ValueError:
+            try:
+                board.push_uci(move)
+            except ValueError:
+                await ctx.send('Illegal move played. Make sure your move is in SAN or UCI notation.\nUse `$help move` for more info.')
+                return
+        game.fen = board.fen()
+        data.data_manager.change_game(person, game)
+
         thonk = self.client.get_emoji(constants.THONK_EMOJI_ID)
         await ctx.message.add_reaction(thonk)
         util.thonking.append(person)
 
-        await run_engine(person, game.bot, move)
+        move, game = await run_engine(person)
 
-        code, game = await output_move(ctx, person)
+        await output_move(ctx, person, move)
         await log(person, self.client, ctx)
         util.thonking.remove(person)
 
-        if code == 'GAME STILL IN PROGRESS':
-            game.last_moved = time.time()
-            game.warned = False
-            data.data_manager.change_game(person, game)
-            return
+        game.last_moved = time.time()
+        game.warned = False
+        data.data_manager.change_game(person, game)
 
-        if code == 'ILLEGAL MOVE PLAYED':
-            await ctx.send('Illegal move played. Make sure your move is in algebraic notation.\nUse `$help move` for more info')
-            return
+        board = chess.Board(game.fen)
+        if board.is_game_over(claim_draw=True):
+            old_rating = data.data_manager.get_rating(person)
+            if old_rating == None:
+                old_rating = constants.DEFAULT_RATING
 
-        old_rating = data.data_manager.get_rating(person)
-        if old_rating == None:
-            old_rating = constants.DEFAULT_RATING
+            if move == 'RESIGN':
+                await ctx.send('Chess Bot resigned')
+                util.update_rating(ctx.author.id, 1, game.bot)
+                data.data_manager.delete_game(person, True)
+            elif board.is_checkmate():
+                if board.turn == chess.WHITE and game.color == 0 or board.turn == chess.BLACK and game.color == 1:
+                    util.update_rating(ctx.author.id, 1, game.bot)
+                    data.data_manager.delete_game(person, True)
+                    await ctx.send('You won!')
+                elif board.turn == chess.WHITE and game.color == 1 or board.turn == chess.BLACK and game.color == 0:
+                    util.update_rating(ctx.author.id, 0, game.bot)
+                    data.data_manager.delete_game(person, False)
+                    await ctx.send('You lost.')
+            else:
+                util.update_rating(ctx.author.id, 1/2, game.bot)
+                await ctx.send('Draw')
+                data.data_manager.delete_game(person, None)
 
-        if code == 'COMPUTER RESIGNED':
-            await ctx.send('Chess Bot resigned')
-            util.update_rating(ctx.author.id, 1, game.bot)
-            data.data_manager.delete_game(person, True)
-        elif code == 'DRAW':
-            util.update_rating(ctx.author.id, 1/2, game.bot)
-            await ctx.send('Draw')
-            data.data_manager.delete_game(person, None)
-        elif code[:5].lower() == whiteblack[game.color]:
-            util.update_rating(ctx.author.id, 1, game.bot)
-            data.data_manager.delete_game(person, True)
-            await ctx.send('You won!')
-        elif code[:5].lower() == whiteblack[1 - game.color]:
-            util.update_rating(ctx.author.id, 0, game.bot)
-            data.data_manager.delete_game(person, False)
-            await ctx.send('You lost.')
-        else:
-            await ctx.send('Something went wrong. <:thonkery:532458240559153163>')
-            return
-
-        new_rating = data.data_manager.get_rating(person)
-        await ctx.send(f'Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
+            new_rating = data.data_manager.get_rating(person)
+            await ctx.send(f'Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -121,7 +127,9 @@ class Engine(commands.Cog):
             await ctx.send(f'"{bot}" is not the valid tag of a bot. Use `$profiles` to see which bots you can challenge.')
             return
 
-        game = data.Game(random.randint(0, 1), botid)
+        game = data.Game()
+        game.color = random.randint(0, 1)
+        game.bot = botid
 
         data.data_manager.change_game(person, game)
 
@@ -133,7 +141,7 @@ class Engine(commands.Cog):
 
         await run_engine(person, game.bot)
 
-        code, game = await output_move(ctx, person)
+        game = await output_move(ctx, person)
         await log(person, self.client, ctx)
         util.thonking.remove(person)
 

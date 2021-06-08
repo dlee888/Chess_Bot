@@ -1,6 +1,8 @@
 from PIL import Image
 import os
 
+import chess
+
 import Chess_Bot.util.Data as data
 from Chess_Bot import constants
 
@@ -56,30 +58,26 @@ def load_all_themes():
             load_theme(file)
 
 
-def get_image(person, end):
-    game_file = os.path.join(constants.TEMP_DIR, f'output-{person}.txt')
-    F = open(game_file)
-    game = F.readlines()
-    F.close()
-
-    color = data.data_manager.get_game(person).color
+def get_image(person):
+    game = data.data_manager.get_game(person)
     theme = data.data_manager.get_theme(person)
+    board = chess.Board(game.fen)
 
     result = Image.open(os.path.join(constants.ASSETS_DIR, 'blank_board.png'))
     result = result.resize((400, 400))
 
-    for i in range(end - 7, end + 1):
-        for j in range(1, 17, 2):
+    for i in range(8):
+        for j in range(0, 16, 2):
             square = ''
-            if game[i][j] == ' ':
+            if game[i][j] == '.':
                 square += 'blank'
             elif game[i][j].islower():
                 square += 'B' + game[i][j].upper()
             else:
                 square += 'W' + game[i][j]
 
-            x = i + 7 - end
-            y = (j - 1)//2
+            x = i
+            y = j // 2
 
             if (x + y) % 2 == 0:
                 square += '-light.png'
@@ -92,7 +90,7 @@ def get_image(person, end):
             x *= 50
             y *= 50
 
-            if color == 1:
+            if game.color == 1:
                 result.paste(square_img, (y, x, y + 50, x + 50))
             else:
                 result.paste(square_img, (350 - y, 350 - x, 400 - y, 400 - x))

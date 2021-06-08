@@ -1,3 +1,4 @@
+import chess
 from Chess_Bot import constants
 import os
 import discord
@@ -11,8 +12,10 @@ from Chess_Bot.cogs.Profiles import Profile, ProfileNames
 whiteblack = ['black', 'white']
 
 
-async def run_engine(person, bot, move=''):
-    if bot in [Profile.cb1.value, Profile.cb2.value, Profile.cb3.value]:
+async def run_engine(person):
+    game = data.data_manager.get_game(person)
+    
+    if game.bot in [Profile.cb1.value, Profile.cb2.value, Profile.cb3.value]:
         file_in = os.path.join(constants.TEMP_DIR, f'input-{person}.txt')
         file_out = os.path.join(constants.TEMP_DIR, f'output-{person}.txt')
 
@@ -20,13 +23,26 @@ async def run_engine(person, bot, move=''):
 
         f = open(file_in, 'w')
         time_control = [1, 5, 20]
+        max_depth = [5, 10, 69]
         f.write(
-            f'play\n{whiteblack[1 - game.color]}\nyes2\n{str(game)}\n{time_control[bot]}\n{move}\nquit\nquit\n')
+            f'setoption time_limit {time_control[game.bot]}\nsetoption depth_limit {max_depth[game.bot]}\ngo {game.fen}')
         f.close()
         await util.run(f'./engine < {file_in} > {file_out}')
+        
+        f = open(os.path.join(constants.TEMP_DIR, f'output-{person}.txt'))
+        out = f.readlines()
+        f.close()
+        move = None
+        for i in range(len(out) - 1, 0, -1):
+            if out[i].startswith('COMPUTER PLAYED'):
+                move = out[i][16:].strip()
+                break
+        for i in range(len(out) - 1, 0, -1):
+            if out[i].startswith('GAME: '):
+                game.fen = out[i][6].strip()
+        return move, game
 
-
-async def output_move(ctx, person):
+async def output_move(ctx, person, move):
     f = open(os.path.join(constants.TEMP_DIR, f'output-{person}.txt'))
     out = f.readlines()
     f.close()
@@ -38,53 +54,20 @@ async def output_move(ctx, person):
     embed.set_footer(
         text=f'Requested by {ctx.author}', icon_url=ctx.author.avatar_url)
 
-    for i in range(len(out) - 1, 0, -1):
-        if out[i].startswith('COMPUTER PLAYED'):
-            embed.add_field(
-                name=f'{ProfileNames[Profile(game.bot).name].value} moved', value=out[i][16:])
-            break
+    embed.add_field(
+        name=f'{ProfileNames[Profile(game.bot).name].value} moved', value=move)
 
-    file = None
+    get_image(person)
 
-    for i in range(len(out) - 1, 0, -1):
-        if out[i].startswith('|'):
-            get_image(person, i)
-
-            file = discord.File(
-                os.path.join(constants.TEMP_DIR, f'image-{person}.png'), filename='board.png')
-            embed.set_image(url=f'attachment://board.png')
-
-            break
-
-    for i in range(len(out) - 1, 0, -1):
-        if out[i].startswith('GAME: '):
-            game_str = out[i][6:-1].split(' ')
-            game.moves.clear()
-            for i in game_str:
-                try:
-                    game.moves.append(int(i))
-                except:
-                    pass
-            break
-
-    code = out[-3].strip()
-
-    if code == 'DRAW':
-        embed.description = 'Draw'
-    elif (code == 'COMPUTER RESIGNED' and game.color == 1) or code == 'WHITE WON':
-        embed.description = 'White won.'
-    elif (code == 'COMPUTER RESIGNED' and game.color == 0) or code == 'BLACK WON':
-        embed.description = 'Black won.'
-    elif code == 'ILLEGAL MOVE PLAYED':
-        embed.description = f'{whiteblack[game.color].capitalize()} to move.\nIllegal move played.'
+    file = discord.File(
+        os.path.join(constants.TEMP_DIR, f'image-{person}.png'), filename='board.png')
+    embed.set_image(url=f'attachment://board.png')
 
     await ctx.message.reply(file=file, embed=embed)
 
-    return code, game
-
 
 async def log(person, client, ctx):
-    log_channel = client.get_channel(798277701210341459)
+    log_channel = client.get_channel(constants.LOG_CHANNEL_ID)
 
     await log_channel.send(f'Output for {ctx.author} (id = {ctx.author.id})\n'
                            f'Request: {ctx.message.content}',
