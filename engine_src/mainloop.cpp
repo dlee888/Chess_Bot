@@ -7,8 +7,8 @@ void init_everything()
 {
 	init_table();
 	curr_state = state();
-	load_openings();
 	scramble_openings();
+	load_openings();
 	init_eval_info();
 }
 
