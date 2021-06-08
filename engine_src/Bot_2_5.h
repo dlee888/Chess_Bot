@@ -89,12 +89,12 @@ void play()
 
 		if (curr_state.to_move == computer_is_white)
 		{
-			if (computer_is_white && white_openings.size() > 0) {
+			if (computer_is_white && num_move > 3 && white_openings.size() > 0) {
 				std::cout << "COMPUTER PLAYED " << curr_state.move_to_string(white_openings[0].moves[num_move]) << std::endl
 					<< "OPENING: " << white_openings[0].name << std::endl;
 				move_i = white_openings[0].moves[num_move];
 			}
-			else if (!computer_is_white && black_openings.size() > 0) {
+			else if (!computer_is_white && num_move > 3 && black_openings.size() > 0) {
 				std::cout << "COMPUTER PLAYED " << curr_state.move_to_string(black_openings[0].moves[num_move]) << std::endl
 					<< "OPENING: " << black_openings[0].name << std::endl;
 				move_i = black_openings[0].moves[num_move];

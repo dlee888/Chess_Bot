@@ -5,6 +5,7 @@
 #include <random>
 #include <chrono>
 #include <vector>
+#include <algorithm>
 
 #include "State.h"
 
@@ -83,44 +84,30 @@ std::vector<opening> openings, black_openings, white_openings;
 // black openings are really good for black (engine will never play it as white)
 // white openings are really good for white (engine will never play it as black)
 
+unsigned mersenne_rng(unsigned i) {
+	std::mt19937 rnd(std::chrono::system_clock::now().time_since_epoch().count());
+	return rnd() % i;
+}
+
+void scramble_openings()
+{
+	std::random_shuffle(openings.begin(), openings.end(), mersenne_rng);
+	std::random_shuffle(white_openings.begin(), white_openings.end(), mersenne_rng);
+	std::random_shuffle(black_openings.begin(), black_openings.end(), mersenne_rng);
+}
+
 void load_openings()
 {
 	for (int i = 0; i < NUM_ALL; i++) {
 		openings.push_back(opening(all[i]));
-
-		init_eval_info();
-		state temp = state();
-		for (int move : openings.back().moves) {
-			temp.make_move(move);
-			Bitstring hash = temp.get_hash();
-			tt_exists[hash % TABLE_SIZE] = true;
-			tt_depths[hash % TABLE_SIZE] = MAX_DEPTH;
-			tt_evals[hash % TABLE_SIZE] = VALUE_ZERO;
-			tt_hashes[hash % TABLE_SIZE] = hash;
-		}
 	}
 
 	for (int i = 0; i < NUM_WHITE; i++)
 		white_openings.push_back(opening(white[i]));
 	for (int i = 0; i < NUM_BLACK; i++)
 		black_openings.push_back(opening(black[i]));
-}
 
-void scramble_openings()
-{
-	std::mt19937 rnd(std::chrono::system_clock::now().time_since_epoch().count());
-	for (int iter = 0; iter < (int)openings.size(); iter++)
-		for (int ind = iter; ind < (int)openings.size() - 1; ind++)
-			if (unsigned(rnd())&1)
-				std::swap(openings[ind], openings[ind + 1]);
-	for (int iter = 0; iter < (int) white_openings.size(); iter++)
-		for (int ind = iter; ind < (int) white_openings.size() - 1; ind++)
-			if (unsigned(rnd())&1)
-				std::swap(white_openings[ind], white_openings[ind + 1]);
-	for (int iter = 0; iter < (int) black_openings.size(); iter++)
-		for (int ind = iter; ind < (int) black_openings.size() - 1; ind++)
-			if (unsigned(rnd())&1)
-				std::swap(black_openings[ind], black_openings[ind + 1]);
+	scramble_openings();
 }
 
 void remove_openings(int num_move, int move_i, bool computer_is_white) {
