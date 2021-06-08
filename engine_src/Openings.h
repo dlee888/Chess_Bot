@@ -71,7 +71,7 @@ std::vector <std::string> white[NUM_WHITE] = {
 	{"Ruy lopez, morphy defense, caro", "e4", "e5", "Nf3", "Nc6", "Bb5", "a6", "Ba4", "b5", "Bb3", "Nf6", "d4", "exd4", "e5", "Qe7", "O-O"}, // ruy lopez opening trap
 	{"Stafford Refutation Line 1", "e4", "e5", "Nf3", "Nf6", "Nxe5", "Nc6", "Nxc6", "dxc6", "d3", "Bc5", "Be2", "h5", "c3", "Ng4", "d4", "Qh4", "g3", "Qf6", "f3", "h4", "Rg1"},
 	{"Scandinavian Defense", "e4", "d5", "exd5", "Qxd5", "Nc3"},
-	{"Stafford Refutation Line 2", "e4", "e5", "Nf3", "Nf6", "Nxe5", "Nc6", "Nxc6", "dxc6", "Nc3", "Bc5", "Qe2"}
+	{"Stafford Refutation Line 2", "e4", "e5", "Nf3", "Nf6", "Nxe5", "Nc6", "Nxc6", "dxc6", "Nc3", "Bc5", "h3"}
 };
 
 std::vector <std::string> black[NUM_BLACK] = {
