@@ -61,7 +61,7 @@ def load_all_themes():
 def get_image(person):
     game = data.data_manager.get_game(person)
     theme = data.data_manager.get_theme(person)
-    board = chess.Board(game.fen)
+    board = str(chess.Board(game.fen))
 
     result = Image.open(os.path.join(constants.ASSETS_DIR, 'blank_board.png'))
     result = result.resize((400, 400))
@@ -69,12 +69,12 @@ def get_image(person):
     for i in range(8):
         for j in range(0, 16, 2):
             square = ''
-            if game[i][j] == '.':
+            if board[i][j] == '.':
                 square += 'blank'
-            elif game[i][j].islower():
-                square += 'B' + game[i][j].upper()
+            elif board[i][j].islower():
+                square += 'B' + board[i][j].upper()
             else:
-                square += 'W' + game[i][j]
+                square += 'W' + board[i][j]
 
             x = i
             y = j // 2

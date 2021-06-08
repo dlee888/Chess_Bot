@@ -54,13 +54,13 @@ int main()
 			options[option_name] = value;
 		} 
 		else if (cmnd == "debug") {
-			// std::string pos = read_fen();
-			// curr_state.load(pos);
-			// curr_state.print();
-			// for (int p : curr_state.list_moves()) {
-			// 	// std::cout << p.first << " " << p.second << std::endl;
-			// 	std::cout << p << std::endl;
-			// }
+			int i;
+			std::cin >> i;
+			while (i != -1) {
+				curr_state.make_move(i);
+				std::cin >> i;
+			}
+			std::cout << curr_state.to_fen() << std::endl;
 		}
 		else if (cmnd == "quit")
 		{
