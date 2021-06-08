@@ -139,9 +139,8 @@ class Engine(commands.Cog):
         await ctx.message.add_reaction(thonk)
         util.thonking.append(person)
 
-        await run_engine(person, game.bot)
-
-        game = await output_move(ctx, person)
+        move, game = await run_engine(person)
+        await output_move(ctx, person, move)
         await log(person, self.client, ctx)
         util.thonking.remove(person)
 
