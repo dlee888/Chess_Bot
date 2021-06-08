@@ -29,7 +29,7 @@ async def run_engine(person):
         f.close()
         await util.run(f'./engine < {file_in} > {file_out}')
         
-        f = open(os.path.join(constants.TEMP_DIR, f'output-{person}.txt'))
+        f = open(file_out)
         out = f.readlines()
         f.close()
         move = None
@@ -40,6 +40,7 @@ async def run_engine(person):
         for i in range(len(out) - 1, 0, -1):
             if out[i].startswith('GAME: '):
                 game.fen = out[i][6].strip()
+                break
         return move, game
 
 async def output_move(ctx, person, move):
@@ -50,8 +51,9 @@ async def output_move(ctx, person, move):
     embed.set_footer(
         text=f'Requested by {ctx.author}', icon_url=ctx.author.avatar_url)
 
-    embed.add_field(
-        name=f'{ProfileNames[Profile(game.bot).name].value} moved', value=move)
+    if move is not None:
+        embed.add_field(
+            name=f'{ProfileNames[Profile(game.bot).name].value} moved', value=move)
 
     get_image(person)
 

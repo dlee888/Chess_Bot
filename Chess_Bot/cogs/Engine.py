@@ -135,15 +135,16 @@ class Engine(commands.Cog):
 
         await ctx.send(f'Game started with {ProfileNames[bot].value}\nYou play the {whiteblack[game.color]} pieces.')
 
-        thonk = self.client.get_emoji(constants.THONK_EMOJI_ID)
-        await ctx.message.add_reaction(thonk)
-        util.thonking.append(person)
+        if game.color == 0:
+            thonk = self.client.get_emoji(constants.THONK_EMOJI_ID)
+            await ctx.message.add_reaction(thonk)
+            util.thonking.append(person)
 
-        move, game = await run_engine(person)
+            move, game = await run_engine(person)
+            await log(person, self.client, ctx)
+            util.thonking.remove(person)
+
         await output_move(ctx, person, move)
-        await log(person, self.client, ctx)
-        util.thonking.remove(person)
-
         game.last_moved = time.time()
         game.warned = False
         data.data_manager.change_game(person, game)
