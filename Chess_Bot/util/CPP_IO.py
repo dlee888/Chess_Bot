@@ -43,10 +43,6 @@ async def run_engine(person):
         return move, game
 
 async def output_move(ctx, person, move):
-    f = open(os.path.join(constants.TEMP_DIR, f'output-{person}.txt'))
-    out = f.readlines()
-    f.close()
-
     game = data.data_manager.get_game(person)
 
     embed = discord.Embed(

@@ -61,7 +61,7 @@ def load_all_themes():
 def get_image(person):
     game = data.data_manager.get_game(person)
     theme = data.data_manager.get_theme(person)
-    board = str(chess.Board(game.fen))
+    board = str(chess.Board(game.fen)).split('\n')
 
     result = Image.open(os.path.join(constants.ASSETS_DIR, 'blank_board.png'))
     result = result.resize((400, 400))
