@@ -82,7 +82,7 @@ async def on_command_error(ctx, exc):
                 file.write(traceback_text)
             await error_channel.send(f'Command Error:\n'
                                      f'Author: {ctx.author} ({ctx.author.id})\n'
-                                     f'Guild: {ctx.guild} ({ctx.guild.id})\n', discord.File(msg_txt_path))
+                                     f'Guild: {ctx.guild} ({ctx.guild.id})\n', file=discord.File(msg_txt_path))
 
 
 def setup():
