@@ -46,7 +46,7 @@ async def run_engine(person):
     elif game.bot in [Profile.sf1.value]:
         transport, engine = await chess.engine.popen_uci("./stockfish")
         board = chess.Board(game.fen)
-        result = await engine.play(board, options={"UCI_LimitStrength": True, "UCI_Elo": 800})
+        result = await engine.play(board, chess.engine.Limit(time=0.5), options={"UCI_LimitStrength": True, "UCI_Elo": 800})
         if result.resigned:
             return 'RESIGN', game
         else:
