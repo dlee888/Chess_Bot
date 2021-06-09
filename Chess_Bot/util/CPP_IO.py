@@ -1,5 +1,5 @@
 import chess
-from Chess_Bot import constants
+import chess.engine
 import os
 import discord
 
@@ -7,6 +7,7 @@ import Chess_Bot.util.Data as data
 import Chess_Bot.util.Utility as util
 from Chess_Bot.util.Images import *
 from Chess_Bot.cogs.Profiles import Profile, ProfileNames
+from Chess_Bot import constants
 
 
 whiteblack = ['black', 'white']
@@ -42,6 +43,16 @@ async def run_engine(person):
                 game.fen = out[i][6:].strip()
                 break
         return move, game
+    elif game.bot in [Profile.sf1.value]:
+        transport, engine = await chess.engine.popen_uci("./stockfish")
+        board = chess.Board(game.fen)
+        result = await engine.play(board, options={"UCI_LimitStrength": True, "UCI_Elo": 800})
+        if result.resigned:
+            return 'RESIGN', game
+        else:
+            board.push(result.move)
+            game.fen = board.fen()
+            return board.san(result.move), game
 
 async def output_move(ctx, person, move):
     game = data.data_manager.get_game(person)

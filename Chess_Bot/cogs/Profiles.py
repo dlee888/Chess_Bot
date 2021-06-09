@@ -12,12 +12,14 @@ class Profile(enum.Enum):
     cb1 = 0
     cb2 = 1
     cb3 = 2
+    sf1 = 3
 
 
 class ProfileNames(enum.Enum):
     cb1 = 'Chess Bot level 1'
     cb2 = 'Chess Bot level 2'
     cb3 = 'Chess Bot level 3'
+    sf1 = 'Stockfish level 1'
 
 
 class Profiles(commands.Cog):
@@ -88,6 +90,23 @@ class Profiles(commands.Cog):
         embed.add_field(name='Rating', value=str(
             round(data.data_manager.get_rating(2), 3)), inline=False)
         lost, won, drew = data.data_manager.get_stats(2)
+        embed.add_field(name='Games played', value=str(
+            lost + won + drew), inline=False)
+        embed.add_field(name='Games lost', value=str(lost)).add_field(
+            name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
+        await ctx.send(embed=embed)
+        
+    @profile.command()
+    async def sf1(self, ctx):
+        embed = await self.get_default_embed('https://stockfishchess.org/images/logo/icon_512x512@2x.png')
+        embed.add_field(name='Stockfish level 1',
+                        value='Stockfish callibrated to around 800 ELO.')
+        embed.add_field(name='Tag', value='`sf1`')
+        embed.add_field(
+            name='Stats', value='Stats about this bot.', inline=False)
+        embed.add_field(name='Rating', value=str(
+            round(data.data_manager.get_rating(3), 3)), inline=False)
+        lost, won, drew = data.data_manager.get_stats(3)
         embed.add_field(name='Games played', value=str(
             lost + won + drew), inline=False)
         embed.add_field(name='Games lost', value=str(lost)).add_field(
