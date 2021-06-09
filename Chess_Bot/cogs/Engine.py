@@ -135,6 +135,7 @@ class Engine(commands.Cog):
 
         await ctx.send(f'Game started with {ProfileNames[bot].value}\nYou play the {whiteblack[game.color]} pieces.')
 
+        move = None
         if game.color == 0:
             thonk = self.client.get_emoji(constants.THONK_EMOJI_ID)
             await ctx.message.add_reaction(thonk)
