@@ -39,7 +39,7 @@ async def run_engine(person):
                 break
         for i in range(len(out) - 1, 0, -1):
             if out[i].startswith('GAME: '):
-                game.fen = out[i][6].strip()
+                game.fen = out[i][6:].strip()
                 break
         return move, game
 

@@ -35,7 +35,7 @@ class Timer(commands.Cog):
     async def send_no_time_message(self, person):
         user = await self.client.fetch_user(person)
         game = data.data_manager.get_game(person)
-        data.data_manager.delete_game(person)
+        data.data_manager.delete_game(person, False)
 
         old_rating = data.data_manager.get_rating(person)
         if old_rating == None:
