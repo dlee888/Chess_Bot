@@ -70,14 +70,13 @@ class Engine(commands.Cog):
         util.thonking.append(person)
 
         move, game = await run_engine(person)
+        game.last_moved = time.time()
+        game.warned = False
+        data.data_manager.change_game(person, game)
 
         await output_move(ctx, person, move)
         await log(person, self.client, ctx)
         util.thonking.remove(person)
-
-        game.last_moved = time.time()
-        game.warned = False
-        data.data_manager.change_game(person, game)
 
         board = chess.Board(game.fen)
         if board.is_game_over(claim_draw=True):
