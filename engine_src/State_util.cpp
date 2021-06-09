@@ -238,7 +238,7 @@ void state::_replace_board(int row, int col, int piece)
 
 bool state::adjucation()
 {
-	if (fifty_move >= 50)
+	if (fifty_move.top() >= 50)
 		return true;
 	if (cnts[WP + 6] == 0 && cnts[BP + 6] == 0)
 	{

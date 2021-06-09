@@ -184,10 +184,10 @@ class Data:
         if won is None:
             self.change_stats(person, num_lost, num_won, num_draw + 1)
             self.change_stats(game.bot, bot_lost, bot_won, bot_draw + 1)
-        elif won:
+        elif won == 1:
             self.change_stats(person, num_lost, num_won + 1, num_draw)
             self.change_stats(game.bot, bot_lost + 1, bot_won, bot_draw)
-        else:
+        elif won == 0:
             self.change_stats(person, num_lost + 1, num_won, num_draw)
             self.change_stats(game.bot, bot_lost, bot_won + 1, bot_draw)
         cur.execute(f'DELETE FROM games WHERE id = {person};')

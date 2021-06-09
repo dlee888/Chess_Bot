@@ -67,26 +67,7 @@ public:
 
 	state()
 	{
-		fifty_move.push(0);
-		full_move = 0;
-		to_move = true;
-
-		board_hash = 0;
-
-		std::memset(board, 0, sizeof(board));
-
-		for (int i = 0; i < 8; i++) {
-			for (int j = 0; j < 8; j++) {
-				replace_board(i, j, default_board[i][j]);
-			}
-		}
-
-		wq_rights.push(true);
-		wk_rights.push(true);
-		bq_rights.push(true);
-		bk_rights.push(true);
-
-		en_passant_target.push(-1);
+		load("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 	}
 	void load(std::string fen);
 	std::string to_fen();

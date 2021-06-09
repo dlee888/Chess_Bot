@@ -39,7 +39,7 @@ async def run_engine(person):
                 break
         for i in range(len(out) - 1, 0, -1):
             if out[i].startswith('GAME: '):
-                game.fen = out[i][6].strip()
+                game.fen = out[i][6:].strip()
                 break
         return move, game
 
@@ -66,7 +66,7 @@ async def output_move(ctx, person, move):
 
 async def log(person, client, ctx):
     log_channel = client.get_channel(constants.LOG_CHANNEL_ID)
-
+    get_image(person)
     await log_channel.send(f'Output for {ctx.author} (id = {ctx.author.id})\n'
                            f'Request: {ctx.message.content}',
                            files=[
