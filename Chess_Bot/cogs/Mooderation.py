@@ -27,7 +27,7 @@ class Mooderation(commands.Cog):
             await ctx.send(f'{user} does not have a game in progress')
             return
 
-        data.data_manager.delete_game(user.id, None)
+        data.data_manager.delete_game(user.id, 69)
 
         await ctx.send('Game aborted')
 
