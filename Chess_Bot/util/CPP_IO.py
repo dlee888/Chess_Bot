@@ -48,6 +48,7 @@ async def run_engine(person):
         board = chess.Board(game.fen)
         skill = [1, 4, 8, 20]
         result = await engine.play(board, chess.engine.Limit(time=0.5), options={"Skill Level": skill[game.bot - Profile.sf1.value]})
+        await engine.quit()
         if result.resigned:
             return 'RESIGN', game
         else:
