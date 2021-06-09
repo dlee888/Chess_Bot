@@ -1,6 +1,6 @@
 # Chess Bot
 
-README for version 2.0.0
+README for version 2.1.0
 
 Chess Bot is a discord bot that plays chess.
 It also has a built-in elo rating system.
@@ -21,7 +21,7 @@ It also has a built-in elo rating system.
 
 You can use the command `$challenge` to challenge the bot to a game of chess.
 
-Use `$move` to make a move. Make sure your move is in SAN (Standard Algebraic Notation). Otherwise, the bot will not understand it.
+Use `$move` to make a move. Make sure your move is in SAN (Standard Algebraic Notation) or UCI (Universal Chess Interface). Otherwise, the bot will not understand it.
 
 Use `$view` to view your game.
 

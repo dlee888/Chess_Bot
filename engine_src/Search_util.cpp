@@ -33,7 +33,7 @@ pii find_best_move(double time_limit, Depth depth_limit) {
 		nodes = 0; qsearch_nodes = 0;
 		tb_hits = 0; qsearch_hits = 0;
 		depth_qsearched = DEPTH_ZERO;
-		qs_depth_floor = std::max(-2 * curr_depth, (Depth)-7);
+		qs_depth_floor = std::max(Depth(-2 * curr_depth + 2), (Depth)-7);
 
 		int start_time = clock();
 
@@ -102,7 +102,7 @@ pii find_best_move(double time_limit, Depth depth_limit) {
 			break;
 		}
 		
-		if (break_now || (time_taken * curr_state.list_moves().size() > 4 * time_limit * CLOCKS_PER_SEC)) {
+		if (break_now || (time_taken * curr_state.list_moves().size() > 5.5 * time_limit * CLOCKS_PER_SEC)) {
 			printf("Breaking\n");
 			break;
 		}
