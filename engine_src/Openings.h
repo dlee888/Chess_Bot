@@ -90,7 +90,7 @@ void load_openings()
 		state temp = state();
 		for (int i = 1; i < (int) opening.size(); i++) {
 			int move_i = temp.parse_move(opening[i]);
-			openings[temp.get_hash()].push_back(move_i);
+			white_openings[temp.get_hash()].push_back(move_i);
 			temp.make_move(move_i);
 		}
 	}
@@ -98,7 +98,7 @@ void load_openings()
 		state temp = state();
 		for (int i = 1; i < (int) opening.size(); i++) {
 			int move_i = temp.parse_move(opening[i]);
-			openings[temp.get_hash()].push_back(move_i);
+			black_openings[temp.get_hash()].push_back(move_i);
 			temp.make_move(move_i);
 		}
 	}

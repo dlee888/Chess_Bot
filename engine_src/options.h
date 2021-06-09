@@ -10,5 +10,6 @@ std::map <std::string, int> options;
 void set_default_options() {
 	options["time_limit"] = 5;
 	options["depth_limit"] = MAX_DEPTH;
+	options["use_opening_book"] = 1;
 }
 #endif

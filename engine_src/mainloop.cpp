@@ -7,10 +7,8 @@
 void init_everything()
 {
 	init_table();
-	curr_state = state();
-	scramble_openings();
 	load_openings();
-	init_eval_info();
+	curr_state = state();
 }
 
 std::string read_fen() {
@@ -35,6 +33,32 @@ int main()
 			curr_state.load(pos);
 			curr_state.print();
 			std::cout << eval(curr_state, true) << std::endl;
+			if (options["use_opening_book"]) {
+				if (curr_state.to_move && curr_state.full_move > 2 && white_openings[curr_state.get_hash()].size()) {
+					int move_i = white_openings[curr_state.get_hash()][0];
+					std::cout << "COUPUTER PLAYED " << curr_state.move_to_string(move_i) << std::endl;
+					curr_state.make_move(move_i);
+					curr_state.print();
+					std::cout << "GAME: " << curr_state.to_fen() << std::endl;
+					continue;
+				} 
+				else if (!curr_state.to_move && curr_state.full_move > 2 && black_openings[curr_state.get_hash()].size()) {
+					int move_i = black_openings[curr_state.get_hash()][0];
+					std::cout << "COUPUTER PLAYED " << curr_state.move_to_string(move_i) << std::endl;
+					curr_state.make_move(move_i);
+					curr_state.print();
+					std::cout << "GAME: " << curr_state.to_fen() << std::endl;
+					continue;
+				}
+				else if (openings[curr_state.get_hash()].size()) {
+					int move_i = openings[curr_state.get_hash()][0];
+					std::cout << "COUPUTER PLAYED " << curr_state.move_to_string(move_i) << std::endl;
+					curr_state.make_move(move_i);
+					curr_state.print();
+					std::cout << "GAME: " << curr_state.to_fen() << std::endl;
+					continue;
+				}
+			}
 			pii best_move = find_best_move(options["time_limit"], (Depth)options["depth_limit"]);
 			if ((curr_state.to_move && best_move.first <= -RESIGN) || (!curr_state.to_move && best_move.first >= RESIGN))
 			{
