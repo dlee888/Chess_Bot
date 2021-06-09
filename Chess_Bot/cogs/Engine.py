@@ -80,7 +80,7 @@ class Engine(commands.Cog):
         data.data_manager.change_game(person, game)
 
         board = chess.Board(game.fen)
-        if board.is_game_over(claim_draw=True):
+        if board.is_game_over(claim_draw=True) or move == 'RESIGN':
             old_rating = data.data_manager.get_rating(person)
             if old_rating == None:
                 old_rating = constants.DEFAULT_RATING
