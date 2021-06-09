@@ -11,9 +11,12 @@ void state::make_move(int move)
 	int row_init = (move >> 3) & 7, row_final = (move >> 9) & 7, col_init = move & 7, col_final = (move >> 6) & 7;
 	int piece = (move >> 12) & 7, piece_captured = (move >> 15) & 7;
 
+	fifty_move.push(fifty_move.top() + 1);
+
 	if (piece_captured != 0)
 	{
-		fifty_move = 0;
+		fifty_move.pop();
+		fifty_move.push(0);
 	}
 
 	int color = -1;
@@ -120,7 +123,8 @@ void state::make_move(int move)
 	}
 	else if (((move >> 18) & 3) == 2)
 	{
-		fifty_move = 0;
+		fifty_move.pop();
+		fifty_move.push(0);
 		int promote_to = (move >> 20) + 2;
 		cnts[color * WP + 6]--;
 		cnts[promote_to * color + 6]++;
@@ -351,7 +355,8 @@ void state::make_move(int move)
 			replace_board(row_init, col_init, 0);
 			replace_board(row_final + 1, col_final, 0);
 
-			fifty_move = 0;
+			fifty_move.pop();
+			fifty_move.push(0);
 
 			cnts[BP + 6]--;
 
@@ -403,7 +408,8 @@ void state::make_move(int move)
 			replace_board(row_init, col_init, 0);
 			replace_board(row_final - 1, col_final, 0);
 
-			fifty_move = 0;
+			fifty_move.pop();
+			fifty_move.push(0);
 
 			cnts[WP + 6]--;
 
@@ -493,7 +499,8 @@ void state::make_move(int move)
 		}
 		else if (piece == WP)
 		{
-			fifty_move = 0;
+			fifty_move.pop();
+			fifty_move.push(0);
 			if (to_move)
 			{
 				white_center += pawn_center[row_final][col_final] - pawn_center[row_init][col_init];
