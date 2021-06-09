@@ -9,33 +9,7 @@
 
 #include "State.h"
 
-#define NUM_ALL 29
-#define NUM_WHITE 5
-#define NUM_BLACK 2
-
-class opening
-{
-public:
-	std::string name;
-	std::vector <int> moves;
-
-	opening(std::vector <std::string> vec)
-	{
-		name = vec[0];
-		vec.erase(vec.begin());
-
-		init_eval_info();
-		state temp = state();
-		for (auto move : vec)
-		{
-			int move_i = temp.parse_move(move);
-			moves.push_back(move_i);
-			temp.make_move(move_i);
-		}
-	}
-};
-
-std::vector <std::string> all[NUM_ALL] = {
+std::vector <std::vector <std::string> > all = {
 	{"Queen's gambit declined, modern variation", "d4", "d5", "c4", "e6", "Nc3", "Nf6", "Bg5", "Be7", "e3", "O-O", "Nf3", "h6", "Bh4"}, 
 	{"Tarrasach defense, two knights variation", "d4", "d5", "c4", "e6", "Nc3", "c5", "cxd5", "exd5", "Nf3", "Nc6", "g3"}, 
 	{"Semi slav defense", "d4", "d5", "c4", "c6", "Nf3", "Nf6", "Nc3", "e6", "e3", "Nbd7", "Bd3", "dxc4", "Bxc4"}, 
@@ -67,7 +41,7 @@ std::vector <std::string> all[NUM_ALL] = {
 	{"London System", "d4", "d5", "Nf3", "Nf6", "Bf4", "c5", "e3"}
 };
 
-std::vector <std::string> white[NUM_WHITE] = {
+std::vector <std::vector <std::string> > white = {
 	{"French defense: Winnever variation", "e4", "e6", "d4", "d5", "Nc3", "Bb4", "e5"}, // petition to get rid of the french
 	{"Ruy lopez, morphy defense, caro", "e4", "e5", "Nf3", "Nc6", "Bb5", "a6", "Ba4", "b5", "Bb3", "Nf6", "d4", "exd4", "e5", "Qe7", "O-O"}, // ruy lopez opening trap
 	{"Stafford Refutation Line 1", "e4", "e5", "Nf3", "Nf6", "Nxe5", "Nc6", "Nxc6", "dxc6", "d3", "Bc5", "Be2", "h5", "c3", "Ng4", "d4", "Qh4", "g3", "Qf6", "f3", "h4", "Rg1"},
@@ -75,12 +49,12 @@ std::vector <std::string> white[NUM_WHITE] = {
 	{"Stafford Refutation Line 2", "e4", "e5", "Nf3", "Nf6", "Nxe5", "Nc6", "Nxc6", "dxc6", "Nc3", "Bc5", "h3"}
 };
 
-std::vector <std::string> black[NUM_BLACK] = {
+std::vector <std::vector <std::string> > black = {
 	{"Sodium attack", "Na3", "d5", "c4"},
 	{"King's gambit", "e4", "e5", "f4", "exf4", "Nf3"},
 };
 
-std::vector<opening> openings, black_openings, white_openings;
+std::map <Bitstring, std::vector <int> > openings, black_openings, white_openings;
 // black openings are really good for black (engine will never play it as white)
 // white openings are really good for white (engine will never play it as black)
 
@@ -91,56 +65,44 @@ unsigned mersenne_rng(unsigned i) {
 
 void scramble_openings()
 {
-	std::random_shuffle(openings.begin(), openings.end(), mersenne_rng);
-	std::random_shuffle(white_openings.begin(), white_openings.end(), mersenne_rng);
-	std::random_shuffle(black_openings.begin(), black_openings.end(), mersenne_rng);
+	for (auto& p : openings) {
+		std::random_shuffle(p.second.begin(), p.second.end(), mersenne_rng);
+	}
+	for (auto& p : white_openings) {
+		std::random_shuffle(p.second.begin(), p.second.end(), mersenne_rng);
+	}
+	for (auto& p : black_openings) {
+		std::random_shuffle(p.second.begin(), p.second.end(), mersenne_rng);
+	}
 }
 
 void load_openings()
 {
-	for (int i = 0; i < NUM_ALL; i++) {
-		openings.push_back(opening(all[i]));
+	for (auto opening : all) {
+		state temp = state();
+		for (int i = 1; i < (int) opening.size(); i++) {
+			int move_i = temp.parse_move(opening[i]);
+			openings[temp.get_hash()].push_back(move_i);
+			temp.make_move(move_i);
+		}
 	}
-
-	for (int i = 0; i < NUM_WHITE; i++)
-		white_openings.push_back(opening(white[i]));
-	for (int i = 0; i < NUM_BLACK; i++)
-		black_openings.push_back(opening(black[i]));
+	for (auto opening : white) {
+		state temp = state();
+		for (int i = 1; i < (int) opening.size(); i++) {
+			int move_i = temp.parse_move(opening[i]);
+			openings[temp.get_hash()].push_back(move_i);
+			temp.make_move(move_i);
+		}
+	}
+	for (auto opening : black) {
+		state temp = state();
+		for (int i = 1; i < (int) opening.size(); i++) {
+			int move_i = temp.parse_move(opening[i]);
+			openings[temp.get_hash()].push_back(move_i);
+			temp.make_move(move_i);
+		}
+	}
 
 	scramble_openings();
 }
-
-void remove_openings(int num_move, int move_i, bool computer_is_white) {
-	for (int i = 0; i < openings.size(); i++)
-	{
-		if (openings[i].moves[num_move - 1] != move_i || openings[i].moves[num_move] == -1)
-		{
-			openings.erase(openings.begin() + i);
-			i--;
-		}
-	}
-	if (computer_is_white)
-	{
-		for (int i = 0; i < white_openings.size(); i++)
-		{
-			if (white_openings[i].moves[num_move - 1] != move_i || white_openings[i].moves[num_move] == -1)
-			{
-				white_openings.erase(white_openings.begin() + i);
-				i--;
-			}
-		}
-	}
-	else
-	{
-		for (int i = 0; i < black_openings.size(); i++)
-		{
-			if (black_openings[i].moves[num_move - 1] != move_i || black_openings[i].moves[num_move] == -1)
-			{
-				black_openings.erase(black_openings.begin() + i);
-				i--;
-			}
-		}
-	}
-}
-
 #endif // !OPENINGS_H_INCLUDED
