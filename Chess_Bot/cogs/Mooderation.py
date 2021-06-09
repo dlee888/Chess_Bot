@@ -28,6 +28,8 @@ class Mooderation(commands.Cog):
             return
 
         data.data_manager.delete_game(user.id, 69)
+        if user.id in util.thonking:
+            util.thonking.remove(user.id)
 
         await ctx.send('Game aborted')
 

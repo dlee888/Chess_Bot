@@ -55,7 +55,16 @@ async def on_command_error(ctx, exc):
         print(traceback_text)
 
         if await util.has_roles(ctx.author.id, ['Debugger', 'Tester', 'Mooderator'], bot):
-            await ctx.send(f'Command Error:\n```\n{traceback_text}\n```')
+            try:
+                await ctx.send('Command Error:\n'
+                               f'Author: {ctx.author} ({ctx.author.id})\n'
+                               f'Guild: {ctx.guild} ({ctx.guild.id})\n'
+                               f'```\n{traceback_text}\n```')
+            except discord.errors.HTTPException:
+                msg_txt_path = os.path.join(constants.TEMP_DIR, 'message.txt')
+                with open(msg_txt_path, 'w') as file:
+                    file.write(traceback_text)
+                await ctx.send(f'Command Error:\n', discord.File(msg_txt_path))
         else:
             await ctx.send('Uh oh. Something went wrong.\n'
                            'If you feel that this is a bug, please contact the bot developers in the chess bot support server.\n'
@@ -67,11 +76,13 @@ async def on_command_error(ctx, exc):
                                      f'Author: {ctx.author} ({ctx.author.id})\n'
                                      f'Guild: {ctx.guild} ({ctx.guild.id})\n'
                                      f'```\n{traceback_text}\n```')
-        except:
+        except discord.errors.HTTPException:
             msg_txt_path = os.path.join(constants.TEMP_DIR, 'message.txt')
             with open(msg_txt_path, 'w') as file:
                 file.write(traceback_text)
-            await error_channel.send(f'Command Error:\n', discord.File(msg_txt_path))
+            await error_channel.send(f'Command Error:\n'
+                                     f'Author: {ctx.author} ({ctx.author.id})\n'
+                                     f'Guild: {ctx.guild} ({ctx.guild.id})\n', discord.File(msg_txt_path))
 
 
 def setup():
@@ -79,10 +90,10 @@ def setup():
         os.makedirs(path, exist_ok=True)
 
     logging.basicConfig(format='{asctime}:{levelname}:{name}:{message}', style='{',
-                    datefmt='%d-%m-%Y %H:%M:%S', level=logging.INFO,
-                    handlers=[logging.StreamHandler(),
-                                TimedRotatingFileHandler(constants.LOG_FILE_PATH, when='D',
-                                                        backupCount=3, utc=True)])
+                        datefmt='%d-%m-%Y %H:%M:%S', level=logging.INFO,
+                        handlers=[logging.StreamHandler(),
+                                  TimedRotatingFileHandler(constants.LOG_FILE_PATH, when='D',
+                                                           backupCount=3, utc=True)])
 
     image.load_all_themes()
 
