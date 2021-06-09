@@ -50,9 +50,9 @@ async def run_engine(person):
         if result.resigned:
             return 'RESIGN', game
         else:
-            board.push(result.move)
+            san = board.san_and_push(result.move)
             game.fen = board.fen()
-            return board.san(result.move), game
+            return san, game
 
 async def output_move(ctx, person, move):
     game = data.data_manager.get_game(person)
