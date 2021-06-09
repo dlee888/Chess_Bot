@@ -64,7 +64,7 @@ async def on_command_error(ctx, exc):
                 msg_txt_path = os.path.join(constants.TEMP_DIR, 'message.txt')
                 with open(msg_txt_path, 'w') as file:
                     file.write(traceback_text)
-                await ctx.send(f'Command Error:\n', discord.File(msg_txt_path))
+                await ctx.send(f'Command Error:\n', file=discord.File(msg_txt_path))
         else:
             await ctx.send('Uh oh. Something went wrong.\n'
                            'If you feel that this is a bug, please contact the bot developers in the chess bot support server.\n'
