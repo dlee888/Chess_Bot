@@ -62,6 +62,22 @@ class Engine(commands.Cog):
             except ValueError:
                 await ctx.send('Illegal move played. Make sure your move is in SAN or UCI notation.\nUse `$help move` for more info.')
                 return
+        if board.is_checkmate():
+            if board.turn == chess.WHITE and game.color == 0 or board.turn == chess.BLACK and game.color == 1:
+                util.update_rating(ctx.author.id, 1, game.bot)
+                data.data_manager.delete_game(person, True)
+                await ctx.send('You won!')
+            elif board.turn == chess.WHITE and game.color == 1 or board.turn == chess.BLACK and game.color == 0:
+                util.update_rating(ctx.author.id, 0, game.bot)
+                data.data_manager.delete_game(person, False)
+                await ctx.send('You lost.')
+            return
+        elif board.can_claim_draw():
+            util.update_rating(ctx.author.id, 1/2, game.bot)
+            await ctx.send('Draw')
+            data.data_manager.delete_game(person, None)
+            return
+        
         game.fen = board.fen()
         data.data_manager.change_game(person, game)
 
