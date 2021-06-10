@@ -34,17 +34,17 @@ void state::unmake_move(int move)
 			white_castled = false;
 			if ((move >> 20) == 1)
 			{ //kingside castle
-				_replace_board(7, 6, 0);
-				_replace_board(7, 5, 0);
-				_replace_board(7, 7, WR);
-				_replace_board(7, 4, WK);
+				replace_board(7, 6, 0);
+				replace_board(7, 5, 0);
+				replace_board(7, 7, WR);
+				replace_board(7, 4, WK);
 			}
 			else
 			{
-				_replace_board(7, 3, 0);
-				_replace_board(7, 2, 0);
-				_replace_board(7, 0, WR);
-				_replace_board(7, 4, WK);
+				replace_board(7, 3, 0);
+				replace_board(7, 2, 0);
+				replace_board(7, 0, WR);
+				replace_board(7, 4, WK);
 			}
 		}
 		else
@@ -52,17 +52,17 @@ void state::unmake_move(int move)
 			black_castled = true;
 			if ((move >> 20) == 1)
 			{ //kingside castle
-				_replace_board(0, 6, 0);
-				_replace_board(0, 5, 0);
-				_replace_board(0, 7, BR);
-				_replace_board(0, 4, BK);
+				replace_board(0, 6, 0);
+				replace_board(0, 5, 0);
+				replace_board(0, 7, BR);
+				replace_board(0, 4, BK);
 			}
 			else
 			{
-				_replace_board(0, 3, 0);
-				_replace_board(0, 2, 0);
-				_replace_board(0, 0, BR);
-				_replace_board(0, 4, BK);
+				replace_board(0, 3, 0);
+				replace_board(0, 2, 0);
+				replace_board(0, 0, BR);
+				replace_board(0, 4, BK);
 			}
 		}
 	}
@@ -70,27 +70,27 @@ void state::unmake_move(int move)
 	{
 		int promote_to = (move >> 20) + 2;
 
-		_replace_board(row_final, col_final, piece_captured * color * -1);
-		_replace_board(row_init, col_init, promote_to * color);
+		replace_board(row_final, col_final, piece_captured * color * -1);
+		replace_board(row_init, col_init, promote_to * color);
 	}
 	else if (((move >> 18) & 3) == 1)
 	{
 		if (to_move)
 		{
-			_replace_board(row_final, col_final, 0);
-			_replace_board(row_init, col_init, WP);
-			_replace_board(row_final + 1, col_final, BP);
+			replace_board(row_final, col_final, 0);
+			replace_board(row_init, col_init, WP);
+			replace_board(row_final + 1, col_final, BP);
 		}
 		else
 		{
-			_replace_board(row_final, col_final, 0);
-			_replace_board(row_init, col_init, BP);
-			_replace_board(row_final - 1, col_final, WP);
+			replace_board(row_final, col_final, 0);
+			replace_board(row_init, col_init, BP);
+			replace_board(row_final - 1, col_final, WP);
 		}
 	}
 	else
 	{
-		_replace_board(row_init, col_init, piece * color);
-		_replace_board(row_final, col_final, piece_captured * color * -1);
+		replace_board(row_init, col_init, piece * color);
+		replace_board(row_final, col_final, piece_captured * color * -1);
 	}
 }

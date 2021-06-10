@@ -36,18 +36,9 @@ class Engine(commands.Cog):
             return
 
         if 'resign' in move.lower():
-            data.data_manager.delete_game(ctx.author.id)
-            if ctx.author.id in util.thonking:
-                util.thonking.remove(ctx.author.id)
+            data.data_manager.delete_game(ctx.author.id, False)
 
-            old_rating = data.data_manager.get_rating(ctx.author.id)
-            if old_rating == None:
-                data.data_manager.change_rating(
-                    ctx.author.id, constants.DEFAULT_RATING)
-                old_rating = constants.DEFAULT_RATING
-
-            util.update_rating(ctx.author.id, 0, game.bot)
-            new_rating = data.data_manager.delete_game(person, False)
+            old_rating, new_rating = util.update_rating(ctx.author.id, 0, game.bot)
 
             await ctx.send(f'Game resigned. Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)}).\n'
                            'Tip: Trying to resign? You can also use the `$resign` command.')

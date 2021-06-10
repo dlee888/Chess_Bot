@@ -1,13 +1,6 @@
 #include "State.h"
 
-// DEPRECATED (kind of)
 void state::replace_board(int row, int col, int piece)
-{
-	board_hash ^= rand_bitstrings[(row << 3) + col][board[row][col] + 6];
-	board_hash ^= rand_bitstrings[(row << 3) + col][piece + 6];
-	board[row][col] = piece;
-}
-void state::_replace_board(int row, int col, int piece)
 {
 	int orig_piece = board[row][col];
 	board_hash ^= rand_bitstrings[(row << 3) + col][orig_piece + 6];

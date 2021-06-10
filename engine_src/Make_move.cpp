@@ -38,10 +38,10 @@ void state::make_move(int move)
 			white_castled = true;
 			if ((move >> 20) == 1)
 			{ //kingside castle
-				_replace_board(7, 6, WK);
-				_replace_board(7, 5, WR);
-				_replace_board(7, 7, 0);
-				_replace_board(7, 4, 0);
+				replace_board(7, 6, WK);
+				replace_board(7, 5, WR);
+				replace_board(7, 7, 0);
+				replace_board(7, 4, 0);
 				wk_rights.pop();
 				wk_rights.push(false);
 				wq_rights.pop();
@@ -49,10 +49,10 @@ void state::make_move(int move)
 			}
 			else
 			{
-				_replace_board(7, 3, WR);
-				_replace_board(7, 2, WK);
-				_replace_board(7, 0, 0);
-				_replace_board(7, 4, 0);
+				replace_board(7, 3, WR);
+				replace_board(7, 2, WK);
+				replace_board(7, 0, 0);
+				replace_board(7, 4, 0);
 				wk_rights.pop();
 				wk_rights.push(false);
 				wq_rights.pop();
@@ -64,10 +64,10 @@ void state::make_move(int move)
 			black_castled = true;
 			if ((move >> 20) == 1)
 			{ //kingside castle
-				_replace_board(0, 6, BK);
-				_replace_board(0, 5, BR);
-				_replace_board(0, 7, 0);
-				_replace_board(0, 4, 0);
+				replace_board(0, 6, BK);
+				replace_board(0, 5, BR);
+				replace_board(0, 7, 0);
+				replace_board(0, 4, 0);
 				bk_rights.pop();
 				bk_rights.push(false);
 				bq_rights.pop();
@@ -75,10 +75,10 @@ void state::make_move(int move)
 			}
 			else
 			{
-				_replace_board(0, 3, BR);
-				_replace_board(0, 2, BK);
-				_replace_board(0, 0, 0);
-				_replace_board(0, 4, 0);
+				replace_board(0, 3, BR);
+				replace_board(0, 2, BK);
+				replace_board(0, 0, 0);
+				replace_board(0, 4, 0);
 				bk_rights.pop();
 				bk_rights.push(false);
 				bq_rights.pop();
@@ -92,8 +92,8 @@ void state::make_move(int move)
 		fifty_move.push(0);
 		int promote_to = (move >> 20) + 2;
 
-		_replace_board(row_final, col_final, promote_to * color);
-		_replace_board(row_init, col_init, 0);
+		replace_board(row_final, col_final, promote_to * color);
+		replace_board(row_init, col_init, 0);
 
 		if (piece_captured == WR)
 		{
@@ -129,18 +129,18 @@ void state::make_move(int move)
 	{
 		if (to_move)
 		{
-			_replace_board(row_final, col_final, WP);
-			_replace_board(row_init, col_init, 0);
-			_replace_board(row_final + 1, col_final, 0);
+			replace_board(row_final, col_final, WP);
+			replace_board(row_init, col_init, 0);
+			replace_board(row_final + 1, col_final, 0);
 
 			fifty_move.pop();
 			fifty_move.push(0);
 		}
 		else
 		{
-			_replace_board(row_final, col_final, BP);
-			_replace_board(row_init, col_init, 0);
-			_replace_board(row_final - 1, col_final, 0);
+			replace_board(row_final, col_final, BP);
+			replace_board(row_init, col_init, 0);
+			replace_board(row_final - 1, col_final, 0);
 
 			fifty_move.pop();
 			fifty_move.push(0);
@@ -149,8 +149,8 @@ void state::make_move(int move)
 	else
 	{
 		//making the move
-		_replace_board(row_init, col_init, 0);
-		_replace_board(row_final, col_final, piece * color);
+		replace_board(row_init, col_init, 0);
+		replace_board(row_final, col_final, piece * color);
 
 		if (piece == WP)
 		{

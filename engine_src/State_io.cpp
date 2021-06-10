@@ -25,9 +25,9 @@ void state::load(std::string fen) {
 			if (c <= '8' && c >= '1') {
 				col += c - '1';
 			} else if (c <= 'Z' && c >= 'A') {
-				_replace_board(row, col, piece_to_int(c));
+				replace_board(row, col, piece_to_int(c));
 			} else {
-				_replace_board(row, col, -piece_to_int(c - 'a' + 'A'));
+				replace_board(row, col, -piece_to_int(c - 'a' + 'A'));
 			}
 		}
 		if (row != 7) {

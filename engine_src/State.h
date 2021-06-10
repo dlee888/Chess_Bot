@@ -49,7 +49,6 @@ public:
 	Bitstring board_hash;
 
 	void replace_board(int row, int col, int piece);
-	void _replace_board(int row, int col, int piece);
 
 	Bitstring get_hash()
 	{
