@@ -45,6 +45,8 @@ def update_rating(user, outcome, bot):
     if person_rating == None:
         person_rating = constants.DEFAULT_RATING
 
+    old_rating = person_rating
+    
     E = 1 / (1 + 10 ** ((bot_rating - person_rating) / 400))
 
     bot_rating += 32 * (E - outcome)
@@ -52,6 +54,8 @@ def update_rating(user, outcome, bot):
 
     data.data_manager.change_rating(bot, bot_rating)
     data.data_manager.change_rating(user, person_rating)
+    
+    return old_rating, person_rating
 
 
 def pretty_time(time):

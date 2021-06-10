@@ -62,20 +62,24 @@ class Engine(commands.Cog):
             except ValueError:
                 await ctx.send('Illegal move played. Make sure your move is in SAN or UCI notation.\nUse `$help move` for more info.')
                 return
-        if board.is_checkmate():
+        if board.is_checkmate():                
             if board.turn == chess.WHITE and game.color == 0 or board.turn == chess.BLACK and game.color == 1:
-                util.update_rating(ctx.author.id, 1, game.bot)
+                old_rating, new_rating = util.update_rating(ctx.author.id, 1, game.bot)
                 data.data_manager.delete_game(person, True)
                 await ctx.send('You won!')
             elif board.turn == chess.WHITE and game.color == 1 or board.turn == chess.BLACK and game.color == 0:
-                util.update_rating(ctx.author.id, 0, game.bot)
+                old_rating, new_rating = util.update_rating(ctx.author.id, 0, game.bot)
                 data.data_manager.delete_game(person, False)
                 await ctx.send('You lost.')
+                
+            await ctx.send(f'Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
             return
         elif board.can_claim_draw():
-            util.update_rating(ctx.author.id, 1/2, game.bot)
+            old_rating, new_rating = util.update_rating(ctx.author.id, 1/2, game.bot)
             await ctx.send('Draw')
             data.data_manager.delete_game(person, None)
+            
+            await ctx.send(f'Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
             return
         
         game.fen = board.fen()
@@ -96,29 +100,24 @@ class Engine(commands.Cog):
 
         board = chess.Board(game.fen)
         if board.is_game_over(claim_draw=True) or move == 'RESIGN':
-            old_rating = data.data_manager.get_rating(person)
-            if old_rating == None:
-                old_rating = constants.DEFAULT_RATING
-
             if move == 'RESIGN':
                 await ctx.send('Chess Bot resigned')
-                util.update_rating(ctx.author.id, 1, game.bot)
+                old_rating, new_rating = util.update_rating(ctx.author.id, 1, game.bot)
                 data.data_manager.delete_game(person, True)
             elif board.is_checkmate():
                 if board.turn == chess.WHITE and game.color == 0 or board.turn == chess.BLACK and game.color == 1:
-                    util.update_rating(ctx.author.id, 1, game.bot)
+                    old_rating, new_rating = util.update_rating(ctx.author.id, 1, game.bot)
                     data.data_manager.delete_game(person, True)
                     await ctx.send('You won!')
                 elif board.turn == chess.WHITE and game.color == 1 or board.turn == chess.BLACK and game.color == 0:
-                    util.update_rating(ctx.author.id, 0, game.bot)
+                    old_rating, new_rating = util.update_rating(ctx.author.id, 0, game.bot)
                     data.data_manager.delete_game(person, False)
                     await ctx.send('You lost.')
             else:
-                util.update_rating(ctx.author.id, 1/2, game.bot)
+                old_rating, new_rating = util.update_rating(ctx.author.id, 1/2, game.bot)
                 await ctx.send('Draw')
                 data.data_manager.delete_game(person, None)
 
-            new_rating = data.data_manager.get_rating(person)
             await ctx.send(f'Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
 
     @commands.command()
@@ -183,14 +182,7 @@ class Engine(commands.Cog):
         if ctx.author.id in util.thonking:
             util.thonking.remove(ctx.author.id)
 
-        old_rating = data.data_manager.get_rating(ctx.author.id)
-        if old_rating == None:
-            data.data_manager.change_rating(
-                ctx.author.id, constants.DEFAULT_RATING)
-            old_rating = constants.DEFAULT_RATING
-
-        util.update_rating(ctx.author.id, 0, game.bot)
-        new_rating = data.data_manager.get_rating(ctx.author.id)
+        old_rating, new_rating = util.update_rating(ctx.author.id, 0, game.bot)
 
         await ctx.send(f'Game resigned. Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
 
