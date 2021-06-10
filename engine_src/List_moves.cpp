@@ -15,7 +15,7 @@ std::vector<int> state::list_moves()
 		{
 			res.push_back(2883584);
 		}
-		for (const pii& p : whitepawns)
+		for (const pii& p : piecelists[WP + 6])
 		{
 			if (board[p.first - 1][p.second] == 0)
 			{
@@ -109,7 +109,7 @@ std::vector<int> state::list_moves()
 				}
 			}
 		}
-		for (const pii& p : whiteknights)
+		for (const pii& p : piecelists[WN + 6])
 		{
 			for (int i = 0; i < 8; i++)
 			{
@@ -121,7 +121,7 @@ std::vector<int> state::list_moves()
 				}
 			}
 		}
-		for (const pii& p : whitebishops)
+		for (const pii& p : piecelists[WB + 6])
 		{
 			for (int j = 0; j < 4; j++)
 			{
@@ -139,7 +139,7 @@ std::vector<int> state::list_moves()
 				}
 			}
 		}
-		for (const pii& p : whiterooks)
+		for (const pii& p : piecelists[WR + 6])
 		{
 			for (int j = 0; j < 4; j++)
 			{
@@ -157,7 +157,7 @@ std::vector<int> state::list_moves()
 				}
 			}
 		}
-		for (const pii& p : whitequeens)
+		for (const pii& p : piecelists[WQ + 6])
 		{
 			for (int j = 0; j < 8; j++)
 			{
@@ -175,7 +175,7 @@ std::vector<int> state::list_moves()
 				}
 			}
 		}
-		for (const pii& p : whitekings)
+		for (const pii& p : piecelists[WK + 6])
 		{
 			for (int i = 0; i < 8; i++)
 			{
@@ -200,7 +200,7 @@ std::vector<int> state::list_moves()
 		{
 			res.push_back(2883584);
 		}
-		for (const pii& p : blackpawns)
+		for (const pii& p : piecelists[BP + 6])
 		{
 			if (board[p.first + 1][p.second] == 0)
 			{
@@ -297,7 +297,7 @@ std::vector<int> state::list_moves()
 				}
 			}
 		}
-		for (const pii& p : blackknights)
+		for (const pii& p : piecelists[BN + 6])
 		{
 			for (int i = 0; i < 8; i++)
 			{
@@ -312,7 +312,7 @@ std::vector<int> state::list_moves()
 				}
 			}
 		}
-		for (const pii& p : blackbishops)
+		for (const pii& p : piecelists[BB + 6])
 		{
 			for (int j = 0; j < 4; j++)
 			{
@@ -331,7 +331,7 @@ std::vector<int> state::list_moves()
 				}
 			}
 		}
-		for (const pii& p : blackrooks)
+		for (const pii& p : piecelists[BR + 6])
 		{
 			for (int j = 0; j < 4; j++)
 			{
@@ -349,7 +349,7 @@ std::vector<int> state::list_moves()
 				}
 			}
 		}
-		for (const pii& p : blackqueens)
+		for (const pii& p : piecelists[BQ + 6])
 		{
 			for (int j = 0; j < 8; j++)
 			{
@@ -367,7 +367,7 @@ std::vector<int> state::list_moves()
 				}
 			}
 		}
-		for (const pii& p : blackkings)
+		for (const pii& p : piecelists[BK + 6])
 		{
 			for (int i = 0; i < 8; i++)
 			{

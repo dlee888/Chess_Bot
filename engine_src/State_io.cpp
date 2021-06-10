@@ -3,20 +3,17 @@
 #include "State.h"
 
 void state::load(std::string fen) {
-	whitepawns.clear();
-	whiteknights.clear();
-	whitebishops.clear();
-	whiterooks.clear();
-	whitequeens.clear();
-	whitekings.clear();
-	blackpawns.clear();
-	blackknights.clear();
-	blackbishops.clear();
-	blackrooks.clear();
-	blackqueens.clear();
-	blackkings.clear();
+	for (int i = 0; i < 13; i++) {
+		piecelists[i].clear();
+	}
 	board_hash = 0;
-
+	white_devel = 0;
+	black_devel = 0;
+	white_center = 0;
+	black_center = 0;
+	whitepawn_row_sum = blackpawn_row_sum = 8;
+	doubled_black = 0;
+	doubled_white = 0;
 	std::memset(board, 0, sizeof(board));
 	std::memset(cnts, 0, sizeof(cnts));
 

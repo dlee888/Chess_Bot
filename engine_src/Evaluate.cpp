@@ -18,7 +18,7 @@ Value eval(state& s, bool trace)
 
 		// King safety
 		int ksafety = 0;
-		ksafety += ksafety_coeff * (king_safety[whitekings[0].first][whitekings[0].second] - king_safety[7 - blackkings[0].first][blackkings[0].second]);
+		ksafety += ksafety_coeff * (king_safety[piecelists[WK + 6][0].first][piecelists[WK + 6][0].second] - king_safety[7 - piecelists[BK + 6][0].first][piecelists[BK + 6][0].second]);
 		// Castled?
 		if (s.white_castled)
 			ksafety += castle_bonus;
@@ -36,7 +36,7 @@ Value eval(state& s, bool trace)
 		
 		// open files and rooks on the seventh
 		int files = 0, wrooks = 0, brooks = 0;
-		for (pii& p : whiterooks) {
+		for (pii& p : piecelists[WR + 6]) {
 			if (white_pawn_counts[p.second] == 0) {
 				if (black_pawn_counts[p.second] == 0) {
 					files += open_bonus;
@@ -47,7 +47,7 @@ Value eval(state& s, bool trace)
 			}
 			if (p.first == 1) wrooks++;
 		}
-		for (pii& p : blackrooks) {
+		for (pii& p : piecelists[BR + 6]) {
 			if (black_pawn_counts[p.second] == 0) {
 				if (white_pawn_counts[p.second] == 0) {
 					files -= open_bonus;
@@ -82,7 +82,7 @@ Value eval(state& s, bool trace)
 
 		// King activity
 		int kactivity = 0;
-		kactivity += (king_activity[whitekings[0].first][whitekings[0].second] - king_activity[7 - blackkings[0].first][blackkings[0].second]);
+		kactivity += (king_activity[piecelists[WK + 6][0].first][piecelists[WK + 6][0].second] - king_activity[7 - piecelists[BK + 6][0].first][piecelists[BK + 6][0].second]);
 		score += activity_coeff * kactivity;
 		if (trace) printf("King activity: %d\n", kactivity);
 			
@@ -100,10 +100,10 @@ Value eval(state& s, bool trace)
 
 	// Bishop pair
 	int bpair = 0;
-	if (whitebishops.size() >= 2) {
+	if (piecelists[WB + 6].size() >= 2) {
 		bpair += bishop_pair_bonus;
 	}
-	if (blackbishops.size() >= 2) {
+	if (piecelists[BB + 6].size() >= 2) {
 		bpair -= bishop_pair_bonus;
 	}
 	score += bpair;

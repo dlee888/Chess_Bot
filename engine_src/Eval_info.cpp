@@ -4,81 +4,17 @@ int devel_coeff = 6, center_coeff = 4, ksafety_coeff = 14, castle_bonus = 25, ca
 	   dpawn_coeff = 10, activity_coeff = 8, semi_open_bonus = 10, open_bonus = 16, bishop_pair_bonus = 43,
 	   seventh_rooks[2] = {76, 213};
 
-int default_cnts[13] = {1, 1, 2, 2, 2, 8, 32, 8, 2, 2, 2, 1, 1}, cnts[13];
+int cnts[13];
 
 int white_devel, black_devel, white_center, black_center;
 
 // counting the number of pawns in each row to compute doubled pawns
-int white_pawn_counts[8] = {1, 1, 1, 1, 1, 1, 1, 1}, black_pawn_counts[8] = {1, 1, 1, 1, 1, 1, 1, 1};
+int white_pawn_counts[8], black_pawn_counts[8];
 
 int doubled_white, doubled_black;
 int whitepawn_row_sum, blackpawn_row_sum;
 
-std::vector<pii> whitepawns, whiteknights, whitebishops, whiterooks, whitequeens, whitekings;
-std::vector<pii> blackpawns, blackknights, blackbishops, blackrooks, blackqueens, blackkings;
-
-void init_eval_info()
-{
-	white_devel = 0;
-	black_devel = 0;
-	white_center = 0;
-	black_center = 0;
-
-	for (int i = 0; i < 13; i++)
-	{
-		cnts[i] = default_cnts[i];
-	}
-
-	for (int i = 0; i < 8; i++)
-	{
-		white_pawn_counts[i] = 1;
-		black_pawn_counts[i] = 1;
-	}
-
-	whitepawn_row_sum = blackpawn_row_sum = 8;
-	doubled_black = 0;
-	doubled_white = 0;
-
-	whitepawns.clear();
-	whiteknights.clear();
-	whitebishops.clear();
-	whiterooks.clear();
-	whitequeens.clear();
-	whitekings.clear();
-	blackpawns.clear();
-	blackknights.clear();
-	blackbishops.clear();
-	blackrooks.clear();
-	blackqueens.clear();
-	blackkings.clear();
-
-	for (int i = 0; i < 8; i++)
-	{
-		whitepawns.push_back(std::make_pair(6, i));
-		blackpawns.push_back(std::make_pair(1, i));
-	}
-
-	whiteknights.push_back(std::make_pair(7, 1));
-	whiteknights.push_back(std::make_pair(7, 6));
-	blackknights.push_back(std::make_pair(0, 1));
-	blackknights.push_back(std::make_pair(0, 6));
-
-	whitekings.push_back(std::make_pair(7, 4));
-	blackkings.push_back(std::make_pair(0, 4));
-
-	whitequeens.push_back(std::make_pair(7, 3));
-	blackqueens.push_back(std::make_pair(0, 3));
-
-	whiterooks.push_back(std::make_pair(7, 0));
-	whiterooks.push_back(std::make_pair(7, 7));
-	blackrooks.push_back(std::make_pair(0, 0));
-	blackrooks.push_back(std::make_pair(0, 7));
-
-	whitebishops.push_back(std::make_pair(7, 2));
-	whitebishops.push_back(std::make_pair(7, 5));
-	blackbishops.push_back(std::make_pair(0, 2));
-	blackbishops.push_back(std::make_pair(0, 5));
-}
+std::vector<pii> piecelists[13];
 
 int king_safety[8][8] = {
 	{-15, -14, -14, -13, -13, -14, -14, -15},

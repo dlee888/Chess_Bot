@@ -24,7 +24,7 @@
 #define BK -6
 #define WK 6
 
-extern int default_board[8][8];
+extern std::string start_fen;
 
 extern int dr_knight[8], dc_knight[8], dr_bishop[4], dc_bishop[4], dr_rook[4],
 dc_rook[4], dr_queen[8], dc_queen[8], dr_king[8], dc_king[8];
@@ -67,7 +67,7 @@ public:
 
 	state()
 	{
-		load("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+		load(start_fen);
 	}
 	void load(std::string fen);
 	std::string to_fen();
@@ -109,17 +109,17 @@ public:
 
 	bool is_check() {
 		if (to_move) {
-			return attacking(whitekings[0].first, whitekings[0].second, true) != 7;
+			return attacking(piecelists[WK + 6][0].first, piecelists[WK + 6][0].second, true) != 7;
 		} else {
-			return attacking(blackkings[0].first, blackkings[0].second, false) != 7;
+			return attacking(piecelists[BK + 6][0].first, piecelists[BK + 6][0].second, false) != 7;
 		}
 	}
 	
 	bool king_attacked() {
 		if (!to_move) {
-			return attacking(whitekings[0].first, whitekings[0].second, true) != 7;
+			return attacking(piecelists[WK + 6][0].first, piecelists[WK + 6][0].second, true) != 7;
 		} else {
-			return attacking(blackkings[0].first, blackkings[0].second, false) != 7;
+			return attacking(piecelists[BK + 6][0].first, piecelists[BK + 6][0].second, false) != 7;
 		}
 	}
 };

@@ -78,13 +78,22 @@ int main()
 			options[option_name] = value;
 		} 
 		else if (cmnd == "debug") {
-			int i;
-			std::cin >> i;
-			while (i != -1) {
-				curr_state.make_move(i);
-				std::cin >> i;
+			std::string move;
+			std::stack <int> moves;
+			while (move != "stop") {
+				std::cin >> move;
+				if (move == "undo") {
+					curr_state.unmake_move(moves.top());
+					moves.pop();
+				} else {
+					int move_i = curr_state.parse_move(move);
+					if (move_i == -1 || !curr_state.legal_check(move_i)) continue;
+					curr_state.make_move(move_i);
+					moves.push(move_i);
+				}
+				curr_state.print();
+				std::cout << "EVAL: " << eval(curr_state, true) << std::endl;
 			}
-			std::cout << curr_state.to_fen() << std::endl;
 		}
 		else if (cmnd == "quit")
 		{

@@ -9,8 +9,19 @@ void state::replace_board(int row, int col, int piece)
 }
 void state::_replace_board(int row, int col, int piece)
 {
-	board_hash ^= rand_bitstrings[(row << 3) + col][board[row][col] + 6];
-	cnts[board[row][col] + 6]--;
+	int orig_piece = board[row][col];
+	board_hash ^= rand_bitstrings[(row << 3) + col][orig_piece + 6];
+	cnts[orig_piece + 6]--;
+	if (orig_piece != 0) {
+		for (int i = 0; i < piecelists[orig_piece + 6].size(); i++)
+		{
+			if (piecelists[orig_piece + 6][i].first == row && piecelists[orig_piece + 6][i].second == col)
+			{
+				piecelists[orig_piece + 6].erase(piecelists[orig_piece + 6].begin() + i);
+				break;
+			}
+		}
+	}
 	if (board[row][col] == WP)
 	{
 		whitepawn_row_sum -= 7 - row;
@@ -20,14 +31,6 @@ void state::_replace_board(int row, int col, int piece)
 		if (white_pawn_counts[col] >= 2)
 			doubled_white += white_pawn_counts[col];
 		white_center -= pawn_center[row][col];
-		for (int i = 0; i < whitepawns.size(); i++)
-		{
-			if (whitepawns[i].first == row && whitepawns[i].second == col)
-			{
-				whitepawns.erase(whitepawns.begin() + i);
-				break;
-			}
-		}
 	}
 	else if (board[row][col] == BP)
 	{
@@ -38,134 +41,32 @@ void state::_replace_board(int row, int col, int piece)
 		if (black_pawn_counts[col] >= 2)
 			doubled_black += black_pawn_counts[col];
 		black_center -= pawn_center[7 - row][col];
-		for (int i = 0; i < blackpawns.size(); i++)
-		{
-			if (blackpawns[i].first == row && blackpawns[i].second == col)
-			{
-				blackpawns.erase(blackpawns.begin() + i);
-				break;
-			}
-		}
 	}
 	else if (board[row][col] == WN)
 	{
 		white_devel -= knight_devel[row][col];
 		white_center -= knight_center[row][col];
-		for (int i = 0; i < whiteknights.size(); i++)
-		{
-			if (whiteknights[i].first == row && whiteknights[i].second == col)
-			{
-				whiteknights.erase(whiteknights.begin() + i);
-				break;
-			}
-		}
 	}
 	else if (board[row][col] == BN)
 	{
 		black_devel -= knight_devel[7 - row][col];
 		black_center -= knight_center[7 - row][col];
-		for (int i = 0; i < blackknights.size(); i++)
-		{
-			if (blackknights[i].first == row && blackknights[i].second == col)
-			{
-				blackknights.erase(blackknights.begin() + i);
-				break;
-			}
-		}
 	}
 	else if (board[row][col] == WB)
 	{
 		white_devel -= bishop_devel[row][col];
-		for (int i = 0; i < whitebishops.size(); i++)
-		{
-			if (whitebishops[i].first == row && whitebishops[i].second == col)
-			{
-				whitebishops.erase(whitebishops.begin() + i);
-				break;
-			}
-		}
 	}
 	else if (board[row][col] == BB)
 	{
 		black_devel -= bishop_devel[7 - row][col];
-		for (int i = 0; i < blackbishops.size(); i++)
-		{
-			if (blackbishops[i].first == row && blackbishops[i].second == col)
-			{
-				blackbishops.erase(blackbishops.begin() + i);
-				break;
-			}
-		}
 	}
-	else if (board[row][col] == WR)
-	{
-		for (int i = 0; i < whiterooks.size(); i++)
-		{
-			if (whiterooks[i].first == row && whiterooks[i].second == col)
-			{
-				whiterooks.erase(whiterooks.begin() + i);
-				break;
-			}
-		}
-	}
-	else if (board[row][col] == BR)
-	{
-		for (int i = 0; i < blackrooks.size(); i++)
-		{
-			if (blackrooks[i].first == row && blackrooks[i].second == col)
-			{
-				blackrooks.erase(blackrooks.begin() + i);
-				break;
-			}
-		}
-	}
-	else if (board[row][col] == WQ)
-	{
-		for (int i = 0; i < whitequeens.size(); i++)
-		{
-			if (whitequeens[i].first == row && whitequeens[i].second == col)
-			{
-				whitequeens.erase(whitequeens.begin() + i);
-				break;
-			}
-		}
-	}
-	else if (board[row][col] == BQ)
-	{
-		for (int i = 0; i < blackqueens.size(); i++)
-		{
-			if (blackqueens[i].first == row && blackqueens[i].second == col)
-			{
-				blackqueens.erase(blackqueens.begin() + i);
-				break;
-			}
-		}
-	}
-	else if (board[row][col] == WK)
-	{
-		for (int i = 0; i < whitekings.size(); i++)
-		{
-			if (whitekings[i].first == row && whitekings[i].second == col)
-			{
-				whitekings.erase(whitekings.begin() + i);
-				break;
-			}
-		}
-	}
-	else if (board[row][col] == BK)
-	{
-		for (int i = 0; i < blackkings.size(); i++)
-		{
-			if (blackkings[i].first == row && blackkings[i].second == col)
-			{
-				blackkings.erase(blackkings.begin() + i);
-				break;
-			}
-		}
-	}
+
 	board_hash ^= rand_bitstrings[(row << 3) + col][piece + 6];
 	board[row][col] = piece;
 	cnts[piece + 6]++;
+	if (piece != 0) {
+		piecelists[piece + 6].push_back({row, col});
+	}
 	if (board[row][col] == WP)
 	{
 		whitepawn_row_sum += 7 - row;
@@ -175,7 +76,6 @@ void state::_replace_board(int row, int col, int piece)
 		if (white_pawn_counts[col] >= 2)
 			doubled_white += white_pawn_counts[col];
 		white_center += pawn_center[row][col];
-		whitepawns.push_back(std::make_pair(row, col));
 	}
 	else if (board[row][col] == BP)
 	{
@@ -186,53 +86,24 @@ void state::_replace_board(int row, int col, int piece)
 		if (black_pawn_counts[col] >= 2)
 			doubled_black += black_pawn_counts[col];
 		black_center += pawn_center[7 - row][col];
-		blackpawns.push_back(std::make_pair(row, col));
 	}
 	else if (board[row][col] == WN)
 	{
 		white_center += knight_center[row][col];
 		white_devel += knight_devel[row][col];
-		whiteknights.push_back(std::make_pair(row, col));
 	}
 	else if (board[row][col] == BN)
 	{
 		black_center += knight_center[7 - row][col];
 		black_devel += knight_devel[7 - row][col];
-		blackknights.push_back(std::make_pair(row, col));
 	}
 	else if (board[row][col] == WB)
 	{
 		white_devel += bishop_devel[row][col];
-		whitebishops.push_back(std::make_pair(row, col));
 	}
 	else if (board[row][col] == BB)
 	{
 		black_devel += bishop_devel[7 - row][col];
-		blackbishops.push_back(std::make_pair(row, col));
-	}
-	else if (board[row][col] == WR)
-	{
-		whiterooks.push_back(std::make_pair(row, col));
-	}
-	else if (board[row][col] == BR)
-	{
-		blackrooks.push_back(std::make_pair(row, col));
-	}
-	else if (board[row][col] == WQ)
-	{
-		whitequeens.push_back(std::make_pair(row, col));
-	}
-	else if (board[row][col] == BQ)
-	{
-		blackqueens.push_back(std::make_pair(row, col));
-	}
-	else if (board[row][col] == WK)
-	{
-		whitekings.push_back(std::make_pair(row, col));
-	}
-	else if (board[row][col] == BK)
-	{
-		blackkings.push_back(std::make_pair(row, col));
 	}
 }
 
@@ -263,38 +134,15 @@ int state::mate()
 	for (int i : list_moves())
 	{
 		make_move(i);
-		if (!to_move)
-		{
-			if (attacking(whitekings[0].first, whitekings[0].second, true) >= 7)
-			{
-				unmake_move(i);
-				return 0;
-			}
-		}
-		else
-		{
-			if (attacking(blackkings[0].first, blackkings[0].second, false) >= 7)
-			{
-				unmake_move(i);
-				return 0;
-			}
+		if (!king_attacked()) {
+			return 0;
 		}
 		unmake_move(i);
 	}
-	if (to_move)
-	{
-		if (attacking(whitekings[0].first, whitekings[0].second, true) < 7)
-			return 2;
-		else
-			return 1;
-	}
+	if (is_check())
+		return 2;
 	else
-	{
-		if (attacking(blackkings[0].first, blackkings[0].second, false) < 7)
-			return 2;
-		else
-			return 1;
-	}
+		return 1;
 }
 
 //lowest piece of the opposite color that is attacking a square
