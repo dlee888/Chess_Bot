@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "Search.h"
+#include "options.h"
 
 long long nodes, qsearch_nodes;
 long long tb_hits, qsearch_hits;
@@ -13,22 +14,19 @@ int futility_margin(int depth, bool improving) {
 	return (175 - 50 * improving) * depth;
 }
 
-// void break_after(double time) {
-// 	std::sleep(time);
-// 	break_now = true;
-// }
+void break_after(int time) {
+	std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(time));
+	break_now = true;
+}
 
-pii find_best_move(double time_limit, Depth depth_limit) {
-	// TODO: Make multi-threaded
+pii search_result = {0.0, -1};
 
+pii moves_loop() {
 	Depth curr_depth = ONE_PLY;
-	pii result = std::make_pair(0.0, -1);
-
-	// auto timer = std::thread(break_after, time_limit);
 
 	while (true)
 	{
-		printf("Searching depth %d\n", curr_depth);
+		if (options["debug"]) printf("Searching depth %d\n", curr_depth);
 
 		nodes = 0; qsearch_nodes = 0;
 		tb_hits = 0; qsearch_hits = 0;
@@ -38,12 +36,6 @@ pii find_best_move(double time_limit, Depth depth_limit) {
 		int start_time = clock();
 
 		std::vector <int> moves = curr_state.list_moves();
-
-		if (moves.size() == 1) {
-			// Break if there is only one legal move
-			result.second = moves[0];
-			break;
-		}
 
 		std::vector<pii> ordered_moves;
 
@@ -64,6 +56,12 @@ pii find_best_move(double time_limit, Depth depth_limit) {
 			curr_state.unmake_move(i);
 		}
 
+		if (ordered_moves.size() == 1) {
+			// Break if there is only one legal move
+			search_result.second = moves[0];
+			break;
+		}
+
 		std::stable_sort(ordered_moves.begin(), ordered_moves.end());
 		
 		int best_move = -1;
@@ -71,7 +69,7 @@ pii find_best_move(double time_limit, Depth depth_limit) {
 		for (const pii& p : ordered_moves)
 		{
 			int move = p.second;
-			// printf("Considering %s\n", curr_state.move_to_string(i).c_str());
+			if (options["debug"]) printf("Considering %s\n", curr_state.move_to_string(move).c_str());
 
 			curr_state.make_move(move);
 			Value x = -search(curr_depth, -VALUE_INFINITE, -evaluation);
@@ -82,7 +80,7 @@ pii find_best_move(double time_limit, Depth depth_limit) {
 				best_move = move;
 			}
 
-			// printf("x = %d\n", x);
+			if (options["debug"]) printf("eval = %d\n", x);
 
 			if (break_now) break;
 		}
@@ -90,32 +88,39 @@ pii find_best_move(double time_limit, Depth depth_limit) {
 		int time_taken = clock() - start_time;
 
 		double actual_eval = (double)evaluation / 100;
-		std::cout << "Done searching, actual depth = " << curr_depth - depth_qsearched << std::endl;
-		printf("Best move is %s, EVAL = %lf\n%lf seconds taken, %lld nodes searched, %lld nodes qsearched\nSpeed = %lf nodes per second. %lld TB hits, %lld Qsearch TB hits\n",
+		if (options["debug"]) std::cout << "Done searching, actual depth = " << curr_depth - depth_qsearched << std::endl;
+		if (options["debug"]) printf("Best move is %s, EVAL = %lf\n%lf seconds taken, %lld nodes searched, %lld nodes qsearched\nSpeed = %lf nodes per second. %lld TB hits, %lld Qsearch TB hits\n",
 				curr_state.move_to_string(best_move).c_str(),
 				actual_eval, (double)time_taken / CLOCKS_PER_SEC, nodes, qsearch_nodes, 
 				((double)nodes + qsearch_nodes) * CLOCKS_PER_SEC / time_taken, tb_hits, qsearch_hits);
 		
-		result = std::make_pair(evaluation, best_move);
+		search_result = std::make_pair(evaluation, best_move);
 
 		if (abs(evaluation) >= MATE) {
 			break;
 		}
-		
-		if (break_now || (time_taken * curr_state.list_moves().size() > 5.5 * time_limit * CLOCKS_PER_SEC)) {
-			printf("Breaking\n");
-			break;
-		}
 
-		if (curr_depth >= depth_limit) {
-			printf("Max depth reached\n");
+		if (curr_depth >= options["depth_limit"]) {
+			if (options["debug"]) printf("Max depth reached\n");
 			break;
 		}
 
 		curr_depth += ONE_PLY;
 	}
+	return search_result;
+}
 
-	if (!curr_state.to_move) result.first *= -1;
+pii find_best_move() {
+	// TODO: Make search multi-threaded
+	search_result = {0.0, -1};
+	
+	auto timer = std::thread(break_after, options["time_limit"]);
+	auto searcher = std::thread(moves_loop);
 
-	return result;
+	timer.join();
+	searcher.join();
+
+	if (!curr_state.to_move) search_result.first *= -1;
+
+	return search_result;
 }

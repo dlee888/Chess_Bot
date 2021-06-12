@@ -52,18 +52,22 @@ async def on_command_error(ctx, exc):
 
         lines = traceback.format_exception(etype, exc, trace)
         traceback_text = ''.join(lines)
-        print(traceback_text)
+
+        msg = ('Command Error:\n'
+               f'Author: {ctx.author} ({ctx.author.id})\n'
+               f'Guild: {ctx.guild} ({ctx.guild.id})\n'
+               f'Request: {ctx.message.content}\n'
+               f'```\n{traceback_text}\n```')
+        
+        print(msg)
 
         if await util.has_roles(ctx.author.id, ['Debugger', 'Tester', 'Mooderator'], bot):
             try:
-                await ctx.send('Command Error:\n'
-                               f'Author: {ctx.author} ({ctx.author.id})\n'
-                               f'Guild: {ctx.guild} ({ctx.guild.id})\n'
-                               f'```\n{traceback_text}\n```')
+                await ctx.send(msg)
             except discord.errors.HTTPException:
                 msg_txt_path = os.path.join(constants.TEMP_DIR, 'message.txt')
                 with open(msg_txt_path, 'w') as file:
-                    file.write(traceback_text)
+                    file.write(msg)
                 await ctx.send(f'Command Error:\n', file=discord.File(msg_txt_path))
         else:
             await ctx.send('Uh oh. Something went wrong.\n'
@@ -72,17 +76,12 @@ async def on_command_error(ctx, exc):
 
         error_channel = bot.get_channel(constants.ERROR_CHANNEL_ID)
         try:
-            await error_channel.send('Command Error:\n'
-                                     f'Author: {ctx.author} ({ctx.author.id})\n'
-                                     f'Guild: {ctx.guild} ({ctx.guild.id})\n'
-                                     f'```\n{traceback_text}\n```')
+            await error_channel.send(msg)
         except discord.errors.HTTPException:
             msg_txt_path = os.path.join(constants.TEMP_DIR, 'message.txt')
             with open(msg_txt_path, 'w') as file:
-                file.write(traceback_text)
-            await error_channel.send(f'Command Error:\n'
-                                     f'Author: {ctx.author} ({ctx.author.id})\n'
-                                     f'Guild: {ctx.guild} ({ctx.guild.id})\n', file=discord.File(msg_txt_path))
+                file.write(msg)
+            await ctx.send(f'Command Error:\n', file=discord.File(msg_txt_path))
 
 
 def setup():

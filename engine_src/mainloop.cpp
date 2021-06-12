@@ -59,7 +59,7 @@ int main()
 					continue;
 				}
 			}
-			pii best_move = find_best_move(options["time_limit"], (Depth)options["depth_limit"]);
+			pii best_move = find_best_move();
 			if ((curr_state.to_move && best_move.first <= -RESIGN) || (!curr_state.to_move && best_move.first >= RESIGN))
 			{
 				std::cout << "COMPUTER PLAYED RESIGN" << std::endl;
