@@ -1,5 +1,8 @@
 #include "State.h"
 
+#pragma GCC optimize("Ofast")
+#pragma GCC optimization ("unroll-loops")
+
 void state::replace_board(int row, int col, int piece)
 {
 	int orig_piece = board[row][col];

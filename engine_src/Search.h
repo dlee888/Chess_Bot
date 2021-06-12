@@ -9,6 +9,7 @@
 #include "State.h"
 #include "Evaluate.h"
 #include "Transpose.h"
+#include "options.h"
 
 extern long long nodes, qsearch_nodes;
 extern long long tb_hits, qsearch_hits;

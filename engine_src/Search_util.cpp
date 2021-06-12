@@ -3,7 +3,6 @@
 #include <algorithm>
 
 #include "Search.h"
-#include "options.h"
 
 long long nodes, qsearch_nodes;
 long long tb_hits, qsearch_hits;

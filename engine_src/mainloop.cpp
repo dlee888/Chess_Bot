@@ -1,8 +1,8 @@
 ﻿#include <ctime>
 
 #include "Openings.h"
-#include "options.h"
 #include "Search.h"
+#include "options.h"
 
 void init_everything()
 {
