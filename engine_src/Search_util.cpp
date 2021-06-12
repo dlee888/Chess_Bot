@@ -82,9 +82,12 @@ pii moves_loop() {
 			// if (options["debug"]) printf("eval = %d\n", x);
 
 			if (break_now) {
-				if (options["debug"]) printf("Time is up\n");
 				break;
 			}
+		}
+		if (break_now) {
+			if (options["debug"]) printf("Time is up\n");
+			break;
 		}
 
 		int time_taken = clock() - start_time;
