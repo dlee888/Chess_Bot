@@ -23,7 +23,7 @@ async def run_engine(person):
         game = data.data_manager.get_game(person)
 
         f = open(file_in, 'w')
-        time_control = [1, 5, 20]
+        time_control = [1000, 5696, 30000]
         max_depth = [5, 10, 69]
         f.write(
             f'setoption time_limit {time_control[game.bot]}\nsetoption depth_limit {max_depth[game.bot]}\ngo {game.fen}\nquit')

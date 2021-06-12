@@ -68,7 +68,7 @@ pii moves_loop() {
 		for (const pii& p : ordered_moves)
 		{
 			int move = p.second;
-			if (options["debug"]) printf("Considering %s\n", curr_state.move_to_string(move).c_str());
+			// if (options["debug"]) printf("Considering %s\n", curr_state.move_to_string(move).c_str());
 
 			curr_state.make_move(move);
 			Value x = -search(curr_depth, -VALUE_INFINITE, -evaluation);
@@ -79,9 +79,12 @@ pii moves_loop() {
 				best_move = move;
 			}
 
-			if (options["debug"]) printf("eval = %d\n", x);
+			// if (options["debug"]) printf("eval = %d\n", x);
 
-			if (break_now) break;
+			if (break_now) {
+				if (options["debug"]) printf("Time is up\n");
+				break;
+			}
 		}
 
 		int time_taken = clock() - start_time;
@@ -100,7 +103,7 @@ pii moves_loop() {
 		}
 
 		if (curr_depth >= options["depth_limit"]) {
-			if (options["debug"]) printf("Max depth reached\n");
+			// if (options["debug"]) printf("Max depth reached\n");
 			break;
 		}
 
@@ -112,6 +115,7 @@ pii moves_loop() {
 pii find_best_move() {
 	// TODO: Make search multi-threaded
 	search_result = {0.0, -1};
+	break_now = false;
 	
 	auto timer = std::thread(break_after, options["time_limit"]);
 	auto searcher = std::thread(moves_loop);
