@@ -9,7 +9,7 @@ void state::replace_board(int row, int col, int piece)
 	board_hash ^= rand_bitstrings[(row << 3) + col][orig_piece + 6];
 	cnts[orig_piece + 6]--;
 	if (orig_piece != 0) {
-		for (int i = 0; i < piecelists[orig_piece + 6].size(); i++)
+		for (int i = 0; i < (int) piecelists[orig_piece + 6].size(); i++)
 		{
 			if (piecelists[orig_piece + 6][i].first == row && piecelists[orig_piece + 6][i].second == col)
 			{
