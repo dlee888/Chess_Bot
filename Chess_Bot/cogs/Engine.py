@@ -15,7 +15,7 @@ class Engine(commands.Cog):
         self.client = client
 
     @commands.command(aliases=['play'])
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def move(self, ctx, move):
         '''
         Plays <move> against the computer

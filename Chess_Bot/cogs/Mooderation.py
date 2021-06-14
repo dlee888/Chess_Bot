@@ -20,7 +20,7 @@ class Mooderation(commands.Cog):
         '''
 
         if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            await ctx.send('You do not have permission to abort games')
+            # await ctx.send('You do not have permission to abort games')
             return
 
         if data.data_manager.get_game(user.id) == None:
@@ -59,7 +59,7 @@ class Mooderation(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def gift(self, ctx, person: typing.Union[discord.User, discord.Member], amount: float):
         if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            await ctx.send('You do not have permission to gift rating')
+            # await ctx.send('You do not have permission to gift rating')
             return
 
         if data.data_manager.get_rating(person.id) == None:

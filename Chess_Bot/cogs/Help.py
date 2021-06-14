@@ -19,6 +19,7 @@ class Help(commands.Cog):
         return embed
 
     @commands.group(invoke_without_command=True)
+    @commands.cooldown(1, 2, commands.BucketType.user)
     async def help(self, ctx):
         embed = await self.get_default_help_embed()
         embed.description = 'List of commands. Type "$help [command]" for more information about a certain command'

@@ -1,5 +1,6 @@
 #include "State.h"
 
+#pragma GCC target ("avx2")
 #pragma GCC optimize("Ofast")
 #pragma GCC optimization ("unroll-loops")
 

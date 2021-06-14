@@ -40,7 +40,8 @@ async def on_command_error(ctx, exc):
     elif type(exc) == commands.errors.CommandOnCooldown:
         await ctx.send(f'You are on cooldown. Try again in {round(exc.retry_after, 3)} seconds')
     elif type(exc) == commands.errors.CommandNotFound:
-        await ctx.send('Command not found.')
+        # await ctx.send('Command not found.')
+        pass
     elif type(exc) == commands.errors.MissingPermissions:
         await ctx.send(f'You are missing permissions.\nThe missing permissions are: {" ".join(exc.missing_perms)}')
     else:

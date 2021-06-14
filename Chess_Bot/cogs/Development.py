@@ -30,7 +30,7 @@ class Development(commands.Cog):
         '''
 
         if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            await ctx.send(f'You do not have permission to update')
+            # await ctx.send(f'You do not have permission to update')
             return
 
         await util.run('make clear')
@@ -56,7 +56,7 @@ class Development(commands.Cog):
         '''
 
         if ctx.author.id != 716070916550819860:
-            await ctx.send('Geniosity limit exceeded. Try again later')
+            # await ctx.send('Geniosity limit exceeded. Try again later')
             return
 
         await ctx.send(f'Executing command "{cmd}"...')
@@ -83,7 +83,7 @@ class Development(commands.Cog):
         '''
 
         if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            await ctx.send(f'You do not have permission to restart')
+            # await ctx.send(f'You do not have permission to restart')
             return
 
         await ctx.send(f'Restarting...')
@@ -98,7 +98,7 @@ class Development(commands.Cog):
         '''
 
         if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            await ctx.send(f'You do not have permission to run "git pull"')
+            # await ctx.send(f'You do not have permission to run "git pull"')
             return
 
         await ctx.send(f'Executing command "git pull"...')
@@ -125,7 +125,7 @@ class Development(commands.Cog):
         '''
 
         if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            await ctx.send(f'You do not have permission to debug_load')
+            # await ctx.send(f'You do not have permission to debug_load')
             return
 
         game = data.data_manager.get_game(user.id)
@@ -203,11 +203,11 @@ class Development(commands.Cog):
         Sends files
         '''
         if '..' in file and ctx.author.id != 716070916550819860:
-            await ctx.send('Geniosity limit exceeded. Try again later')
+            # await ctx.send('Geniosity limit exceeded. Try again later')
             return
 
         if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            await ctx.send(f'You do not have permission to get files')
+            # await ctx.send(f'You do not have permission to get files')
             return
 
         await ctx.send(file, file=discord.File(file))

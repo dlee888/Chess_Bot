@@ -62,7 +62,7 @@ class Misc(commands.Cog):
         ratings = data.data_manager.get_ratings()
 
         if num == 'all':
-            number = len(ratings.keys())
+            number = min(25, len(ratings.keys()))
         elif num == '-1':
             number = min(10, len(ratings.keys()))
         else:
@@ -75,8 +75,9 @@ class Misc(commands.Cog):
         if number > len(ratings.keys()):
             await ctx.send('There aren\'t even that many rated players lmao')
             return
-
-        number = min(number, 25)
+        if number > 25:
+            await ctx.send('The leaderboard can hold a max of 25 people.')
+            return
 
         all_players = []
 

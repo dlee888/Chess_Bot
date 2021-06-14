@@ -37,12 +37,7 @@ class Timer(commands.Cog):
         game = data.data_manager.get_game(person)
         data.data_manager.delete_game(person, False)
 
-        old_rating = data.data_manager.get_rating(person)
-        if old_rating == None:
-            old_rating = constants.DEFAULT_RATING
-            data.data_manager.change_rating(person, constants.DEFAULT_RATING)
-        util.update_rating(person, 0, game.bot)
-        new_rating = data.data_manager.get_rating(person)
+        old_rating, new_rating = util.update_rating(person, 0, game.bot)
 
         try:
             dm = user.dm_channel
@@ -95,7 +90,7 @@ class Timer(commands.Cog):
     @low_time_warn.before_loop
     @no_time_check.before_loop
     async def wait_until_ready(self):
-        print('Waiting for bot to get ready')
+        # print('Waiting for bot to get ready')
         await self.client.wait_until_ready()
 
 
