@@ -68,10 +68,8 @@ void state::unmake_move(int move)
 	}
 	else if (((move >> 18) & 3) == 2)
 	{
-		int promote_to = (move >> 20) + 2;
-
 		replace_board(row_final, col_final, piece_captured * color * -1);
-		replace_board(row_init, col_init, promote_to * color);
+		replace_board(row_init, col_init, WP * color);
 	}
 	else if (((move >> 18) & 3) == 1)
 	{
