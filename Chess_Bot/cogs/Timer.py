@@ -91,7 +91,7 @@ class Timer(commands.Cog):
     @low_time_warn.before_loop
     @no_time_check.before_loop
     async def wait_until_ready(self):
-        logging.info('Waiting for bot to get ready')
+        logging.info('Cog Timer: Waiting for bot to get ready')
         await self.client.wait_until_ready()
 
 

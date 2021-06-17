@@ -35,8 +35,7 @@ class Autoposter(commands.Cog):
 
         embed.set_thumbnail(url=constants.AVATAR_URL)
 
-        guild = await self.client.fetch_guild(constants.SUPPORT_SERVER_ID)
-        stats_channel = guild.get_channel(constants.STATS_CHANNEL_ID)
+        stats_channel = await self.client.fetch_channel(constants.STATS_CHANNEL_ID)
         await stats_channel.send(embed=embed)
 
     @post_stats.before_loop
