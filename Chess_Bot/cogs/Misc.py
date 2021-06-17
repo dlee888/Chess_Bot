@@ -3,6 +3,7 @@ from discord.ext import commands
 from discord.ext import tasks
 import time
 import typing
+import logging
 
 import Chess_Bot.util.Utility as util
 import Chess_Bot.util.Data as data
@@ -23,7 +24,11 @@ class Misc(commands.Cog):
         game = discord.Game("chess")
         await self.client.change_presence(status=discord.Status.dnd, activity=game)
 
-        print('Bot is ready')
+        guild = await self.client.fetch_guild(constants.SUPPORT_SERVER_ID)
+        status_channel = await guild.fetch_channel(constants.STATUS_CHANNEL_ID)
+        await status_channel.send('Chess Bot has just restarted.')
+        
+        logging.info('Bot is ready')
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
@@ -144,7 +149,7 @@ class Misc(commands.Cog):
                         inline=False)
         embed.add_field(name='Version', value=version, inline=True)
         embed.add_field(name="Info",
-                        value='Chess Bot is a bot that plays chess. `$help` for a list of commands.', inline=False)
+                        value='Chess Bot is a bot that plays chess. Use `$help` for a list of commands.', inline=False)
 
         users = 0
         for guild in self.client.guilds:

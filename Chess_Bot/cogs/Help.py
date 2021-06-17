@@ -22,7 +22,7 @@ class Help(commands.Cog):
     @commands.cooldown(1, 2, commands.BucketType.user)
     async def help(self, ctx):
         embed = await self.get_default_help_embed()
-        embed.description = 'List of commands. Type "$help [command]" for more information about a certain command'
+        embed.description = 'List of commands. Type `$help [command]` for more information about a certain command'
 
         embed.add_field(
             name='Playing', value='`challenge`, `profiles`, `move`, `resign`, `view`, `fen`, `time`', inline=False)
