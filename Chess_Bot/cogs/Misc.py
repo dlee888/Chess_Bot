@@ -25,7 +25,7 @@ class Misc(commands.Cog):
         await self.client.change_presence(status=discord.Status.dnd, activity=game)
 
         guild = await self.client.fetch_guild(constants.SUPPORT_SERVER_ID)
-        status_channel = await guild.fetch_channel(constants.STATUS_CHANNEL_ID)
+        status_channel = guild.get_channel(constants.STATUS_CHANNEL_ID)
         await status_channel.send('Chess Bot has just restarted.')
         
         logging.info('Bot is ready')
