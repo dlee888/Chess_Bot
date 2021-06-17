@@ -131,7 +131,8 @@ int state::mate()
 	for (int i : list_moves())
 	{
 		make_move(i);
-		if (!king_attacked()) {
+		if (!king_attacked()){
+			unmake_move(i);
 			return 0;
 		}
 		unmake_move(i);
