@@ -11,19 +11,6 @@
 #include "Eval_info.h"
 #include "Transpose.h"
 
-#define BP -1
-#define WP 1
-#define BN -2
-#define WN 2
-#define BB -3
-#define WB 3
-#define BR -4
-#define WR 4
-#define BQ -5
-#define WQ 5
-#define BK -6
-#define WK 6
-
 extern std::string start_fen;
 
 extern int dr_knight[8], dc_knight[8], dr_bishop[4], dc_bishop[4], dr_rook[4],

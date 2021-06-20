@@ -1,4 +1,5 @@
 #include "State.h"
+#include "psqt.h"
 
 #pragma GCC target ("avx2")
 #pragma GCC optimize("Ofast")
@@ -19,43 +20,22 @@ void state::replace_board(int row, int col, int piece)
 			}
 		}
 	}
+	curr_psqt -= get_psqt(orig_piece, row, col);
 	if (board[row][col] == WP)
 	{
-		whitepawn_row_sum -= 7 - row;
 		if (white_pawn_counts[col] >= 2)
 			doubled_white -= white_pawn_counts[col];
 		white_pawn_counts[col]--;
 		if (white_pawn_counts[col] >= 2)
 			doubled_white += white_pawn_counts[col];
-		white_center -= pawn_center[row][col];
 	}
 	else if (board[row][col] == BP)
 	{
-		blackpawn_row_sum -= row;
 		if (black_pawn_counts[col] >= 2)
 			doubled_black -= black_pawn_counts[col];
 		black_pawn_counts[col]--;
 		if (black_pawn_counts[col] >= 2)
 			doubled_black += black_pawn_counts[col];
-		black_center -= pawn_center[7 - row][col];
-	}
-	else if (board[row][col] == WN)
-	{
-		white_devel -= knight_devel[row][col];
-		white_center -= knight_center[row][col];
-	}
-	else if (board[row][col] == BN)
-	{
-		black_devel -= knight_devel[7 - row][col];
-		black_center -= knight_center[7 - row][col];
-	}
-	else if (board[row][col] == WB)
-	{
-		white_devel -= bishop_devel[row][col];
-	}
-	else if (board[row][col] == BB)
-	{
-		black_devel -= bishop_devel[7 - row][col];
 	}
 
 	board_hash ^= rand_bitstrings[(row << 3) + col][piece + 6];
@@ -64,43 +44,22 @@ void state::replace_board(int row, int col, int piece)
 	if (piece != 0) {
 		piecelists[piece + 6].push_back({row, col});
 	}
+	curr_psqt += get_psqt(piece, row, col);
 	if (board[row][col] == WP)
 	{
-		whitepawn_row_sum += 7 - row;
 		if (white_pawn_counts[col] >= 2)
 			doubled_white -= white_pawn_counts[col];
 		white_pawn_counts[col]++;
 		if (white_pawn_counts[col] >= 2)
 			doubled_white += white_pawn_counts[col];
-		white_center += pawn_center[row][col];
 	}
 	else if (board[row][col] == BP)
 	{
-		blackpawn_row_sum += row;
 		if (black_pawn_counts[col] >= 2)
 			doubled_black -= black_pawn_counts[col];
 		black_pawn_counts[col]++;
 		if (black_pawn_counts[col] >= 2)
 			doubled_black += black_pawn_counts[col];
-		black_center += pawn_center[7 - row][col];
-	}
-	else if (board[row][col] == WN)
-	{
-		white_center += knight_center[row][col];
-		white_devel += knight_devel[row][col];
-	}
-	else if (board[row][col] == BN)
-	{
-		black_center += knight_center[7 - row][col];
-		black_devel += knight_devel[7 - row][col];
-	}
-	else if (board[row][col] == WB)
-	{
-		white_devel += bishop_devel[row][col];
-	}
-	else if (board[row][col] == BB)
-	{
-		black_devel += bishop_devel[7 - row][col];
 	}
 }
 

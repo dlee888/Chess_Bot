@@ -7,11 +7,7 @@ void state::load(std::string fen) {
 		piecelists[i].clear();
 	}
 	board_hash = 0;
-	white_devel = 0;
-	black_devel = 0;
-	white_center = 0;
-	black_center = 0;
-	whitepawn_row_sum = blackpawn_row_sum = 8;
+	curr_psqt = SCORE_ZERO;
 	doubled_black = 0;
 	doubled_white = 0;
 	std::memset(board, 0, sizeof(board));
@@ -200,6 +196,29 @@ std::string state::move_to_string(int move)
 	res += col_final + 'a';
 	res += '8' - row_final;
 	res += " (" + std::to_string(move) + ")";
+	return res;
+}
+
+std::string to_uci(int move) {
+	if (move == 1835008)
+	{
+		return "O-O";
+	}
+	if (move == 2883584)
+	{
+		return "O-O-O";
+	}
+	int row_init = (move >> 3) & 7, row_final = (move >> 9) & 7, col_init = move & 7, col_final = (move >> 6) & 7;
+	std::string res;
+	res += col_init + 'a';
+	res += '8' - row_init;
+	res += col_final + 'a';
+	res += '8' - row_final;
+	if ((move >> 18) & 3 == 2) {
+		int promote_to = (move >> 20);
+		std::string promote_pieces = "nbrq";
+		res += promote_pieces[promote_to];
+	}
 	return res;
 }
 
