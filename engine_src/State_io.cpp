@@ -214,7 +214,7 @@ std::string to_uci(int move) {
 	res += '8' - row_init;
 	res += col_final + 'a';
 	res += '8' - row_final;
-	if ((move >> 18) & 3 == 2) {
+	if (((move >> 18) & 3) == 2) {
 		int promote_to = (move >> 20);
 		std::string promote_pieces = "nbrq";
 		res += promote_pieces[promote_to];

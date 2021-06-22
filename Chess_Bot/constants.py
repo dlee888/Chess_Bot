@@ -21,7 +21,7 @@ THONK_EMOJI_ID = 814285875265536001
 DEFAULT_RATING = 1200
 LEADERBOARD_IGNORE = []
 
-INVITE_LINK = 'https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=268815424&scope=bot'
+INVITE_LINK = 'https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=311360&scope=bot'
 GITHUB_LINK = 'https://github.com/jeffarjeffar/Chess_Bot'
 SUPPORT_SERVER_INVITE = 'https://discord.gg/Bm4zjtNTD2'
 TOPGG_LINK = 'https://top.gg/bot/801501916810838066/vote'
