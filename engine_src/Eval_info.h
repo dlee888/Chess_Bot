@@ -19,4 +19,6 @@ extern int white_pawn_counts[8], black_pawn_counts[8];
 extern int doubled_white, doubled_black;
 
 extern std::vector<pii> piecelists[13];
+
+extern std::vector <int> nnue_input;
 #endif // !EVAL_INFO_H_INCLUDED

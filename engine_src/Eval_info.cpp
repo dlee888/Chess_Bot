@@ -13,3 +13,5 @@ int white_pawn_counts[8], black_pawn_counts[8];
 int doubled_white, doubled_black;
 
 std::vector<pii> piecelists[13];
+
+std::vector <int> nnue_input = std::vector <int>(384);

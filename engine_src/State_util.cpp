@@ -37,6 +37,9 @@ void state::replace_board(int row, int col, int piece)
 		if (black_pawn_counts[col] >= 2)
 			doubled_black += black_pawn_counts[col];
 	}
+	if (orig_piece != 0) {
+		nnue_input[((abs(orig_piece) - 1) << 6) + (row << 3) + col] = 0;
+	}
 
 	board_hash ^= rand_bitstrings[(row << 3) + col][piece + 6];
 	board[row][col] = piece;
@@ -60,6 +63,9 @@ void state::replace_board(int row, int col, int piece)
 		black_pawn_counts[col]++;
 		if (black_pawn_counts[col] >= 2)
 			doubled_black += black_pawn_counts[col];
+	}
+	if (piece != 0) {
+		nnue_input[((abs(piece) - 1) << 6) + (row << 3) + col] = (piece < 0 ? -1 : 1);
 	}
 }
 

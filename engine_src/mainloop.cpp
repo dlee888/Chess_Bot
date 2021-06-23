@@ -3,11 +3,16 @@
 #include "Openings.h"
 #include "Search.h"
 #include "options.h"
+#include "nnue.h"
+
+std::string nnue_path = "./engine_src/nnue";
 
 void init_everything()
 {
 	init_table();
 	load_openings();
+	nnue_input = std::vector <int>(384);
+	load_nnue(nnue_path);
 	curr_state = state();
 }
 
@@ -74,8 +79,13 @@ int main()
 		else if (cmnd == "setoption") {
 			std::string option_name;
 			int value;
-			std::cin >> option_name >> value;
-			options[option_name] = value;
+			std::cin >> option_name;
+			if (option_name == "nnue_path") {
+				std::cin >> nnue_path;
+			} else {
+				std::cin >> value;
+				options[option_name] = value;
+			}
 		} 
 		else if (cmnd == "debug") {
 			std::string move;

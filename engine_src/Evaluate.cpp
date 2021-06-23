@@ -1,7 +1,11 @@
 #include "Evaluate.h"
 
-Value eval(state& s, bool trace)
+Value eval(state& s, bool trace, bool use_nnue)
 {
+	if (use_nnue) {
+		return run_nnue(s);
+	}
+
 	Value score = VALUE_ZERO;
 
 	if ((10 * (cnts[BQ + 6] + cnts[WQ + 6]) + 5 * (cnts[BR + 6] + cnts[WR + 6]) +

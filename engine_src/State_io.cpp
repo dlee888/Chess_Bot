@@ -12,6 +12,7 @@ void state::load(std::string fen) {
 	doubled_white = 0;
 	std::memset(board, 0, sizeof(board));
 	std::memset(cnts, 0, sizeof(cnts));
+	nnue_input = std::vector <int>(384);
 
 	std::stringstream ss(fen);
 	for (int row = 0; row < 8; row++) {
