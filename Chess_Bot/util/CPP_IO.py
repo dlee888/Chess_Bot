@@ -55,7 +55,7 @@ async def run_engine(person):
             san = board.san_and_push(result.move)
             game.fen = board.fen()
             return san, game
-    elif game.bot == Profile.cbnnue:
+    elif game.bot == Profile.cbnnue.value:
         file_in = os.path.join(constants.TEMP_DIR, f'input-{person}.txt')
         file_out = os.path.join(constants.TEMP_DIR, f'output-{person}.txt')
 
