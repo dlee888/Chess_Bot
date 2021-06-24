@@ -16,6 +16,7 @@ class Profile(enum.Enum):
     sf2 = 4
     sf3 = 5
     sfmax = 6
+    cbnnue = 7
 
 
 class ProfileNames(enum.Enum):
@@ -26,6 +27,7 @@ class ProfileNames(enum.Enum):
     sf2 = 'Stockfish level 2'
     sf3 = 'Stockfish level 3'
     sfmax = 'Stockfish max strength'
+    cbnnue = 'Chess Bot NNUE'
 
 
 class Profiles(commands.Cog):

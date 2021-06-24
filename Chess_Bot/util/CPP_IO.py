@@ -55,6 +55,31 @@ async def run_engine(person):
             san = board.san_and_push(result.move)
             game.fen = board.fen()
             return san, game
+    elif game.bot == Profile.cbnnue:
+        file_in = os.path.join(constants.TEMP_DIR, f'input-{person}.txt')
+        file_out = os.path.join(constants.TEMP_DIR, f'output-{person}.txt')
+
+        game = data.data_manager.get_game(person)
+
+        f = open(file_in, 'w')
+        f.write(
+            f'setoption time_limit 20000\nsetoption use_nnue 1\ngo {game.fen}\nquit')
+        f.close()
+        await util.run(f'./engine < {file_in} > {file_out}')
+        
+        f = open(file_out)
+        out = f.readlines()
+        f.close()
+        move = None
+        for i in range(len(out) - 1, 0, -1):
+            if out[i].startswith('COMPUTER PLAYED'):
+                move = out[i][16:].strip()
+                break
+        for i in range(len(out) - 1, 0, -1):
+            if out[i].startswith('GAME: '):
+                game.fen = out[i][6:].strip()
+                break
+        return move, game
 
 async def output_move(ctx, person, move):
     game = data.data_manager.get_game(person)
