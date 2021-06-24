@@ -105,7 +105,7 @@ async def output_move(ctx, person, move):
 async def log(person, client, ctx):
     game = data.data_manager.get_game(person)
     
-    if game.bot in [Profile.cb1.value, Profile.cb2.value, Profile.cb3.value]:
+    if game.bot in [Profile.cb1.value, Profile.cb2.value, Profile.cb3.value, Profile.cbnnue.value]:
         log_channel = client.get_channel(constants.LOG_CHANNEL_ID)
         get_image(person)
         await log_channel.send(f'Output for {ctx.author} (id = {ctx.author.id})\n'
