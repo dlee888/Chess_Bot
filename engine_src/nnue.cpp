@@ -75,7 +75,12 @@ Value get_value(float wdl) {
 	if (wdl == 1) {
 		return MATE;
 	}
-	return Value(200.0 * sqrt(log(wdl / (1 - wdl))));
+	float val = log(wdl / (1 - wdl));
+	if (val > 0) {
+		return Value(200.0 * sqrt(val));
+	} else {
+		return Value(-200.0 * sqrt(-val));
+	}
 }
 
 Value run_nnue(state& s) {
