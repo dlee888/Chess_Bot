@@ -15,7 +15,7 @@ whiteblack = ['black', 'white']
 
 async def run_engine(person):
     game = data.data_manager.get_game(person)
-    
+
     if game.bot in [Profile.cb1.value, Profile.cb2.value, Profile.cb3.value]:
         file_in = os.path.join(constants.TEMP_DIR, f'input-{person}.txt')
         file_out = os.path.join(constants.TEMP_DIR, f'output-{person}.txt')
@@ -29,7 +29,7 @@ async def run_engine(person):
             f'setoption time_limit {time_control[game.bot]}\nsetoption depth_limit {max_depth[game.bot]}\ngo {game.fen}\nquit')
         f.close()
         await util.run(f'./engine < {file_in} > {file_out}')
-        
+
         f = open(file_out)
         out = f.readlines()
         f.close()
@@ -66,7 +66,7 @@ async def run_engine(person):
             f'setoption time_limit 20000\nsetoption use_nnue 1\ngo {game.fen}\nquit')
         f.close()
         await util.run(f'./engine < {file_in} > {file_out}')
-        
+
         f = open(file_out)
         out = f.readlines()
         f.close()
@@ -80,6 +80,7 @@ async def run_engine(person):
                 game.fen = out[i][6:].strip()
                 break
         return move, game
+
 
 async def output_move(ctx, person, move):
     game = data.data_manager.get_game(person)
@@ -104,15 +105,15 @@ async def output_move(ctx, person, move):
 
 async def log(person, client, ctx):
     game = data.data_manager.get_game(person)
-    
+
     if game.bot in [Profile.cb1.value, Profile.cb2.value, Profile.cb3.value, Profile.cbnnue.value]:
         log_channel = client.get_channel(constants.LOG_CHANNEL_ID)
         get_image(person)
         await log_channel.send(f'Output for {ctx.author} (id = {ctx.author.id})\n'
-                            f'Request: {ctx.message.content}',
-                            files=[
-                                discord.File(
-                                    os.path.join(constants.TEMP_DIR, f'input-{person}.txt')),
-                                discord.File(
-                                    os.path.join(constants.TEMP_DIR, f'output-{person}.txt')),
-                                discord.File(os.path.join(constants.TEMP_DIR, f'image-{person}.png'))])
+                               f'Request: {ctx.message.content}',
+                               files=[
+                                   discord.File(
+                                       os.path.join(constants.TEMP_DIR, f'input-{person}.txt')),
+                                   discord.File(
+                                       os.path.join(constants.TEMP_DIR, f'output-{person}.txt')),
+                                   discord.File(os.path.join(constants.TEMP_DIR, f'image-{person}.png'))])
