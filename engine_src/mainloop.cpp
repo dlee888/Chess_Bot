@@ -37,7 +37,7 @@ int main()
 			std::string pos = read_fen();
 			curr_state.load(pos);
 			curr_state.print();
-			std::cout << eval(curr_state, true) << std::endl;
+			std::cout << "STATIC EVAL: " << eval(curr_state, true, options["use_nnue"]) << std::endl;
 			if (options["use_opening_book"]) {
 				if (curr_state.to_move && curr_state.full_move > 2 && white_openings[curr_state.get_hash()].size()) {
 					int move_i = white_openings[curr_state.get_hash()][0];
