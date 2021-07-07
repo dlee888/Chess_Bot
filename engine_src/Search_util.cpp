@@ -69,7 +69,7 @@ pii moves_loop()
 		if (ordered_moves.size() == 1)
 		{
 			// Break if there is only one legal move
-			search_result.second = moves[0];
+			search_result.second = ordered_moves[0].second;
 			break;
 		}
 
