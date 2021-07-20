@@ -7,4 +7,5 @@ void set_default_options() {
 	options["depth_limit"] = MAX_DEPTH;
 	options["use_opening_book"] = 1;
 	options["debug"] = 1;
+	options["mcts_prob"] = 0; // Probability of a MCTS prune, multiplied by RAND_MAX
 }

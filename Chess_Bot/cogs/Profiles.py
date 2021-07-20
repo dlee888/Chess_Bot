@@ -12,23 +12,41 @@ class Profile(enum.Enum):
     cb1 = 0
     cb2 = 1
     cb3 = 2
-    sf1 = 3
-    sf2 = 4
-    sf3 = 5
-    sfmax = 6
-    cbnnue = 7
+    cb4 = 3
+    cb5 = 4
+    sf1 = 5
+    sf2 = 6
+    sf3 = 7
+    sfmax = 8
 
 
 class ProfileNames(enum.Enum):
     cb1 = 'Chess Bot level 1'
     cb2 = 'Chess Bot level 2'
     cb3 = 'Chess Bot level 3'
+    cb4 = 'Chess Bot level 4'
+    cb5 = 'Chess Bot level 5'
     sf1 = 'Stockfish level 1'
     sf2 = 'Stockfish level 2'
     sf3 = 'Stockfish level 3'
     sfmax = 'Stockfish max strength'
-    cbnnue = 'Chess Bot NNUE'
 
+
+def get_name(bot_id : int):
+    return ProfileNames[Profile(bot_id).name].value
+def get_description(bot_name : str):
+    descriptions = {
+        'cb1': 'Level 1 of the Chess Bot engine',
+        'cb2': 'Level 2 of the Chess Bot engine',
+        'cb3': 'Level 3 of the Chess Bot engine',
+        'cb4': 'Level 4 of the Chess Bot engine',
+        'cb5': 'Level 5 of the Chess Bot engine',
+        'sf1': 'Stockfish with the UCI option `Skill level` set to 1.',
+        'sf2': 'Stockfish with the UCI option `Skill level` set to 4.',
+        'sf3': 'Stockfish with the UCI option `Skill level` set to 8.',
+        'sfmax': 'Stockfish with the UCI option `Skill level` set to 20 (the maximum possible).',
+    }
+    return descriptions[bot_name]
 
 class Profiles(commands.Cog):
 
@@ -49,131 +67,48 @@ class Profiles(commands.Cog):
     @commands.cooldown(1, 2, commands.BucketType.user)
     async def profile(self, ctx):
         embed = await self.get_default_embed()
-        embed.description = 'These are the Chess Bot computers that you can challenge.\nUse `$profile <bot tag>` for more information on a bot. For example, `$profile cb1`.'
+        embed.description = ('These are the Chess Bot computers that you can challenge.\n'
+        'Use the command `$profile view <bot tag>` for more information on a bot.\n'
+        'For example, `$profile view cb1` to get info about Chess Bot level 1.')
+        all_cb = [
+            f'`{bot.name}` ({get_name(bot.value)})' for bot in Profile if bot.name.startswith('cb')]
+        all_sf = [
+            f'`{bot.name}` ({get_name(bot.value)})' for bot in Profile if bot.name.startswith('sf')]
         embed.add_field(
-            name='Chess Bot', value='`cb1 (Chess Bot level 1)`, `cb2 (Chess Bot level 2)`, `cb3 (Chess Bot level 3)`')
+            name='Chess Bot', value='\n'.join(all_cb))
         embed.add_field(
-            name='Stockfish', value='`sf1 (Stockfish level 1)`, `sf2 (Stockfish level 2)`, `sf3 (Stockfish level 3)`, `sfmax (Stockfish max strength)`')
+            name='Stockfish', value='\n'.join(all_sf))
         await ctx.send(embed=embed)
 
-    @profile.command()
-    async def cb1(self, ctx):
+    @profile.command(aliases=['info'])
+    async def view(self, ctx, tag):
+        try:
+            bot = Profile[tag]
+        except KeyError:
+            await ctx.send('That isn\'t a valid bot. Use `$profiles` to see which bots you can challenge.')
+            return
+
         embed = await self.get_default_embed()
-        embed.add_field(name='Chess Bot level 1',
-                        value='Level 1 of the Chess Bot engine.')
-        embed.add_field(name='Tag', value='`cb1`')
+        if bot.name.startswith('sf'):
+            embed.set_thumbnail(url='https://stockfishchess.org/images/logo/icon_512x512@2x.png')
+        
+        embed.add_field(name=get_name(bot.value),
+                        value=get_description(bot.name))
+        embed.add_field(name='Tag', value=f'`{bot.name}`')
+
+        id = bot.value
         embed.add_field(
             name='Stats', value='Stats about this bot.', inline=False)
         embed.add_field(name='Rating', value=str(
-            round(data.data_manager.get_rating(0), 3)))
-        lost, won, drew = data.data_manager.get_stats(0)
+            round(data.data_manager.get_rating(id), 3)), inline=False)
+
+        lost, won, drew = data.data_manager.get_stats(id)
         embed.add_field(name='Games played', value=str(
             lost + won + drew), inline=False)
         embed.add_field(name='Games lost', value=str(lost)).add_field(
             name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
         await ctx.send(embed=embed)
 
-    @profile.command()
-    async def cb2(self, ctx):
-        embed = await self.get_default_embed()
-        embed.add_field(name='Chess Bot level 2',
-                        value='Level 2 of the Chess Bot engine.')
-        embed.add_field(name='Tag', value='`cb2`')
-        embed.add_field(
-            name='Stats', value='Stats about this bot.', inline=False)
-        embed.add_field(name='Rating', value=str(
-            round(data.data_manager.get_rating(1), 3)), inline=False)
-        lost, won, drew = data.data_manager.get_stats(1)
-        embed.add_field(name='Games played', value=str(
-            lost + won + drew), inline=False)
-        embed.add_field(name='Games lost', value=str(lost)).add_field(
-            name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
-        await ctx.send(embed=embed)
-
-    @profile.command()
-    async def cb3(self, ctx):
-        embed = await self.get_default_embed()
-        embed.add_field(name='Chess Bot level 3',
-                        value='Level 3 of the Chess Bot engine.')
-        embed.add_field(name='Tag', value='`cb3`')
-        embed.add_field(
-            name='Stats', value='Stats about this bot.', inline=False)
-        embed.add_field(name='Rating', value=str(
-            round(data.data_manager.get_rating(2), 3)), inline=False)
-        lost, won, drew = data.data_manager.get_stats(2)
-        embed.add_field(name='Games played', value=str(
-            lost + won + drew), inline=False)
-        embed.add_field(name='Games lost', value=str(lost)).add_field(
-            name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
-        await ctx.send(embed=embed)
-
-    @profile.command()
-    async def sf1(self, ctx):
-        embed = await self.get_default_embed('https://stockfishchess.org/images/logo/icon_512x512@2x.png')
-        embed.add_field(name='Stockfish level 1',
-                        value='Stockfish with the UCI option "Skill Level" set to 1.')
-        embed.add_field(name='Tag', value='`sf1`')
-        embed.add_field(
-            name='Stats', value='Stats about this bot.', inline=False)
-        embed.add_field(name='Rating', value=str(
-            round(data.data_manager.get_rating(3), 3)), inline=False)
-        lost, won, drew = data.data_manager.get_stats(3)
-        embed.add_field(name='Games played', value=str(
-            lost + won + drew), inline=False)
-        embed.add_field(name='Games lost', value=str(lost)).add_field(
-            name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
-        await ctx.send(embed=embed)
-
-    @profile.command()
-    async def sf2(self, ctx):
-        embed = await self.get_default_embed('https://stockfishchess.org/images/logo/icon_512x512@2x.png')
-        embed.add_field(name='Stockfish level 2',
-                        value='Stockfish with the UCI option "Skill Level" set to 4.')
-        embed.add_field(name='Tag', value='`sf2`')
-        embed.add_field(
-            name='Stats', value='Stats about this bot.', inline=False)
-        embed.add_field(name='Rating', value=str(
-            round(data.data_manager.get_rating(4), 3)), inline=False)
-        lost, won, drew = data.data_manager.get_stats(4)
-        embed.add_field(name='Games played', value=str(
-            lost + won + drew), inline=False)
-        embed.add_field(name='Games lost', value=str(lost)).add_field(
-            name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
-        await ctx.send(embed=embed)
-
-    @profile.command()
-    async def sf3(self, ctx):
-        embed = await self.get_default_embed('https://stockfishchess.org/images/logo/icon_512x512@2x.png')
-        embed.add_field(name='Stockfish level 3',
-                        value='Stockfish with the UCI option "Skill Level" set to 8.')
-        embed.add_field(name='Tag', value='`sf1`')
-        embed.add_field(
-            name='Stats', value='Stats about this bot.', inline=False)
-        embed.add_field(name='Rating', value=str(
-            round(data.data_manager.get_rating(5), 3)), inline=False)
-        lost, won, drew = data.data_manager.get_stats(5)
-        embed.add_field(name='Games played', value=str(
-            lost + won + drew), inline=False)
-        embed.add_field(name='Games lost', value=str(lost)).add_field(
-            name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
-        await ctx.send(embed=embed)
-
-    @profile.command()
-    async def sfmax(self, ctx):
-        embed = await self.get_default_embed('https://stockfishchess.org/images/logo/icon_512x512@2x.png')
-        embed.add_field(name='Stockfish max strength',
-                        value='Stockfish, one of the world\'s strongest chess engines.')
-        embed.add_field(name='Tag', value='`sfmax`')
-        embed.add_field(
-            name='Stats', value='Stats about this bot.', inline=False)
-        embed.add_field(name='Rating', value=str(
-            round(data.data_manager.get_rating(6), 3)), inline=False)
-        lost, won, drew = data.data_manager.get_stats(6)
-        embed.add_field(name='Games played', value=str(
-            lost + won + drew), inline=False)
-        embed.add_field(name='Games lost', value=str(lost)).add_field(
-            name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
-        await ctx.send(embed=embed)
 
 
 def setup(bot):

@@ -51,7 +51,7 @@ def load_theme(theme):
 
 
 def load_all_themes():
-    print('Loading images...')
+    # print('Loading images...')
     for file in os.listdir(constants.THEMES_DIR):
         if file.endswith('.png'):
             file = file[:-4]

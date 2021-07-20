@@ -1,5 +1,5 @@
 discord.py
 pillow
 dblpy
-psycopg2
+psycopg2-binary
 python-chess

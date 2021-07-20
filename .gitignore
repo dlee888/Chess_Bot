@@ -1,6 +1,6 @@
 *.vscode/
 
-*.log
+*.log*
 
 __pycache__
 
@@ -9,6 +9,7 @@ output-*
 image-*
 
 *.o
+engine
 *.exe
 
 *-light.png

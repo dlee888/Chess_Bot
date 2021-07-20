@@ -1,9 +1,12 @@
+from Chess_Bot.util.CPP_IO import log
 import discord
 from discord.ext import commands
 from discord.ext import tasks
+
 import time
 import typing
 import logging
+import sys
 
 import Chess_Bot.util.Utility as util
 import Chess_Bot.util.Data as data
@@ -25,9 +28,13 @@ class Misc(commands.Cog):
         await self.client.change_presence(status=discord.Status.dnd, activity=game)
 
         status_channel = await self.client.fetch_channel(constants.STATUS_CHANNEL_ID)
-        await status_channel.send('Chess Bot has just restarted.')
+        
+        if not '-beta' in sys.argv:
+            await status_channel.send('Chess Bot has just restarted.')
+        else:
+            logging.info('Using beta version.')
 
-        logging.info('Bot is ready')
+        logging.info(f'Bot is ready. Logged in as {self.client.user}')
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)

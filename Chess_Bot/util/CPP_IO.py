@@ -16,17 +16,24 @@ whiteblack = ['black', 'white']
 async def run_engine(person):
     game = data.data_manager.get_game(person)
 
-    if game.bot in [Profile.cb1.value, Profile.cb2.value, Profile.cb3.value]:
+    all_cb = [bot.value for bot in Profile if bot.name.startswith('cb')]
+    all_sf = [bot.value for bot in Profile if bot.name.startswith('sf')]
+
+    if game.bot in all_cb:
         file_in = os.path.join(constants.TEMP_DIR, f'input-{person}.txt')
         file_out = os.path.join(constants.TEMP_DIR, f'output-{person}.txt')
 
         game = data.data_manager.get_game(person)
 
         f = open(file_in, 'w')
-        time_control = [1000, 5696, 30000]
-        max_depth = [5, 10, 69]
+        time_control = [969, 1264, 3696, 9696, 30000]
+        max_depth = [3, 5, 7, 13, 69]
+        mcts_probs = [2000, 500, 69, 0, 0]
         f.write(
-            f'setoption time_limit {time_control[game.bot]}\nsetoption depth_limit {max_depth[game.bot]}\ngo {game.fen}\nquit')
+            f'setoption time_limit {time_control[game.bot]}\n'
+            f'setoption depth_limit {max_depth[game.bot]}\n'
+            f'setoption mcts_prob {mcts_probs[game.bot]}\n'
+            f'go {game.fen}\nquit')
         f.close()
         await util.run(f'./engine < {file_in} > {file_out}')
 
@@ -43,7 +50,7 @@ async def run_engine(person):
                 game.fen = out[i][6:].strip()
                 break
         return move, game
-    elif game.bot in [Profile.sf1.value, Profile.sf2.value, Profile.sf3.value, Profile.sfmax.value]:
+    elif game.bot in all_sf:
         transport, engine = await chess.engine.popen_uci("./stockfish")
         board = chess.Board(game.fen)
         skill = [1, 4, 8, 20]
@@ -55,31 +62,31 @@ async def run_engine(person):
             san = board.san_and_push(result.move)
             game.fen = board.fen()
             return san, game
-    elif game.bot == Profile.cbnnue.value:
-        file_in = os.path.join(constants.TEMP_DIR, f'input-{person}.txt')
-        file_out = os.path.join(constants.TEMP_DIR, f'output-{person}.txt')
+    # elif game.bot == Profile.cbnnue.value:
+    #     file_in = os.path.join(constants.TEMP_DIR, f'input-{person}.txt')
+    #     file_out = os.path.join(constants.TEMP_DIR, f'output-{person}.txt')
 
-        game = data.data_manager.get_game(person)
+    #     game = data.data_manager.get_game(person)
 
-        f = open(file_in, 'w')
-        f.write(
-            f'setoption time_limit 20000\nsetoption use_nnue 1\ngo {game.fen}\nquit')
-        f.close()
-        await util.run(f'./engine < {file_in} > {file_out}')
+    #     f = open(file_in, 'w')
+    #     f.write(
+    #         f'setoption time_limit 20000\nsetoption use_nnue 1\ngo {game.fen}\nquit')
+    #     f.close()
+    #     await util.run(f'./engine < {file_in} > {file_out}')
 
-        f = open(file_out)
-        out = f.readlines()
-        f.close()
-        move = None
-        for i in range(len(out) - 1, 0, -1):
-            if out[i].startswith('COMPUTER PLAYED'):
-                move = out[i][16:].strip()
-                break
-        for i in range(len(out) - 1, 0, -1):
-            if out[i].startswith('GAME: '):
-                game.fen = out[i][6:].strip()
-                break
-        return move, game
+    #     f = open(file_out)
+    #     out = f.readlines()
+    #     f.close()
+    #     move = None
+    #     for i in range(len(out) - 1, 0, -1):
+    #         if out[i].startswith('COMPUTER PLAYED'):
+    #             move = out[i][16:].strip()
+    #             break
+    #     for i in range(len(out) - 1, 0, -1):
+    #         if out[i].startswith('GAME: '):
+    #             game.fen = out[i][6:].strip()
+    #             break
+    #     return move, game
 
 
 async def output_move(ctx, person, move):
