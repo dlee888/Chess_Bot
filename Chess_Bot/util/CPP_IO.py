@@ -28,7 +28,7 @@ async def run_engine(person):
         f = open(file_in, 'w')
         time_control = [969, 1264, 3696, 9696, 30000]
         max_depth = [3, 5, 7, 13, 69]
-        mcts_probs = [2000, 500, 69, 0, 0]
+        mcts_probs = [5000, 696, 69, 0, 0]
         f.write(
             f'setoption time_limit {time_control[game.bot]}\n'
             f'setoption depth_limit {max_depth[game.bot]}\n'
@@ -113,7 +113,7 @@ async def output_move(ctx, person, move):
 async def log(person, client, ctx):
     game = data.data_manager.get_game(person)
 
-    if game.bot in [Profile.cb1.value, Profile.cb2.value, Profile.cb3.value, Profile.cbnnue.value]:
+    if Profile(game.bot).name.startswith('cb'):
         log_channel = client.get_channel(constants.LOG_CHANNEL_ID)
         get_image(person)
         await log_channel.send(f'Output for {ctx.author} (id = {ctx.author.id})\n'
