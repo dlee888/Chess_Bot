@@ -116,7 +116,7 @@ class Misc(commands.Cog):
             else:
                 try:
                     number = int(num)
-                    assert(1 <= num <= 25)
+                    assert(1 <= number <= 25)
                 except ValueError or AssertionError:
                     await ctx.send('Please enter an integer from 1 to 25.')
                     return
