@@ -64,8 +64,27 @@ class Profiles(commands.Cog):
         return embed
 
     @commands.group(invoke_without_command=True, aliases=['profiles', 'levels'])
-    @commands.cooldown(1, 2, commands.BucketType.user)
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def profile(self, ctx):
+        '''
+        {
+            "name": "profile",
+            "description": "Shows a list of the Chess Bot computers that you can challenge.",
+            "aliases": [
+                "profiles",
+                "levels"
+            ],
+            "usage": "$profile",
+            "examples": [
+                "$profiles",
+                "$profile view cb1"
+            ],
+            "cooldown": 3,
+            "subcommands": [
+                "view"
+            ]
+        }
+        '''
         embed = await self.get_default_embed()
         embed.description = ('These are the Chess Bot computers that you can challenge.\n'
         'Use the command `$profile view <bot tag>` for more information on a bot.\n'
@@ -81,7 +100,22 @@ class Profiles(commands.Cog):
         await ctx.send(embed=embed)
 
     @profile.command(aliases=['info'])
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def view(self, ctx, tag):
+        '''
+        {
+            "name": "profile view",
+            "description": "Views information about a specific Chess Bot profile that you can challenge.",
+            "aliases": [
+                "profile info"
+            ],
+            "usage": "$profile view <tag>",
+            "examples": [
+                "$profile view cb1"
+            ],
+            "cooldown": 3
+        }
+        '''
         try:
             bot = Profile[tag]
         except KeyError:

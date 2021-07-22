@@ -10,10 +10,11 @@ import sys
 
 import Chess_Bot.util.Utility as util
 import Chess_Bot.util.Data as data
-from Chess_Bot.cogs.Profiles import Profile, ProfileNames
+from Chess_Bot.cogs.Profiles import Profile
+from Chess_Bot.cogs import Profiles as profiles
 from Chess_Bot import constants
 
-version = '2.1.1'
+version = '2.2.0'
 
 
 class Misc(commands.Cog):
@@ -40,15 +41,32 @@ class Misc(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def ping(self, ctx):
         '''
-        Sends "Pong!"
+        {
+            "name": "ping",
+            "description": "Sends the bot's latency.\\nAccording to the discord.py docs:\\nMeasures latency between a `HEARTBEAT` and a `HEARTBEAT_ACK` in seconds.\\nThis could be referred to as the Discord WebSocket protocol latency.",
+            "usage": "$ping",
+            "examples": [
+                "$ping"
+            ],
+            "cooldown": 3
+        }
         '''
-        await ctx.send(f'Pong!\nLatency: {round(self.client.latency*1000000)/1000}ms')
+        await ctx.send(f'Pong!\nLatency: {round(self.client.latency * 1000, 3)}ms')
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def rating(self, ctx, person: typing.Union[discord.User, discord.Member] = None):
         '''
-        Tells you your rating
+        {
+            "name": "rating",
+            "description": "Tells you a person's rating.\\nIf no person is specified, it defaults to your rating.",
+            "usage": "$rating [user]",
+            "examples": [
+                "$rating",
+                "$rating @person"
+            ],
+            "cooldown": 3
+        }
         '''
 
         if person is None:
@@ -61,54 +79,72 @@ class Misc(commands.Cog):
         else:
             await ctx.send(f'{person}\'s rating is {round(result, 2)}')
 
-    @commands.command()
+    @commands.command(aliases=['top'])
     @commands.cooldown(1, 7, commands.BucketType.user)
     async def leaderboard(self, ctx, num='-1'):
         '''
-        Shows highest rated players
+        {
+            "name": "leaderboard",
+            "description": "Sends a list of [number] highest rated players.\\nIf a number is not specified, it will default to 10.\\nYou can also enter \\"all\\" for all rated players, or \\"bots\\" for all bots.\\nRight now, the leaderboard can hold a maximum of 25 people.",
+            "aliases": [
+                "top"
+            ],
+            "usage": "$leaderboard [number]",
+            "examples": [
+                "$leaderboard",
+                "$leaderboard 13",
+                "$leaderboard all",
+                "$leaderboard bots"
+            ],
+            "cooldown": 7
+        }
         '''
 
-        number = 1
-
         ratings = data.data_manager.get_ratings()
-
-        if num == 'all':
-            number = min(25, len(ratings.keys()))
-        elif num == '-1':
-            number = min(10, len(ratings.keys()))
-        else:
-            try:
-                number = int(num)
-            except ValueError:
-                await ctx.send('That isn\'t even an integer lol')
-                return
-
-        if number > len(ratings.keys()):
-            await ctx.send('There aren\'t even that many rated players lmao')
-            return
-        if number > 25:
-            await ctx.send('The leaderboard can hold a max of 25 people.')
-            return
-
         all_players = []
 
-        for k in ratings.keys():
-            if k in constants.LEADERBOARD_IGNORE:
-                continue
-            all_players.append((k, ratings[k]))
+        if num == 'bots' or num == 'bot':
+            for bot in Profile:
+                all_players.append((bot.value, ratings[bot.value]))
+            all_players.sort(reverse=True, key=lambda a: a[1])
+        else:
+            number = 10            
+            if num == 'all' or num == 'max':
+                number = min(25, len(ratings.keys()))
+            elif num == '-1':
+                number = min(10, len(ratings.keys()))
+            else:
+                try:
+                    number = int(num)
+                    assert(1 <= num <= 25)
+                except ValueError or AssertionError:
+                    await ctx.send('Please enter an integer from 1 to 25.')
+                    return
 
-        all_players.sort(reverse=True, key=lambda a: a[1])
+            if number > len(ratings.keys()):
+                await ctx.send('There aren\'t even that many rated players.')
+                return
+            if number > 25:
+                await ctx.send('The leaderboard can hold a max of 25 people.')
+                return
+
+            for k in ratings.keys():
+                if k in constants.LEADERBOARD_IGNORE:
+                    continue
+                all_players.append((k, ratings[k]))
+            all_players.sort(reverse=True, key=lambda a: a[1])
+            all_players = all_players[:number]
 
         embed = discord.Embed(title="Leaderboard", color=0xffff69)
 
-        for i in range(number):
-            if all_players[i][0] < 10:
+        for i, person in enumerate(all_players):
+            if person[0] < len(Profile):
                 embed.add_field(
-                    name=f'{i+1}: {ProfileNames[Profile(all_players[i][0]).name].value}', value=f'{round(all_players[i][1], 2)}', inline=True)
+                    name=f'{i+1}: {profiles.get_name(person[0])}', value=f'{round(person[1], 2)}', inline=True)
             else:
-                user = await self.client.fetch_user(all_players[i][0])
+                user = await self.client.fetch_user(person[0])
                 embed.add_field(
-                    name=f'{i+1}: {user}', value=f'{round(all_players[i][1], 2)}', inline=True)
+                    name=f'{i+1}: {user}', value=f'{round(person[1], 2)}', inline=True)
 
         await ctx.send(embed=embed)
 
@@ -116,7 +152,15 @@ class Misc(commands.Cog):
     @commands.cooldown(1, 7, commands.BucketType.user)
     async def rank(self, ctx):
         '''
-        Shows highest rated players
+        {
+            "name": "rank",
+            "description": "Tells you your rank among all rated players.",
+            "usage": "$rank",
+            "examples": [
+                "$rank"
+            ],
+            "cooldown": 7
+        }
         '''
 
         if data.data_manager.get_rating(ctx.author.id) is None:
@@ -146,9 +190,20 @@ class Misc(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def botinfo(self, ctx):
         '''
-        Basic info about Chess Bot
-        Use $help for commands
+        {
+            "name": "botinfo",
+            "description": "Sends some info and stats about the bot.\\nUse `$help` for a list of commands.",
+            "aliases": [
+                "info"
+            ],
+            "usage": "$botinfo",
+            "examples": [
+                "$botinfo"
+            ],
+            "cooldown": 3
+        }
         '''
+
         embed = discord.Embed(title="Bot Info", color=0xff0000)
         embed.add_field(name="Links",
                         value=f"[Github]({constants.GITHUB_LINK}) | [Invite]({constants.INVITE_LINK}) | [Join the discord server]({constants.SUPPORT_SERVER_INVITE}) | [Top.gg]({constants.TOPGG_LINK})",
@@ -182,12 +237,34 @@ class Misc(commands.Cog):
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def invite(self, ctx):
         '''
-        Sends invite link
+        {
+            "name": "invite",
+            "description": "Sends an invite link for adding the bot to a server.",
+            "usage": "$invite",
+            "examples": [
+                "$invite"
+            ],
+            "cooldown": 1
+        }
         '''
         await ctx.send(constants.INVITE_LINK)
 
     @commands.command()
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def stats(self, ctx, person: typing.Union[discord.Member, discord.User] = None):
+        """
+        {
+            "name": "stats",
+            "description": "Sends stats about the person.",
+            "usage": "$stats [person]",
+            "examples": [
+                "$stats",
+                "$stats @person"
+            ],
+            "cooldown": 3
+        }
+        """
+
         if person is None:
             person = ctx.author
         lost, won, drew = data.data_manager.get_stats(person.id)

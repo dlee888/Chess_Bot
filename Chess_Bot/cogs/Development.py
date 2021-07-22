@@ -20,7 +20,7 @@ class Development(commands.Cog):
         self.client = client
         self._last_result = None
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.cooldown(1, 15, commands.BucketType.user)
     async def update(self, ctx):
         '''
@@ -48,7 +48,7 @@ class Development(commands.Cog):
 
         await ctx.send(status)
 
-    @commands.command()
+    @commands.command(hidden=True)
     async def shell(self, ctx, *, cmd):
         '''
         Executes shell commands
@@ -74,7 +74,7 @@ class Development(commands.Cog):
 
         await ctx.send(status)
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.cooldown(1, 15, commands.BucketType.user)
     async def restart(self, ctx):
         '''
@@ -90,7 +90,7 @@ class Development(commands.Cog):
 
         sys.exit()
 
-    @commands.command()
+    @commands.command(hidden=True)
     async def git_pull(self, ctx):
         '''
         Pulls from the github repository
@@ -117,7 +117,7 @@ class Development(commands.Cog):
 
         await ctx.send(status)
 
-    @commands.command()
+    @commands.command(hidden=True)
     async def debug_load(self, ctx, user: typing.Union[discord.User, discord.Member]):
         '''
         Loads <user>'s game to your game
@@ -197,7 +197,7 @@ class Development(commands.Cog):
                 self._last_result = ret
                 await ctx.send(f'```py\n{value}{ret}\n```')
 
-    @commands.command()
+    @commands.command(hidden=True)
     async def gimme(self, ctx, file):
         '''
         Sends files
@@ -212,8 +212,12 @@ class Development(commands.Cog):
 
         await ctx.send(file, file=discord.File(file))
 
-    @commands.command()
+    @commands.command(hidden=True)
     async def load_db(self, ctx):
+        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
+            # await ctx.send(f'You do not have permission to get files')
+            return
+        
         for attachment in ctx.message.attachments:
             if attachment.filename == 'database':
                 await attachment.save(os.path.join(constants.TEMP_DIR, 'database'))
@@ -224,7 +228,7 @@ class Development(commands.Cog):
         print(games, colors, time_control, ratings,
               last_moved, warned, prefixes)
 
-        await ctx.send('Loading games...')
+        # await ctx.send('Loading games...')
 
         for k in games.keys():
             print(games[k])
@@ -232,11 +236,11 @@ class Development(commands.Cog):
             data.data_manager.change_game(k, data.Game(
                 colors[k], time_control[k], games[k], last_moved[k], warned[k]))
 
-        await ctx.send('Loading ratings...')
+        # await ctx.send('Loading ratings...')
         for k in ratings.keys():
             data.data_manager.change_rating(k, ratings[k])
 
-        await ctx.send('Loading prefixes...')
+        # await ctx.send('Loading prefixes...')
         for k in prefixes.keys():
             data.data_manager.change_prefix(k, prefixes[k])
 

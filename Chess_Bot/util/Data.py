@@ -1,7 +1,10 @@
 import psycopg2
 import time
 import os
+import sys
+import sqlite3
 
+from Chess_Bot import constants
 
 class Game:
 
@@ -19,9 +22,13 @@ class Game:
 class Data:
 
     def __init__(self, url):
-        self.DATABASE_URL = url
+        if not '-beta' in sys.argv:
+            self.DATABASE_URL = url
 
-        self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
+            self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
+        else:
+            self.DATABASE_URL = None
+            self.conn = sqlite3.connect(os.path.join(constants.DATA_DIR, 'db', 'database'))
 
         create_games_table = '''CREATE TABLE IF NOT EXISTS games (
 										id bigint NOT NULL PRIMARY KEY UNIQUE,
@@ -62,7 +69,7 @@ class Data:
         cur.execute(create_stats_table)
 
     def get_conn(self):
-        if self.conn.closed:
+        if not '-beta' in sys.argv and self.conn.closed:
             print('Connection is closed. Restarting...')
             self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
         return self.conn

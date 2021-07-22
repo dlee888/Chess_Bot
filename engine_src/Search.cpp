@@ -31,7 +31,7 @@ Value search(Depth depth, Value alpha, Value beta)
 	// 	return MATE;
 	// }
 
-	if (break_now || options["mcts_prob"] > rand()) {
+	if (break_now || (depth <= options["mctx_max_depth"] && options["mcts_prob"] > rand())) {
 		return eval(curr_state);
 	}
 

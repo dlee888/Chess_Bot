@@ -15,10 +15,19 @@ class Viewing(commands.Cog):
         self.client = client
 
     @commands.command()
-    @commands.cooldown(1, 10, commands.BucketType.user)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def view(self, ctx, person: typing.Union[discord.User, discord.Member] = None):
         '''
-        Views your current game
+        {
+            "name": "view",
+            "description": "Views [person]'s game. If no person is specified, it will default to your own game.",
+            "usage": "$view [person]",
+            "examples": [
+                "$view",
+                "$view @person"
+            ],
+            "cooldown": 5
+        }
         '''
         
         if person is None:
@@ -43,10 +52,19 @@ class Viewing(commands.Cog):
         await ctx.message.reply(embed=embed, file=file)
 
     @commands.command()
-    @commands.cooldown(1, 10, commands.BucketType.user)
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def fen(self, ctx, person: typing.Union[discord.User, discord.Member] = None):
         '''
-        Sends current game in FEN format
+        {
+            "name": "fen",
+            "description": "Sends [person]'s game if [FEN format](https://www.chess.com/terms/fen-chess).\\nIf no person is specified, it will default to your own game.",
+            "usage": "$fen [person]",
+            "examples": [
+                "$fen",
+                "$fen @person"
+            ],
+            "cooldown": 3
+        }
         '''
 
         if person is None:
@@ -61,8 +79,20 @@ class Viewing(commands.Cog):
         await ctx.send(f'```{game.fen}```')
 
     @commands.command()
-    @commands.cooldown(1, 2, commands.BucketType.user)
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def theme(self, ctx, new_theme=None):
+        '''
+        {
+            "name": "theme",
+            "description": "Customize your board theme.\\nYou can also use `$theme` without a new theme specified to see your current theme and a list of all available themes.",
+            "usage": "$theme [new theme]",
+            "examples": [
+                "$theme",
+                "$theme orange"
+            ],
+            "cooldown": 3
+        }
+        '''
         if new_theme == None:
             cur_theme = data.data_manager.get_theme(ctx.author.id)
             await ctx.send(f'Your current theme is "{cur_theme}"\n'

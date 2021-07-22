@@ -52,7 +52,18 @@ class Timer(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def time(self, ctx, person: typing.Union[discord.User, discord.Member] = None):
-
+        '''
+        {
+            "name": "time",
+            "description": "Sends how much time [person] has before automatically resigning.\\nIf nobody is specified, it will default to your time left.",
+            "usage": "$time [person]",
+            "examples": [
+                "$time",
+                "$time @person"
+            ],
+            "cooldown": 3
+        }
+        '''
         if person is None:
             person = ctx.author
 

@@ -22,7 +22,19 @@ class Topgg(commands.Cog):
         print('Posted stats on top.gg')
 
     @commands.command()
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def vote(self, ctx):
+        '''
+        {
+            "name": "vote",
+            "description": "Claims 5 free rating points for voting for Chess bot on [top.gg](https://top.gg/bot/801501916810838066)",
+            "usage": "$vote",
+            "examples": [
+                "$vote"
+            ],
+            "cooldown": 3
+        }
+        '''
         voted = await self.dbl_client.get_user_vote(ctx.author.id)
 
         if not voted:

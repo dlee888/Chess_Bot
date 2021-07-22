@@ -1,7 +1,9 @@
-import logging
 import discord
 from discord.ext import commands
 from discord.ext import tasks
+
+import logging
+import sys
 
 from Chess_Bot.util import Utility as util
 from Chess_Bot.util import Data as data
@@ -12,7 +14,8 @@ class Autoposter(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-        self.post_stats.start()
+        if not '-beta' in sys.argv:
+            self.post_stats.start()
 
     @tasks.loop(hours=3)
     async def post_stats(self):

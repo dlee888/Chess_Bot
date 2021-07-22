@@ -1,6 +1,6 @@
 # Chess Bot
 
-README for version 2.1.0
+README for version 2.2.0
 
 Chess Bot is a discord bot that plays chess.
 It also has a built-in elo rating system.
@@ -29,10 +29,12 @@ Use `$view` to view your game.
 
 You can challenge multiple levels of the bot. Make sure to specify which level you want to play when using the `$challenge` command.
 
-Use the `$profiles` command to see a list of all levels you can challenge, and use `$profile <tag>` to learn more about a specific bot.
-Note: the tag of a bot is _not_ the same as it's name. For example, the tag of the bot "Chess Bot level 1" is `cb1`.
+Use the `$profiles` command to see a list of all levels you can challenge, and use `$profile view <tag>` to learn more about a specific bot.
+Note: the tag of a bot is **not** the same as it's name. For example, the tag of the bot "Chess Bot level 1" is `cb1`.
 
 Chess Bot uses a custom built engine to determine which moves it plays. (It's not very good though, because I built it, and I'm bad at coding).
+
+You can also play against various levels of stockfish 13.
 
 ### Timer
 
@@ -48,11 +50,13 @@ Use `$time` to see how much time you have left.
 
 - challenge: Challenges Chess Bot to a game.
 
-- move [move]: Plays [move] against the computer.
+- move \<move\>: Plays \<move\> against the computer.
 
 - resign: Resigns the game.
 
 - view: Views your current game.
+
+- theme: Change your board theme
 
 - time: Sends how much time you have left.
 
@@ -60,17 +64,7 @@ Use `$time` to see how much time you have left.
 
 - fen: Sends current game in [FEN format](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation).
   
-### Moderation
-
-These commands require special permissions.
-
-- prefix [prefix]: Makes or changes the server's server specific prefix. Must have administrator permission in the server.
-
-### Other
-
-- botinfo: Sends basic info and stats about the bot
-
-- ping: Sends "Pong!" and gives latency
+### Rating related commands
 
 - rating: Tells you your rating
 
@@ -78,12 +72,28 @@ These commands require special permissions.
 
 - rank: Shows your rank out of all rated players
 
-- help: Sends a message with all of the commands
+- stats: Sends your stats.
 
-- theme: Change your board theme
+### Moderation
+
+These commands require special permissions.
+
+- prefix \[prefix\]: Makes or changes the server's server specific prefix. Must have administrator permission in the server.
+
+### Other
+
+- botinfo: Sends basic info and stats about the bot
+
+- ping: Sends "Pong!" and gives latency
 
 - vote: Gifts you 5 rating points after voting for Chess Bot on top.gg
 
-- stats: Sends your stats.
+- invite: Sends a like to invite Chess bot to a server.
 
-To get more information about any command, use `$help <command>`
+### Help
+
+Use `$help` to see a list of all the commands.
+
+To get more information about any command, use `$help [command]`
+
+Usage syntax: `<arg>` means a required argument, `[arg]` means an optional argument.

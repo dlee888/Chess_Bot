@@ -18,10 +18,20 @@ class Engine(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def move(self, ctx, move):
         '''
-        Plays <move> against the computer
-        Please enter the move in algebraic notation
-        For example, Nxe4, Nge5, c4, Ke2, etc
-        More about algebraic notation here: https://www.chess.com/article/view/chess-notation#algebraic-notation
+        {
+            "name": "move",
+            "description": "Plays a move against the computer.\\nPlease enter the move in algebraic notation.\\nFor example, Nxe4, Nge5, c4, Ke2, etc.\\nMore about algebraic notation [here](https://www.chess.com/article/view/chess-notation#algebraic-notation).\\nYou can also enter it in UCI (universal chess interface) notation.",
+            "aliases": [
+                "play"
+            ],
+            "usage": "$move <move>",
+            "examples": [
+                "$move e4",
+                "$move e7e5",
+                "$move Ke2"
+            ],
+            "cooldown": 3
+        }
         '''
 
         person = ctx.author.id
@@ -112,11 +122,19 @@ class Engine(commands.Cog):
             await ctx.send(f'Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
 
     @commands.command()
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def challenge(self, ctx, bot):
         '''
-        Challenges Chess Bot to a game
-        Your color is assigned randomly.
+        {
+            "name": "challenge",
+            "description": "Challenges the bot to a game of chess.\\nUse `$profiles to see which bots you can challenge.\\nYour color is assigned randomly.",
+            "usage": "$challenge <bot>",
+            "examples": [
+                "$challenge cb1",
+                "$challenge sf3"
+            ],
+            "cooldown": 3
+        }
         '''
 
         person = ctx.author.id
@@ -160,12 +178,20 @@ class Engine(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def resign(self, ctx):
         '''
-        Resigns the game
+        {
+            "name": "resign",
+            "description": "Resigns your current game.",
+            "usage": "$resign",
+            "examples": [
+                "$resign"
+            ],
+            "cooldown": 3
+        }
         '''
 
         game = data.data_manager.get_game(ctx.author.id)
 
-        if game == None:
+        if game is None:
             await ctx.send('You do not have a game in progress')
             return
 
