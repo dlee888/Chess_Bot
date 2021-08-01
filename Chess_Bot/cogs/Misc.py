@@ -29,7 +29,7 @@ class Misc(commands.Cog):
         status_channel = await self.client.fetch_channel(constants.STATUS_CHANNEL_ID)
 
         if not '-beta' in sys.argv:
-            await status_channel.send('Chess Bot has just restarted.')
+            await status_channel.send(f'Chess Bot has just restarted. Version: {version}')
         else:
             logging.info('Using beta version.')
 
