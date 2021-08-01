@@ -6,9 +6,10 @@ import sqlite3
 
 from Chess_Bot import constants
 
+
 class Game:
 
-    def __init__(self, row = [-1, 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 0, 0, time.time(), False]):
+    def __init__(self, row=[-1, 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 0, 0, time.time(), False]):
         self.fen = row[1]
         self.color = row[3]
         self.last_moved = row[4]
@@ -17,6 +18,19 @@ class Game:
 
     def __str__(self):
         return self.fen
+
+
+class Game2:
+
+    def __init__(self, row=['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', -1, -1, time.time(), time.time(), False, False, '*']) -> None:
+        self.fen = row[0]
+        self.white = row[1]
+        self.black = row[2]
+        self.white_last_moved = row[3]
+        self.black_last_moved = row[4]
+        self.white_warned = row[5]
+        self.black_warned = row[6]
+        self.png = row[7]
 
 
 class Data:
@@ -28,40 +42,51 @@ class Data:
             self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
         else:
             self.DATABASE_URL = None
-            self.conn = sqlite3.connect(os.path.join(constants.DATA_DIR, 'db', 'database'))
+            self.conn = sqlite3.connect(os.path.join(
+                constants.DATA_DIR, 'db', 'database'))
 
-        create_games_table = '''CREATE TABLE IF NOT EXISTS games (
-										id bigint NOT NULL PRIMARY KEY UNIQUE,
-										position text,
-                                        bot integer,
-										color integer,
-										last_moved real,
-										warned integer
-									);'''
-        create_ratings_table = '''CREATE TABLE IF NOT EXISTS ratings (
-										id bigint NOT NULL PRIMARY KEY UNIQUE,
-										rating real
-									);'''
-        create_prefix_table = '''CREATE TABLE IF NOT EXISTS prefixes (
-										id bigint NOT NULL PRIMARY KEY UNIQUE,
-										prefix text
-									);'''
-        create_themes_table = '''CREATE TABLE IF NOT EXISTS themes (
-										id bigint NOT NULL PRIMARY KEY UNIQUE,
-										theme text
-									);'''
-        create_votes_table = '''CREATE TABLE IF NOT EXISTS votes (
-										id bigint NOT NULL PRIMARY KEY UNIQUE
-									);'''
-        create_stats_table = '''CREATE TABLE IF NOT EXISTS stats (
-										id bigint NOT NULL PRIMARY KEY UNIQUE,
-                                        lost int,
-                                        won int,
-                                        drew int
-									);'''
+        create_games_table = ('CREATE TABLE IF NOT EXISTS games ('
+                              'id bigint NOT NULL PRIMARY KEY UNIQUE,'
+                              'position text,'
+                              'bot integer,'
+                              'color integer,'
+                              'last_moved real,'
+                              'warned integer'
+                              ');')
+        create_games2_table = ('CREATE TABLE IF NOT EXISTS games2 ('
+                               'position text,'
+                               'white_id bigint,'
+                               'black_id bigint,'
+                               'white_lastmoved real,'
+                               'black_lastmoved real,'
+                               'white_warned integer'
+                               'black_warned integer'
+                               ');')
+        create_ratings_table = ('CREATE TABLE IF NOT EXISTS ratings ('
+                                'id bigint NOT NULL PRIMARY KEY UNIQUE,'
+                                'rating real'
+                                ');')
+        create_prefix_table = ('CREATE TABLE IF NOT EXISTS prefixes ('
+                               'id bigint NOT NULL PRIMARY KEY UNIQUE,'
+                               'prefix text'
+                               ');')
+        create_themes_table = ('CREATE TABLE IF NOT EXISTS themes ('
+                               'id bigint NOT NULL PRIMARY KEY UNIQUE,'
+                               'theme text'
+                               ');')
+        create_votes_table = ('CREATE TABLE IF NOT EXISTS votes ('
+                              'id bigint NOT NULL PRIMARY KEY UNIQUE'
+                              ');')
+        create_stats_table = ('CREATE TABLE IF NOT EXISTS stats ('
+                              'id bigint NOT NULL PRIMARY KEY UNIQUE,'
+                              'lost int,'
+                              'won int,'
+                              'drew int'
+                              ');')
 
         cur = self.get_conn().cursor()
         cur.execute(create_games_table)
+        cur.execute(create_games2_table)
         cur.execute(create_ratings_table)
         cur.execute(create_prefix_table)
         cur.execute(create_themes_table)
@@ -80,37 +105,51 @@ class Data:
         rows = cur.fetchall()
 
         if len(rows) == 0:
+            cur = self.get_conn().cursor()
+            cur.execute(f'SELECT * FROM games2;')
+            rows = cur.fetchall()
+            for row in rows:
+                g = Game2(row)
+                if g.white == person or g.black == person:
+                    return g
             return None
-
         return Game(rows[0])
 
     def get_games(self):
         cur = self.get_conn().cursor()
         cur.execute('SELECT * FROM games')
         rows = cur.fetchall()
-
         games = {}
-
         for row in rows:
-            moves_str = row[1].split(' ')
-            moves = []
-            for move in moves_str:
-                try:
-                    moves.append(int(move))
-                except:
-                    pass
-
             games[row[0]] = Game(row)
 
+        cur = self.get_conn().cursor()
+        cur.execute('SELECT * FROM games2')
+        rows = cur.fetchall()
+        for row in rows:
+            g = Game2(row)
+            games[g.white] = g
+            games[g.black] = g
         return games
 
-    def change_game(self, person, new_game: Game):
+    def change_game(self, person, new_game):
         cur = self.get_conn().cursor()
 
-        update_sql = f'''INSERT INTO games VALUES ({person}, '{new_game.fen}', {new_game.bot}, {new_game.color}, {new_game.last_moved}, {int(new_game.warned)});'''
-
-        cur.execute(f'DELETE FROM games WHERE id = {person};')
-        cur.execute(update_sql)
+        if isinstance(new_game, Game):
+            update_sql = f'''INSERT INTO games VALUES ({person}, '{new_game.fen}', {new_game.bot}, {new_game.color}, {new_game.last_moved}, {int(new_game.warned)});'''
+            cur.execute(f'DELETE FROM games WHERE id = {person};')
+            cur.execute(update_sql)
+        elif isinstance(new_game, Game2):
+            cur.execute(f'DELETE FROM games2 WHERE id = {person};')
+            cur.execute('INSERT INTO games2 VALUES (%s, %s, %s, %s, %s, %s, %s)', (
+                new_game.fen,
+                new_game.white,
+                new_game.black,
+                new_game.white_last_moved,
+                new_game.black_last_moved,
+                new_game.white_warned,
+                new_game.black_warned
+            ))
 
         self.conn.commit()
 
@@ -166,14 +205,14 @@ class Data:
         if len(rows) == 0:
             return 0, 0, 0
         return rows[0][1], rows[0][2], rows[0][3]
-    
+
     def change_stats(self, person, lost, won, drew):
         cur = self.get_conn().cursor()
         cur.execute(f'DELETE FROM stats WHERE id = {person};')
         cur.execute(
             f'INSERT INTO stats VALUES ({person}, {lost}, {won}, {drew});')
         self.conn.commit()
-        
+
     def total_games(self):
         cur = self.get_conn().cursor()
         cur.execute(f'SELECT * FROM stats;')
@@ -181,7 +220,7 @@ class Data:
         ans = 0
         for row in rows:
             ans += row[1] + row[2] + row[3]
-        return ans
+        return ans // 2
 
     def delete_game(self, person, won):
         cur = self.get_conn().cursor()

@@ -1,7 +1,5 @@
-from Chess_Bot.util.CPP_IO import log
 import discord
 from discord.ext import commands
-from discord.ext import tasks
 
 import time
 import typing
@@ -14,7 +12,7 @@ from Chess_Bot.cogs.Profiles import Profile
 from Chess_Bot.cogs import Profiles as profiles
 from Chess_Bot import constants
 
-version = '2.2.0'
+version = '2.2.1'
 
 
 class Misc(commands.Cog):
@@ -29,7 +27,7 @@ class Misc(commands.Cog):
         await self.client.change_presence(status=discord.Status.dnd, activity=game)
 
         status_channel = await self.client.fetch_channel(constants.STATUS_CHANNEL_ID)
-        
+
         if not '-beta' in sys.argv:
             await status_channel.send('Chess Bot has just restarted.')
         else:
@@ -75,9 +73,11 @@ class Misc(commands.Cog):
         result = data.data_manager.get_rating(person.id)
 
         if result == None:
-            await ctx.send(f'{person} is unrated.')
+            person_str = 'You are' if person == ctx.author else f'{person} is'
+            await ctx.send(f'{person_str} unrated.')
         else:
-            await ctx.send(f'{person}\'s rating is {round(result, 2)}')
+            person_str = 'Your' if person == ctx.author else f'{person}\''
+            await ctx.send(f'{person_str} rating is {round(result, 2)}')
 
     @commands.command(aliases=['top'])
     @commands.cooldown(1, 7, commands.BucketType.user)
@@ -100,6 +100,8 @@ class Misc(commands.Cog):
         }
         '''
 
+        embed = discord.Embed(title="Leaderboard", color=0xffb521)
+
         ratings = data.data_manager.get_ratings()
         all_players = []
 
@@ -107,16 +109,17 @@ class Misc(commands.Cog):
             for bot in Profile:
                 all_players.append((bot.value, ratings[bot.value]))
             all_players.sort(reverse=True, key=lambda a: a[1])
+            embed.set_footer(text='Top rated bots')
         else:
-            number = 10            
+            number = constants.DEFAULT_LEADERBOARD_SIZE
             if num == 'all' or num == 'max':
-                number = min(25, len(ratings.keys()))
+                number = min(constants.MAX_LEADERBOARD_SIZE, len(ratings.keys()))
             elif num == '-1':
-                number = min(10, len(ratings.keys()))
+                number = min(constants.DEFAULT_LEADERBOARD_SIZE, len(ratings.keys()))
             else:
                 try:
                     number = int(num)
-                    assert(1 <= number <= 25)
+                    assert(1 <= number <= constants.MAX_LEADERBOARD_SIZE)
                 except ValueError or AssertionError:
                     await ctx.send('Please enter an integer from 1 to 25.')
                     return
@@ -124,9 +127,11 @@ class Misc(commands.Cog):
             if number > len(ratings.keys()):
                 await ctx.send('There aren\'t even that many rated players.')
                 return
-            if number > 25:
+            if number > constants.MAX_LEADERBOARD_SIZE:
                 await ctx.send('The leaderboard can hold a max of 25 people.')
                 return
+            
+            embed.set_footer(text=f'Top {number} rated players')
 
             for k in ratings.keys():
                 if k in constants.LEADERBOARD_IGNORE:
@@ -135,17 +140,29 @@ class Misc(commands.Cog):
             all_players.sort(reverse=True, key=lambda a: a[1])
             all_players = all_players[:number]
 
-        embed = discord.Embed(title="Leaderboard", color=0xffff69)
-
+        rows = []
         for i, person in enumerate(all_players):
             if person[0] < len(Profile):
-                embed.add_field(
-                    name=f'{i+1}: {profiles.get_name(person[0])}', value=f'{round(person[1], 2)}', inline=True)
+                rows.append(
+                    (i + 1, profiles.get_name(person[0]), round(person[1], 2)))
             else:
                 user = await self.client.fetch_user(person[0])
-                embed.add_field(
-                    name=f'{i+1}: {user}', value=f'{round(person[1], 2)}', inline=True)
+                rows.append((i + 1, str(user), round(person[1], 2)))
 
+        length1 = 0
+        length2 = 0
+        length3 = 0
+        for i in rows:
+            length1 = max(length1, len(str(i[0])))
+            length2 = max(length2, len(str(i[1])))
+            length3 = max(length3, len(str(i[2])))
+        for ind, i in enumerate(rows):
+            rows[ind] = (' ' * (length1 - len(str(i[0]))) + str(i[0]), ' ' *
+                         (length2 - len(i[1])) + i[1], ' ' * (length3 - len(str(i[2]))) + str(i[2]))
+
+        embed.description = '```\n' + \
+            '\n'.join([f'{i[0]}: {i[1]} ({i[2]})' for i in rows]) + '\n```'
+        embed.set_thumbnail(url=constants.AVATAR_URL)
         await ctx.send(embed=embed)
 
     @commands.command()

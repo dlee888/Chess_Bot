@@ -91,6 +91,8 @@ class Engine(commands.Cog):
         util.thonking.append(person)
 
         move, game = await run_engine(person)
+        if data.data_manager.get_game(person) is None: # If person resigned while bot was thinking
+            return
         game.last_moved = time.time()
         game.warned = False
         data.data_manager.change_game(person, game)
