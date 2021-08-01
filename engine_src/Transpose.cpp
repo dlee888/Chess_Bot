@@ -16,7 +16,7 @@ void init_table()
 	clear_table();
 	
 	Bitstring seed = std::chrono::system_clock::now().time_since_epoch().count();
-	std::mt19937 generator(seed);
+	std::mt19937_64 generator(seed);
 
 	for (int square = 0; square < 64; square++) {
 		for (int piece = 0; piece < 13; piece++) {

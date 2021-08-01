@@ -156,6 +156,10 @@ void state::make_move(int move)
 		{
 			fifty_move.pop();
 			fifty_move.push(0);
+			if (abs(row_init - row_final) == 2) {
+				en_passant_target.pop();
+				en_passant_target.push((((row_init + row_final) / 2) << 3) + col_init);
+			}
 		}
 		else if (piece == WR)
 		{

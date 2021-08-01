@@ -11,8 +11,9 @@ void init_everything()
 {
 	init_table();
 	load_openings();
-	nnue_input = std::vector <int>(384);
-	load_nnue(nnue_path);
+	if (options["use_nnue"]) {
+		load_nnue(nnue_path);
+	}
 	curr_state = state();
 }
 
@@ -30,7 +31,6 @@ int main()
 	while (cmnd != "exit" && cmnd != "quit")
 	{
 		init_everything();
-		// std::cout << ">>>\n";
 		std::cin >> cmnd;
 		if (cmnd == "go")
 		{
@@ -41,6 +41,7 @@ int main()
 
 			int move = -1, eval = MATED - 1;
 			if (options["use_opening_book"]) {
+				std::cerr << curr_state.get_hash() << " " << openings[curr_state.get_hash()].size() << " " << curr_state.en_passant_target.top() << std::endl;
 				if (curr_state.to_move && curr_state.full_move > 2 && white_openings[curr_state.get_hash()].size()) {
 					move = white_openings[curr_state.get_hash()][0];
 				} 
@@ -82,24 +83,6 @@ int main()
 				options[option_name] = value;
 			}
 		} 
-		else if (cmnd == "debug") {
-			std::string move;
-			std::stack <int> moves;
-			while (move != "stop") {
-				std::cin >> move;
-				if (move == "undo") {
-					curr_state.unmake_move(moves.top());
-					moves.pop();
-				} else {
-					int move_i = curr_state.parse_move(move);
-					if (move_i == -1 || !curr_state.legal_check(move_i)) continue;
-					curr_state.make_move(move_i);
-					moves.push(move_i);
-				}
-				curr_state.print();
-				std::cout << "EVAL: " << eval(curr_state, true) << std::endl;
-			}
-		}
 	}
 	return 0;
 }
