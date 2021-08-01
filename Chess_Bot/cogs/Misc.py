@@ -15,11 +15,25 @@ from Chess_Bot import constants
 version = '2.2.1'
 
 
+class CachedUsernames:
+
+    def __init__(self, client):
+        self.client = client
+        self.cache = {}
+
+    async def get_username(self, id):
+        if id in self.cache.keys() and self.cache[id][1] >= time.time():
+            return self.cache[id][0]
+        name = str(await self.client.fetch_user(id))
+        self.cache[id] = (name, time.time() + constants.CACHE_REFRESH_TIME)
+        return name
+
 class Misc(commands.Cog):
 
     def __init__(self, client):
         self.client = client
         self.start_time = time.time()
+        self.cache = CachedUsernames(client)
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -85,7 +99,7 @@ class Misc(commands.Cog):
         '''
         {
             "name": "leaderboard",
-            "description": "Sends a list of [number] highest rated players.\\nIf a number is not specified, it will default to 10.\\nYou can also enter \\"all\\" for all rated players, or \\"bots\\" for all bots.\\nRight now, the leaderboard can hold a maximum of 25 people.",
+            "description": "Sends a list of [number] highest rated players.\\nIf a number is not specified, it will default to 10.\\nYou can also enter \\"all\\" for all rated players, or \\"bots\\" for all bots.\\nRight now, the leaderboard can hold a maximum of 40 people.",
             "aliases": [
                 "top"
             ],
@@ -146,8 +160,7 @@ class Misc(commands.Cog):
                 rows.append(
                     (i + 1, profiles.get_name(person[0]), round(person[1], 2)))
             else:
-                user = await self.client.fetch_user(person[0])
-                rows.append((i + 1, str(user), round(person[1], 2)))
+                rows.append((i + 1, await self.cache.get_username(person[0]), round(person[1], 2)))
 
         length1 = 0
         length2 = 0

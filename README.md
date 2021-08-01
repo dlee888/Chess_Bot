@@ -68,7 +68,11 @@ Use `$time` to see how much time you have left.
 
 - rating: Tells you your rating
 
-- leaderboard: Shows top rated players
+- leaderboard: Shows top rated players.
+
+	- Note:
+		- The leaderboard can hold a max of 40 players
+		- Changes in your username may not be reflected on the leaderboard for up to an hour
 
 - rank: Shows your rank out of all rated players
 

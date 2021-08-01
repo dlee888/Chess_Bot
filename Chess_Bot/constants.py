@@ -23,6 +23,8 @@ LEADERBOARD_IGNORE = []
 MAX_LEADERBOARD_SIZE = 40
 DEFAULT_LEADERBOARD_SIZE = 10
 
+CACHE_REFRESH_TIME = 3600
+
 INVITE_LINK = 'https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=311360&scope=bot'
 GITHUB_LINK = 'https://github.com/jeffarjeffar/Chess_Bot'
 SUPPORT_SERVER_INVITE = 'https://discord.gg/Bm4zjtNTD2'
