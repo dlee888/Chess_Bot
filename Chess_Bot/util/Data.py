@@ -59,7 +59,7 @@ class Data:
                                'black_id bigint,'
                                'white_lastmoved real,'
                                'black_lastmoved real,'
-                               'white_warned integer'
+                               'white_warned integer,'
                                'black_warned integer'
                                ');')
         create_ratings_table = ('CREATE TABLE IF NOT EXISTS ratings ('
