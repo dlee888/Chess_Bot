@@ -28,13 +28,13 @@ async def run_engine(person):
         f = open(file_in, 'w')
         time_control = [969, 1264, 3696, 9696, 30000]
         max_depth = [3, 5, 7, 13, 69]
-        mcts_probs = [6000, 2696, 1264, 696, 696]
-        mcts_depth = [10, 10, 5, 3, 3, 3]
+        mcts_probs = [2000000000, 800000000, 300000000, 200000000, 200000000]
+        mcts_depth = [10, 10, 8, 6, 5, 5]
         f.write(
             f'setoption time_limit {time_control[game.bot]}\n'
             f'setoption depth_limit {max_depth[game.bot]}\n'
             f'setoption mcts_prob {mcts_probs[game.bot]}\n'
-            f'setoption mcts_max_depth {mcts_depth[game.bot]}'
+            f'setoption mcts_max_depth {mcts_depth[game.bot]}\n'
             f'go {game.fen}\nquit')
         f.close()
         await util.run(f'./engine < {file_in} > {file_out}')

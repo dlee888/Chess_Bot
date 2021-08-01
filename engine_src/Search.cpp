@@ -31,7 +31,7 @@ Value search(Depth depth, Value alpha, Value beta)
 	// 	return MATE;
 	// }
 
-	if (break_now || (depth <= options["mctx_max_depth"] && options["mcts_prob"] > rand())) {
+	if (break_now || (depth <= mcts_depth && mcts_prob > rng())) {
 		return eval(curr_state);
 	}
 
@@ -168,6 +168,9 @@ Value qsearch(Value alpha, Value beta, Depth depth)
 	}
 
 	if (depth < qs_depth_floor) {
+		return curr_eval;
+	}
+	if (mcts_prob > rng()) {
 		return curr_eval;
 	}
 

@@ -1,6 +1,7 @@
 #include <thread>
 #include <map>
 #include <algorithm>
+#include <chrono>
 
 #include "Search.h"
 
@@ -8,6 +9,14 @@ long long nodes, qsearch_nodes;
 long long tb_hits, qsearch_hits;
 
 Depth depth_qsearched, qs_depth_floor;
+
+std::mt19937 rng(std::chrono::system_clock::now().time_since_epoch().count());
+
+unsigned int mcts_prob, mcts_depth;
+bool use_nnue;
+
+pii search_result = {0.0, -1};
+bool done_searching = false;
 
 int futility_margin(int depth, bool improving)
 {
@@ -17,12 +26,18 @@ int futility_margin(int depth, bool improving)
 #if not defined __WIN32__ and not defined __WIN64__
 void break_after(int time)
 {
-	std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(time));
+	int time_left = time;
+	const int dt = 100;
+	while (time_left > 0) {
+		std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(std::min(dt, time_left)));
+		if (done_searching) {
+			return;
+		}
+		time_left -= dt;
+	}
 	break_now = true;
 }
 #endif
-
-pii search_result = {0.0, -1};
 
 pii moves_loop()
 {
@@ -128,6 +143,8 @@ pii moves_loop()
 
 		curr_depth += ONE_PLY;
 	}
+
+	done_searching = true;
 	return search_result;
 }
 
@@ -136,6 +153,10 @@ pii find_best_move()
 	// TODO: Make search multi-threaded
 	search_result = {0.0, -1};
 	break_now = false;
+	done_searching = false;
+	mcts_prob = options["mcts_prob"];
+	mcts_depth = options["mcts_max_depth"];
+	use_nnue = options["use_nnue"];
 
 #if not defined __WIN32__ and not defined __WIN64__
 	auto timer = std::thread(break_after, options["time_limit"]);

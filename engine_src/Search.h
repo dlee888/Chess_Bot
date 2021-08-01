@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <functional>
 #include <cassert>
+#include <random>
 
 #include "State.h"
 #include "Evaluate.h"
@@ -18,6 +19,9 @@ extern bool break_now;
 
 extern Depth depth_qsearched, qs_depth_floor;
 
+extern unsigned int mcts_prob, mcts_depth;
+extern bool use_nnue;
+
 Value search(Depth, Value, Value);
 
 Value qsearch(Value, Value, Depth);
@@ -27,4 +31,6 @@ pii find_best_move();
 const int RAZOR_MARGIN = 600;
 
 int futility_margin(int, bool);
+
+extern std::mt19937 rng;
 #endif // !SEARCH_H_INCLUDED
