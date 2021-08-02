@@ -5,7 +5,7 @@
 
 #include "types.h"
 
-extern std::map <std::string, int> options;
+extern std::map <std::string, unsigned int> options;
 
 void set_default_options();
 #endif

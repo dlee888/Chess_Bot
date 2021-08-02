@@ -12,7 +12,8 @@ Depth depth_qsearched, qs_depth_floor;
 
 std::mt19937 rng(std::chrono::system_clock::now().time_since_epoch().count());
 
-unsigned int mcts_prob, mcts_depth;
+unsigned int mcts_prob;
+int mcts_depth;
 bool use_nnue;
 
 pii search_result = {0.0, -1};
@@ -128,7 +129,7 @@ pii moves_loop()
 
 		search_result = std::make_pair(evaluation, best_move);
 
-		if (abs(evaluation) >= MATE || curr_depth >= options["depth_limit"])
+		if (abs(evaluation) >= MATE || curr_depth >= (int)options["depth_limit"])
 		{
 			break;
 		}

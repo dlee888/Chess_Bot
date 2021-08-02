@@ -28,7 +28,7 @@ async def run_engine(person):
         f = open(file_in, 'w')
         time_control = [969, 1264, 3696, 9696, 30000]
         max_depth = [3, 5, 7, 13, 69]
-        mcts_probs = [2000000000, 800000000, 300000000, 200000000, 200000000]
+        mcts_probs = [1000000000, 600000000, 300000000, 200000000, 200000000]
         mcts_depth = [10, 10, 8, 6, 5, 5]
         f.write(
             f'setoption time_limit {time_control[game.bot]}\n'

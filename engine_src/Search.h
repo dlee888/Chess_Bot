@@ -19,7 +19,8 @@ extern bool break_now;
 
 extern Depth depth_qsearched, qs_depth_floor;
 
-extern unsigned int mcts_prob, mcts_depth;
+extern unsigned int mcts_prob;
+extern int mcts_depth;
 extern bool use_nnue;
 
 Value search(Depth, Value, Value);

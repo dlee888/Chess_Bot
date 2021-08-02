@@ -164,7 +164,7 @@ Value qsearch(Value alpha, Value beta, Depth depth)
 		// tt entry can be used as more accurate static eval
 		curr_eval = tt_evals[key];
 	} else {
-		curr_eval = eval(curr_state, false, options["use_nnue"]);
+		curr_eval = eval(curr_state, false, use_nnue);
 	}
 
 	if (depth < qs_depth_floor) {
