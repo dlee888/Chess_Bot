@@ -170,9 +170,9 @@ Value qsearch(Value alpha, Value beta, Depth depth)
 	if (depth < qs_depth_floor) {
 		return curr_eval;
 	}
-	if (mcts_prob > rng()) {
-		return curr_eval;
-	}
+	// if (mcts_prob > rng()) {
+	// 	return curr_eval;
+	// }
 
 	// Futility pruning
 	if (depth - qs_depth_floor < 5 && (curr_eval - futility_margin(depth - qs_depth_floor, false) >= beta))
