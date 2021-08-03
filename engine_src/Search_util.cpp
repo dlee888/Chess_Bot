@@ -44,6 +44,38 @@ pii moves_loop()
 {
 	Depth curr_depth = ONE_PLY;
 
+	std::vector<int> moves = curr_state.list_moves();
+
+	std::vector<pii> ordered_moves;
+
+	for (int i : moves)
+	{
+		curr_state.make_move(i);
+
+		if (!curr_state.king_attacked())
+		{
+			Bitstring hash = curr_state.get_hash();
+			if (tt_exists[hash % TABLE_SIZE] && tt_hashes[hash % TABLE_SIZE] == hash)
+			{
+				ordered_moves.push_back({tt_evals[hash % TABLE_SIZE], i});
+			}
+			else
+			{
+				ordered_moves.push_back({eval(curr_state), i});
+			}
+		}
+
+		curr_state.unmake_move(i);
+	}
+
+	if (ordered_moves.size() == 1)
+	{
+		// Break if there is only one legal move
+		search_result.second = ordered_moves[0].second;
+		done_searching = true;
+		return search_result;
+	}
+
 	while (true)
 	{
 		if (options["debug"])
@@ -58,53 +90,22 @@ pii moves_loop()
 
 		int start_time = clock();
 
-		std::vector<int> moves = curr_state.list_moves();
-
-		std::vector<pii> ordered_moves;
-
-		for (int i : moves)
-		{
-			curr_state.make_move(i);
-
-			if (!curr_state.king_attacked())
-			{
-				Bitstring hash = curr_state.get_hash();
-				if (tt_exists[hash % TABLE_SIZE] && tt_hashes[hash % TABLE_SIZE] == hash)
-				{
-					ordered_moves.push_back({tt_evals[hash % TABLE_SIZE], i});
-				}
-				else
-				{
-					ordered_moves.push_back({eval(curr_state), i});
-				}
-			}
-
-			curr_state.unmake_move(i);
-		}
-
-		if (ordered_moves.size() == 1)
-		{
-			// Break if there is only one legal move
-			search_result.second = ordered_moves[0].second;
-			break;
-		}
-
 		std::stable_sort(ordered_moves.begin(), ordered_moves.end());
 
 		int best_move = -1;
 		Value evaluation = -RESIGN;
-		for (const pii &p : ordered_moves)
+		for (pii &p : ordered_moves)
 		{
-			int move = p.second;
-
-			curr_state.make_move(move);
+			curr_state.make_move(p.second);
 			Value x = -search(curr_depth, -VALUE_INFINITE, -evaluation);
-			curr_state.unmake_move(move);
+			curr_state.unmake_move(p.second);
+
+			p.first = -x;
 
 			if (x > evaluation)
 			{
 				evaluation = x;
-				best_move = move;
+				best_move = p.second;
 			}
 
 			if (break_now)

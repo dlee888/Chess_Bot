@@ -8,5 +8,5 @@ void set_default_options() {
 	options["use_opening_book"] = 1;
 	options["debug"] = 1;
 	options["mcts_prob"] = 200000000; // Probability of a MCTS prune, multiplied by INT_MAX
-	options["mctx_max_depth"] = 5;
+	options["mctx_max_depth"] = 4;
 }
