@@ -28,6 +28,7 @@ class CachedUsernames:
         self.cache[id] = (name, time.time() + constants.CACHE_REFRESH_TIME)
         return name
 
+
 class Misc(commands.Cog):
 
     def __init__(self, client):
@@ -127,9 +128,11 @@ class Misc(commands.Cog):
         else:
             number = constants.DEFAULT_LEADERBOARD_SIZE
             if num == 'all' or num == 'max':
-                number = min(constants.MAX_LEADERBOARD_SIZE, len(ratings.keys()))
+                number = min(constants.MAX_LEADERBOARD_SIZE,
+                             len(ratings.keys()))
             elif num == '-1':
-                number = min(constants.DEFAULT_LEADERBOARD_SIZE, len(ratings.keys()))
+                number = min(constants.DEFAULT_LEADERBOARD_SIZE,
+                             len(ratings.keys()))
             else:
                 try:
                     number = int(num)
@@ -144,7 +147,7 @@ class Misc(commands.Cog):
             if number > constants.MAX_LEADERBOARD_SIZE:
                 await ctx.send('The leaderboard can hold a max of 25 people.')
                 return
-            
+
             embed.set_footer(text=f'Top {number} rated players')
 
             for k in ratings.keys():
@@ -307,6 +310,23 @@ class Misc(commands.Cog):
         embed.add_field(name='Won', value=str(won))
         embed.add_field(name='Drawn', value=str(drew))
         await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    async def notif(self, ctx):
+        '''
+        {
+            "name": "notif",
+            "description": "Sets the channel for your notifications.",
+            "usage": "$notif",
+            "examples": [
+                "$notif"
+            ],
+            "cooldown": 3
+        }
+        '''
+        data.data_manager.change_settings(ctx.author.id, new_notif=ctx.channel.id)
+        await ctx.send(f'Notification channel set to `{ctx.channel.name}`')
 
 
 def setup(bot):

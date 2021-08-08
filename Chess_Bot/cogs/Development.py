@@ -14,6 +14,12 @@ import Chess_Bot.util.Utility as util
 from Chess_Bot.util.CPP_IO import *
 
 
+def is_developer():
+    def predicate(ctx):
+        return ctx.message.author.id in [716070916550819860, 721043620060201051]
+    return commands.check(predicate)
+
+
 class Development(commands.Cog):
 
     def __init__(self, client):
@@ -22,17 +28,8 @@ class Development(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.cooldown(1, 15, commands.BucketType.user)
+    @is_developer()
     async def update(self, ctx):
-        '''
-        Compiles the latest version of Chess Bot
-        Compiler: g++
-        (Bot developers only)
-        '''
-
-        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            # await ctx.send(f'You do not have permission to update')
-            return
-
         await util.run('make clear')
         out, err, status = await util.run('make')
 
@@ -49,16 +46,8 @@ class Development(commands.Cog):
         await ctx.send(status)
 
     @commands.command(hidden=True)
+    @is_developer()
     async def shell(self, ctx, *, cmd):
-        '''
-        Executes shell commands
-        (Bot developers only)
-        '''
-
-        if ctx.author.id != 716070916550819860:
-            # await ctx.send('Geniosity limit exceeded. Try again later')
-            return
-
         await ctx.send(f'Executing command "{cmd}"...')
         stdout, stderr, status = await util.run(cmd)
 
@@ -76,31 +65,14 @@ class Development(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.cooldown(1, 15, commands.BucketType.user)
+    @is_developer()
     async def restart(self, ctx):
-        '''
-        Restarts the bot
-        (Bot developers only)
-        '''
-
-        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            # await ctx.send(f'You do not have permission to restart')
-            return
-
         await ctx.send(f'Restarting...')
-
         sys.exit()
 
     @commands.command(hidden=True)
+    @is_developer()
     async def git_pull(self, ctx):
-        '''
-        Pulls from the github repository
-        (Bot developers only)
-        '''
-
-        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            # await ctx.send(f'You do not have permission to run "git pull"')
-            return
-
         await ctx.send(f'Executing command "git pull"...')
 
         stdout, stderr, status = await util.run(f'git pull')
@@ -118,16 +90,8 @@ class Development(commands.Cog):
         await ctx.send(status)
 
     @commands.command(hidden=True)
+    @is_developer()
     async def debug_load(self, ctx, user: typing.Union[discord.User, discord.Member]):
-        '''
-        Loads <user>'s game to your game
-        (Bot developers only)
-        '''
-
-        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            # await ctx.send(f'You do not have permission to debug_load')
-            return
-
         game = data.data_manager.get_game(user.id)
 
         if game == None:
@@ -148,11 +112,9 @@ class Development(commands.Cog):
         return content.strip('` \n')
 
     @commands.command(pass_context=True, hidden=True)
+    @is_developer()
     async def debug(self, ctx, *, body: str):
         """Evaluates a code"""
-
-        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            return
 
         env = {
             'bot': self.client,
@@ -198,26 +160,13 @@ class Development(commands.Cog):
                 await ctx.send(f'```py\n{value}{ret}\n```')
 
     @commands.command(hidden=True)
+    @is_developer()
     async def gimme(self, ctx, file):
-        '''
-        Sends files
-        '''
-        if '..' in file and ctx.author.id != 716070916550819860:
-            # await ctx.send('Geniosity limit exceeded. Try again later')
-            return
-
-        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            # await ctx.send(f'You do not have permission to get files')
-            return
-
         await ctx.send(file, file=discord.File(file))
 
     @commands.command(hidden=True)
+    @is_developer()
     async def load_db(self, ctx):
-        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            # await ctx.send(f'You do not have permission to get files')
-            return
-        
         for attachment in ctx.message.attachments:
             if attachment.filename == 'database':
                 await attachment.save(os.path.join(constants.TEMP_DIR, 'database'))

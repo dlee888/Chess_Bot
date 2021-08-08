@@ -46,7 +46,7 @@ def update_rating(user, outcome, bot):
         person_rating = constants.DEFAULT_RATING
 
     old_rating = person_rating
-    
+
     E = 1 / (1 + 10 ** ((bot_rating - person_rating) / 400))
 
     bot_rating += 32 * (E - outcome)
@@ -54,8 +54,30 @@ def update_rating(user, outcome, bot):
 
     data.data_manager.change_rating(bot, bot_rating)
     data.data_manager.change_rating(user, person_rating)
-    
+
     return old_rating, person_rating
+
+
+def update_rating2(white, black, outcome):
+    white_rating = data.data_manager.get_rating(white)
+    black_rating = data.data_manager.get_rating(black)
+    if white_rating == None:
+        white_rating = constants.DEFAULT_RATING
+    if black_rating == None:
+        black_rating = constants.DEFAULT_RATING
+        
+    old_white = white_rating
+    old_black = black_rating
+
+    E = 1 / (1 + 10 ** ((white_rating - black_rating) / 400))
+
+    white_rating += 32 * (E - outcome)
+    black_rating += 32 * (outcome - E)
+
+    data.data_manager.change_rating(white, white_rating)
+    data.data_manager.change_rating(black, black_rating)
+
+    return white_rating - old_white, black_rating - old_black
 
 
 def pretty_time(time):
@@ -65,12 +87,13 @@ def pretty_time(time):
     time -= 60 * minutes
     return f'{int(hours)} hours, {int(minutes)} minutes, {round(time, 3)} seconds'
 
+
 def cb_to_uci(cb_move):
     if cb_move == 1835008:
         return "O-O"
     elif cb_move == 2883584:
         return "O-O-O"
-    
+
     start_square = cb_move % 64
     end_square = (cb_move // 64) % 64
 
@@ -89,6 +112,7 @@ def cb_to_uci(cb_move):
         res += promote_to[cb_move // (2 ** 20)]
 
     return res
+
 
 def change_fen(person, new_fen):
     game = data.data_manager.get_game(person)

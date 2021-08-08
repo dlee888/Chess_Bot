@@ -17,7 +17,7 @@ class Autoposter(commands.Cog):
         if not '-beta' in sys.argv:
             self.post_stats.start()
 
-    @tasks.loop(hours=3)
+    @tasks.loop(hours=5)
     async def post_stats(self):
         embed = discord.Embed(title="Bot Info", color=0xff0000)
 

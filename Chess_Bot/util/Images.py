@@ -96,3 +96,48 @@ def get_image(person):
                 result.paste(square_img, (350 - y, 350 - x, 400 - y, 400 - x))
 
     result.save(os.path.join(constants.TEMP_DIR, f'image-{person}.png'))
+def get_image2(person, pov = None):
+    game = data.data_manager.get_game(person)
+    theme = data.data_manager.get_theme(person)
+    board = str(chess.Board(game.fen)).split('\n')
+    path = os.path.join(constants.TEMP_DIR, f'image-{person}.png')
+    if pov is None:
+        if game.white == person:
+            pov = chess.WHITE
+        else:
+            pov = chess.BLACK
+
+    result = Image.open(os.path.join(constants.ASSETS_DIR, 'blank_board.png'))
+    result = result.resize((400, 400))
+
+    for i in range(8):
+        for j in range(0, 16, 2):
+            square = ''
+            if board[i][j] == '.':
+                square += 'blank'
+            elif board[i][j].islower():
+                square += 'B' + board[i][j].upper()
+            else:
+                square += 'W' + board[i][j]
+
+            x = i
+            y = j // 2
+
+            if (x + y) % 2 == 0:
+                square += '-light.png'
+            else:
+                square += '-dark.png'
+
+            square_img = Image.open(os.path.join(constants.THEMES_DIR, theme, square))
+            square_img = square_img.resize((50, 50), Image.ANTIALIAS)
+
+            x *= 50
+            y *= 50
+
+            if pov == chess.WHITE:
+                result.paste(square_img, (y, x, y + 50, x + 50))
+            else:
+                result.paste(square_img, (350 - y, 350 - x, 400 - y, 400 - x))
+
+    result.save(path)
+    return path

@@ -28,13 +28,10 @@ bot = commands.Bot(command_prefix=get_prefix, help_command=None,
 @bot.event
 async def on_command_error(ctx, exc):
     if type(exc) == commands.errors.BotMissingPermissions:
-        await ctx.send(f'Chess Bot is missing permissions.\nThe missing permissions are: {" ".join(exc.missing_perms)}')
+        await ctx.send(f'Chess Bot is missing permissions.\nThe missing permissions are: `{" ".join(exc.missing_perms)}`')
     elif type(exc) == commands.errors.MissingRequiredArgument:
-        await ctx.send(f'Missing required argument.\nPlease enter a value for: {exc.param}.\nUse `$help <command name>` to get more information about a command.')
-    elif (type(exc) == commands.errors.ArgumentParsingError or
-          type(exc) == commands.errors.ExpectedClosingQuoteError or
-          type(exc) == commands.errors.BadUnionArgument or
-          type(exc) == commands.errors.UserInputError):
+        await ctx.send(f'Missing required argument.\nPlease enter a value for: `{exc.param}`.\nUse `$help <command name>` to get more information about a command.')
+    elif issubclass(type(exc), commands.errors.UserInputError):
         await ctx.send(f'There was an error parsing your argument')
     elif type(exc) == commands.errors.TooManyArguments:
         await ctx.send(f'Bruh what why are there so many arguments?')

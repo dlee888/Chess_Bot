@@ -8,7 +8,6 @@ import Chess_Bot.util.Data as data
 import Chess_Bot.util.Images as image
 from Chess_Bot.util.CPP_IO import *
 
-
 class Viewing(commands.Cog):
 
     def __init__(self, client):
@@ -38,18 +37,22 @@ class Viewing(commands.Cog):
         if game == None:
             await ctx.send(f'{person} does not have a game in progress')
             return
-        
-        get_image(person.id)
-        embed = discord.Embed(
-            title=f'{ctx.author}\'s game against {ProfileNames[Profile(game.bot).name].value}', description=f'{whiteblack[game.color].capitalize()} to move.', color=0x5ef29c)
-        if person.id in util.thonking:
-            embed.description = f'{ProfileNames[Profile(game.bot).name].value} is thinking...'
-        embed.set_footer(
-            text=f'Requested by {ctx.author}', icon_url=ctx.author.avatar_url)
-        file = discord.File(
-                os.path.join(constants.TEMP_DIR, f'image-{person.id}.png'), filename='board.png')
-        embed.set_image(url=f'attachment://board.png')
-        await ctx.message.reply(embed=embed, file=file)
+        if isinstance(game, data.Game):
+            get_image(person.id)
+            embed = discord.Embed(
+                title=f'{ctx.author}\'s game against {ProfileNames[Profile(game.bot).name].value}', description=f'{whiteblack[game.color].capitalize()} to move.', color=0x5ef29c)
+            if person.id in util.thonking:
+                embed.description = f'{ProfileNames[Profile(game.bot).name].value} is thinking...'
+            embed.set_footer(
+                text=f'Requested by {ctx.author}', icon_url=ctx.author.avatar_url)
+            file = discord.File(
+                    os.path.join(constants.TEMP_DIR, f'image-{person.id}.png'), filename='board.png')
+            embed.set_image(url=f'attachment://board.png')
+            await ctx.message.reply(embed=embed, file=file)
+        elif isinstance(game, data.Game2):
+            util2 = self.client.get_cog('Util')
+            file, embed = util2.make_embed(person.id, title=f'Your game with {await util2.get_name(game.white if game.black == person.id else game.black)}', description=f'{await util2.get_name(game.turn())} to move.')
+            await ctx.send(file=file, embed=embed)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)

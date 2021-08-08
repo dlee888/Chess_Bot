@@ -5,7 +5,7 @@ import typing
 import Chess_Bot.util.Utility as util
 import Chess_Bot.util.Data as data
 from Chess_Bot import constants
-
+from Chess_Bot.cogs.Development import is_developer
 
 class Mooderation(commands.Cog):
 
@@ -14,14 +14,11 @@ class Mooderation(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
+    @is_developer()
     async def abort(self, ctx, user: typing.Union[discord.User, discord.Member]):
         '''
         Aborts a game
         '''
-
-        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            # await ctx.send('You do not have permission to abort games')
-            return
 
         if data.data_manager.get_game(user.id) == None:
             await ctx.send(f'{user} does not have a game in progress')
@@ -73,11 +70,8 @@ class Mooderation(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
+    @is_developer()
     async def gift(self, ctx, person: typing.Union[discord.User, discord.Member], amount: float):
-        if not await util.has_roles(ctx.author.id, ['Admin', 'Mooderator', 'Moderator', 'Debugger', 'Chess-Admin', 'Chess-Debugger'], self.client):
-            # await ctx.send('You do not have permission to gift rating')
-            return
-
         if data.data_manager.get_rating(person.id) == None:
             data.data_manager.change_rating(
                 person.id, constants.DEFAULT_RATING)
