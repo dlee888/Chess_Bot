@@ -4,6 +4,7 @@ import random
 import time
 from typing import Union
 import asyncio
+import json
 
 import Chess_Bot.util.Data as data
 import Chess_Bot.util.Utility as util
@@ -240,8 +241,11 @@ class Engine(commands.Cog):
             ]
         }
         '''
-        await ctx.send_help('challenge')
-
+        helpcog = self.client.get_cog('Help')
+        docstr = self.challenge.__doc__
+        kwargs = json.loads(docstr)
+        print(helpcog, docstr, kwargs)
+        await ctx.send(embed=helpcog.make_help_embed(**kwargs))
 
     @challenge.command()
     async def bot(self, ctx, bot):
@@ -295,9 +299,8 @@ class Engine(commands.Cog):
             game.warned = False
             data.data_manager.change_game(person, game)
 
-
     @challenge.command(aliases=['person'])
-    async def user(self, ctx, person : Union[discord.Member, discord.User]):
+    async def user(self, ctx, person: Union[discord.Member, discord.User]):
         '''
         {
             "name": "challenge user",
@@ -373,8 +376,8 @@ class Engine(commands.Cog):
             await ctx.send(f'Game resigned. Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
         elif isinstance(game, data.Game2):
             util2 = self.client.get_cog('Util')
-            white_delta, black_delta = util.update_rating2(
-                0 if ctx.author.id == game.black else 1)
+            white_delta, black_delta = util.update_rating2(game.white, game.black,
+                                                           0 if ctx.author.id == game.black else 1)
             if ctx.author.id == game.white:
                 await ctx.send(f'Game resigned. Your new rating is {round(data.data_manager.get_rating(ctx.author.id), 3)} ({round(white_delta, 3)})')
                 channel, done = await util2.get_notifchannel(game.black)

@@ -1,4 +1,3 @@
-from re import sub
 import discord
 from discord.ext import commands
 
