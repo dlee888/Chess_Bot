@@ -105,9 +105,9 @@ def main():
     logging.info(f'Cogs loaded: {", ".join(bot.cogs)}')
 
     if '-beta' in sys.argv:
-        bot.add_check(lambda ctx: ctx.channel.id == 813838854581780492)
+        bot.add_check(lambda ctx: ctx.channel.id in constants.BETA_CHANNELS)
     else:
-        bot.add_check(lambda ctx: ctx.channel.id != 813838854581780492)
+        bot.add_check(lambda ctx: not ctx.channel.id in constants.BETA_CHANNELS)
 
     token = os.environ.get('BOT_TOKEN')
     bot.run(token)

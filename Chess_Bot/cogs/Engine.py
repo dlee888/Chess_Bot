@@ -315,6 +315,13 @@ class Engine(commands.Cog):
         }
         '''
 
+        if data.data_manager.get_game(ctx.author.id) is not None:
+            await ctx.send('You already have a game in progress.')
+            return
+        if data.data_manager.get_game(person.id) is not None:
+            await ctx.send(f'{person} already has a game in progress.')
+            return
+
         util2 = self.client.get_cog('Util')
 
         challenge_msg = await ctx.send(f'{person.mention}, {ctx.author} has challenged you to a game of chess. React with :white_check_mark: to accept.')
@@ -380,7 +387,7 @@ class Engine(commands.Cog):
             if ctx.author.id == game.white:
                 await ctx.send(f'Game resigned. Your new rating is {round(data.data_manager.get_rating(ctx.author.id), 3)} ({round(white_delta, 3)})')
                 file, embed = util2.make_embed(
-                    game.black, title='Your game has ended', description=f'Your apponent has resigned. Your new rating is {round(data.data_manager.get_rating(game.black), 3)} ({round(black_delta), 3})')
+                    game.black, title='Your game has ended', description=f'Your apponent has resigned. Your new rating is {round(data.data_manager.get_rating(game.black), 3)} ({round(black_delta, 3)})')
                 await util2.send_notif(game.black, file=file, embed=embed)
             else:
                 await ctx.send(f'Game resigned. Your new rating is {round(data.data_manager.get_rating(ctx.author.id), 3)} ({round(black_delta, 3)})')
