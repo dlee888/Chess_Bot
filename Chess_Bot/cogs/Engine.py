@@ -242,9 +242,8 @@ class Engine(commands.Cog):
         }
         '''
         helpcog = self.client.get_cog('Help')
-        docstr = self.challenge.__doc__
+        docstr = self.client.get_command('challenge').help
         kwargs = json.loads(docstr)
-        print(helpcog, docstr, kwargs)
         await ctx.send(embed=helpcog.make_help_embed(**kwargs))
 
     @challenge.command()
@@ -380,18 +379,14 @@ class Engine(commands.Cog):
                                                            0 if ctx.author.id == game.black else 1)
             if ctx.author.id == game.white:
                 await ctx.send(f'Game resigned. Your new rating is {round(data.data_manager.get_rating(ctx.author.id), 3)} ({round(white_delta, 3)})')
-                channel, done = await util2.get_notifchannel(game.black)
-                if channel is not None:
-                    file, embed = util2.make_embed(
-                        game.black, title='Your game has ended', description=f'Your apponent has resigned. Your new rating is {round(data.data_manager.get_rating(game.black), 3)} ({round(black_delta), 3})')
-                    await channel.send(file=file, embed=embed)
+                file, embed = util2.make_embed(
+                    game.black, title='Your game has ended', description=f'Your apponent has resigned. Your new rating is {round(data.data_manager.get_rating(game.black), 3)} ({round(black_delta), 3})')
+                await util2.send_notif(game.black, file=file, embed=embed)
             else:
                 await ctx.send(f'Game resigned. Your new rating is {round(data.data_manager.get_rating(ctx.author.id), 3)} ({round(black_delta, 3)})')
-                channel, done = await util2.get_notifchannel(game.white)
-                if channel is not None:
-                    file, embed = util2.make_embed(
-                        game.white, title='Your game has ended', description=f'Your apponent has resigned. Your new rating is {round(data.data_manager.get_rating(game.black), 3)} ({round(black_delta), 3})')
-                    await channel.send(file=file, embed=embed)
+                file, embed = util2.make_embed(
+                    game.white, title='Your game has ended', description=f'Your apponent has resigned. Your new rating is {round(data.data_manager.get_rating(game.white), 3)} ({round(white_delta, 3)})')
+                await util2.send_notif(game.white, file=file, embed=embed)
             data.data_manager.delete_game(
                 ctx.author.id, chess.WHITE if ctx.author.id == game.black else chess.BLACK)
 
