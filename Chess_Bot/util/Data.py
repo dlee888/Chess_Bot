@@ -42,6 +42,18 @@ class Game2:
         else:
             return self.black
 
+    def get_color(self, person):
+        if person == self.white:
+            return chess.WHITE
+        else:
+            return chess.BLACK
+
+    def time_left(self, person):
+        if person == self.white:
+            return constants.MAX_TIME_PER_MOVE - (time.time() - self.white_last_moved)
+        else:
+            return constants.MAX_TIME_PER_MOVE - (time.time() - self.black_last_moved)
+
 
 class Data:
 
@@ -341,4 +353,4 @@ class Data:
         self.conn.commit()
 
 
-data_manager = Data(os.environ['DATABASE_URL'])
+data_manager = Data(os.getenv('DATABASE_URL'))
