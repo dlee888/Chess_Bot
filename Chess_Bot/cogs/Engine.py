@@ -219,7 +219,7 @@ class Engine(commands.Cog):
                 await ctx.message.reply(file=file, embed=embed)
 
                 file, embed = util2.make_embed(game.white, title=f'Your game with {await util2.get_name(game.black)}', description='It is your turn')
-                await util2.send_notif(person, embed=embed, file=file)
+                await util2.send_notif(game.white, embed=embed, file=file)
 
     @commands.group(invoke_without_command=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
