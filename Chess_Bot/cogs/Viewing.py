@@ -51,7 +51,7 @@ class Viewing(commands.Cog):
             await ctx.message.reply(embed=embed, file=file)
         elif isinstance(game, data.Game2):
             util2 = self.client.get_cog('Util')
-            file, embed = util2.make_embed(person.id, title=f'Your game with {await util2.get_name(game.white if game.black == person.id else game.black)}', description=f'{await util2.get_name(game.turn())} to move.')
+            file, embed = util2.make_embed(person.id, title=f'Your game with {await util2.get_name(game.white if game.black == person.id else game.black)}', description=f'{await util2.get_name(game.to_move())} to move.')
             await ctx.send(file=file, embed=embed)
 
     @commands.command()

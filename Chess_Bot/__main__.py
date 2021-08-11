@@ -109,7 +109,9 @@ def main():
     else:
         bot.add_check(lambda ctx: not ctx.channel.id in constants.BETA_CHANNELS)
 
-    token = os.environ.get('BOT_TOKEN')
+    token = os.getenv('BOT_TOKEN')
+    if token is None:
+        token = input('Token? ')
     bot.run(token)
 
 

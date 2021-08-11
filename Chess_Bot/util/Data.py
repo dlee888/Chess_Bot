@@ -37,6 +37,10 @@ class Game2:
 
     def turn(self):
         board = chess.Board(self.fen)
+        return board.turn
+
+    def to_move(self):
+        board = chess.Board(self.fen)
         if board.turn == chess.WHITE:
             return self.white
         else:
@@ -48,11 +52,18 @@ class Game2:
         else:
             return chess.BLACK
 
+    def get_person(self, color):
+        if color == chess.WHITE:
+            return self.white
+        else:
+            return self.black
+
     def time_left(self, person):
         if person == self.white:
-            return constants.MAX_TIME_PER_MOVE - (time.time() - self.white_last_moved)
-        else:
             return constants.MAX_TIME_PER_MOVE - (time.time() - self.black_last_moved)
+        else:
+            return constants.MAX_TIME_PER_MOVE - (time.time() - self.white_last_moved)
+
 
 
 class Data:
@@ -141,17 +152,14 @@ class Data:
         cur = self.get_conn().cursor()
         cur.execute('SELECT * FROM games')
         rows = cur.fetchall()
-        games = {}
+        games = []
         for row in rows:
-            games[row[0]] = Game(row)
+            games.append((row[0], Game(row)))
 
-        cur = self.get_conn().cursor()
         cur.execute('SELECT * FROM games2')
         rows = cur.fetchall()
         for row in rows:
-            g = Game2(row)
-            games[g.white] = g
-            games[g.black] = g
+            games.append(Game2(row))
         return games
 
     def change_game(self, person, new_game):

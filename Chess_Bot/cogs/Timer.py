@@ -77,8 +77,8 @@ class Timer(commands.Cog):
             await ctx.send(f'{person} has {util.pretty_time(game.last_moved + constants.MAX_TIME_PER_MOVE - time.time())} left.')
         else:
             util2 = self.client.get_cog('Util')
-            to_move = game.turn()
-            await ctx.send(f'{await util2.get_name(to_move)} to move with {util.pretty_time(game.time_left(to_move))} left.')
+            to_move = game.to_move()
+            await ctx.send(f'{await util2.get_name(to_move)} to move against {await util2.get_name(game.get_person(not game.turn()))} with {util.pretty_time(game.time_left(to_move))} left.')
 
     @tasks.loop(seconds=10)
     async def low_time_warn(self):
@@ -95,7 +95,7 @@ class Timer(commands.Cog):
                     game.warned = True
                     data.data_manager.change_game(person, game)
             elif isinstance(game, data.Game2):
-                if game.turn() == chess.WHITE:
+                if game.to_move() == chess.WHITE:
                     time_left = game.white_last_moved + constants.MAX_TIME_PER_MOVE - time.time()
                     if time_left < constants.LOW_TIME_WARN and not game.white_warned:
                         await self.send_low_time_warning(game.white)
@@ -112,17 +112,18 @@ class Timer(commands.Cog):
     async def no_time_check(self):
         games = data.data_manager.get_games()
         util2 = self.client.get_cog('Util')
-        for person in games.keys():
-            game = games[person]
-            if isinstance(game, data.Game):
-                time_left = games[person].last_moved + \
+        for game in games:
+            if isinstance(game, tuple(int, data.Game)):
+                person = game[0]
+                game = game[1]
+                time_left = game.last_moved + \
                     constants.MAX_TIME_PER_MOVE - time.time()
 
                 if time_left < 0:
                     await self.send_no_time_message(person)
             elif isinstance(game, data.Game2):
-                if game.turn() == chess.WHITE:
-                    time_left = game.white_last_moved + constants.MAX_TIME_PER_MOVE - time.time()
+                if game.to_move() == chess.WHITE:
+                    time_left = game.time_left(game.white)
                     if time_left < 0:
                         white_delta, black_delta = util.update_rating2(
                             game.white, game.black, chess.BLACK)
@@ -134,7 +135,7 @@ class Timer(commands.Cog):
                                                 f'Your new rating is {data.data_manager.get_rating(game.black)} ({black_delta})'))
                         data.data_manager.delete_game(game.white, chess.BLACK)
                 else:
-                    time_left = game.black_last_moved + constants.MAX_TIME_PER_MOVE - time.time()
+                    time_left = game.time_left(game.black)
                     if time_left < 0:
                         white_delta, black_delta = util.update_rating2(
                             game.white, game.black, chess.WHITE)
