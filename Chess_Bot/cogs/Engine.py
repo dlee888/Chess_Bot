@@ -324,17 +324,24 @@ class Engine(commands.Cog):
 
         util2 = self.client.get_cog('Util')
 
-        challenge_msg = await ctx.send(f'{person.mention}, {ctx.author} has challenged you to a game of chess. React with :white_check_mark: to accept.')
+        challenge_msg = await ctx.send((f'{person.mention}, {ctx.author} has challenged you to a game of chess.\n'
+                                        'React with :white_check_mark: to accept.\n'
+                                        'React with :x: to decline or withdraw your challenge.'))
         await challenge_msg.add_reaction('✅')
+        await challenge_msg.add_reaction('❌')
 
         def check(reaction, user):
-            return user.id == person.id and str(reaction.emoji) == '✅'
+            return ((user.id == person.id and str(reaction.emoji) == '✅') or
+                    ((user.id == person.id or user.id == ctx.author.id) and str(reaction.emoji) == '❌'))
 
         try:
             reaction, user = await self.client.wait_for('reaction_add', timeout=300.0, check=check)
         except asyncio.TimeoutError:
             await ctx.send('Challenge timed out!')
         else:
+            if str(reaction.emoji) == '❌':
+                await ctx.send('Challenge declined / withdrawn')
+                return
             game = data.Game2()
             if random.randint(0, 1) == 0:
                 game.white = ctx.author.id

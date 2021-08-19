@@ -103,6 +103,10 @@ class Data:
                                'id bigint NOT NULL PRIMARY KEY UNIQUE,'
                                'prefix text'
                                ');')
+        create_themes_table = ('CREATE TABLE IF NOT EXISTS themes ('
+                               'id bigint NOT NULL PRIMARY KEY UNIQUE,'
+                               'theme text'
+                               ');')
         create_settings_table = ('CREATE TABLE IF NOT EXISTS settings ('
                                  'id bigint NOT NULL PRIMARY KEY UNIQUE,'
                                  'theme text,'
@@ -123,6 +127,7 @@ class Data:
         cur.execute(create_games2_table)
         cur.execute(create_ratings_table)
         cur.execute(create_prefix_table)
+        cur.execute(create_themes_table)
         cur.execute(create_settings_table)
         cur.execute(create_votes_table)
         cur.execute(create_stats_table)
@@ -320,7 +325,7 @@ class Data:
         if len(rows) == 0:
             row = ['default', -1]
         else:
-            row = rows[0]
+            row = [i for i in rows[0]]
         if new_theme is not None:
             row[0] = new_theme
         if new_notif is not None:

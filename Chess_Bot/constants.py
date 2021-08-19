@@ -7,6 +7,7 @@ ASSETS_DIR = os.path.join(DATA_DIR, 'assets')
 TEMP_DIR = os.path.join(DATA_DIR, 'temp')
 
 LOG_FILE_PATH = os.path.join(LOGS_DIR, 'debug.log')
+DB_DIR =  os.path.join(DATA_DIR, 'db')
 
 THEMES_DIR = os.path.join(ASSETS_DIR, 'themes')
 

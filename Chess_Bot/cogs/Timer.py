@@ -35,9 +35,8 @@ class Timer(commands.Cog):
                 return None
 
     async def send_low_time_warning(self, person):
-        channel = await self.get_notifchannel(person)
-        if channel is not None:
-            await channel.send('You are low on time. Use `$time` to get how much time you have left before you automatically forfeit you game.')
+        util2 = self.client.get_cog('Util')
+        util2.send_notif(person, 'You are low on time. Use `$time` to get how much time you have left before you automatically forfeit you game.')
 
     async def send_no_time_message(self, person):
         game = data.data_manager.get_game(person)
@@ -84,9 +83,10 @@ class Timer(commands.Cog):
     async def low_time_warn(self):
         games = data.data_manager.get_games()
 
-        for person in games.keys():
-            game = games[person]
-            if isinstance(game, data.Game):
+        for game in games:
+            if isinstance(game, tuple):
+                person = game[0]
+                game = game[1]
                 time_left = game.last_moved + \
                     constants.MAX_TIME_PER_MOVE - time.time()
 
@@ -113,7 +113,7 @@ class Timer(commands.Cog):
         games = data.data_manager.get_games()
         util2 = self.client.get_cog('Util')
         for game in games:
-            if isinstance(game, tuple(int, data.Game)):
+            if isinstance(game, tuple):
                 person = game[0]
                 game = game[1]
                 time_left = game.last_moved + \
