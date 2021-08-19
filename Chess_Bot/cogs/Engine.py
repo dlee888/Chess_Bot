@@ -18,7 +18,7 @@ class Engine(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command(aliases=['play'])
+    @commands.command(aliases=['play', 'm'])
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def move(self, ctx, move):
         '''
@@ -26,7 +26,8 @@ class Engine(commands.Cog):
             "name": "move",
             "description": "Plays a move against the computer.\\nPlease enter the move in algebraic notation.\\nFor example, Nxe4, Nge5, c4, Ke2, etc.\\nMore about algebraic notation [here](https://www.chess.com/article/view/chess-notation#algebraic-notation).\\nYou can also enter it in UCI (universal chess interface) notation.",
             "aliases": [
-                "play"
+                "play",
+                "m"
             ],
             "usage": "$move <move>",
             "examples": [
