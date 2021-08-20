@@ -36,7 +36,7 @@ class Timer(commands.Cog):
 
     async def send_low_time_warning(self, person):
         util2 = self.client.get_cog('Util')
-        util2.send_notif(person, 'You are low on time. Use `$time` to get how much time you have left before you automatically forfeit you game.')
+        await util2.send_notif(person, 'You are low on time. Use `$time` to get how much time you have left before you automatically forfeit you game.')
 
     async def send_no_time_message(self, person):
         game = data.data_manager.get_game(person)
@@ -44,7 +44,7 @@ class Timer(commands.Cog):
 
         old_rating, new_rating = util.update_rating(person, 0, game.bot)
 
-        channel = await self.get_notifchannel(person)
+        channel, done = await self.get_notifchannel(person)
         if channel is not None:
             await channel.send(f'You automatically forfeited on time. Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
 
