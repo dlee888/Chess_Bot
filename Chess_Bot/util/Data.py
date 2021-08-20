@@ -183,8 +183,8 @@ class Data:
                 new_game.black,
                 new_game.white_last_moved,
                 new_game.black_last_moved,
-                new_game.white_warned,
-                new_game.black_warned
+                int(new_game.white_warned),
+                int(new_game.black_warned)
             ))
 
         self.conn.commit()
