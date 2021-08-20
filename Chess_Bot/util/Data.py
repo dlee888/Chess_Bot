@@ -177,7 +177,7 @@ class Data:
         elif isinstance(new_game, Game2):
             cur.execute(
                 f'DELETE FROM games2 WHERE white = {new_game.white} and black = {new_game.black};')
-            cur.execute('INSERT INTO games2 VALUES (?, ?, ?, ?, ?, ?, ?)', (
+            cur.execute('INSERT INTO games2 VALUES (%s, %s, %s, %s, %s, %s, %s)', (
                 new_game.fen,
                 new_game.white,
                 new_game.black,
@@ -331,7 +331,7 @@ class Data:
         if new_notif is not None:
             row[1] = new_notif
         cur.execute(f'DELETE FROM settings WHERE id = {person}')
-        cur.execute('INSERT INTO settings VALUES (?, ?, ?)',
+        cur.execute('INSERT INTO settings VALUES (%s, %s, %s)',
                     (person, row[0], row[1]))
         self.conn.commit()
 
