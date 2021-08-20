@@ -69,7 +69,7 @@ class Game2:
 class Data:
 
     def __init__(self, url):
-        if not '-beta' in sys.argv:
+        if not '-beta' in sys.argv or '-use-real-db' in sys.argv:
             self.DATABASE_URL = url
 
             self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
