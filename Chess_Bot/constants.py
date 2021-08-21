@@ -7,6 +7,7 @@ ASSETS_DIR = os.path.join(DATA_DIR, 'assets')
 TEMP_DIR = os.path.join(DATA_DIR, 'temp')
 
 LOG_FILE_PATH = os.path.join(LOGS_DIR, 'debug.log')
+DB_DIR =  os.path.join(DATA_DIR, 'db')
 
 THEMES_DIR = os.path.join(ASSETS_DIR, 'themes')
 
@@ -26,6 +27,9 @@ MAX_LEADERBOARD_SIZE = 40
 DEFAULT_LEADERBOARD_SIZE = 10
 
 CACHE_REFRESH_TIME = 3600
+
+MAX_TIME_PER_MOVE = 3 * 24 * 60 * 60
+LOW_TIME_WARN = 24 * 60 * 60
 
 INVITE_LINK = 'https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=311360&scope=bot'
 GITHUB_LINK = 'https://github.com/jeffarjeffar/Chess_Bot'

@@ -13,7 +13,7 @@ It also has a built-in elo rating system.
 
 [Github](https://github.com/jeffarjeffar/Chess_Bot)
 
-[Invite](https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=268815424&scope=bot)
+[Invite](https://discord.com/oauth2/authorize?client_id=801501916810838066&permissions=311360&scope=bot)
 
 ## Mechanics
 
