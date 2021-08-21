@@ -1,6 +1,6 @@
 # Chess Bot
 
-README for version 2.2.0
+README for version 3.0.0
 
 Chess Bot is a discord bot that plays chess.
 It also has a built-in elo rating system.
@@ -20,6 +20,10 @@ It also has a built-in elo rating system.
 ### Basic Mechanics
 
 You can use the command `$challenge` to challenge the bot to a game of chess.
+
+> ## New in version 3!
+
+> You can now challenge other people in your server!. Use `$challenge user` to challenge a person, or `$challenge bot` to challenge a bot.
 
 Use `$move` to make a move. Make sure your move is in SAN (Standard Algebraic Notation) or UCI (Universal Chess Interface). Otherwise, the bot will not understand it.
 
@@ -101,3 +105,7 @@ Use `$help` to see a list of all the commands.
 To get more information about any command, use `$help [command]`
 
 Usage syntax: `<arg>` means a required argument, `[arg]` means an optional argument.
+
+### Bugs
+
+Please report all bugs you find in the [Chess Bot support server](https://discord.gg/Bm4zjtNTD2) https://discord.gg/Bm4zjtNTD2.

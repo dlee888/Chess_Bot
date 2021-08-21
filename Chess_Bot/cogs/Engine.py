@@ -9,7 +9,7 @@ import json
 import Chess_Bot.util.Data as data
 import Chess_Bot.util.Utility as util
 from Chess_Bot.util.CPP_IO import *
-from Chess_Bot.cogs.Profiles import Profile, ProfileNames, get_name
+from Chess_Bot.cogs.Profiles import Profile, ProfileNames
 from Chess_Bot import constants
 
 
@@ -304,7 +304,7 @@ class Engine(commands.Cog):
         '''
         {
             "name": "challenge user",
-            "description": "Challenges another user to a game of chess.",
+            "description": "Challenges another user to a game of chess.\\nReact with a check mark to accept a challenge, and react with an X mark to decline\\nThe challenge will expire in 10 minutes.",
             "usage": "$challenge user <user>",
             "examples": [
                 "$challenge user <@person>"             
@@ -322,6 +322,9 @@ class Engine(commands.Cog):
         if data.data_manager.get_game(person.id) is not None:
             await ctx.send(f'{person} already has a game in progress.')
             return
+        if ctx.author.id == person.id:
+            await ctx.send(f'You cannot challenge yourself.')
+            return
 
         util2 = self.client.get_cog('Util')
 
@@ -336,13 +339,17 @@ class Engine(commands.Cog):
                     ((user.id == person.id or user.id == ctx.author.id) and str(reaction.emoji) == '❌'))
 
         try:
-            reaction, user = await self.client.wait_for('reaction_add', timeout=300.0, check=check)
+            reaction, user = await self.client.wait_for('reaction_add', timeout=600.0, check=check)
         except asyncio.TimeoutError:
-            await ctx.send('Challenge timed out!')
+            await challenge_msg.reply('Challenge timed out!')
         else:
             if str(reaction.emoji) == '❌':
-                await ctx.send('Challenge declined / withdrawn')
+                await challenge_msg.reply('Challenge declined / withdrawn')
                 return
+            
+            if data.data_manager.get_game(ctx.author.id) is not None or data.data_manager.get_game(person) is not None:
+                await challenge_msg.reply('Challenge failed. One of the people already has a game in progress.')
+            
             game = data.Game2()
             if random.randint(0, 1) == 0:
                 game.white = ctx.author.id
@@ -356,7 +363,7 @@ class Engine(commands.Cog):
             embed = discord.Embed(
                 title='Game started!', description=f'White: {await util2.get_name(game.white)}\nBlack: {await util2.get_name(game.black)}')
             embed.set_image(url='attachment://board.png')
-            await ctx.send(f'<@{game.white}> <@{game.black}>', file=file, embed=embed)
+            await challenge_msg.reply(f'<@{game.white}> <@{game.black}>', file=file, embed=embed)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
