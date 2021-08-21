@@ -146,6 +146,10 @@ pii moves_loop()
 		curr_depth += ONE_PLY;
 	}
 
+	if (curr_depth == ONE_PLY) {
+		search_result = ordered_moves[0];
+	}
+	
 	done_searching = true;
 	return search_result;
 }
