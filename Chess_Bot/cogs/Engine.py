@@ -347,7 +347,7 @@ class Engine(commands.Cog):
                 await challenge_msg.reply('Challenge declined / withdrawn')
                 return
             
-            if data.data_manager.get_game(ctx.author.id) is not None or data.data_manager.get_game(person) is not None:
+            if data.data_manager.get_game(ctx.author.id) is not None or data.data_manager.get_game(person.id) is not None:
                 await challenge_msg.reply('Challenge failed. One of the people already has a game in progress.')
             
             game = data.Game2()
