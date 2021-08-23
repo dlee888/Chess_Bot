@@ -48,7 +48,10 @@ class Util(commands.Cog):
             text = f'<@{person}>' + text
             if is_default and random.randint(1, 3) == 1:
                 text = 'Tip: set your notification channel by using the `$notif` command!.\n' + text
-            await channel.send(text, **kwargs)
+            try:
+                await channel.send(text, **kwargs)
+            except discord.Forbidden:
+                pass
 
 
 def setup(bot):
