@@ -110,7 +110,8 @@ class Engine(commands.Cog):
 
             await output_move(ctx, person, move)
             await log(person, self.client, ctx)
-            util.thonking.remove(person)
+            if person in util.thonking:
+                util.thonking.remove(person)
 
             board = chess.Board(game.fen)
             if board.is_game_over(claim_draw=True) or move == 'RESIGN':
@@ -291,7 +292,8 @@ class Engine(commands.Cog):
 
                 move, game = await run_engine(person)
                 await log(person, self.client, ctx)
-                util.thonking.remove(person)
+                if person in util.thonking:
+                    util.thonking.remove(person)
                 data.data_manager.change_game(person, game)
 
             await output_move(ctx, person, move)
