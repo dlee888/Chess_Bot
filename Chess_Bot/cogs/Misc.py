@@ -25,6 +25,8 @@ class CachedUsernames:
         if id in self.cache.keys() and self.cache[id][1] >= time.time():
             return self.cache[id][0]
         name = str(await self.client.fetch_user(id))
+        if len(name) > 30:
+            name = name[:27] + '...'
         self.cache[id] = (name, time.time() + constants.CACHE_REFRESH_TIME)
         return name
 
