@@ -16,7 +16,7 @@ class Util(commands.Cog):
 
     async def get_notifchannel(self, person):
         if person < len(Profile):
-            return None
+            return None, None
         channelid = data.data_manager.get_notifchannel(person)
         if channelid is not None:
             return await self.client.fetch_channel(channelid), False
@@ -28,7 +28,7 @@ class Util(commands.Cog):
             try:
                 return await user.create_dm(), True
             except Exception:
-                return None
+                return None, None
 
     async def get_name(self, person):
         if person < len(Profile):
