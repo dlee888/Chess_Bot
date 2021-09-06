@@ -41,7 +41,7 @@ class Misc(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         game = discord.Game("chess")
-        await self.client.change_presence(status=discord.Status.dnd, activity=game)
+        await self.client.change_presence(activity=game)
 
         status_channel = await self.client.fetch_channel(constants.STATUS_CHANNEL_ID)
 
