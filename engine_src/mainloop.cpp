@@ -41,7 +41,6 @@ int main()
 
 			int move = -1, eval = MATED - 1;
 			if (options["use_opening_book"]) {
-				std::cerr << curr_state.get_hash() << " " << openings[curr_state.get_hash()].size() << " " << curr_state.en_passant_target.top() << std::endl;
 				if (curr_state.to_move && curr_state.full_move > 2 && white_openings[curr_state.get_hash()].size()) {
 					move = white_openings[curr_state.get_hash()][0];
 				} 

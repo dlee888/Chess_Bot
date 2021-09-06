@@ -325,7 +325,7 @@ class Data:
         if len(rows) == 0:
             row = ['default', -1]
         else:
-            row = [i for i in rows[0]]
+            row = [i for i in rows[0][1:]]
         if new_theme is not None:
             row[0] = new_theme
         if new_notif is not None:
