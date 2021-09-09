@@ -3,6 +3,7 @@ from discord.ext import commands
 
 import logging
 import random
+import sys
 
 from Chess_Bot.cogs.Profiles import Profile, get_name
 import Chess_Bot.util.Data as data
@@ -19,7 +20,10 @@ class Util(commands.Cog):
             return None, None
         channelid = data.data_manager.get_notifchannel(person)
         if channelid is not None:
-            return await self.client.fetch_channel(channelid), False
+            try:
+                return await self.client.fetch_channel(channelid), False
+            except discord.errors.NotFound:
+                return None, None
         else:
             user = await self.client.fetch_user(person)
             channel = user.dm_channel
@@ -43,6 +47,8 @@ class Util(commands.Cog):
         return discord.File(path, filename='board.png'), embed
 
     async def send_notif(self, person, text='', **kwargs):
+        if '-beta' in sys.argv:
+            return
         channel, is_default = await self.get_notifchannel(person)
         if channel is not None:
             text = f'<@{person}>' + text

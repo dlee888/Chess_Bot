@@ -76,7 +76,7 @@ class Data:
         else:
             self.DATABASE_URL = None
             self.conn = sqlite3.connect(os.path.join(
-                constants.DATA_DIR, 'db', 'database'))
+                constants.DB_DIR, 'database'))
 
         create_games_table = ('CREATE TABLE IF NOT EXISTS games ('
                               'id bigint NOT NULL PRIMARY KEY UNIQUE,'
