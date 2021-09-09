@@ -13,6 +13,7 @@ engine : engine_bin/Eval_info.o engine_bin/Evaluate.o engine_bin/List_moves.o en
 	$(CC) $? $(CFLAGS) $(LDFLAGS) -o $@
 
 engine_bin/%.o : engine_src/%.cpp
+	mkdir -p engine_bin
 	$(CC) -c $(CFLAGS) $(LDFLAGS) $< -o $@
 
 clear:

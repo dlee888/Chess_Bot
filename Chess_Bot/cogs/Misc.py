@@ -1,6 +1,11 @@
 import discord
 from discord.ext import commands
 
+from discord_slash import SlashContext
+from discord_slash import cog_ext
+from discord_slash.model import SlashCommandOptionType
+from discord_slash.utils.manage_commands import create_option
+
 import time
 import typing
 import logging
@@ -12,7 +17,7 @@ from Chess_Bot.cogs.Profiles import Profile
 from Chess_Bot.cogs import Profiles as profiles
 from Chess_Bot import constants
 
-version = '3.0.0'
+version = '3.1.0'
 
 
 class CachedUsernames:
@@ -68,6 +73,10 @@ class Misc(commands.Cog):
         '''
         await ctx.send(f'Pong!\nLatency: {round(self.client.latency * 1000, 3)}ms')
 
+    @cog_ext.cog_slash(name='ping', description='Is the bot online?')
+    async def ping(self, ctx: SlashContext):
+        await ctx.send(f'Pong!\nLatency: {round(self.client.latency * 1000, 3)}ms')
+
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def rating(self, ctx, person: typing.Union[discord.User, discord.Member] = None):
@@ -84,6 +93,23 @@ class Misc(commands.Cog):
         }
         '''
 
+        if person is None:
+            person = ctx.author
+
+        result = data.data_manager.get_rating(person.id)
+
+        if result == None:
+            person_str = 'You are' if person == ctx.author else f'{person} is'
+            await ctx.send(f'{person_str} unrated.')
+        else:
+            person_str = 'Your' if person == ctx.author else f'{person}\''
+            await ctx.send(f'{person_str} rating is {round(result, 2)}')
+
+    @cog_ext.cog_slash(name='rating', description='Find out the rating of some user.', options=[
+        create_option(name='person', description='The user who you want to find the rating of.',
+                      option_type=SlashCommandOptionType.USER, required=False)
+    ])
+    async def _rating(self, ctx: SlashContext, person: typing.Union[discord.User, discord.Member] = None):
         if person is None:
             person = ctx.author
 
@@ -283,6 +309,9 @@ class Misc(commands.Cog):
         }
         '''
         await ctx.send(constants.INVITE_LINK)
+    @cog_ext.cog_slash(name='invite', description='Sends an invite link.')
+    async def _invite(self, ctx: SlashContext):
+        await ctx.send(constants.INVITE_LINK)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
@@ -327,7 +356,8 @@ class Misc(commands.Cog):
             "cooldown": 3
         }
         '''
-        data.data_manager.change_settings(ctx.author.id, new_notif=ctx.channel.id)
+        data.data_manager.change_settings(
+            ctx.author.id, new_notif=ctx.channel.id)
         await ctx.send(f'Notification channel set to `{ctx.channel.name}`')
 
 

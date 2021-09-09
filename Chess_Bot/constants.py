@@ -31,7 +31,7 @@ CACHE_REFRESH_TIME = 3600
 MAX_TIME_PER_MOVE = 3 * 24 * 60 * 60
 LOW_TIME_WARN = 24 * 60 * 60
 
-INVITE_LINK = 'https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=311360&scope=bot'
+INVITE_LINK = r'https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=2147795008&scope=bot%20applications.commands'
 GITHUB_LINK = 'https://github.com/jeffarjeffar/Chess_Bot'
 SUPPORT_SERVER_INVITE = 'https://discord.gg/Bm4zjtNTD2'
 TOPGG_LINK = 'https://top.gg/bot/801501916810838066/vote'

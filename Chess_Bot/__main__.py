@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 
+from discord_slash import SlashCommand
+
 import Chess_Bot.util.Data as data
 import Chess_Bot.util.Utility as util
 import Chess_Bot.util.Images as image
@@ -22,6 +24,7 @@ async def get_prefix(bot, message):
 
 bot = commands.Bot(command_prefix=get_prefix, help_command=None,
                    status='$help for commands, $botinfo for more information')
+slash = SlashCommand(bot, sync_commands=True)
 
 
 @bot.event
