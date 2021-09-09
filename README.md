@@ -1,6 +1,6 @@
 # Chess Bot
 
-README for version 3.0.0
+README for version 3.1.0
 
 Chess Bot is a discord bot that plays chess.
 It also has a built-in elo rating system.
@@ -13,7 +13,7 @@ It also has a built-in elo rating system.
 
 [Github](https://github.com/jeffarjeffar/Chess_Bot)
 
-[Invite](https://discord.com/oauth2/authorize?client_id=801501916810838066&permissions=311360&scope=bot)
+[Invite](https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=2147795008&scope=bot%20applications.commands)
 
 ## Mechanics
 
@@ -49,6 +49,10 @@ You will receive a low time warning when you only have 1 day left.
 Use `$time` to see how much time you have left.
 
 ## Commands
+
+### Slash commands
+
+I will be working on implementing all of the below commands as slash commands. Be sure to invite Chess Bot with the new invite link (https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=2147795008&scope=bot%20applications.commands) to be able to use them.
 
 ### Playing
 
