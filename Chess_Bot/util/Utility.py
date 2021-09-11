@@ -65,7 +65,7 @@ def update_rating2(white, black, outcome):
         white_rating = constants.DEFAULT_RATING
     if black_rating == None:
         black_rating = constants.DEFAULT_RATING
-        
+
     old_white = white_rating
     old_black = black_rating
 
@@ -81,11 +81,21 @@ def update_rating2(white, black, outcome):
 
 
 def pretty_time(time):
-    hours = time//3600
+    days = time // 86400
+    hours = time // 3600
     time -= 3600 * hours
-    minutes = time//60
+    minutes = time // 60
     time -= 60 * minutes
-    return f'{int(hours)} hours, {int(minutes)} minutes, {round(time, 3)} seconds'
+    arr = []
+    if days != 0:
+        arr.append(f'{days} days')
+    if hours != 0:
+        arr.append(f'{hours} hours')
+    if minutes != 0:
+        arr.append(f'{minutes} minutes')
+    if time != 0:
+        arr.append(f'{round(time, 3)} seconds')
+    return ', '.join(arr)
 
 
 def cb_to_uci(cb_move):

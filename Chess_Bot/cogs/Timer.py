@@ -18,22 +18,6 @@ class Timer(commands.Cog):
         self.no_time_check.start()
         self.low_time_warn.start()
 
-    async def get_notifchannel(self, person):
-        if person < len(Profile):
-            return None
-        channelid = data.data_manager.get_notifchannel(person)
-        if channelid is not None:
-            return await self.client.fetch_channel(channelid), False
-        else:
-            user = await self.client.fetch_user(person)
-            channel = user.dm_channel
-            if channel is not None:
-                return channel, True
-            try:
-                return await user.create_dm(), True
-            except Exception:
-                return None
-
     async def send_low_time_warning(self, person):
         util2 = self.client.get_cog('Util')
         await util2.send_notif(person, 'You are low on time. Use `$time` to get how much time you have left before you automatically forfeit you game.')
@@ -44,9 +28,8 @@ class Timer(commands.Cog):
 
         old_rating, new_rating = util.update_rating(person, 0, game.bot)
 
-        channel, done = await self.get_notifchannel(person)
-        if channel is not None:
-            await channel.send(f'You automatically forfeited on time. Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
+        util2 = self.client.get_cog('Util')
+        await util2.send_notif(person, f'You automatically forfeited on time. Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
