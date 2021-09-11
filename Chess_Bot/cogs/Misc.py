@@ -215,32 +215,32 @@ class Misc(commands.Cog):
         create_option(name='bots', description='Whether you want to include only bots or not.',
                       option_type=SlashCommandOptionType.BOOLEAN, required=False)
     ])
-    async def _leaderboard(self, ctx: SlashContext, num='-1', bots=False):
-        if num is None:
-            num = '-1'
+    async def _leaderboard(self, ctx: SlashContext, number='-1', bots=False):
+        if number is None:
+            number = '-1'
         if bots is not None and bots:
-            num = 'bots'
+            number = 'bots'
         embed = discord.Embed(title="Leaderboard", color=0xffb521)
 
         ratings = data.data_manager.get_ratings()
         all_players = []
 
-        if num == 'bots' or num == 'bot':
+        if number == 'bots' or number == 'bot':
             for bot in Profile:
                 all_players.append((bot.value, ratings[bot.value]))
             all_players.sort(reverse=True, key=lambda a: a[1])
             embed.set_footer(text='Top rated bots')
         else:
             number = constants.DEFAULT_LEADERBOARD_SIZE
-            if num == 'all' or num == 'max':
+            if number == 'all' or number == 'max':
                 number = min(constants.MAX_LEADERBOARD_SIZE,
                              len(ratings.keys()))
-            elif num == '-1':
+            elif number == '-1':
                 number = min(constants.DEFAULT_LEADERBOARD_SIZE,
                              len(ratings.keys()))
             else:
                 try:
-                    number = int(num)
+                    number = int(number)
                     assert(1 <= number <= constants.MAX_LEADERBOARD_SIZE)
                 except ValueError or AssertionError:
                     await ctx.send('Please enter an integer from 1 to 25.')
