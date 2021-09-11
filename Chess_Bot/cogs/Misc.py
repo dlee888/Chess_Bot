@@ -213,7 +213,7 @@ class Misc(commands.Cog):
         create_option(name='number', description='The number of players to include. You can also use "max" for the maximum number.',
                       option_type=SlashCommandOptionType.STRING, required=False),
         create_option(name='bots', description='Whether you want to include only bots or not.',
-                      option_type=SlashCommandOptionType.BOOL, required=False)
+                      option_type=SlashCommandOptionType.BOOLEAN, required=False)
     ])
     async def _leaderboard(self, ctx: SlashContext, num, bots):
         if num is None:
