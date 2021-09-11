@@ -210,12 +210,16 @@ class Misc(commands.Cog):
         await ctx.send(embed=embed)
 
     @cog_ext.cog_slash(name='leaderboard', description='Sends a list of top rated players', options=[
-        create_option(name='number', description='The number of players to include. You can also use "max" for the maximum number, or "bots" to include just bots.',
-                      option_type=SlashCommandOptionType.STRING, required=False)
+        create_option(name='number', description='The number of players to include. You can also use "max" for the maximum number.',
+                      option_type=SlashCommandOptionType.STRING, required=False),
+        create_option(name='bots', description='Whether you want to include only bots or not.',
+                      option_type=SlashCommandOptionType.BOOL, required=False)
     ])
-    async def _leaderboard(self, ctx: SlashContext, num):
+    async def _leaderboard(self, ctx: SlashContext, num, bots):
         if num is None:
             num = '-1'
+        if bots is not None and bots:
+            num = 'bots'
         embed = discord.Embed(title="Leaderboard", color=0xffb521)
 
         ratings = data.data_manager.get_ratings()
