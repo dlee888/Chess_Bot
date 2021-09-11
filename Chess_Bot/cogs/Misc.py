@@ -215,7 +215,7 @@ class Misc(commands.Cog):
         create_option(name='bots', description='Whether you want to include only bots or not.',
                       option_type=SlashCommandOptionType.BOOLEAN, required=False)
     ])
-    async def _leaderboard(self, ctx: SlashContext, num, bots):
+    async def _leaderboard(self, ctx: SlashContext, num='-1', bots=False):
         if num is None:
             num = '-1'
         if bots is not None and bots:
@@ -480,7 +480,7 @@ class Misc(commands.Cog):
         create_option(name='user', description='The person you want to see the stats of.',
                       option_type=SlashCommandOptionType.USER, required=False)
     ])
-    async def _stats(self, ctx, person):
+    async def _stats(self, ctx, person=None):
         if person is None:
             person = ctx.author
         lost, won, drew = data.data_manager.get_stats(person.id)
