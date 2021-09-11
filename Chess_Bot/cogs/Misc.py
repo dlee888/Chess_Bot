@@ -472,7 +472,7 @@ class Misc(commands.Cog):
         embed.add_field(name='Drawn', value=str(drew))
         await ctx.send(embed=embed)
 
-    @cog_ext.cog_slash(name='stats', descriptions='Basic stats about a user', options=[
+    @cog_ext.cog_slash(name='stats', description='Basic stats about a user', options=[
         create_option(name='user', description='The person you want to see the stats of.',
                       option_type=SlashCommandOptionType.USER, required=False)
     ])
