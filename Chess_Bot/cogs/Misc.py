@@ -512,6 +512,11 @@ class Misc(commands.Cog):
             ctx.author.id, new_notif=ctx.channel.id)
         await ctx.send(f'Notification channel set to `{ctx.channel.name}`')
 
+    @cog_ext.cog_slash(name='notif', description='Sets your default channel for recieving notifications.')
+    async def _notif(self, ctx):
+        data.data_manager.change_settings(
+            ctx.author.id, new_notif=ctx.channel.id)
+        await ctx.send(f'Notification channel set to `{ctx.channel.name}`')
 
 def setup(bot):
     bot.add_cog(Misc(bot))

@@ -5,6 +5,10 @@ from discord.ext import tasks
 import time
 import typing
 
+from discord_slash import cog_ext
+from discord_slash.model import SlashCommandOptionType
+from discord_slash.utils.manage_commands import create_option
+
 import Chess_Bot.util.Utility as util
 import Chess_Bot.util.Data as data
 from Chess_Bot.util.CPP_IO import *
@@ -46,6 +50,27 @@ class Timer(commands.Cog):
             "cooldown": 3
         }
         '''
+        if person is None:
+            person = ctx.author
+
+        game = data.data_manager.get_game(person.id)
+
+        if game == None:
+            await ctx.send(f'{person} does not have a game in progress')
+            return
+
+        if isinstance(game, data.Game):
+            await ctx.send(f'{person} has {util.pretty_time(game.last_moved + constants.MAX_TIME_PER_MOVE - time.time())} left.')
+        else:
+            util2 = self.client.get_cog('Util')
+            to_move = game.to_move()
+            await ctx.send(f'{await util2.get_name(to_move)} to move against {await util2.get_name(game.get_person(not game.turn()))} with {util.pretty_time(game.time_left(to_move))} left.')
+
+    @cog_ext.cog_slash(name='time', description='Shows how much time you (or someone else) has left.', options=[
+        create_option(name='person', description='The person you want to get the time for.',
+                      option_type=SlashCommandOptionType.USER, required=False)
+    ])
+    async def _time(self, ctx, person: typing.Union[discord.User, discord.Member] = None):
         if person is None:
             person = ctx.author
 

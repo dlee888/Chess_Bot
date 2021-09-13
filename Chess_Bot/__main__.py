@@ -31,6 +31,8 @@ slash = SlashCommand(bot, sync_commands=True)
 async def on_command_error(ctx, exc):
     if type(exc) == commands.errors.BotMissingPermissions:
         await ctx.send(f'Chess Bot is missing permissions.\nThe missing permissions are: `{" ".join(exc.missing_perms)}`')
+    elif isinstance(exc, discord.Forbidden):
+        await ctx.send(f'Chess Bot is missing permissions.')
     elif type(exc) == commands.errors.MissingRequiredArgument:
         await ctx.send(f'Missing required argument.\nPlease enter a value for: `{exc.param}`.\nUse `$help <command name>` to get more information about a command.')
     elif issubclass(type(exc), commands.errors.UserInputError):
@@ -58,6 +60,7 @@ async def on_command_error(ctx, exc):
                f'Author: {ctx.author} ({ctx.author.id})\n'
                f'Guild: {ctx.guild} ({ctx.guild.id})\n'
                f'Request: {ctx.message.content}\n'
+               f'{exc}, {type(exc)}'
                f'```\n{traceback_text}\n```')
         
         print(msg)
