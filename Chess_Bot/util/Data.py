@@ -316,6 +316,8 @@ class Data:
         rows = cur.fetchall()
         if len(rows) == 0:
             return None
+        if rows[0][2] == -1:
+            return None
         return rows[0][2]
 
     def change_settings(self, person, *, new_theme=None, new_notif=None):
