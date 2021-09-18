@@ -165,7 +165,7 @@ class Misc(commands.Cog):
                 try:
                     number = int(num)
                     assert(1 <= number <= constants.MAX_LEADERBOARD_SIZE)
-                except ValueError or AssertionError:
+                except (ValueError, AssertionError):
                     await ctx.send('Please enter an integer from 1 to 25.')
                     return
 
@@ -242,7 +242,7 @@ class Misc(commands.Cog):
                 try:
                     number = int(number)
                     assert(1 <= number <= constants.MAX_LEADERBOARD_SIZE)
-                except ValueError or AssertionError:
+                except (ValueError, AssertionError):
                     await ctx.send('Please enter an integer from 1 to 25.')
                     return
 
@@ -477,7 +477,7 @@ class Misc(commands.Cog):
         await ctx.send(embed=embed)
 
     @cog_ext.cog_slash(name='stats', description='Basic stats about a user', options=[
-        create_option(name='user', description='The person you want to see the stats of.',
+        create_option(name='person', description='The person you want to see the stats of.',
                       option_type=SlashCommandOptionType.USER, required=False)
     ])
     async def _stats(self, ctx, person=None):
