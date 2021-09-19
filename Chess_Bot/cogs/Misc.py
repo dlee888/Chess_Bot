@@ -166,14 +166,14 @@ class Misc(commands.Cog):
                     number = int(num)
                     assert(1 <= number <= constants.MAX_LEADERBOARD_SIZE)
                 except (ValueError, AssertionError):
-                    await ctx.send('Please enter an integer from 1 to 25.')
+                    await ctx.send(f'Please enter an integer from 1 to {constants.MAX_LEADERBOARD_SIZE}.')
                     return
 
             if number > len(ratings.keys()):
                 await ctx.send('There aren\'t even that many rated players.')
                 return
             if number > constants.MAX_LEADERBOARD_SIZE:
-                await ctx.send('The leaderboard can hold a max of 25 people.')
+                await ctx.send(f'The leaderboard can hold a max of {constants.MAX_LEADERBOARD_SIZE} people.')
                 return
 
             embed.set_footer(text=f'Top {number} rated players')
@@ -231,7 +231,6 @@ class Misc(commands.Cog):
             all_players.sort(reverse=True, key=lambda a: a[1])
             embed.set_footer(text='Top rated bots')
         else:
-            number = constants.DEFAULT_LEADERBOARD_SIZE
             if number == 'all' or number == 'max':
                 number = min(constants.MAX_LEADERBOARD_SIZE,
                              len(ratings.keys()))
@@ -243,14 +242,14 @@ class Misc(commands.Cog):
                     number = int(number)
                     assert(1 <= number <= constants.MAX_LEADERBOARD_SIZE)
                 except (ValueError, AssertionError):
-                    await ctx.send('Please enter an integer from 1 to 25.')
+                    await ctx.send(f'Please enter an integer from 1 to {constants.MAX_LEADERBOARD_SIZE}.')
                     return
 
             if number > len(ratings.keys()):
                 await ctx.send('There aren\'t even that many rated players.')
                 return
             if number > constants.MAX_LEADERBOARD_SIZE:
-                await ctx.send('The leaderboard can hold a max of 25 people.')
+                await ctx.send(f'The leaderboard can hold a max of {constants.MAX_LEADERBOARD_SIZE} people.')
                 return
 
             embed.set_footer(text=f'Top {number} rated players')
