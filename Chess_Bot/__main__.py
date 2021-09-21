@@ -58,7 +58,7 @@ async def on_command_error(ctx, exc):
 
         msg = ('Command Error:\n'
                f'Author: {ctx.author} ({ctx.author.id})\n'
-               f'Guild: {ctx.guild} ({ctx.guild.id})\n'
+               f'Guild: {ctx.guild} ({ctx.guild.id})\n' if ctx.guild is not None else 'Guild: None'
                f'Request: {ctx.message.content}\n'
                f'{exc}, {type(exc)}'
                f'```\n{traceback_text}\n```')
@@ -85,7 +85,7 @@ async def on_command_error(ctx, exc):
             msg_txt_path = os.path.join(constants.TEMP_DIR, 'message.txt')
             with open(msg_txt_path, 'w') as file:
                 file.write(msg)
-            await ctx.send(f'Command Error:\n', file=discord.File(msg_txt_path))
+            await error_channel.send(f'Command Error:\n', file=discord.File(msg_txt_path))
 
 
 def setup():
