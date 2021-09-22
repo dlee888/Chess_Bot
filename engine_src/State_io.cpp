@@ -12,6 +12,8 @@ void state::load(std::string fen) {
 	doubled_white = 0;
 	std::memset(board, 0, sizeof(board));
 	std::memset(cnts, 0, sizeof(cnts));
+	std::memset(white_pawn_counts, 0, sizeof(white_pawn_counts));
+	std::memset(black_pawn_counts, 0, sizeof(black_pawn_counts));
 	nnue_input = std::vector <int>(384);
 
 	std::stringstream ss(fen);

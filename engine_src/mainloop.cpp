@@ -81,7 +81,7 @@ int main()
 				std::cin >> value;
 				options[option_name] = value;
 			}
-		} 
+		}
 	}
 	return 0;
 }
