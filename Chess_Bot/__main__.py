@@ -58,7 +58,7 @@ async def on_command_error(ctx, exc):
 
         msg = ('Command Error:\n'
                f'Author: {ctx.author} ({ctx.author.id})\n'
-               f'Guild: {ctx.guild} ({ctx.guild.id})\n' if ctx.guild is not None else 'Guild: None'
+               f'Guild: {ctx.guild} ({ctx.guild.id})\n' if ctx.guild is not None else 'Guild: None\n'
                f'Request: {ctx.message.content}\n'
                f'{exc}, {type(exc)}'
                f'```\n{traceback_text}\n```')
