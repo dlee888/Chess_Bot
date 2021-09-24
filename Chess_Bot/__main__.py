@@ -56,13 +56,20 @@ async def on_command_error(ctx, exc):
         lines = traceback.format_exception(etype, exc, trace)
         traceback_text = ''.join(lines)
 
-        msg = ('Command Error:\n'
-               f'Author: {ctx.author} ({ctx.author.id})\n'
-               f'Guild: {ctx.guild} ({ctx.guild.id})\n' if ctx.guild is not None else 'Guild: None\n'
-               f'Request: {ctx.message.content}\n'
-               f'{exc}, {type(exc)}'
-               f'```\n{traceback_text}\n```')
-        
+        if ctx.guild.id is not None:
+            msg = ('Command Error:\n'
+                f'Author: {ctx.author} ({ctx.author.id})\n'
+                f'Guild: {ctx.guild} ({ctx.guild.id})\n'
+                f'Request: {ctx.message.content}\n'
+                f'{exc}, {type(exc)}'
+                f'```\n{traceback_text}\n```')
+        else:
+            msg = ('Command Error:\n'
+                f'Author: {ctx.author} ({ctx.author.id})\n'
+                'Guild: None\n'
+                f'Request: {ctx.message.content}\n'
+                f'{exc}, {type(exc)}'
+                f'```\n{traceback_text}\n```')
         print(msg)
 
         if await util.has_roles(ctx.author.id, ['Debugger', 'Tester', 'Mooderator'], bot):
