@@ -93,7 +93,7 @@ class Engine(commands.Cog):
                 await ctx.send(f'Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
                 return
 
-            game.fen = board.fen()
+            game.fen = board.fen(en_passant='fen')
             data.data_manager.change_game(person, game)
 
             thonk = self.client.get_emoji(constants.THONK_EMOJI_ID)
@@ -160,7 +160,7 @@ class Engine(commands.Cog):
             else:
                 game.black_last_moved = time.time()
                 game.black_warned = False
-            game.fen = board.fen()
+            game.fen = board.fen(en_passant='fen')
             data.data_manager.change_game(person, game)
             if board.is_checkmate():
                 white_delta, black_delta = util.update_rating2(
@@ -202,7 +202,7 @@ class Engine(commands.Cog):
                 data.data_manager.delete_game(game.white, 69)
                 return
 
-            game.fen = board.fen()
+            game.fen = board.fen(en_passant='fen')
             if color == chess.WHITE:
                 game.white_last_moved = time.time()
                 game.white_warned = False
