@@ -14,7 +14,7 @@ engine : engine_bin/Eval_info.o engine_bin/Evaluate.o engine_bin/List_moves.o en
 
 engine_bin/%.o : engine_src/%.cpp
 	mkdir -p engine_bin
-	$(CC) -c $(CFLAGS) $(LDFLAGS) $< -o $@
+	$(CC) -c $(CFLAGS) $< -o $@
 
 clear:
 	rm engine_bin/*.o engine

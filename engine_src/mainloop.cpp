@@ -1,4 +1,5 @@
 ﻿#include <ctime>
+#include <chrono>
 
 #include "Openings.h"
 #include "Search.h"
@@ -21,6 +22,10 @@ std::string read_fen() {
 	std::string pos, turn, castle, ep, fiftymove, fullmove;
 	std::cin >> pos >> turn >> castle >> ep >> fiftymove >> fullmove;
 	return pos + " " + turn + " " + castle + " " + ep + " " + fiftymove + " " + fullmove;
+}
+
+unsigned long long curr_time() {
+	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
 int main()
@@ -81,6 +86,46 @@ int main()
 				std::cin >> value;
 				options[option_name] = value;
 			}
+		}
+		else if (cmnd == "stress") {
+			int n;
+			std::cin >> n;
+			std::string pos = read_fen();
+			curr_state.load(pos);
+			curr_state.print();
+			std::cout << "STATIC EVAL: " << eval(curr_state, true, options["use_nnue"]) << std::endl;
+			std::cout << "\n----------------------------------------------------------------\nTesting eval()...\n";
+			auto start_time = curr_time();
+			for (int i = 0; i < n; i++) {
+				eval(curr_state);
+			}
+			auto total_time = curr_time() - start_time;
+			std::cout << "Total time for " << n << " calls: " << total_time << "ms" << std::endl;
+			std::cout << "Average time: " << (double)total_time / n << "ms" << std::endl;
+			std::cout << "\n----------------------------------------------------------------\nTesting is_check()...\n";
+			start_time = curr_time();
+			for (int i = 0; i < n; i++) {
+				curr_state.is_check();
+			}
+			total_time = curr_time() - start_time;
+			std::cout << "Total time for " << n << " calls: " << total_time << "ms" << std::endl;
+			std::cout << "Average time: " << (double)total_time / n << "ms" << std::endl;
+			std::cout << "\n----------------------------------------------------------------\nTesting list_moves()...\n";
+			start_time = curr_time();
+			for (int i = 0; i < n; i++) {
+				curr_state.list_moves();
+			}
+			total_time = curr_time() - start_time;
+			std::cout << "Total time for " << n << " calls: " << total_time << "ms" << std::endl;
+			std::cout << "Average time: " << (double)total_time / n << "ms" << std::endl;
+			std::cout << "\n----------------------------------------------------------------\nTesting eval() with nnue...\n";
+			start_time = curr_time();
+			for (int i = 0; i < n; i++) {
+				eval(curr_state, false, true);
+			}
+			total_time = curr_time() - start_time;
+			std::cout << "Total time for " << n << " calls: " << total_time << "ms" << std::endl;
+			std::cout << "Average time: " << (double)total_time / n << "ms" << std::endl;
 		}
 	}
 	return 0;
