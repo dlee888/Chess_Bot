@@ -45,15 +45,9 @@ class Engine(commands.Cog):
         if game == None:
             await ctx.send('You do not have a game in progress.')
             return
-        if 'resign' in move.lower():
-            data.data_manager.delete_game(ctx.author.id, False)
-
-            old_rating, new_rating = util.update_rating(
-                ctx.author.id, 0, game.bot)
-            if ctx.author.id in util.thonking:
-                util.thonking.remove(ctx.author.id)
-            await ctx.send(f'Game resigned. Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)}).\n'
-                           'Tip: Trying to resign? You can also use the `$resign` command.')
+        if 'resign' == move.lower():
+            await self.resign(ctx)
+            await ctx.send('Tip: Trying to resign? You can also use the `$resign` command.')
             return
 
         if isinstance(game, data.Game):
