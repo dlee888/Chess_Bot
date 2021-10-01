@@ -1,6 +1,10 @@
-from Chess_Bot import constants
 import discord
 from discord.ext import commands
+
+from discord_slash import SlashContext
+from discord_slash import cog_ext
+from discord_slash.model import SlashCommandOptionType
+from discord_slash.utils.manage_commands import create_option
 
 import enum
 
@@ -99,6 +103,22 @@ class Profiles(commands.Cog):
             name='Stockfish', value='\n'.join(all_sf))
         await ctx.send(embed=embed)
 
+    @cog_ext.cog_slash(name='profiles', description="Shows a list of the Chess Bot computers that you can challenge.")
+    async def _profiles(self, ctx: SlashContext):
+        embed = await self.get_default_embed()
+        embed.description = ('These are the Chess Bot computers that you can challenge.\n'
+        'Use the command `$profile view <bot tag>` for more information on a bot.\n'
+        'For example, `$profile view cb1` to get info about Chess Bot level 1.')
+        all_cb = [
+            f'`{bot.name}` ({get_name(bot.value)})' for bot in Profile if bot.name.startswith('cb')]
+        all_sf = [
+            f'`{bot.name}` ({get_name(bot.value)})' for bot in Profile if bot.name.startswith('sf')]
+        embed.add_field(
+            name='Chess Bot', value='\n'.join(all_cb))
+        embed.add_field(
+            name='Stockfish', value='\n'.join(all_sf))
+        await ctx.send(embed=embed)
+
     @profile.command(aliases=['info'])
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def view(self, ctx, tag):
@@ -143,6 +163,36 @@ class Profiles(commands.Cog):
             name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
         await ctx.send(embed=embed)
 
+    @cog_ext.cog_slash(name='profile view', description="Views information about a specific Chess Bot profile that you can challenge.", option=[
+        create_option(name='tag', description='The tag of the bot. For example, `cb1`.', option_type=SlashCommandOptionType.STRING, required=True)
+    ])
+    async def _view(self, ctx: SlashContext, tag):
+        try:
+            bot = Profile[tag]
+        except KeyError:
+            await ctx.send('That isn\'t a valid bot. Use `$profiles` to see which bots you can challenge.')
+            return
+
+        embed = await self.get_default_embed()
+        if bot.name.startswith('sf'):
+            embed.set_thumbnail(url='https://stockfishchess.org/images/logo/icon_512x512@2x.png')
+        
+        embed.add_field(name=get_name(bot.value),
+                        value=get_description(bot.name))
+        embed.add_field(name='Tag', value=f'`{bot.name}`')
+
+        id = bot.value
+        embed.add_field(
+            name='Stats', value='Stats about this bot.', inline=False)
+        embed.add_field(name='Rating', value=str(
+            round(data.data_manager.get_rating(id), 3)), inline=False)
+
+        lost, won, drew = data.data_manager.get_stats(id)
+        embed.add_field(name='Games played', value=str(
+            lost + won + drew), inline=False)
+        embed.add_field(name='Games lost', value=str(lost)).add_field(
+            name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
+        await ctx.send(embed=embed)
 
 
 def setup(bot):

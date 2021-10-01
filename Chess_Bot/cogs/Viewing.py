@@ -1,12 +1,18 @@
 import discord
 from discord.ext import commands
+
+from discord_slash import SlashContext
+from discord_slash import cog_ext
+from discord_slash.model import SlashCommandOptionType
+from discord_slash.utils.manage_commands import create_option
+
 import typing
-import chess
 
 import Chess_Bot.util.Utility as util
 import Chess_Bot.util.Data as data
 import Chess_Bot.util.Images as image
 from Chess_Bot.util.CPP_IO import *
+
 
 class Viewing(commands.Cog):
 
@@ -28,7 +34,7 @@ class Viewing(commands.Cog):
             "cooldown": 5
         }
         '''
-        
+
         if person is None:
             person = ctx.author
 
@@ -46,7 +52,7 @@ class Viewing(commands.Cog):
             embed.set_footer(
                 text=f'Requested by {ctx.author}', icon_url=ctx.author.avatar_url)
             file = discord.File(
-                    os.path.join(constants.TEMP_DIR, f'image-{person.id}.png'), filename='board.png')
+                os.path.join(constants.TEMP_DIR, f'image-{person.id}.png'), filename='board.png')
             embed.set_image(url=f'attachment://board.png')
             await ctx.message.reply(embed=embed, file=file)
         elif isinstance(game, data.Game2):
@@ -71,7 +77,23 @@ class Viewing(commands.Cog):
         '''
 
         if person is None:
-	        person = ctx.author
+            person = ctx.author
+
+        game = data.data_manager.get_game(person.id)
+
+        if game == None:
+            await ctx.send(f'{person} does not have a game in progress')
+            return
+
+        await ctx.send(f'```{game.fen}```')
+
+    @cog_ext.cog_slash(name='fen', description='Sends a game in fen format.', options=[
+        create_option(name='person', description='The person whose game you want to see.',
+                      option_type=SlashCommandOptionType.USER, required=False)
+    ])
+    async def _fen(self, ctx: SlashContext, person: typing.Union[discord.User, discord.Member] = None):
+        if person is None:
+            person = ctx.author
 
         game = data.data_manager.get_game(person.id)
 

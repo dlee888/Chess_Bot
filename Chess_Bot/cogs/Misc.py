@@ -511,11 +511,23 @@ class Misc(commands.Cog):
             ctx.author.id, new_notif=ctx.channel.id)
         await ctx.send(f'Notification channel set to `{ctx.channel.name if ctx.guild is not None else "DM channel"}`')
 
-    @cog_ext.cog_slash(name='notif', description='Sets your default channel for recieving notifications.')
-    async def _notif(self, ctx):
-        data.data_manager.change_settings(
-            ctx.author.id, new_notif=ctx.channel.id)
-        await ctx.send(f'Notification channel set to `{ctx.channel.name if ctx.guild is not None else "DM channel"}`')
+    @cog_ext.cog_slash(name='notif', description='Sets your default channel for recieving notifications.', options=[
+        create_option(name='type', description='View your notification channel, Test a notification, or Set your default channel.',
+                      option_type=SlashCommandOptionType.SUB_COMMAND_GROUP, required=True, options=['view', 'test', 'set'])
+    ])
+    async def _notif(self, ctx, type):
+        util2 = self.client.get_cog('Util')
+        if type == 'view':
+            channel = await util2.get_notifchannel(ctx.author.id)
+            await ctx.send(f'Your notification channel is `{channel}`.')
+        elif type == 'set':
+            data.data_manager.change_settings(
+                ctx.author.id, new_notif=ctx.channel.id)
+            await ctx.send(f'Notification channel set to `{ctx.channel.name if ctx.guild is not None else "DM channel"}`.')
+        else:
+            await util2.send_notif('This is a test notification.')
+            await ctx.send(f'You should have recieved a test notification. If you did not, try changing your notification channel or changing your settings.')
+
 
 def setup(bot):
     bot.add_cog(Misc(bot))
