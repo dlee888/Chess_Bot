@@ -55,13 +55,13 @@ class Help(commands.Cog):
             embed.description = 'List of commands. Type `$help [command]` for more information about a certain command'
 
             embed.add_field(
-                name='Playing', value='`challenge`, `move`, `profiles`, `resign`, `view`, `fen`, `time`', inline=False)
+                name='Playing', value='`challenge`, `move`, `profiles`, `resign`', inline=False)
             embed.add_field(
                 name='Viewing', value= '`view`, `fen`, `time`, `theme`', inline=False)
             embed.add_field(
                 name='Rating', value='`rating`, `leaderboard`, `rank`, `stats`', inline=False)
             embed.add_field(
-                name='Other', value='`ping`, `help`, `botinfo`, `invite`, `prefix`, `vote`')
+                name='Other', value='`ping`, `help`, `botinfo`, `invite`, `prefix`, `vote`, `notif`')
 
             await ctx.send(embed=embed)
         else:
