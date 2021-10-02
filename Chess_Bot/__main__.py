@@ -55,7 +55,7 @@ async def on_command_error(ctx, exc):
             await ctx.send(f'You are missing permissions.\nThe missing permissions are: {" ".join(exc.missing_perms)}')
             return
     except Exception as e:
-        if not isinstance(e, discord.exceptions.Forbidden):
+        if not isinstance(e, discord.errors.Forbidden):
             print('Exception in on_command_error:\n', e)
 
     print('Command error found')
