@@ -525,8 +525,8 @@ class Misc(commands.Cog):
                 ctx.author.id, new_notif=ctx.channel.id)
             await ctx.send(f'Notification channel set to `{ctx.channel.name if ctx.guild is not None else "DM channel"}`.')
         else:
-            await util2.send_notif('This is a test notification.')
-            await ctx.send(f'You should have recieved a test notification. If you did not, try changing your notification channel or changing your settings.')
+            await ctx.send(f'You should recieve a test notification. If you do not, try changing your notification channel or changing your settings.')
+            await util2.send_notif(ctx.author.id, 'This is a test notification.')
 
 
 def setup(bot):
