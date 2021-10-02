@@ -513,7 +513,7 @@ class Misc(commands.Cog):
 
     @cog_ext.cog_slash(name='notif', description='Sets your default channel for recieving notifications.', options=[
         create_option(name='type', description='View your notification channel, Test a notification, or Set your default channel.',
-                      option_type=SlashCommandOptionType.SUB_COMMAND_GROUP, required=True, options=['view', 'test', 'set'])
+                      option_type=SlashCommandOptionType.SUB_COMMAND_GROUP, required=True, choices=['view', 'test', 'set'])
     ])
     async def _notif(self, ctx, type):
         util2 = self.client.get_cog('Util')

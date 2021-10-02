@@ -163,7 +163,7 @@ class Profiles(commands.Cog):
             name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
         await ctx.send(embed=embed)
 
-    @cog_ext.cog_slash(name='profile view', description="Views information about a specific Chess Bot profile that you can challenge.", option=[
+    @cog_ext.cog_slash(name='profile view', description="Views information about a specific Chess Bot profile that you can challenge.", options=[
         create_option(name='tag', description='The tag of the bot. For example, `cb1`.', option_type=SlashCommandOptionType.STRING, required=True)
     ])
     async def _view(self, ctx: SlashContext, tag):
