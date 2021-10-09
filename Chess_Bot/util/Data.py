@@ -138,6 +138,16 @@ class Data:
             self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
         return self.conn
 
+    def execute(self, sql):
+        cur = self.get_conn().cursor()
+        cur.execute(sql)
+        self.conn.commit()
+        try:
+            rows = cur.fetchall()
+            return rows
+        except Exception as e:
+            return None
+
     def get_game(self, person):
         cur = self.get_conn().cursor()
         cur.execute(f'SELECT * FROM games WHERE id = {person};')

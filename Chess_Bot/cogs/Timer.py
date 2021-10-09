@@ -1,13 +1,15 @@
-import logging
 import discord
 from discord.ext import commands
 from discord.ext import tasks
-import time
-import typing
 
 from discord_slash import cog_ext
 from discord_slash.model import SlashCommandOptionType
 from discord_slash.utils.manage_commands import create_option
+
+import logging
+import time
+import typing
+import sys
 
 import Chess_Bot.util.Utility as util
 import Chess_Bot.util.Data as data
@@ -19,8 +21,9 @@ class Timer(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-        self.no_time_check.start()
-        self.low_time_warn.start()
+        if not '-beta' in sys.argv:
+            self.no_time_check.start()
+            self.low_time_warn.start()
 
     async def send_low_time_warning(self, person):
         util2 = self.client.get_cog('Util')
