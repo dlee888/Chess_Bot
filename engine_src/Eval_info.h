@@ -9,7 +9,7 @@
 
 extern Score curr_psqt;
 
-extern int castle_bonus, castle_right_bonus, dpawn_coeff, semi_open_bonus, open_bonus, bishop_pair_bonus, seventh_rooks[2];
+extern int castle_bonus, castle_right_bonus, dpawn_coeff, semi_open_bonus, open_bonus, bishop_pair_bonus;
 
 extern int cnts[13];
 

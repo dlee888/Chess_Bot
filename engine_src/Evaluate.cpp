@@ -56,9 +56,6 @@ Value eval(state& s, bool trace, bool use_nnue)
 		score += files;
 		if (trace) printf("Open files: %d\n", files);
 
-		score += seventh_rooks[wrooks] - seventh_rooks[brooks];
-		if (trace) printf("Rooks on the seventh: %d\n", seventh_rooks[wrooks] - seventh_rooks[brooks]);
-
 		score += mg_value(curr_psqt);
 
 		//material

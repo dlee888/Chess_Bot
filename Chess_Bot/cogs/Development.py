@@ -1,6 +1,7 @@
 import discord
-import os
 from discord.ext import commands
+
+import os
 import sys
 import time
 import pickle
@@ -16,7 +17,7 @@ from Chess_Bot.util.CPP_IO import *
 
 def is_developer():
     def predicate(ctx):
-        return ctx.message.author.id in [716070916550819860, 721043620060201051]
+        return ctx.message.author.id in constants.DEVELOPERS
     return commands.check(predicate)
 
 

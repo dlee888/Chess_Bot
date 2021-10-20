@@ -1,7 +1,6 @@
 import discord
-from PIL import Image
-import asyncio
 
+import asyncio
 
 import Chess_Bot.util.Data as data
 from Chess_Bot import constants

@@ -1,4 +1,5 @@
 from discord.ext import commands
+from discord.ext import tasks
 
 import random
 import time
@@ -17,6 +18,60 @@ class Engine(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+        self.thonking = {}
+        self.run_engine.start()
+        self.output_result.start()
+
+    @tasks.loop(seconds=3)
+    async def run_engine(self):
+        games = data.data_manager.get_games2()
+        for game in games:
+            person = game.not_to_move()
+            if game.to_move() < len(Profile) and not person in self.thonking.keys():
+                self.thonking[person] = asyncio.create_task(run_engine(person))
+
+    @tasks.loop(seconds=3)
+    async def output_result(self):
+        thonk = list(self.thonking.items())
+        for person, task in thonk:
+            if task.done():
+                move, game = task.result()
+                util2 = self.client.get_cog('Util')
+                self.thonking.pop(person)
+                board = chess.Board(game.fen())
+                if person == game.white:
+                    bot = game.black
+                else:
+                    bot = game.white
+                if board.is_game_over(claim_draw=True) or move == 'RESIGN':
+                    if move == 'RESIGN':
+                        old_rating, new_rating = util.update_rating(
+                            person, 1, bot)
+                        await util2.send_notif(person, f'Chess Bot resigned.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
+                        data.data_manager.delete_game(person, True)
+                    elif board.is_checkmate():
+                        old_rating, new_rating = util.update_rating(person, 0, bot)
+                        data.data_manager.delete_game(person, False)
+                        await util2.send_notif(person, f'You lost.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
+                    else:
+                        old_rating, new_rating = util.update_rating(
+                            person, 1/2, bot)
+                        await util2.send_notif(person, f'Draw.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
+                        data.data_manager.delete_game(person, None)
+                if person == game.white:
+                    game.black_last_moved = time.time()
+                    game.white_warned = False
+                else:
+                    game.white_last_moved = time.time()
+                    game.black_warned = False
+                data.data_manager.change_game(None, game)
+                file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(game.not_to_move())}', description=f'The bot has moved\n{move}')
+                await util2.send_notif(person, 'The bot has moved', file=file, embed=embed)
+
+    @run_engine.before_loop
+    @output_result.before_loop
+    async def wait_until_ready(self):
+        await self.client.wait_until_ready()
 
     @commands.command(aliases=['play', 'm'])
     @commands.cooldown(1, 3, commands.BucketType.user)
@@ -150,10 +205,10 @@ class Engine(commands.Cog):
                     return
             if color == chess.WHITE:
                 game.white_last_moved = time.time()
-                game.white_warned = False
+                game.black_warned = False
             else:
                 game.black_last_moved = time.time()
-                game.black_warned = False
+                game.white_warned = False
             game.fen = board.fen(en_passant='fen')
             data.data_manager.change_game(person, game)
             if board.is_checkmate():
@@ -263,13 +318,25 @@ class Engine(commands.Cog):
             await ctx.send('You already have a game in progress')
             return
 
-        if isinstance(bot, str):
-            try:
-                botid = Profile[bot].value
-            except KeyError:
-                await ctx.send(f'"{bot}" is not the valid tag of a bot. Use `$profiles` to see which bots you can challenge.')
-                return
+        try:
+            botid = Profile[bot].value
+        except KeyError:
+            await ctx.send(f'"{bot}" is not the valid tag of a bot. Use `$profiles` to see which bots you can challenge.')
+            return
 
+        if person in constants.DEVELOPERS:
+            # EXPERIMENTAL
+            game = data.Game2()
+            color = random.randint(0, 1)
+            if color == 0:
+                game.white = botid
+                game.black = person
+            else:
+                game.white = person
+                game.black = botid
+            data.data_manager.change_game(None, game)
+            await ctx.send(f'Game started with {ProfileNames[bot].value}\nYou play the {whiteblack[color]} pieces.')
+        else:
             game = data.Game()
             game.color = random.randint(0, 1)
             game.bot = botid
@@ -342,10 +409,10 @@ class Engine(commands.Cog):
             if str(reaction.emoji) == '❌':
                 await challenge_msg.reply('Challenge declined / withdrawn')
                 return
-            
+
             if data.data_manager.get_game(ctx.author.id) is not None or data.data_manager.get_game(person.id) is not None:
                 await challenge_msg.reply('Challenge failed. One of the people already has a game in progress.')
-            
+
             game = data.Game2()
             if random.randint(0, 1) == 0:
                 game.white = ctx.author.id

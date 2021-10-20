@@ -63,6 +63,10 @@ def load_all_themes():
 
 def get_image(person):
     game = data.data_manager.get_game(person)
+    if isinstance(game, data.Game2):
+        get_image2(person)
+        return
+
     theme = data.data_manager.get_theme(person)
     board = str(chess.Board(game.fen)).split('\n')
 
@@ -120,6 +124,10 @@ def get_image(person):
 
 def get_image2(person, pov=None):
     game = data.data_manager.get_game(person)
+    if isinstance(game, data.Game):
+        get_image(person)
+        return
+
     theme = data.data_manager.get_theme(person)
     board = str(chess.Board(game.fen)).split('\n')
     path = os.path.join(constants.TEMP_DIR, f'image-{person}.png')

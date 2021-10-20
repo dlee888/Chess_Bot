@@ -23,7 +23,7 @@ class Game:
 
 class Game2:
 
-    def __init__(self, row=['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', -1, -1, time.time(), time.time(), False, False]) -> None:
+    def __init__(self, row=['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', -1, -1, time.time(), time.time(), False, False, None]) -> None:
         self.fen = row[0]
         self.white = row[1]
         self.black = row[2]
@@ -31,6 +31,10 @@ class Game2:
         self.black_last_moved = row[4]
         self.white_warned = row[5]
         self.black_warned = row[6]
+        if len(row) == 7 or row[7] is None:
+            self.time_control = constants.MAX_TIME_PER_MOVE
+        else:
+            self.time_control = row[7]
 
     def __str__(self) -> str:
         return self.fen
@@ -45,6 +49,13 @@ class Game2:
             return self.white
         else:
             return self.black
+
+    def not_to_move(self):
+        board = chess.Board(self.fen)
+        if board.turn == chess.WHITE:
+            return self.black
+        else:
+            return self.white
 
     def get_color(self, person):
         if person == self.white:
@@ -63,7 +74,6 @@ class Game2:
             return constants.MAX_TIME_PER_MOVE - (time.time() - self.black_last_moved)
         else:
             return constants.MAX_TIME_PER_MOVE - (time.time() - self.white_last_moved)
-
 
 
 class Data:
@@ -173,6 +183,15 @@ class Data:
 
         cur.execute('SELECT * FROM games2')
         rows = cur.fetchall()
+        for row in rows:
+            games.append(Game2(row))
+        return games
+
+    def get_games2(self):
+        cur = self.get_conn().cursor()
+        cur.execute('SELECT * FROM games2')
+        rows = cur.fetchall()
+        games = []
         for row in rows:
             games.append(Game2(row))
         return games

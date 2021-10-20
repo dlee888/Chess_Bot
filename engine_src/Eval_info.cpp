@@ -2,8 +2,7 @@
 
 Score curr_psqt;
 
-int castle_bonus = 35, castle_right_bonus = 20, dpawn_coeff = 17, semi_open_bonus = 10, open_bonus = 16, bishop_pair_bonus = 43,
-	   seventh_rooks[2] = {76, 213};
+int castle_bonus = 35, castle_right_bonus = 20, dpawn_coeff = 17, semi_open_bonus = 10, open_bonus = 16, bishop_pair_bonus = 43;
 
 int cnts[13];
 

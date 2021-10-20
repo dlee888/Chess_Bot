@@ -36,10 +36,6 @@ class Autoposter(commands.Cog):
             len(data.data_manager.get_games())), inline=True)
         embed.add_field(name='Games finished', value=str(
             data.data_manager.total_games()), inline=True)
-        owner = (await self.client.application_info()).owner
-        embed.set_footer(text=f"Made by {owner}", icon_url=owner.avatar_url)
-
-        embed.set_thumbnail(url=constants.AVATAR_URL)
 
         stats_channel = await self.client.fetch_channel(constants.STATS_CHANNEL_ID)
         await stats_channel.send(embed=embed)
