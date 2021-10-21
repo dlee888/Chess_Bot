@@ -24,13 +24,16 @@ class Help(commands.Cog):
         embed = self.get_default_help_embed()
         embed.title += f' for command "${name}"'
         if aliases is not None:
-            embed.add_field(name='Aliases', value=', '.join([f'`{i}`' for i in aliases]))
+            embed.add_field(name='Aliases', value=', '.join(
+                [f'`{i}`' for i in aliases]))
         if subcommands is not None:
-            embed.add_field(name='Subcommands:', value='\n'.join([f'`{name} {i}`' for i in subcommands]))
+            embed.add_field(name='Subcommands:', value='\n'.join(
+                [f'`{name} {i}`' for i in subcommands]))
         embed.add_field(name="Usage:", value=f'`{usage}`', inline=False)
         embed.add_field(name="Description:", value=description, inline=False)
         if examples is not None:
-            embed.add_field(name="Examples:", value='\n'.join([f'`{i}`' for i in examples]), inline=False)
+            embed.add_field(name="Examples:", value='\n'.join(
+                [f'`{i}`' for i in examples]), inline=False)
         if cooldown is not None:
             embed.add_field(name="Cooldown:", value=f'{cooldown} seconds')
         return embed
@@ -57,7 +60,7 @@ class Help(commands.Cog):
             embed.add_field(
                 name='Playing', value='`challenge`, `move`, `profiles`, `resign`', inline=False)
             embed.add_field(
-                name='Viewing', value= '`view`, `fen`, `time`, `theme`', inline=False)
+                name='Viewing', value='`view`, `fen`, `time`, `theme`', inline=False)
             embed.add_field(
                 name='Rating', value='`rating`, `leaderboard`, `rank`, `stats`', inline=False)
             embed.add_field(

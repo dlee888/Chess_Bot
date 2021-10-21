@@ -1,15 +1,14 @@
-﻿#include <ctime>
-#include <chrono>
+﻿#include <chrono>
+#include <ctime>
 
 #include "Openings.h"
 #include "Search.h"
-#include "options.h"
 #include "nnue.h"
+#include "options.h"
 
 std::string nnue_path = "./engine_src/nnue";
 
-void init_everything()
-{
+void init_everything() {
 	init_table();
 	load_openings();
 	if (options["use_nnue"]) {
@@ -28,17 +27,14 @@ unsigned long long curr_time() {
 	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
-int main()
-{
+int main() {
 	srand(time(NULL));
 	set_default_options();
 	std::string cmnd;
-	while (cmnd != "exit" && cmnd != "quit")
-	{
+	while (cmnd != "exit" && cmnd != "quit") {
 		init_everything();
 		std::cin >> cmnd;
-		if (cmnd == "go")
-		{
+		if (cmnd == "go") {
 			std::string pos = read_fen();
 			curr_state.load(pos);
 			curr_state.print();
@@ -48,18 +44,15 @@ int main()
 			if (options["use_opening_book"]) {
 				if (curr_state.to_move && curr_state.full_move > 2 && white_openings[curr_state.get_hash()].size()) {
 					move = white_openings[curr_state.get_hash()][0];
-				} 
-				else if (!curr_state.to_move && curr_state.full_move > 2 && black_openings[curr_state.get_hash()].size()) {
+				} else if (!curr_state.to_move && curr_state.full_move > 2 && black_openings[curr_state.get_hash()].size()) {
 					move = black_openings[curr_state.get_hash()][0];
-				}
-				else if (openings[curr_state.get_hash()].size()) {
+				} else if (openings[curr_state.get_hash()].size()) {
 					move = openings[curr_state.get_hash()][0];
 				}
 			}
 			if (move == -1) {
 				pii best_move = find_best_move();
-				if ((curr_state.to_move && best_move.first <= -RESIGN) || (!curr_state.to_move && best_move.first >= RESIGN))
-				{
+				if ((curr_state.to_move && best_move.first <= -RESIGN) || (!curr_state.to_move && best_move.first >= RESIGN)) {
 					std::cout << "COMPUTER PLAYED RESIGN" << std::endl;
 					continue;
 				}
@@ -75,8 +68,7 @@ int main()
 			curr_state.make_move(move);
 			curr_state.print();
 			std::cout << "GAME: " << curr_state.to_fen() << std::endl;
-		} 
-		else if (cmnd == "setoption") {
+		} else if (cmnd == "setoption") {
 			std::string option_name;
 			int value;
 			std::cin >> option_name;
@@ -86,8 +78,7 @@ int main()
 				std::cin >> value;
 				options[option_name] = value;
 			}
-		}
-		else if (cmnd == "stress") {
+		} else if (cmnd == "stress") {
 			int n;
 			std::cin >> n;
 			std::string pos = read_fen();

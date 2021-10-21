@@ -1,24 +1,24 @@
 #ifndef NNUE_INCLUDED
 #define NNUE_INCLUDED
-#include <vector>
-#include <fstream>
 #include <cmath>
+#include <fstream>
+#include <vector>
 
-#include "types.h"
 #include "State.h"
+#include "types.h"
 
 void load_nnue(std::string path);
 
 Value run_nnue(state& s);
 
 class Model {
-public:
-	std::vector <std::vector <std::vector <float> > > weights;
-	std::vector <std::vector <float> > biases;
+  public:
+	std::vector<std::vector<std::vector<float>>> weights;
+	std::vector<std::vector<float>> biases;
 
 	void load(std::string path);
 
-	float run(const std::vector <int>& inputs);
+	float run(const std::vector<int>& inputs);
 
 	void print() {
 		for (auto i : weights) {

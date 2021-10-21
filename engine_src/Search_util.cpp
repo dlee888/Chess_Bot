@@ -1,7 +1,7 @@
-#include <thread>
-#include <map>
 #include <algorithm>
 #include <chrono>
+#include <map>
+#include <thread>
 
 #include "Search.h"
 
@@ -19,14 +19,10 @@ bool use_nnue;
 pii search_result = {0.0, -1};
 bool done_searching = false;
 
-int futility_margin(int depth, bool improving)
-{
-	return (175 - 50 * improving) * depth;
-}
+int futility_margin(int depth, bool improving) { return (175 - 50 * improving) * depth; }
 
 #if not defined __WIN32__ and not defined __WIN64__
-void break_after(int time)
-{
+void break_after(int time) {
 	int time_left = time;
 	const int dt = 100;
 	while (time_left > 0) {
@@ -40,27 +36,21 @@ void break_after(int time)
 }
 #endif
 
-pii moves_loop()
-{
+pii moves_loop() {
 	Depth curr_depth = ONE_PLY;
 
 	std::vector<int> moves = curr_state.list_moves();
 
 	std::vector<pii> ordered_moves;
 
-	for (int i : moves)
-	{
+	for (int i : moves) {
 		curr_state.make_move(i);
 
-		if (!curr_state.king_attacked())
-		{
+		if (!curr_state.king_attacked()) {
 			Bitstring hash = curr_state.get_hash();
-			if (tt_exists[hash % TABLE_SIZE] && tt_hashes[hash % TABLE_SIZE] == hash)
-			{
+			if (tt_exists[hash % TABLE_SIZE] && tt_hashes[hash % TABLE_SIZE] == hash) {
 				ordered_moves.push_back({tt_evals[hash % TABLE_SIZE], i});
-			}
-			else
-			{
+			} else {
 				ordered_moves.push_back({eval(curr_state), i});
 			}
 		}
@@ -68,16 +58,14 @@ pii moves_loop()
 		curr_state.unmake_move(i);
 	}
 
-	if (ordered_moves.size() == 1)
-	{
+	if (ordered_moves.size() == 1) {
 		// Break if there is only one legal move
 		search_result.second = ordered_moves[0].second;
 		done_searching = true;
 		return search_result;
 	}
 
-	while (true)
-	{
+	while (true) {
 		if (options["debug"])
 			printf("Searching depth %d\n", curr_depth);
 
@@ -94,16 +82,14 @@ pii moves_loop()
 
 		int best_move = -1;
 		Value evaluation = -RESIGN;
-		for (pii &p : ordered_moves)
-		{
+		for (pii& p : ordered_moves) {
 			curr_state.make_move(p.second);
 			Value x = -search(curr_depth, -VALUE_INFINITE, -evaluation);
 			curr_state.unmake_move(p.second);
 
 			p.first = -x;
 
-			if (x > evaluation)
-			{
+			if (x > evaluation) {
 				evaluation = x;
 				best_move = p.second;
 			}
@@ -111,8 +97,7 @@ pii moves_loop()
 			if (break_now)
 				break;
 		}
-		if (break_now)
-		{
+		if (break_now) {
 			if (options["debug"])
 				printf("Time is up\n");
 			break;
@@ -130,14 +115,12 @@ pii moves_loop()
 
 		search_result = std::make_pair(evaluation, best_move);
 
-		if (abs(evaluation) >= MATE || curr_depth >= (int)options["depth_limit"])
-		{
+		if (abs(evaluation) >= MATE || curr_depth >= (int)options["depth_limit"]) {
 			break;
 		}
 
 #if (defined __WIN32__) or (defined __WIN64__)
-		if (break_now || (time_taken * curr_state.list_moves().size() > 5.5 * options["time_limit"] * CLOCKS_PER_SEC))
-		{
+		if (break_now || (time_taken * curr_state.list_moves().size() > 5.5 * options["time_limit"] * CLOCKS_PER_SEC)) {
 			printf("Breaking\n");
 			break;
 		}
@@ -149,13 +132,12 @@ pii moves_loop()
 	if (curr_depth == ONE_PLY) {
 		search_result = ordered_moves[0];
 	}
-	
+
 	done_searching = true;
 	return search_result;
 }
 
-pii find_best_move()
-{
+pii find_best_move() {
 	// TODO: Make search multi-threaded
 	search_result = {0.0, -1};
 	break_now = false;

@@ -13,4 +13,4 @@ int doubled_white, doubled_black;
 
 std::vector<pii> piecelists[13];
 
-std::vector <int> nnue_input = std::vector <int>(384);
+std::vector<int> nnue_input = std::vector<int>(384);

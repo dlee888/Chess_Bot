@@ -1,5 +1,5 @@
-#include <cstring>
 #include <chrono>
+#include <cstring>
 #include <random>
 
 #include "Transpose.h"
@@ -11,10 +11,9 @@ Bitstring tt_hashes[TABLE_SIZE];
 
 Bitstring rand_bitstrings[64][13], color_bitstring, en_passant_bistrings[8], castling_bitstrings[4];
 
-void init_table()
-{
+void init_table() {
 	clear_table();
-	
+
 	Bitstring seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::mt19937_64 generator(seed);
 

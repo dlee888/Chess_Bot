@@ -1,11 +1,11 @@
 #ifndef EVAL_INFO_H_INCLUDED
 #define EVAL_INFO_H_INCLUDED
-#include <vector>
-#include <map>
 #include <cassert>
+#include <map>
+#include <vector>
 
-#include "types.h"
 #include "psqt.h"
+#include "types.h"
 
 extern Score curr_psqt;
 
@@ -20,5 +20,5 @@ extern int doubled_white, doubled_black;
 
 extern std::vector<pii> piecelists[13];
 
-extern std::vector <int> nnue_input;
+extern std::vector<int> nnue_input;
 #endif // !EVAL_INFO_H_INCLUDED

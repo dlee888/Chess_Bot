@@ -4,8 +4,7 @@ bool break_now = false;
 
 state curr_state;
 
-Value search(Depth depth, Value alpha, Value beta)
-{
+Value search(Depth depth, Value alpha, Value beta) {
 	nodes++;
 
 	// printf("search(%d, %d, %d)\n", depth, alpha, beta);
@@ -14,8 +13,7 @@ Value search(Depth depth, Value alpha, Value beta)
 	Bitstring curr_board_hash = curr_state.get_hash();
 	Bitstring key = curr_board_hash % TABLE_SIZE;
 
-	if (tt_exists[key] && tt_depths[key] >= depth && tt_hashes[key] == curr_board_hash)
-	{
+	if (tt_exists[key] && tt_depths[key] >= depth && tt_hashes[key] == curr_board_hash) {
 		// printf("tt hit, %d\n", tt_evals[key]);
 		tb_hits++;
 		return tt_evals[key];
@@ -49,8 +47,7 @@ Value search(Depth depth, Value alpha, Value beta)
 
 	// Futility pruning
 	// TODO: implement improving
-	if (depth < 7 && (curr_eval - futility_margin(depth, false) >= beta))
-	{
+	if (depth < 7 && (curr_eval - futility_margin(depth, false) >= beta)) {
 		// printf("futility prune: %d\n", curr_eval);
 		return curr_eval;
 	}
@@ -61,14 +58,13 @@ Value search(Depth depth, Value alpha, Value beta)
 			// printf("razor prune\n");
 			return qsearch(alpha, beta, DEPTH_ZERO);
 		}
-	} 
+	}
 
 	std::vector<int> moves = curr_state.list_moves();
 	std::vector<pii> ordered_moves;
 
 	bool mate = true;
-	for (int i : moves)
-	{
+	for (int i : moves) {
 		curr_state.make_move(i);
 
 		if (!curr_state.king_attacked()) {
@@ -77,31 +73,27 @@ Value search(Depth depth, Value alpha, Value beta)
 			Bitstring hash = curr_state.get_hash();
 			if (tt_exists[hash % TABLE_SIZE] && tt_hashes[hash % TABLE_SIZE] == hash) {
 				ordered_moves.push_back({tt_evals[hash % TABLE_SIZE], i});
-			}
-			else {
+			} else {
 				ordered_moves.push_back({eval(curr_state), i});
 			}
 		}
 
 		curr_state.unmake_move(i);
 	}
-	if (mate)
-	{
+	if (mate) {
 		if (curr_state.is_check()) {
 			// printf("checkmate\n");
 			return MATED;
-		}
-		else {
+		} else {
 			// printf("stalemate\n");
 			return DRAWN;
 		}
 	}
-	
+
 	std::stable_sort(ordered_moves.begin(), ordered_moves.end());
-	
+
 	Value value = -VALUE_INFINITE;
-	for (const pii& p : ordered_moves)
-	{
+	for (const pii& p : ordered_moves) {
 		int move = p.second;
 		// printf("Considering %s\n", curr_state.move_to_string(move).c_str());
 
@@ -130,20 +122,18 @@ Value search(Depth depth, Value alpha, Value beta)
 }
 
 // Only searches captures and queen promotions to avoid horizon effect
-Value qsearch(Value alpha, Value beta, Depth depth)
-{
+Value qsearch(Value alpha, Value beta, Depth depth) {
 	qsearch_nodes++;
 
 	depth_qsearched = std::min(depth_qsearched, depth);
-	
+
 	// printf("qsearch(%d, %d)\n", alpha, beta);
 	// curr_state.print();
 
 	Bitstring curr_board_hash = curr_state.get_hash();
 	Bitstring key = curr_board_hash % TABLE_SIZE;
 
-	if (tt_exists[key] && tt_depths[key] >= DEPTH_QS_NO_CHECKS && tt_hashes[key] == curr_board_hash)
-	{
+	if (tt_exists[key] && tt_depths[key] >= DEPTH_QS_NO_CHECKS && tt_hashes[key] == curr_board_hash) {
 		// printf("tt hit: %d\n", tt_evals[key]);
 		qsearch_hits++;
 		return tt_evals[key];
@@ -158,7 +148,7 @@ Value qsearch(Value alpha, Value beta, Depth depth)
 	// 	// printf("king attacked\n");
 	// 	return MATE;
 	// }
-	
+
 	Value curr_eval;
 	if (tt_exists[key] && tt_hashes[key] == curr_board_hash) {
 		// tt entry can be used as more accurate static eval
@@ -175,8 +165,7 @@ Value qsearch(Value alpha, Value beta, Depth depth)
 	// }
 
 	// Futility pruning
-	if (depth - qs_depth_floor < 5 && (curr_eval - futility_margin(depth - qs_depth_floor, false) >= beta))
-	{
+	if (depth - qs_depth_floor < 5 && (curr_eval - futility_margin(depth - qs_depth_floor, false) >= beta)) {
 		// printf("futility prune: %d\n", curr_eval);
 		return curr_eval;
 	}
@@ -184,20 +173,16 @@ Value qsearch(Value alpha, Value beta, Depth depth)
 	std::vector<pii> ordered_moves;
 
 	bool mate = true;
-	for (int i : curr_state.list_moves())
-	{
+	for (int i : curr_state.list_moves()) {
 		curr_state.make_move(i);
-		if (!curr_state.king_attacked())
-		{
+		if (!curr_state.king_attacked()) {
 			mate = false;
-			if ((((i >> 15) & 7) != 0) || ((((i >> 18) & 3) == 2) && (((i >> 20) & 3) == 3)))
-			{			
+			if ((((i >> 15) & 7) != 0) || ((((i >> 18) & 3) == 2) && (((i >> 20) & 3) == 3))) {
 				Bitstring hash = curr_state.get_hash();
 				if (tt_exists[hash % TABLE_SIZE] && tt_hashes[hash % TABLE_SIZE] == hash) {
 					// printf("using tt for eval of move %s\n", curr_state.move_to_string(i).c_str());
 					ordered_moves.push_back({tt_evals[hash % TABLE_SIZE], i});
-				}
-				else {
+				} else {
 					ordered_moves.push_back({eval(curr_state), i});
 				}
 			}
@@ -205,26 +190,22 @@ Value qsearch(Value alpha, Value beta, Depth depth)
 
 		curr_state.unmake_move(i);
 	}
-	if (mate)
-	{
+	if (mate) {
 		if (curr_state.is_check()) {
 			// printf("checkmate\n");
 			return MATED;
-		}
-		else {
+		} else {
 			// printf("stalemate\n");
 			return DRAWN;
 		}
 	}
 
-	if (break_now || ordered_moves.size() == 0)
-	{
+	if (break_now || ordered_moves.size() == 0) {
 		// printf("no moves: %d\n", curr_eval);
 		return curr_eval;
 	}
 
-	if (curr_eval >= beta)
-	{ // Standing pat
+	if (curr_eval >= beta) { // Standing pat
 		// printf("stand-pat: %d\n", curr_eval);
 		return curr_eval;
 	}
@@ -236,8 +217,7 @@ Value qsearch(Value alpha, Value beta, Depth depth)
 
 	std::stable_sort(ordered_moves.begin(), ordered_moves.end());
 
-	for (const pii& p : ordered_moves)
-	{
+	for (const pii& p : ordered_moves) {
 		int move = p.second;
 		// printf("Considering %s\n", curr_state.move_to_string(move).c_str());
 
@@ -258,7 +238,7 @@ Value qsearch(Value alpha, Value beta, Depth depth)
 	tt_depths[key] = depth - qs_depth_floor - Depth(10);
 	tt_evals[key] = value;
 	tt_hashes[key] = curr_board_hash;
-	
+
 	// printf("done qsearching, returned %d\n", value);
 	// curr_state.print();
 

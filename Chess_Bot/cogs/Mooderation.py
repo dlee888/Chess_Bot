@@ -7,6 +7,7 @@ import Chess_Bot.util.Data as data
 from Chess_Bot import constants
 from Chess_Bot.cogs.Development import is_developer
 
+
 class Mooderation(commands.Cog):
 
     def __init__(self, client):

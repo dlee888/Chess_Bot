@@ -36,9 +36,11 @@ class ProfileNames(enum.Enum):
     sfmax = 'Stockfish max strength'
 
 
-def get_name(bot_id : int):
+def get_name(bot_id: int):
     return ProfileNames[Profile(bot_id).name].value
-def get_description(bot_name : str):
+
+
+def get_description(bot_name: str):
     descriptions = {
         'cb1': 'Level 1 of the Chess Bot engine',
         'cb2': 'Level 2 of the Chess Bot engine',
@@ -51,6 +53,7 @@ def get_description(bot_name : str):
         'sfmax': 'Stockfish with the UCI option `Skill level` set to 20 (the maximum possible).',
     }
     return descriptions[bot_name]
+
 
 class Profiles(commands.Cog):
 
@@ -91,8 +94,8 @@ class Profiles(commands.Cog):
         '''
         embed = await self.get_default_embed()
         embed.description = ('These are the Chess Bot computers that you can challenge.\n'
-        'Use the command `$profile view <bot tag>` for more information on a bot.\n'
-        'For example, `$profile view cb1` to get info about Chess Bot level 1.')
+                             'Use the command `$profile view <bot tag>` for more information on a bot.\n'
+                             'For example, `$profile view cb1` to get info about Chess Bot level 1.')
         all_cb = [
             f'`{bot.name}` ({get_name(bot.value)})' for bot in Profile if bot.name.startswith('cb')]
         all_sf = [
@@ -107,8 +110,8 @@ class Profiles(commands.Cog):
     async def _profiles(self, ctx: SlashContext):
         embed = await self.get_default_embed()
         embed.description = ('These are the Chess Bot computers that you can challenge.\n'
-        'Use the command `$profile view <bot tag>` for more information on a bot.\n'
-        'For example, `$profile view cb1` to get info about Chess Bot level 1.')
+                             'Use the command `$profile view <bot tag>` for more information on a bot.\n'
+                             'For example, `$profile view cb1` to get info about Chess Bot level 1.')
         all_cb = [
             f'`{bot.name}` ({get_name(bot.value)})' for bot in Profile if bot.name.startswith('cb')]
         all_sf = [
@@ -144,8 +147,9 @@ class Profiles(commands.Cog):
 
         embed = await self.get_default_embed()
         if bot.name.startswith('sf'):
-            embed.set_thumbnail(url='https://stockfishchess.org/images/logo/icon_512x512@2x.png')
-        
+            embed.set_thumbnail(
+                url='https://stockfishchess.org/images/logo/icon_512x512@2x.png')
+
         embed.add_field(name=get_name(bot.value),
                         value=get_description(bot.name))
         embed.add_field(name='Tag', value=f'`{bot.name}`')
@@ -164,7 +168,8 @@ class Profiles(commands.Cog):
         await ctx.send(embed=embed)
 
     @cog_ext.cog_slash(name='profile-info', description="Views information about a specific Chess Bot profile that you can challenge.", options=[
-        create_option(name='tag', description='The tag of the bot. For example, `cb1`.', option_type=SlashCommandOptionType.STRING, required=True)
+        create_option(name='tag', description='The tag of the bot. For example, `cb1`.',
+                      option_type=SlashCommandOptionType.STRING, required=True)
     ])
     async def _view(self, ctx: SlashContext, tag):
         try:
@@ -175,8 +180,9 @@ class Profiles(commands.Cog):
 
         embed = await self.get_default_embed()
         if bot.name.startswith('sf'):
-            embed.set_thumbnail(url='https://stockfishchess.org/images/logo/icon_512x512@2x.png')
-        
+            embed.set_thumbnail(
+                url='https://stockfishchess.org/images/logo/icon_512x512@2x.png')
+
         embed.add_field(name=get_name(bot.value),
                         value=get_description(bot.name))
         embed.add_field(name='Tag', value=f'`{bot.name}`')

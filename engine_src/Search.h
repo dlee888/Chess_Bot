@@ -1,14 +1,14 @@
 #ifndef SEARCH_H_INCLUDED
 #define SEARCH_H_INCLUDED
-#include <vector>
-#include <map>
 #include <algorithm>
-#include <functional>
 #include <cassert>
+#include <functional>
+#include <map>
 #include <random>
+#include <vector>
 
-#include "State.h"
 #include "Evaluate.h"
+#include "State.h"
 #include "Transpose.h"
 #include "options.h"
 

@@ -83,7 +83,6 @@ class Topgg(commands.Cog):
 
         await ctx.send('Thank you for voting for Chess Bot! You have been gifted 5 rating points.')
 
-
     @tasks.loop(seconds=3)
     async def reset_votes(self):
         votes = data.data_manager.get_claimed()

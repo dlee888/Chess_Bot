@@ -50,7 +50,8 @@ class Engine(commands.Cog):
                         await util2.send_notif(person, f'Chess Bot resigned.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
                         data.data_manager.delete_game(person, True)
                     elif board.is_checkmate():
-                        old_rating, new_rating = util.update_rating(person, 0, bot)
+                        old_rating, new_rating = util.update_rating(
+                            person, 0, bot)
                         data.data_manager.delete_game(person, False)
                         await util2.send_notif(person, f'You lost.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
                     else:

@@ -1,10 +1,8 @@
 #include "State.h"
 
-void state::make_move(int move)
-{
-	if (move == -1)
-	{
-		//throw std::exception("Trying to make an illegal move");
+void state::make_move(int move) {
+	if (move == -1) {
+		// throw std::exception("Trying to make an illegal move");
 		return;
 	}
 
@@ -13,8 +11,7 @@ void state::make_move(int move)
 
 	fifty_move.push(fifty_move.top() + 1);
 
-	if (piece_captured != 0)
-	{
+	if (piece_captured != 0) {
 		fifty_move.pop();
 		fifty_move.push(0);
 	}
@@ -31,13 +28,10 @@ void state::make_move(int move)
 	if (!to_move)
 		full_move++;
 
-	if (((move >> 18) & 3) == 3)
-	{
-		if (to_move)
-		{
+	if (((move >> 18) & 3) == 3) {
+		if (to_move) {
 			white_castled = true;
-			if ((move >> 20) == 1)
-			{ //kingside castle
+			if ((move >> 20) == 1) { // kingside castle
 				replace_board(7, 6, WK);
 				replace_board(7, 5, WR);
 				replace_board(7, 7, 0);
@@ -46,9 +40,7 @@ void state::make_move(int move)
 				wk_rights.push(false);
 				wq_rights.pop();
 				wq_rights.push(false);
-			}
-			else
-			{
+			} else {
 				replace_board(7, 3, WR);
 				replace_board(7, 2, WK);
 				replace_board(7, 0, 0);
@@ -58,12 +50,9 @@ void state::make_move(int move)
 				wq_rights.pop();
 				wq_rights.push(false);
 			}
-		}
-		else
-		{
+		} else {
 			black_castled = true;
-			if ((move >> 20) == 1)
-			{ //kingside castle
+			if ((move >> 20) == 1) { // kingside castle
 				replace_board(0, 6, BK);
 				replace_board(0, 5, BR);
 				replace_board(0, 7, 0);
@@ -72,9 +61,7 @@ void state::make_move(int move)
 				bk_rights.push(false);
 				bq_rights.pop();
 				bq_rights.push(false);
-			}
-			else
-			{
+			} else {
 				replace_board(0, 3, BR);
 				replace_board(0, 2, BK);
 				replace_board(0, 0, 0);
@@ -85,9 +72,7 @@ void state::make_move(int move)
 				bq_rights.push(false);
 			}
 		}
-	}
-	else if (((move >> 18) & 3) == 2)
-	{
+	} else if (((move >> 18) & 3) == 2) {
 		fifty_move.pop();
 		fifty_move.push(0);
 		int promote_to = (move >> 20) + 2;
@@ -95,49 +80,36 @@ void state::make_move(int move)
 		replace_board(row_final, col_final, promote_to * color);
 		replace_board(row_init, col_init, 0);
 
-		if (piece_captured == WR)
-		{
-			if (to_move)
-			{
-				if (row_final == 0 && col_final == 0)
-				{
+		if (piece_captured == WR) {
+			if (to_move) {
+				if (row_final == 0 && col_final == 0) {
 					bq_rights.pop();
 					bq_rights.push(false);
 				}
-				if (row_final == 0 && col_final == 7)
-				{
+				if (row_final == 0 && col_final == 7) {
 					bk_rights.pop();
 					bk_rights.push(false);
 				}
-			}
-			else
-			{
-				if (row_final == 7 && col_final == 0)
-				{
+			} else {
+				if (row_final == 7 && col_final == 0) {
 					wq_rights.pop();
 					wq_rights.push(false);
 				}
-				if (row_final == 7 && col_final == 7)
-				{
+				if (row_final == 7 && col_final == 7) {
 					wk_rights.pop();
 					wk_rights.push(false);
 				}
 			}
 		}
-	}
-	else if (((move >> 18) & 3) == 1)
-	{
-		if (to_move)
-		{
+	} else if (((move >> 18) & 3) == 1) {
+		if (to_move) {
 			replace_board(row_final, col_final, WP);
 			replace_board(row_init, col_init, 0);
 			replace_board(row_final + 1, col_final, 0);
 
 			fifty_move.pop();
 			fifty_move.push(0);
-		}
-		else
-		{
+		} else {
 			replace_board(row_final, col_final, BP);
 			replace_board(row_init, col_init, 0);
 			replace_board(row_final - 1, col_final, 0);
@@ -145,62 +117,45 @@ void state::make_move(int move)
 			fifty_move.pop();
 			fifty_move.push(0);
 		}
-	}
-	else
-	{
-		//making the move
+	} else {
+		// making the move
 		replace_board(row_init, col_init, 0);
 		replace_board(row_final, col_final, piece * color);
 
-		if (piece == WP)
-		{
+		if (piece == WP) {
 			fifty_move.pop();
 			fifty_move.push(0);
 			if (abs(row_init - row_final) == 2) {
 				en_passant_target.pop();
 				en_passant_target.push((((row_init + row_final) / 2) << 3) + col_init);
 			}
-		}
-		else if (piece == WR)
-		{
-			if (to_move)
-			{
-				if (row_init == 7 && col_init == 0)
-				{
+		} else if (piece == WR) {
+			if (to_move) {
+				if (row_init == 7 && col_init == 0) {
 					wq_rights.pop();
 					wq_rights.push(false);
 				}
-				if (row_init == 7 && col_init == 7)
-				{
+				if (row_init == 7 && col_init == 7) {
 					wk_rights.pop();
 					wk_rights.push(false);
 				}
-			}
-			else
-			{
-				if (row_init == 0 && col_init == 0)
-				{
+			} else {
+				if (row_init == 0 && col_init == 0) {
 					bq_rights.pop();
 					bq_rights.push(false);
 				}
-				if (row_init == 0 && col_init == 7)
-				{
+				if (row_init == 0 && col_init == 7) {
 					bk_rights.pop();
 					bk_rights.push(false);
 				}
 			}
-		}
-		else if (piece == WK)
-		{
-			if (to_move)
-			{
+		} else if (piece == WK) {
+			if (to_move) {
 				wk_rights.pop();
 				wk_rights.push(false);
 				wq_rights.pop();
 				wq_rights.push(false);
-			}
-			else
-			{
+			} else {
 				bk_rights.pop();
 				bk_rights.push(false);
 				bq_rights.pop();
@@ -208,30 +163,22 @@ void state::make_move(int move)
 			}
 		}
 
-		if (piece_captured == WR)
-		{
-			if (to_move)
-			{
-				if (row_final == 0 && col_final == 0)
-				{
+		if (piece_captured == WR) {
+			if (to_move) {
+				if (row_final == 0 && col_final == 0) {
 					bq_rights.pop();
 					bq_rights.push(false);
 				}
-				if (row_final == 0 && col_final == 7)
-				{
+				if (row_final == 0 && col_final == 7) {
 					bk_rights.pop();
 					bk_rights.push(false);
 				}
-			}
-			else
-			{
-				if (row_final == 7 && col_final == 0)
-				{
+			} else {
+				if (row_final == 7 && col_final == 0) {
 					wq_rights.pop();
 					wq_rights.push(false);
 				}
-				if (row_final == 7 && col_final == 7)
-				{
+				if (row_final == 7 && col_final == 7) {
 					wk_rights.pop();
 					wk_rights.push(false);
 				}
