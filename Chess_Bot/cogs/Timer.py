@@ -137,7 +137,7 @@ class Timer(commands.Cog):
                     time_left = game.time_left(game.white)
                     if time_left < 0:
                         white_delta, black_delta = util.update_rating2(
-                            game.white, game.black, chess.BLACK)
+                            game.white, game.black, 1)
                         await util2.send_notif(game.white,
                                                ('You automatically forfeited on time.\n'
                                                 f'Your new rating is {data.data_manager.get_rating(game.white)} ({white_delta})'))
@@ -149,14 +149,14 @@ class Timer(commands.Cog):
                     time_left = game.time_left(game.black)
                     if time_left < 0:
                         white_delta, black_delta = util.update_rating2(
-                            game.white, game.black, chess.WHITE)
+                            game.white, game.black, 0)
                         await util2.send_notif(game.white,
                                                ('Your opponent automatically forfeited on time.\n'
                                                 f'Your new rating is {data.data_manager.get_rating(game.white)} ({white_delta})'))
                         await util2.send_notif(game.black,
                                                ('You automatically forfeited on time.\n'
                                                 f'Your new rating is {data.data_manager.get_rating(game.black)} ({black_delta})'))
-                        data.data_manager.delete_game(game.white, chess.BLACK)
+                        data.data_manager.delete_game(game.white, chess.WHITE)
 
     @low_time_warn.before_loop
     @no_time_check.before_loop
