@@ -22,7 +22,7 @@ class Topgg(commands.Cog):
         if self.password is not None:
             self.dbl_client = dbl.DBLClient(
                 self.client, self.dbl_token, autopost=True, webhook_path='/dblwebhook', webhook_auth=self.password, webhook_port=5000)
-        self.reset_votes.start()
+            self.reset_votes.start()
 
     async def on_guild_post(self):
         print('Posted stats on top.gg')
@@ -41,6 +41,9 @@ class Topgg(commands.Cog):
             "cooldown": 3
         }
         '''
+        if self.dbl_client is None:
+            return
+
         voted = await self.dbl_client.get_user_vote(ctx.author.id)
 
         if not voted:

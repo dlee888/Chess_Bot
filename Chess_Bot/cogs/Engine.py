@@ -214,7 +214,7 @@ class Engine(commands.Cog):
             data.data_manager.change_game(person, game)
             if board.is_checkmate():
                 white_delta, black_delta = util.update_rating2(
-                    game.white, game.black, 1 if board.turn == chess.BLACK else 0)
+                    game.white, game.black, 0 if board.turn == chess.BLACK else 1)
                 embed = discord.Embed(
                     title=f'{ctx.author}\'s game', description=f'{whiteblack[not board.turn].capitalize()} won by checkmate.')
                 path = get_image2(person, color)
