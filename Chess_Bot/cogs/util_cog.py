@@ -56,7 +56,7 @@ class Util(commands.Cog):
                 text = 'Tip: set your notification channel by using the `$notif` command!.\n' + text
             try:
                 await channel.send(text, **kwargs)
-            except discord.Forbidden:
+            except Exception:
                 pass
 
 

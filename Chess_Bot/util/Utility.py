@@ -58,6 +58,8 @@ def update_rating(user, outcome, bot):
 
 
 def update_rating2(white, black, outcome):
+    '''Outcome: 1 if white loses, 0 if black loses
+    returns (white_delta, black_delta)'''
     white_rating = data.data_manager.get_rating(white)
     black_rating = data.data_manager.get_rating(black)
     if white_rating == None:

@@ -60,10 +60,10 @@ class Engine(commands.Cog):
                         await util2.send_notif(person, f'Draw.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
                         data.data_manager.delete_game(person, None)
                 if person == game.white:
-                    game.black_last_moved = time.time()
+                    game.last_moved = time.time()
                     game.white_warned = False
                 else:
-                    game.white_last_moved = time.time()
+                    game.last_moved = time.time()
                     game.black_warned = False
                 data.data_manager.change_game(None, game)
                 file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(game.not_to_move())}', description=f'The bot has moved\n{move}')
@@ -205,11 +205,11 @@ class Engine(commands.Cog):
                     await ctx.send('Illegal move played. Make sure your move is in SAN or UCI notation.\nUse `$help move` for more info.')
                     return
             if color == chess.WHITE:
-                game.white_last_moved = time.time()
-                game.black_warned = False
-            else:
-                game.black_last_moved = time.time()
+                game.last_moved = time.time()
                 game.white_warned = False
+            else:
+                game.last_moved = time.time()
+                game.black_warned = False
             game.fen = board.fen(en_passant='fen')
             data.data_manager.change_game(person, game)
             if board.is_checkmate():
@@ -254,7 +254,7 @@ class Engine(commands.Cog):
 
             game.fen = board.fen(en_passant='fen')
             if color == chess.WHITE:
-                game.white_last_moved = time.time()
+                game.last_moved = time.time()
                 game.white_warned = False
                 data.data_manager.change_game(person, game)
                 file, embed = util2.make_embed(game.white, title=f'Your game with {await util2.get_name(game.black)}', description='You have moved.')
@@ -263,7 +263,7 @@ class Engine(commands.Cog):
                 file, embed = util2.make_embed(game.black, title=f'Your game with {await util2.get_name(game.white)}', description='It is your turn')
                 await util2.send_notif(game.black, embed=embed, file=file)
             else:
-                game.black_last_moved = time.time()
+                game.last_moved = time.time()
                 game.black_warned = False
                 data.data_manager.change_game(person, game)
 

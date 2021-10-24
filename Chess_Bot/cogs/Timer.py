@@ -36,7 +36,7 @@ class Timer(commands.Cog):
         old_rating, new_rating = util.update_rating(person, 0, game.bot)
 
         util2 = self.client.get_cog('Util')
-        await util2.send_notif(person, f'You automatically forfeited on time. Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
+        await util2.send_notif(person, f'You automatically forfeited on time. Your new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
@@ -67,7 +67,7 @@ class Timer(commands.Cog):
         else:
             util2 = self.client.get_cog('Util')
             to_move = game.to_move()
-            await ctx.send(f'{await util2.get_name(to_move)} to move against {await util2.get_name(game.get_person(not game.turn()))} with {util.pretty_time(game.time_left(to_move))} left.')
+            await ctx.send(f'{await util2.get_name(to_move)} to move against {await util2.get_name(game.get_person(not game.turn()))} with {util.pretty_time(game.time_left())} left.')
 
     @cog_ext.cog_slash(name='time', description='Shows how much time you (or someone else) has left.', options=[
         create_option(name='person', description='The person you want to get the time for.',
@@ -88,7 +88,7 @@ class Timer(commands.Cog):
         else:
             util2 = self.client.get_cog('Util')
             to_move = game.to_move()
-            await ctx.send(f'{await util2.get_name(to_move)} to move against {await util2.get_name(game.get_person(not game.turn()))} with {util.pretty_time(game.time_left(to_move))} left.')
+            await ctx.send(f'{await util2.get_name(to_move)} to move against {await util2.get_name(game.get_person(not game.turn()))} with {util.pretty_time(game.time_left())} left.')
 
     @tasks.loop(seconds=10)
     async def low_time_warn(self):
@@ -98,8 +98,7 @@ class Timer(commands.Cog):
             if isinstance(game, tuple):
                 person = game[0]
                 game = game[1]
-                time_left = game.last_moved + \
-                    constants.MAX_TIME_PER_MOVE - time.time()
+                time_left = game.last_moved + constants.MAX_TIME_PER_MOVE - time.time()
 
                 if time_left < constants.LOW_TIME_WARN and not game.warned:
                     await self.send_low_time_warning(person)
@@ -107,13 +106,13 @@ class Timer(commands.Cog):
                     data.data_manager.change_game(person, game)
             elif isinstance(game, data.Game2):
                 if game.to_move() == chess.WHITE:
-                    time_left = game.white_last_moved + constants.MAX_TIME_PER_MOVE - time.time()
+                    time_left = game.time_left()
                     if time_left < constants.LOW_TIME_WARN and not game.white_warned:
                         await self.send_low_time_warning(game.white)
                         game.white_warned = True
                         data.data_manager.change_game(None, game)
                 else:
-                    time_left = game.black_last_moved + constants.MAX_TIME_PER_MOVE - time.time()
+                    time_left = game.time_left()
                     if time_left < constants.LOW_TIME_WARN and not game.black_warned:
                         await self.send_low_time_warning(game.black)
                         game.black_warned = True
@@ -127,15 +126,13 @@ class Timer(commands.Cog):
             if isinstance(game, tuple):
                 person = game[0]
                 game = game[1]
-                time_left = game.last_moved + \
-                    constants.MAX_TIME_PER_MOVE - time.time()
+                time_left = game.last_moved + constants.MAX_TIME_PER_MOVE - time.time()
 
                 if time_left < 0:
                     await self.send_no_time_message(person)
             elif isinstance(game, data.Game2):
-                if game.to_move() == chess.WHITE:
-                    time_left = game.time_left(game.white)
-                    if time_left < 0:
+                if game.time_left() < 0:
+                    if game.to_move() == chess.WHITE:
                         white_delta, black_delta = util.update_rating2(
                             game.white, game.black, 1)
                         await util2.send_notif(game.white,
@@ -145,9 +142,7 @@ class Timer(commands.Cog):
                                                ('Your opponent automatically forfeited on time.\n'
                                                 f'Your new rating is {data.data_manager.get_rating(game.black)} ({black_delta})'))
                         data.data_manager.delete_game(game.white, chess.BLACK)
-                else:
-                    time_left = game.time_left(game.black)
-                    if time_left < 0:
+                    else:
                         white_delta, black_delta = util.update_rating2(
                             game.white, game.black, 0)
                         await util2.send_notif(game.white,
@@ -161,7 +156,6 @@ class Timer(commands.Cog):
     @low_time_warn.before_loop
     @no_time_check.before_loop
     async def wait_until_ready(self):
-        logging.info('Cog Timer: Waiting for bot to get ready')
         await self.client.wait_until_ready()
 
 

@@ -27,8 +27,7 @@ class Game2:
         self.fen = row[0]
         self.white = row[1]
         self.black = row[2]
-        self.white_last_moved = row[3]
-        self.black_last_moved = row[4]
+        self.last_moved = row[3]
         self.white_warned = row[5]
         self.black_warned = row[6]
         if len(row) == 7 or row[7] is None:
@@ -69,11 +68,18 @@ class Game2:
         else:
             return self.black
 
-    def time_left(self, person):
-        if person == self.white:
-            return constants.MAX_TIME_PER_MOVE - (time.time() - self.black_last_moved)
-        else:
-            return constants.MAX_TIME_PER_MOVE - (time.time() - self.white_last_moved)
+    def time_left(self):
+        return self.time_control - (time.time() - self.last_moved)
+
+    def parse_move(self, move):
+        board = chess.Board(self.fen)
+        try:
+            return board.push_san(move)
+        except ValueError:
+            try:
+                return board.push_uci(move)
+            except ValueError:
+                return None
 
 
 class Data:
