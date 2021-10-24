@@ -216,8 +216,8 @@ class Data:
                 new_game.fen,
                 new_game.white,
                 new_game.black,
-                new_game.white_last_moved,
-                new_game.black_last_moved,
+                new_game.last_moved,
+                new_game.last_moved,
                 int(new_game.white_warned),
                 int(new_game.black_warned)
             ))

@@ -38,7 +38,7 @@ class Engine(commands.Cog):
                 move, game = task.result()
                 util2 = self.client.get_cog('Util')
                 self.thonking.pop(person)
-                board = chess.Board(game.fen())
+                board = chess.Board(game.fen)
                 if person == game.white:
                     bot = game.black
                 else:
