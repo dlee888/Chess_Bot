@@ -48,17 +48,18 @@ class Engine(commands.Cog):
                         old_rating, new_rating = util.update_rating(
                             person, 1, bot)
                         await util2.send_notif(person, f'Chess Bot resigned.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
-                        data.data_manager.delete_game(person, True)
+                        data.data_manager.delete_game(person, not game.turn())
                     elif board.is_checkmate():
                         old_rating, new_rating = util.update_rating(
                             person, 0, bot)
-                        data.data_manager.delete_game(person, False)
+                        data.data_manager.delete_game(person, not game.turn())
                         await util2.send_notif(person, f'You lost.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
                     else:
                         old_rating, new_rating = util.update_rating(
                             person, 1/2, bot)
                         await util2.send_notif(person, f'Draw.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
-                        data.data_manager.delete_game(person, None)
+                        data.data_manager.delete_game(person, 69)
+                    continue
                 if person == game.white:
                     game.last_moved = time.time()
                     game.white_warned = False
