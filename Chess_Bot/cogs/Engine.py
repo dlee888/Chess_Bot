@@ -47,8 +47,8 @@ class Engine(commands.Cog):
                     if move == 'RESIGN':
                         old_rating, new_rating = util.update_rating(
                             person, 1, bot)
-                        file, embed = util2.make_embed(title='Game over', description=f'It was in this position that {await util2.get_name(bot)} resigned the game.')
-                        await util2.send_notif(person, f'Chess Bot resigned.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
+                        file, embed = util2.make_embed(person, title='Game over', description=f'It was in this position that {await util2.get_name(bot)} resigned the game.')
+                        await util2.send_notif(person, f'Chess Bot resigned.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})', file=file, embed=embed)
                         data.data_manager.delete_game(person, not game.turn())
                     elif board.is_checkmate():
                         old_rating, new_rating = util.update_rating(
