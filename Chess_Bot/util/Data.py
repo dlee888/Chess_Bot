@@ -264,8 +264,7 @@ class Data:
     def change_prefix(self, guild, new_prefix):
         cur = self.get_conn().cursor()
         cur.execute(f'DELETE FROM prefixes WHERE id = {guild};')
-        cur.execute(
-            f'INSERT INTO prefixes VALUES ({guild}, \'{new_prefix}\');')
+        cur.execute(f'INSERT INTO prefixes VALUES (%s, %s);', (guild, new_prefix))
 
         self.conn.commit()
 
