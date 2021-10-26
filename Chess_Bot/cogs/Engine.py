@@ -47,6 +47,7 @@ class Engine(commands.Cog):
                     if move == 'RESIGN':
                         old_rating, new_rating = util.update_rating(
                             person, 1, bot)
+                        file, embed = util2.make_embed(title='Game over', description=f'It was in this position that {await util2.get_name(bot)} resigned the game.')
                         await util2.send_notif(person, f'Chess Bot resigned.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
                         data.data_manager.delete_game(person, not game.turn())
                     elif board.is_checkmate():
@@ -467,12 +468,12 @@ class Engine(commands.Cog):
             if ctx.author.id == game.white:
                 await ctx.send(f'Game resigned. Your new rating is {round(data.data_manager.get_rating(ctx.author.id), 3)} ({round(white_delta, 3)})')
                 file, embed = util2.make_embed(
-                    game.black, title='Your game has ended', description=f'Your apponent has resigned. Your new rating is {round(data.data_manager.get_rating(game.black), 3)} ({round(black_delta, 3)})')
+                    game.black, title='Your game has ended', description=f'It was in this position that {ctx.author} resigned the game.\nYour new rating is {round(data.data_manager.get_rating(game.black), 3)} ({round(black_delta, 3)})')
                 await util2.send_notif(game.black, file=file, embed=embed)
             else:
                 await ctx.send(f'Game resigned. Your new rating is {round(data.data_manager.get_rating(ctx.author.id), 3)} ({round(black_delta, 3)})')
                 file, embed = util2.make_embed(
-                    game.white, title='Your game has ended', description=f'Your apponent has resigned. Your new rating is {round(data.data_manager.get_rating(game.white), 3)} ({round(white_delta, 3)})')
+                    game.white, title='Your game has ended', description=f'It was in this position that {ctx.author} resigned the game.\nYour new rating is {round(data.data_manager.get_rating(game.white), 3)} ({round(white_delta, 3)})')
                 await util2.send_notif(game.white, file=file, embed=embed)
             data.data_manager.delete_game(
                 ctx.author.id, chess.WHITE if ctx.author.id == game.black else chess.BLACK)
