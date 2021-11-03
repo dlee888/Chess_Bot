@@ -327,7 +327,7 @@ class Engine(commands.Cog):
             await ctx.send(f'"{bot}" is not the valid tag of a bot. Use `$profiles` to see which bots you can challenge.')
             return
 
-        if person in constants.DEVELOPERS:
+        if True:
             # EXPERIMENTAL
             game = data.Game2()
             color = random.randint(0, 1)

@@ -23,14 +23,13 @@ class Game:
 
 class Game2:
 
-    def __init__(self, row=['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', -1, -1, time.time(), time.time(), False, False, None]) -> None:
+    def __init__(self, row=['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', -1, -1, time.time(), False, None]) -> None:
         self.fen = row[0]
         self.white = row[1]
         self.black = row[2]
         self.last_moved = row[3]
-        self.white_warned = row[5]
-        self.black_warned = row[6]
-        if len(row) == 7 or row[7] is None:
+        self.warned = row[4]
+        if len(row) == 5 or row[5] is None:
             self.time_control = constants.MAX_TIME_PER_MOVE
         else:
             self.time_control = row[7]
@@ -106,47 +105,28 @@ class Data:
                                'position text,'
                                'white bigint,'
                                'black bigint,'
-                               'white_lastmoved real,'
-                               'black_lastmoved real,'
-                               'white_warned integer,'
-                               'black_warned integer'
+                               'lastmoved real,'
+                               'warned integer,'
+                               'time_control integer'
                                ');')
-        create_ratings_table = ('CREATE TABLE IF NOT EXISTS ratings ('
-                                'id bigint NOT NULL PRIMARY KEY UNIQUE,'
-                                'rating real'
-                                ');')
-        create_prefix_table = ('CREATE TABLE IF NOT EXISTS prefixes ('
-                               'id bigint NOT NULL PRIMARY KEY UNIQUE,'
-                               'prefix text'
-                               ');')
-        create_themes_table = ('CREATE TABLE IF NOT EXISTS themes ('
-                               'id bigint NOT NULL PRIMARY KEY UNIQUE,'
-                               'theme text'
-                               ');')
-        create_settings_table = ('CREATE TABLE IF NOT EXISTS settings ('
-                                 'id bigint NOT NULL PRIMARY KEY UNIQUE,'
-                                 'theme text,'
-                                 'notifchannel bigint'
-                                 ');')
+        create_user_table = ('CREATE TABLE IF NOT EXISTS users ('
+                             'id bigint NOT NULL PRIMARY KEY UNIQUE,'
+                             'rating real,'
+                             'lost int,'
+                             'won int,'
+                             'drew int,'
+                             'theme text,'
+                             'notifchannel bigint'
+                             ');')
         create_votes_table = ('CREATE TABLE IF NOT EXISTS votes ('
                               'id bigint NOT NULL PRIMARY KEY UNIQUE'
-                              ');')
-        create_stats_table = ('CREATE TABLE IF NOT EXISTS stats ('
-                              'id bigint NOT NULL PRIMARY KEY UNIQUE,'
-                              'lost int,'
-                              'won int,'
-                              'drew int'
                               ');')
 
         cur = self.get_conn().cursor()
         cur.execute(create_games_table)
         cur.execute(create_games2_table)
-        cur.execute(create_ratings_table)
-        cur.execute(create_prefix_table)
-        cur.execute(create_themes_table)
-        cur.execute(create_settings_table)
+        cur.execute(create_user_table)
         cur.execute(create_votes_table)
-        cur.execute(create_stats_table)
 
     def get_conn(self):
         if not '-beta' in sys.argv and self.conn.closed:
@@ -154,9 +134,9 @@ class Data:
             self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
         return self.conn
 
-    def execute(self, sql):
+    def execute(self, sql, params=()):
         cur = self.get_conn().cursor()
-        cur.execute(sql)
+        cur.execute(sql, params)
         self.conn.commit()
         try:
             rows = cur.fetchall()
@@ -165,13 +145,10 @@ class Data:
             return None
 
     def get_game(self, person):
-        cur = self.get_conn().cursor()
-        cur.execute(f'SELECT * FROM games WHERE id = {person};')
-        rows = cur.fetchall()
+        rows = self.execute(f'SELECT * FROM games WHERE id = {person};')
 
         if len(rows) == 0:
-            cur.execute(f'SELECT * FROM games2;')
-            rows = cur.fetchall()
+            rows = self.execute(f'SELECT * FROM games2;')
             for row in rows:
                 g = Game2(row)
                 if g.white == person or g.black == person:
@@ -212,39 +189,32 @@ class Data:
         elif isinstance(new_game, Game2):
             cur.execute(
                 f'DELETE FROM games2 WHERE white = {new_game.white} and black = {new_game.black};')
-            cur.execute('INSERT INTO games2 VALUES (%s, %s, %s, %s, %s, %s, %s)', (
+            cur.execute('INSERT INTO games2 VALUES (%s, %s, %s, %s, %s)', (
                 new_game.fen,
                 new_game.white,
                 new_game.black,
                 new_game.last_moved,
-                new_game.last_moved,
-                int(new_game.white_warned),
-                int(new_game.black_warned)
+                int(new_game.warned)
             ))
 
         self.conn.commit()
 
     def get_rating(self, person):
-        cur = self.get_conn().cursor()
-        cur.execute(f'SELECT * FROM ratings WHERE id = {person};')
-        rows = cur.fetchall()
-
+        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person))
         if len(rows) == 0:
             return None
         return rows[0][1]
 
     def get_ratings(self):
-        cur = self.get_conn().cursor()
-        cur.execute(f'SELECT * FROM ratings;')
-        rows = cur.fetchall()
-
+        rows = self.execute('SELECT * FROM users')
         ratings = {}
         for row in rows:
-            ratings[row[0]] = row[1]
-
+            if row[1] is not None:
+                ratings[row[0]] = row[1]
         return ratings
 
     def change_rating(self, person, new_rating):
+        # TODO: fix this
         cur = self.get_conn().cursor()
 
         cur.execute(f'DELETE FROM ratings WHERE id = {person};')
@@ -264,19 +234,18 @@ class Data:
     def change_prefix(self, guild, new_prefix):
         cur = self.get_conn().cursor()
         cur.execute(f'DELETE FROM prefixes WHERE id = {guild};')
-        cur.execute(f'INSERT INTO prefixes VALUES (%s, %s);', (guild, new_prefix))
+        cur.execute('INSERT INTO prefixes VALUES (%s, %s);', (guild, new_prefix))
 
         self.conn.commit()
 
     def get_stats(self, person):
-        cur = self.get_conn().cursor()
-        cur.execute(f'SELECT * FROM stats WHERE id = {person};')
-        rows = cur.fetchall()
+        rows = self.execute(f'SELECT * FROM users WHERE id = %s;', (person))
         if len(rows) == 0:
             return 0, 0, 0
-        return rows[0][1], rows[0][2], rows[0][3]
+        return rows[0][2], rows[0][3], rows[0][4]
 
     def change_stats(self, person, lost, won, drew):
+        # TODO: fix this
         cur = self.get_conn().cursor()
         cur.execute(f'DELETE FROM stats WHERE id = {person};')
         cur.execute(
@@ -284,12 +253,10 @@ class Data:
         self.conn.commit()
 
     def total_games(self):
-        cur = self.get_conn().cursor()
-        cur.execute(f'SELECT * FROM stats;')
-        rows = cur.fetchall()
+        rows = self.execute('SELECT * FROM users;')
         ans = 0
         for row in rows:
-            ans += row[1] + row[2] + row[3]
+            ans += row[2] + row[3] + row[4]
         return ans // 2
 
     def delete_game(self, person, winner):
@@ -329,32 +296,19 @@ class Data:
         self.conn.commit()
 
     def get_theme(self, person):
-        cur = self.get_conn().cursor()
-        try:
-            cur.execute(f'SELECT * FROM themes WHERE id = {person};')
-            rows = cur.fetchall()
-        except sqlite3.OperationalError:
-            rows = []
-
+        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person))
         if len(rows) == 0:
-            cur.execute(f'SELECT * FROM settings WHERE id = {person}')
-            rows = cur.fetchall()
-            if len(rows) == 0:
-                return 'default'
-            return rows[0][1]
-        return rows[0][1]
+            return 'default'
+        return rows[0][5]
 
     def get_notifchannel(self, person):
-        cur = self.get_conn().cursor()
-        cur.execute(f'SELECT * FROM settings WHERE id = {person}')
-        rows = cur.fetchall()
-        if len(rows) == 0:
+        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person))
+        if len(rows) == 0 or rows[0][6] == -1:
             return None
-        if rows[0][2] == -1:
-            return None
-        return rows[0][2]
+        return rows[0][6]
 
     def change_settings(self, person, *, new_theme=None, new_notif=None):
+        # TODO: fix this
         cur = self.get_conn().cursor()
         cur.execute(f'SELECT * FROM settings WHERE id = {person}')
         rows = cur.fetchall()
@@ -372,6 +326,7 @@ class Data:
         self.conn.commit()
 
     def change_theme(self, person, new_theme):
+        # TODO: fix this
         cur = self.get_conn().cursor()
         cur.execute(f'DELETE FROM themes WHERE id = {person};')
         self.conn.commit()
