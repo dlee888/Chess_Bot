@@ -214,13 +214,10 @@ class Data:
         return ratings
 
     def change_rating(self, person, new_rating):
-        # TODO: fix this
-        cur = self.get_conn().cursor()
-
-        cur.execute(f'DELETE FROM ratings WHERE id = {person};')
-        cur.execute(f'INSERT INTO ratings VALUES ({person}, {new_rating});')
-
-        self.conn.commit()
+        if len(self.execute('SELECT * FROM users where id = %s', (person))) == 0:
+            self.execute('INSERT INTO users (id) VALUES (%s)', (person))
+        self.execute('UPDATE users SET rating = %s WHERE id = %s;',
+                     (new_rating, person))
 
     def get_prefix(self, guild):
         cur = self.get_conn().cursor()
@@ -234,23 +231,22 @@ class Data:
     def change_prefix(self, guild, new_prefix):
         cur = self.get_conn().cursor()
         cur.execute(f'DELETE FROM prefixes WHERE id = {guild};')
-        cur.execute('INSERT INTO prefixes VALUES (%s, %s);', (guild, new_prefix))
+        cur.execute('INSERT INTO prefixes VALUES (%s, %s);',
+                    (guild, new_prefix))
 
         self.conn.commit()
 
     def get_stats(self, person):
-        rows = self.execute(f'SELECT * FROM users WHERE id = %s;', (person))
+        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person))
         if len(rows) == 0:
             return 0, 0, 0
         return rows[0][2], rows[0][3], rows[0][4]
 
     def change_stats(self, person, lost, won, drew):
-        # TODO: fix this
-        cur = self.get_conn().cursor()
-        cur.execute(f'DELETE FROM stats WHERE id = {person};')
-        cur.execute(
-            f'INSERT INTO stats VALUES ({person}, {lost}, {won}, {drew});')
-        self.conn.commit()
+        if len(self.execute('SELECT * FROM users where id = %s', (person))) == 0:
+            self.execute('INSERT INTO users (id) VALUES (%s)', (person))
+        self.execute(
+            'UPDATE users SET lost = %s, won = %s, drew = %s WHERE id = %s', (lost, won, drew, person))
 
     def total_games(self):
         rows = self.execute('SELECT * FROM users;')
@@ -308,28 +304,16 @@ class Data:
         return rows[0][6]
 
     def change_settings(self, person, *, new_theme=None, new_notif=None):
-        # TODO: fix this
-        cur = self.get_conn().cursor()
-        cur.execute(f'SELECT * FROM settings WHERE id = {person}')
-        rows = cur.fetchall()
-        if len(rows) == 0:
-            row = ['default', -1]
-        else:
-            row = [i for i in rows[0][1:]]
+        if len(self.execute('SELECT * FROM users where id = %s', (person))) == 0:
+            self.execute('INSERT INTO users (id) VALUES (%s)', (person))
         if new_theme is not None:
-            row[0] = new_theme
+            self.execute(
+                'UPDATE users SET theme = %s WHERE id = %s', (new_theme, person))
         if new_notif is not None:
-            row[1] = new_notif
-        cur.execute(f'DELETE FROM settings WHERE id = {person}')
-        cur.execute('INSERT INTO settings VALUES (%s, %s, %s)',
-                    (person, row[0], row[1]))
-        self.conn.commit()
+            self.execute(
+                'UPDATE users SET notifchannel = %s WHERE id = %s', (new_notif, person))
 
     def change_theme(self, person, new_theme):
-        # TODO: fix this
-        cur = self.get_conn().cursor()
-        cur.execute(f'DELETE FROM themes WHERE id = {person};')
-        self.conn.commit()
         self.change_settings(person, new_theme=new_theme)
 
     def has_claimed(self, person):
