@@ -5,8 +5,8 @@ import sys
 import sqlite3
 import chess
 
+sys.path.insert(1, '/home/apple/bots/Chess_Bot')
 from Chess_Bot import constants
-
 
 class Game:
 
@@ -200,7 +200,7 @@ class Data:
         self.conn.commit()
 
     def get_rating(self, person):
-        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person))
+        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person,))
         if len(rows) == 0:
             return None
         return rows[0][1]
@@ -214,8 +214,8 @@ class Data:
         return ratings
 
     def change_rating(self, person, new_rating):
-        if len(self.execute('SELECT * FROM users where id = %s', (person))) == 0:
-            self.execute('INSERT INTO users (id) VALUES (%s)', (person))
+        if len(self.execute('SELECT * FROM users where id = %s', (person,))) == 0:
+            self.execute('INSERT INTO users (id) VALUES (%s)', (person,))
         self.execute('UPDATE users SET rating = %s WHERE id = %s;',
                      (new_rating, person))
 
@@ -237,14 +237,14 @@ class Data:
         self.conn.commit()
 
     def get_stats(self, person):
-        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person))
+        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person,))
         if len(rows) == 0:
             return 0, 0, 0
         return rows[0][2], rows[0][3], rows[0][4]
 
     def change_stats(self, person, lost, won, drew):
-        if len(self.execute('SELECT * FROM users where id = %s', (person))) == 0:
-            self.execute('INSERT INTO users (id) VALUES (%s)', (person))
+        if len(self.execute('SELECT * FROM users where id = %s', (person,))) == 0:
+            self.execute('INSERT INTO users (id) VALUES (%s)', (person,))
         self.execute(
             'UPDATE users SET lost = %s, won = %s, drew = %s WHERE id = %s', (lost, won, drew, person))
 
@@ -292,20 +292,20 @@ class Data:
         self.conn.commit()
 
     def get_theme(self, person):
-        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person))
+        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person,))
         if len(rows) == 0:
             return 'default'
         return rows[0][5]
 
     def get_notifchannel(self, person):
-        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person))
+        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person,))
         if len(rows) == 0 or rows[0][6] == -1:
             return None
         return rows[0][6]
 
     def change_settings(self, person, *, new_theme=None, new_notif=None):
-        if len(self.execute('SELECT * FROM users where id = %s', (person))) == 0:
-            self.execute('INSERT INTO users (id) VALUES (%s)', (person))
+        if len(self.execute('SELECT * FROM users where id = %s', (person,))) == 0:
+            self.execute('INSERT INTO users (id) VALUES (%s)', (person,))
         if new_theme is not None:
             self.execute(
                 'UPDATE users SET theme = %s WHERE id = %s', (new_theme, person))
@@ -341,4 +341,35 @@ class Data:
         self.conn.commit()
 
 
-data_manager = Data(os.getenv('DATABASE_URL'))
+data_manager = Data(os.getenv('NEW_DB_URL'))
+
+# Transfer data from old db
+if __name__ == '__main__':
+    old_data = Data(os.getenv('DATABASE_URL'))
+    games = old_data.get_games()
+    for game in games:
+        if isinstance(game, tuple):
+            data_manager.change_game(game[0], game[1])
+        else:
+            data_manager.change_game(None, game)
+    print('Games done')
+    ratings = old_data.execute('SELECT * FROM ratings;')
+    for rating in ratings:
+        data_manager.change_rating(rating[0], rating[1])
+    print('Ratings done')
+    prefixes = old_data.execute('SELECT * FROM prefixes;')
+    for row in prefixes:
+        data_manager.change_prefix(row[0], row[1])
+    print('Prefixes done')
+    themes = old_data.execute('SELECT * FROM themes;')
+    for row in themes:
+        data_manager.change_theme(row[0], row[1])
+    print('Themes done')
+    stats = old_data.execute('SELECT * FROM stats;')
+    for row in stats:
+        data_manager.change_stats(row[0], row[1], row[2], row[3])
+    print('Stats done')
+    settings = old_data.execute('SELECT * FROM settings;')
+    for row in settings:
+        data_manager.change_settings(row[0], new_theme=row[1], new_notif=row[2])
+    print('Settings done')
