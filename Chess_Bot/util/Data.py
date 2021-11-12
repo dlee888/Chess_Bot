@@ -257,7 +257,8 @@ class Data:
         rows = self.execute('SELECT * FROM users;')
         ans = 0
         for row in rows:
-            ans += row[2] + row[3] + row[4]
+            if row[2] is not None and row[3] is not None and row[4] is not None:
+                ans += row[2] + row[3] + row[4]
         return ans // 2
 
     def delete_game(self, person, winner):
