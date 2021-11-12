@@ -299,7 +299,7 @@ class Data:
 
     def get_theme(self, person):
         rows = self.execute('SELECT * FROM users WHERE id = %s;', (person,))
-        if len(rows) == 0:
+        if len(rows) == 0 or row[0][5] is None:
             return 'default'
         return rows[0][5]
 
