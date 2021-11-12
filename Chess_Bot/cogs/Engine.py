@@ -282,7 +282,7 @@ class Engine(commands.Cog):
         {
             "name": "challenge",
             "description": "Challenges somebody to a game of chess. Use `$challenge bot` to challenge a bot, or `$challenge user` to challenge another person.",
-            "usage": "$challenge",
+            "usage": "$challenge <bot/user> <person>",
             "examples": [
                 "$challenge bot cb1",
                 "$challenge bot sf3",
@@ -339,6 +339,7 @@ class Engine(commands.Cog):
                 game.black = botid
             data.data_manager.change_game(None, game)
             await ctx.send(f'Game started with {ProfileNames[bot].value}\nYou play the {whiteblack[color]} pieces.')
+            data.data_manager.change_settings(person, new_notif=ctx.channel.id)
         else:
             game = data.Game()
             game.color = random.randint(0, 1)
@@ -430,6 +431,8 @@ class Engine(commands.Cog):
                 title='Game started!', description=f'White: {await util2.get_name(game.white)}\nBlack: {await util2.get_name(game.black)}')
             embed.set_image(url='attachment://board.png')
             await challenge_msg.reply(f'<@{game.white}> <@{game.black}>', file=file, embed=embed)
+            data.data_manager.change_settings(game.white, new_notif=ctx.channel.id)
+            data.data_manager.change_settings(game.black, new_notif=ctx.channel.id)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)

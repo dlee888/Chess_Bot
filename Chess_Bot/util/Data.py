@@ -121,12 +121,17 @@ class Data:
         create_votes_table = ('CREATE TABLE IF NOT EXISTS votes ('
                               'id bigint NOT NULL PRIMARY KEY UNIQUE'
                               ');')
+        create_prefix_table = ('CREATE TABLE IF NOT EXISTS prefixes ('
+                               'id bigint NOT NULL PRIMARY KEY UNIQUE,'
+                               'prefix text'
+                               ');')
 
         cur = self.get_conn().cursor()
         cur.execute(create_games_table)
         cur.execute(create_games2_table)
         cur.execute(create_user_table)
         cur.execute(create_votes_table)
+        cur.execute(create_prefix_table)
 
     def get_conn(self):
         if not '-beta' in sys.argv and self.conn.closed:
@@ -342,34 +347,3 @@ class Data:
 
 
 data_manager = Data(os.getenv('NEW_DB_URL'))
-
-# Transfer data from old db
-if __name__ == '__main__':
-    old_data = Data(os.getenv('DATABASE_URL'))
-    games = old_data.get_games()
-    for game in games:
-        if isinstance(game, tuple):
-            data_manager.change_game(game[0], game[1])
-        else:
-            data_manager.change_game(None, game)
-    print('Games done')
-    ratings = old_data.execute('SELECT * FROM ratings;')
-    for rating in ratings:
-        data_manager.change_rating(rating[0], rating[1])
-    print('Ratings done')
-    prefixes = old_data.execute('SELECT * FROM prefixes;')
-    for row in prefixes:
-        data_manager.change_prefix(row[0], row[1])
-    print('Prefixes done')
-    themes = old_data.execute('SELECT * FROM themes;')
-    for row in themes:
-        data_manager.change_theme(row[0], row[1])
-    print('Themes done')
-    stats = old_data.execute('SELECT * FROM stats;')
-    for row in stats:
-        data_manager.change_stats(row[0], row[1], row[2], row[3])
-    print('Stats done')
-    settings = old_data.execute('SELECT * FROM settings;')
-    for row in settings:
-        data_manager.change_settings(row[0], new_theme=row[1], new_notif=row[2])
-    print('Settings done')
