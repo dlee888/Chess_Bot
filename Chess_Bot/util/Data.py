@@ -243,7 +243,7 @@ class Data:
 
     def get_stats(self, person):
         rows = self.execute('SELECT * FROM users WHERE id = %s;', (person,))
-        if len(rows) == 0:
+        if len(rows) == 0 or rows[0][2] is None:
             return 0, 0, 0
         return rows[0][2], rows[0][3], rows[0][4]
 
