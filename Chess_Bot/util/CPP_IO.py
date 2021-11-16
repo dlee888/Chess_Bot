@@ -65,6 +65,8 @@ async def run_engine(person):
         if result.resigned:
             return 'RESIGN', game
         else:
+            if result.move is None:
+                return None, None
             san = board.san_and_push(result.move)
             game.fen = board.fen(en_passant='fen')
             return san, game

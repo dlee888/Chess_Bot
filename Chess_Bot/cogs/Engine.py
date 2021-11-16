@@ -35,41 +35,47 @@ class Engine(commands.Cog):
         thonk = list(self.thonking.items())
         for person, task in thonk:
             if task.done():
-                move, game = task.result()
-                util2 = self.client.get_cog('Util')
-                self.thonking.pop(person)
-                board = chess.Board(game.fen)
-                if person == game.white:
-                    bot = game.black
-                else:
-                    bot = game.white
-                if board.is_game_over(claim_draw=True) or move == 'RESIGN':
-                    if move == 'RESIGN':
-                        old_rating, new_rating = util.update_rating(
-                            person, 1, bot)
-                        file, embed = util2.make_embed(person, title='Game over', description=f'It was in this position that {await util2.get_name(bot)} resigned the game.')
-                        await util2.send_notif(person, f'Chess Bot resigned.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})', file=file, embed=embed)
-                        data.data_manager.delete_game(person, not game.turn())
-                    elif board.is_checkmate():
-                        old_rating, new_rating = util.update_rating(
-                            person, 0, bot)
-                        data.data_manager.delete_game(person, not game.turn())
-                        await util2.send_notif(person, f'You lost.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
+                try:
+                    move, game = task.result()
+                    if move is None:
+                        continue
+                    util2 = self.client.get_cog('Util')
+                    self.thonking.pop(person)
+                    board = chess.Board(game.fen)
+                    if person == game.white:
+                        bot = game.black
                     else:
-                        old_rating, new_rating = util.update_rating(
-                            person, 1/2, bot)
-                        await util2.send_notif(person, f'Draw.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
-                        data.data_manager.delete_game(person, 69)
-                    continue
-                if person == game.white:
-                    game.last_moved = time.time()
-                    game.white_warned = False
-                else:
-                    game.last_moved = time.time()
-                    game.black_warned = False
-                data.data_manager.change_game(None, game)
-                file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(game.not_to_move())}', description=f'The bot has moved\n{move}')
-                await util2.send_notif(person, 'The bot has moved', file=file, embed=embed)
+                        bot = game.white
+                    if board.is_game_over(claim_draw=True) or move == 'RESIGN':
+                        if move == 'RESIGN':
+                            old_rating, new_rating = util.update_rating(
+                                person, 1, bot)
+                            file, embed = util2.make_embed(person, title='Game over', description=f'It was in this position that {await util2.get_name(bot)} resigned the game.')
+                            await util2.send_notif(person, f'Chess Bot resigned.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})', file=file, embed=embed)
+                            data.data_manager.delete_game(person, not game.turn())
+                        elif board.is_checkmate():
+                            old_rating, new_rating = util.update_rating(
+                                person, 0, bot)
+                            data.data_manager.delete_game(person, not game.turn())
+                            await util2.send_notif(person, f'You lost.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
+                        else:
+                            old_rating, new_rating = util.update_rating(
+                                person, 1/2, bot)
+                            await util2.send_notif(person, f'Draw.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
+                            data.data_manager.delete_game(person, 69)
+                        continue
+                    if person == game.white:
+                        game.last_moved = time.time()
+                        game.white_warned = False
+                    else:
+                        game.last_moved = time.time()
+                        game.black_warned = False
+                    data.data_manager.change_game(None, game)
+                    file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(game.not_to_move())}', description=f'The bot has moved\n{move}')
+                    await util2.send_notif(person, 'The bot has moved', file=file, embed=embed)
+                except Exception as e:
+                    print('Error in run_engine:')
+                    print(e)
 
     @run_engine.before_loop
     @output_result.before_loop
