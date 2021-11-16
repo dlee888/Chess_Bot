@@ -52,11 +52,13 @@ class Engine(commands.Cog):
                                 person, 1, bot)
                             file, embed = util2.make_embed(person, title='Game over', description=f'It was in this position that {await util2.get_name(bot)} resigned the game.')
                             await util2.send_notif(person, f'Chess Bot resigned.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})', file=file, embed=embed)
-                            data.data_manager.delete_game(person, not game.turn())
+                            data.data_manager.delete_game(
+                                person, not game.turn())
                         elif board.is_checkmate():
                             old_rating, new_rating = util.update_rating(
                                 person, 0, bot)
-                            data.data_manager.delete_game(person, not game.turn())
+                            data.data_manager.delete_game(
+                                person, not game.turn())
                             await util2.send_notif(person, f'You lost.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
                         else:
                             old_rating, new_rating = util.update_rating(
@@ -250,10 +252,10 @@ class Engine(commands.Cog):
                 embed.set_image(url='attachment://board.png')
                 await ctx.send(embed=embed, file=file)
 
-                file1, embed1 = util2.make_embed(
-                    title=f'Your game has ended', description=f'Draw.\nYour new rating is {round(data.data_manager.get_rating(game.white))} ({white_delta})')
-                file2, embed2 = util2.make_embed(
-                    title=f'Your game has ended', description=f'Draw.\nYour new rating is {round(data.data_manager.get_rating(game.black))} ({black_delta})')
+                file1, embed1 = util2.make_embed(game.white, title=f'Your game has ended',
+                                                 description=f'Draw.\nYour new rating is {round(data.data_manager.get_rating(game.white))} ({white_delta})')
+                file2, embed2 = util2.make_embed(game.black, title=f'Your game has ended',
+                                                 description=f'Draw.\nYour new rating is {round(data.data_manager.get_rating(game.black))} ({black_delta})')
                 await util2.send_notif(game.white, file=file1, embed=embed1)
                 await util2.send_notif(game.black, file=file2, embed=embed2)
 
@@ -437,8 +439,10 @@ class Engine(commands.Cog):
                 title='Game started!', description=f'White: {await util2.get_name(game.white)}\nBlack: {await util2.get_name(game.black)}')
             embed.set_image(url='attachment://board.png')
             await challenge_msg.reply(f'<@{game.white}> <@{game.black}>', file=file, embed=embed)
-            data.data_manager.change_settings(game.white, new_notif=ctx.channel.id)
-            data.data_manager.change_settings(game.black, new_notif=ctx.channel.id)
+            data.data_manager.change_settings(
+                game.white, new_notif=ctx.channel.id)
+            data.data_manager.change_settings(
+                game.black, new_notif=ctx.channel.id)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
