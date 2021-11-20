@@ -41,7 +41,8 @@ class Engine(commands.Cog):
         for person, task in thonk:
             if task.done():
                 try:
-                    if data.data_manager.get_game(person) is None: # Person resigned while bot was thinking
+                    # Person resigned while bot was thinking
+                    if data.data_manager.get_game(person) is None:
                         continue
                     move, game = task.result()
                     if move is None:
@@ -128,10 +129,12 @@ class Engine(commands.Cog):
         if person != game.to_move():
             await ctx.send(f'It is not your turn!')
             return
+
         move = game.parse_move(move)
         if move is None:
             await ctx.send('Illegal move played. Make sure your move is in SAN or UCI notation.\nUse `$help move` for more info.')
             return
+        board.push(move)
         game.last_moved = time.time()
         game.warned = False
         game.fen = board.fen(en_passant='fen')
@@ -191,10 +194,12 @@ class Engine(commands.Cog):
         if person != game.to_move():
             await ctx.send(f'It is not your turn!')
             return
+
         move = game.parse_move(move)
         if move is None:
             await ctx.send('Illegal move played. Make sure your move is in SAN or UCI notation.\nUse `$help move` for more info.')
             return
+        board.push(move)
         game.last_moved = time.time()
         game.warned = False
         game.fen = board.fen(en_passant='fen')
