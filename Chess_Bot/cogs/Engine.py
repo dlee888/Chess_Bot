@@ -176,7 +176,7 @@ class Engine(commands.Cog):
         create_option(name='move', description='What move you want to make',
                       option_type=SlashCommandOptionType.STRING, required=True)
     ])
-    async def move(self, ctx, move):
+    async def _move(self, ctx, move):
         person = ctx.author.id
         game = data.data_manager.get_game(person)
 
