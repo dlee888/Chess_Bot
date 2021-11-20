@@ -81,7 +81,7 @@ async def on_command_error(ctx, exc):
                f'Request: {ctx.message.content}\n'
                f'{exc}, {type(exc)}'
                f'```\n{traceback_text}\n```')
-    print(msg)
+    logging.error(msg)
 
     if await util.has_roles(ctx.author.id, ['Debugger', 'Tester', 'Mooderator'], bot):
         try:
