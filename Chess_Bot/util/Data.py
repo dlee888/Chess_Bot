@@ -5,8 +5,8 @@ import sys
 import sqlite3
 import chess
 
+sys.path.insert(1, '/home/apple/bots/Chess_Bot')
 from Chess_Bot import constants
-
 
 class Game:
 
@@ -121,12 +121,17 @@ class Data:
         create_votes_table = ('CREATE TABLE IF NOT EXISTS votes ('
                               'id bigint NOT NULL PRIMARY KEY UNIQUE'
                               ');')
+        create_prefix_table = ('CREATE TABLE IF NOT EXISTS prefixes ('
+                               'id bigint NOT NULL PRIMARY KEY UNIQUE,'
+                               'prefix text'
+                               ');')
 
         cur = self.get_conn().cursor()
         cur.execute(create_games_table)
         cur.execute(create_games2_table)
         cur.execute(create_user_table)
         cur.execute(create_votes_table)
+        cur.execute(create_prefix_table)
 
     def get_conn(self):
         if not '-beta' in sys.argv and self.conn.closed:
@@ -200,7 +205,7 @@ class Data:
         self.conn.commit()
 
     def get_rating(self, person):
-        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person))
+        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person,))
         if len(rows) == 0:
             return None
         return rows[0][1]
@@ -214,8 +219,8 @@ class Data:
         return ratings
 
     def change_rating(self, person, new_rating):
-        if len(self.execute('SELECT * FROM users where id = %s', (person))) == 0:
-            self.execute('INSERT INTO users (id) VALUES (%s)', (person))
+        if len(self.execute('SELECT * FROM users where id = %s', (person,))) == 0:
+            self.execute('INSERT INTO users (id) VALUES (%s)', (person,))
         self.execute('UPDATE users SET rating = %s WHERE id = %s;',
                      (new_rating, person))
 
@@ -237,14 +242,14 @@ class Data:
         self.conn.commit()
 
     def get_stats(self, person):
-        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person))
-        if len(rows) == 0:
+        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person,))
+        if len(rows) == 0 or rows[0][2] is None:
             return 0, 0, 0
         return rows[0][2], rows[0][3], rows[0][4]
 
     def change_stats(self, person, lost, won, drew):
-        if len(self.execute('SELECT * FROM users where id = %s', (person))) == 0:
-            self.execute('INSERT INTO users (id) VALUES (%s)', (person))
+        if len(self.execute('SELECT * FROM users where id = %s', (person,))) == 0:
+            self.execute('INSERT INTO users (id) VALUES (%s)', (person,))
         self.execute(
             'UPDATE users SET lost = %s, won = %s, drew = %s WHERE id = %s', (lost, won, drew, person))
 
@@ -252,7 +257,8 @@ class Data:
         rows = self.execute('SELECT * FROM users;')
         ans = 0
         for row in rows:
-            ans += row[2] + row[3] + row[4]
+            if row[2] is not None and row[3] is not None and row[4] is not None:
+                ans += row[2] + row[3] + row[4]
         return ans // 2
 
     def delete_game(self, person, winner):
@@ -292,20 +298,20 @@ class Data:
         self.conn.commit()
 
     def get_theme(self, person):
-        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person))
-        if len(rows) == 0:
+        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person,))
+        if len(rows) == 0 or rows[0][5] is None:
             return 'default'
         return rows[0][5]
 
     def get_notifchannel(self, person):
-        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person))
+        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person,))
         if len(rows) == 0 or rows[0][6] == -1:
             return None
         return rows[0][6]
 
     def change_settings(self, person, *, new_theme=None, new_notif=None):
-        if len(self.execute('SELECT * FROM users where id = %s', (person))) == 0:
-            self.execute('INSERT INTO users (id) VALUES (%s)', (person))
+        if len(self.execute('SELECT * FROM users where id = %s', (person,))) == 0:
+            self.execute('INSERT INTO users (id) VALUES (%s)', (person,))
         if new_theme is not None:
             self.execute(
                 'UPDATE users SET theme = %s WHERE id = %s', (new_theme, person))
@@ -341,4 +347,4 @@ class Data:
         self.conn.commit()
 
 
-data_manager = Data(os.getenv('DATABASE_URL'))
+data_manager = Data(os.getenv('NEW_DB_URL'))

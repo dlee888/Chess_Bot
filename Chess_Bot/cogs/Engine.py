@@ -1,17 +1,22 @@
 from discord.ext import commands
 from discord.ext import tasks
 
+from discord_slash import SlashContext
+from discord_slash import cog_ext
+from discord_slash.model import SlashCommandOptionType
+from discord_slash.utils.manage_commands import create_option
+
 import random
 import time
 from typing import Union
 import asyncio
 import json
+import logging
 
 import Chess_Bot.util.Data as data
 import Chess_Bot.util.Utility as util
 from Chess_Bot.util.CPP_IO import *
 from Chess_Bot.cogs.Profiles import Profile, ProfileNames
-from Chess_Bot import constants
 
 
 class Engine(commands.Cog):
@@ -35,41 +40,51 @@ class Engine(commands.Cog):
         thonk = list(self.thonking.items())
         for person, task in thonk:
             if task.done():
-                move, game = task.result()
-                util2 = self.client.get_cog('Util')
-                self.thonking.pop(person)
-                board = chess.Board(game.fen)
-                if person == game.white:
-                    bot = game.black
-                else:
-                    bot = game.white
-                if board.is_game_over(claim_draw=True) or move == 'RESIGN':
-                    if move == 'RESIGN':
-                        old_rating, new_rating = util.update_rating(
-                            person, 1, bot)
-                        file, embed = util2.make_embed(person, title='Game over', description=f'It was in this position that {await util2.get_name(bot)} resigned the game.')
-                        await util2.send_notif(person, f'Chess Bot resigned.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})', file=file, embed=embed)
-                        data.data_manager.delete_game(person, not game.turn())
-                    elif board.is_checkmate():
-                        old_rating, new_rating = util.update_rating(
-                            person, 0, bot)
-                        data.data_manager.delete_game(person, not game.turn())
-                        await util2.send_notif(person, f'You lost.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
+                try:
+                    # Person resigned while bot was thinking
+                    if data.data_manager.get_game(person) is None:
+                        continue
+                    move, game = task.result()
+                    if move is None:
+                        continue
+                    util2 = self.client.get_cog('Util')
+                    self.thonking.pop(person)
+                    board = chess.Board(game.fen)
+                    if person == game.white:
+                        bot = game.black
                     else:
-                        old_rating, new_rating = util.update_rating(
-                            person, 1/2, bot)
-                        await util2.send_notif(person, f'Draw.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
-                        data.data_manager.delete_game(person, 69)
-                    continue
-                if person == game.white:
-                    game.last_moved = time.time()
-                    game.white_warned = False
-                else:
-                    game.last_moved = time.time()
-                    game.black_warned = False
-                data.data_manager.change_game(None, game)
-                file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(game.not_to_move())}', description=f'The bot has moved\n{move}')
-                await util2.send_notif(person, 'The bot has moved', file=file, embed=embed)
+                        bot = game.white
+                    if board.is_game_over(claim_draw=True) or move == 'RESIGN':
+                        if move == 'RESIGN':
+                            old_rating, new_rating = util.update_rating(
+                                person, 1, bot)
+                            file, embed = util2.make_embed(person, title='Game over', description=f'It was in this position that {await util2.get_name(bot)} resigned the game.')
+                            await util2.send_notif(person, f'Chess Bot resigned.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})', file=file, embed=embed)
+                            data.data_manager.delete_game(
+                                person, not game.turn())
+                        elif board.is_checkmate():
+                            old_rating, new_rating = util.update_rating(
+                                person, 0, bot)
+                            data.data_manager.delete_game(
+                                person, not game.turn())
+                            await util2.send_notif(person, f'You lost.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
+                        else:
+                            old_rating, new_rating = util.update_rating(
+                                person, 1/2, bot)
+                            await util2.send_notif(person, f'Draw.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
+                            data.data_manager.delete_game(person, 69)
+                        continue
+                    if person == game.white:
+                        game.last_moved = time.time()
+                        game.white_warned = False
+                    else:
+                        game.last_moved = time.time()
+                        game.black_warned = False
+                    data.data_manager.change_game(None, game)
+                    file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(game.not_to_move())}', description=f'The bot has moved\n{move}')
+                    await util2.send_notif(person, 'The bot has moved', file=file, embed=embed)
+                except Exception as e:
+                    logging.error(f'Error in run_engine:\n{e}')
 
     @run_engine.before_loop
     @output_result.before_loop
@@ -108,172 +123,119 @@ class Engine(commands.Cog):
             await ctx.send('Tip: Trying to resign? You can also use the `$resign` command.')
             return
 
-        if isinstance(game, data.Game):
-            if person in util.thonking:
-                await ctx.send('Chess Bot is already thinking')
-                return
+        board = chess.Board(game.fen)
+        util2 = self.client.get_cog('Util')
 
-            board = chess.Board(game.fen)
-            try:
-                board.push_san(move)
-            except ValueError:
-                try:
-                    board.push_uci(move)
-                except ValueError:
-                    await ctx.send('Illegal move played. Make sure your move is in SAN or UCI notation.\nUse `$help move` for more info.')
-                    return
-            if board.is_checkmate():
-                if board.turn == chess.WHITE and game.color == 0 or board.turn == chess.BLACK and game.color == 1:
-                    old_rating, new_rating = util.update_rating(
-                        ctx.author.id, 1, game.bot)
-                    data.data_manager.delete_game(person, True)
-                    await ctx.send('You won!')
-                elif board.turn == chess.WHITE and game.color == 1 or board.turn == chess.BLACK and game.color == 0:
-                    old_rating, new_rating = util.update_rating(
-                        ctx.author.id, 0, game.bot)
-                    data.data_manager.delete_game(person, False)
-                    await ctx.send('You lost.')
+        if person != game.to_move():
+            await ctx.send(f'It is not your turn!')
+            return
 
-                await ctx.send(f'Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
-                return
-            elif board.can_claim_draw():
-                old_rating, new_rating = util.update_rating(
-                    ctx.author.id, 1/2, game.bot)
-                await ctx.send('Draw')
-                data.data_manager.delete_game(person, None)
+        move = game.parse_move(move)
+        if move is None:
+            await ctx.send('Illegal move played. Make sure your move is in SAN or UCI notation.\nUse `$help move` for more info.')
+            return
+        board.push(move)
+        game.last_moved = time.time()
+        game.warned = False
+        game.fen = board.fen(en_passant='fen')
+        data.data_manager.change_game(person, game)
 
-                await ctx.send(f'Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
-                return
+        file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(game.to_move())}', description='You have moved.')
+        await ctx.message.reply(file=file, embed=embed)
 
-            game.fen = board.fen(en_passant='fen')
-            data.data_manager.change_game(person, game)
+        if board.is_checkmate():
+            white_delta, black_delta = util.update_rating2(
+                game.white, game.black, 0 if board.turn == chess.BLACK else 1)
 
-            thonk = self.client.get_emoji(constants.THONK_EMOJI_ID)
-            await ctx.message.add_reaction(thonk)
-            util.thonking.append(person)
+            file1, embed1 = util2.make_embed(game.white, title='Your game has ended',
+                                             description=f'{whiteblack[not board.turn].capitalize()} won by checkmate.\nYour new rating is {round(data.data_manager.get_rating(game.white))} ({white_delta})')
+            file2, embed2 = util2.make_embed(game.black, title='Your game has ended',
+                                             description=f'{whiteblack[not board.turn].capitalize()} won by checkmate.\nYour new rating is {round(data.data_manager.get_rating(game.black))} ({black_delta})')
 
-            move, game = await run_engine(person)
-            # If person resigned while bot was thinking
-            if data.data_manager.get_game(person) is None:
-                return
-            game.last_moved = time.time()
-            game.warned = False
-            data.data_manager.change_game(person, game)
+            await util2.send_notif(game.white, file=file1, embed=embed1)
+            await util2.send_notif(game.black, file=file2, embed=embed2)
 
-            await output_move(ctx, person, move)
-            await log(person, self.client, ctx)
-            if person in util.thonking:
-                util.thonking.remove(person)
+            data.data_manager.delete_game(game.white, not board.turn)
+        elif board.can_claim_draw():
+            white_delta, black_delta = util.update_rating2(
+                game.white, game.black, 1/2)
 
-            board = chess.Board(game.fen)
-            if board.is_game_over(claim_draw=True) or move == 'RESIGN':
-                if move == 'RESIGN':
-                    await ctx.send('Chess Bot resigned')
-                    old_rating, new_rating = util.update_rating(
-                        ctx.author.id, 1, game.bot)
-                    data.data_manager.delete_game(person, True)
-                elif board.is_checkmate():
-                    if board.turn == chess.WHITE and game.color == 0 or board.turn == chess.BLACK and game.color == 1:
-                        old_rating, new_rating = util.update_rating(
-                            ctx.author.id, 1, game.bot)
-                        data.data_manager.delete_game(person, True)
-                        await ctx.send('You won!')
-                    elif board.turn == chess.WHITE and game.color == 1 or board.turn == chess.BLACK and game.color == 0:
-                        old_rating, new_rating = util.update_rating(
-                            ctx.author.id, 0, game.bot)
-                        data.data_manager.delete_game(person, False)
-                        await ctx.send('You lost.')
-                else:
-                    old_rating, new_rating = util.update_rating(
-                        ctx.author.id, 1/2, game.bot)
-                    await ctx.send('Draw')
-                    data.data_manager.delete_game(person, None)
+            file1, embed1 = util2.make_embed(game.white, title=f'Your game has ended',
+                                             description=f'Draw.\nYour new rating is {round(data.data_manager.get_rating(game.white))} ({white_delta})')
+            file2, embed2 = util2.make_embed(game.black, title=f'Your game has ended',
+                                             description=f'Draw.\nYour new rating is {round(data.data_manager.get_rating(game.black))} ({black_delta})')
+            await util2.send_notif(game.white, file=file1, embed=embed1)
+            await util2.send_notif(game.black, file=file2, embed=embed2)
 
-                await ctx.send(f'Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
-        elif isinstance(game, data.Game2):
-            board = chess.Board(game.fen)
-            color = chess.WHITE if person == game.white else chess.BLACK
-            util2 = self.client.get_cog('Util')
+            data.data_manager.delete_game(game.white, 69)
+        else:
+            file, embed = util2.make_embed(game.to_move(), title=f'Your game with {await util2.get_name(person)}', description='It is your turn')
+            await util2.send_notif(game.black, embed=embed, file=file)
 
-            if board.turn != color:
-                await ctx.send(f'It is not your turn!')
-                return
-            try:
-                board.push_san(move)
-            except ValueError:
-                try:
-                    board.push_uci(move)
-                except ValueError:
-                    await ctx.send('Illegal move played. Make sure your move is in SAN or UCI notation.\nUse `$help move` for more info.')
-                    return
-            if color == chess.WHITE:
-                game.last_moved = time.time()
-                game.white_warned = False
-            else:
-                game.last_moved = time.time()
-                game.black_warned = False
-            game.fen = board.fen(en_passant='fen')
-            data.data_manager.change_game(person, game)
-            if board.is_checkmate():
-                white_delta, black_delta = util.update_rating2(
-                    game.white, game.black, 0 if board.turn == chess.BLACK else 1)
-                embed = discord.Embed(
-                    title=f'{ctx.author}\'s game', description=f'{whiteblack[not board.turn].capitalize()} won by checkmate.')
-                path = get_image2(person, color)
-                file = discord.File(path, filename='board.png')
-                embed.set_image(url='attachment://board.png')
-                await ctx.send(embed=embed, file=file)
+    @cog_ext.cog_slash(name='move', description='Make a move in your game.', options=[
+        create_option(name='move', description='What move you want to make',
+                      option_type=SlashCommandOptionType.STRING, required=True)
+    ])
+    async def _move(self, ctx, move):
+        person = ctx.author.id
+        game = data.data_manager.get_game(person)
 
-                file1, embed1 = util2.make_embed(
-                    game.white, title='Your game has ended', description=f'{whiteblack[not board.turn].capitalize()} won by checkmate.\nYour new rating is {round(data.data_manager.get_rating(game.white))} ({white_delta})')
-                file2, embed2 = util2.make_embed(
-                    game.black, title='Your game has ended', description=f'{whiteblack[not board.turn].capitalize()} won by checkmate.\nYour new rating is {round(data.data_manager.get_rating(game.black))} ({black_delta})')
+        if game == None:
+            await ctx.send('You do not have a game in progress.')
+            return
+        if 'resign' == move.lower():
+            await self.resign(ctx)
+            await ctx.send('Tip: Trying to resign? You can also use the `$resign` command.')
+            return
 
-                await util2.send_notif(game.white, file=file1, embed=embed1)
-                await util2.send_notif(game.black, file=file2, embed=embed2)
+        board = chess.Board(game.fen)
+        util2 = self.client.get_cog('Util')
 
-                data.data_manager.delete_game(game.white, not board.turn)
-                return
-            elif board.can_claim_draw():
-                white_delta, black_delta = util.update_rating2(
-                    game.white, game.black, 1/2)
-                embed = discord.Embed(
-                    title=f'{ctx.author}\'s game', description=f'Draw.')
-                path = get_image2(person, color)
-                file = discord.File(path, filename='board.png')
-                embed.set_image(url='attachment://board.png')
-                await ctx.send(embed=embed, file=file)
+        if person != game.to_move():
+            await ctx.send(f'It is not your turn!')
+            return
 
-                file1, embed1 = util2.make_embed(
-                    title=f'Your game has ended', description=f'Draw.\nYour new rating is {round(data.data_manager.get_rating(game.white))} ({white_delta})')
-                file2, embed2 = util2.make_embed(
-                    title=f'Your game has ended', description=f'Draw.\nYour new rating is {round(data.data_manager.get_rating(game.black))} ({black_delta})')
-                await util2.send_notif(game.white, file=file1, embed=embed1)
-                await util2.send_notif(game.black, file=file2, embed=embed2)
+        move = game.parse_move(move)
+        if move is None:
+            await ctx.send('Illegal move played. Make sure your move is in SAN or UCI notation.\nUse `$help move` for more info.')
+            return
+        board.push(move)
+        game.last_moved = time.time()
+        game.warned = False
+        game.fen = board.fen(en_passant='fen')
+        data.data_manager.change_game(person, game)
 
-                data.data_manager.delete_game(game.white, 69)
-                return
+        file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(game.to_move())}', description='You have moved.')
+        await ctx.send(file=file, embed=embed)
 
-            game.fen = board.fen(en_passant='fen')
-            if color == chess.WHITE:
-                game.last_moved = time.time()
-                game.white_warned = False
-                data.data_manager.change_game(person, game)
-                file, embed = util2.make_embed(game.white, title=f'Your game with {await util2.get_name(game.black)}', description='You have moved.')
-                await ctx.message.reply(file=file, embed=embed)
+        if board.is_checkmate():
+            white_delta, black_delta = util.update_rating2(
+                game.white, game.black, 0 if board.turn == chess.BLACK else 1)
 
-                file, embed = util2.make_embed(game.black, title=f'Your game with {await util2.get_name(game.white)}', description='It is your turn')
-                await util2.send_notif(game.black, embed=embed, file=file)
-            else:
-                game.last_moved = time.time()
-                game.black_warned = False
-                data.data_manager.change_game(person, game)
+            file1, embed1 = util2.make_embed(game.white, title='Your game has ended',
+                                             description=f'{whiteblack[not board.turn].capitalize()} won by checkmate.\nYour new rating is {round(data.data_manager.get_rating(game.white))} ({white_delta})')
+            file2, embed2 = util2.make_embed(game.black, title='Your game has ended',
+                                             description=f'{whiteblack[not board.turn].capitalize()} won by checkmate.\nYour new rating is {round(data.data_manager.get_rating(game.black))} ({black_delta})')
 
-                file, embed = util2.make_embed(game.black, title=f'Your game with {await util2.get_name(game.white)}', description='You have moved.')
-                await ctx.message.reply(file=file, embed=embed)
+            await util2.send_notif(game.white, file=file1, embed=embed1)
+            await util2.send_notif(game.black, file=file2, embed=embed2)
 
-                file, embed = util2.make_embed(game.white, title=f'Your game with {await util2.get_name(game.black)}', description='It is your turn')
-                await util2.send_notif(game.white, embed=embed, file=file)
+            data.data_manager.delete_game(game.white, not board.turn)
+        elif board.can_claim_draw():
+            white_delta, black_delta = util.update_rating2(
+                game.white, game.black, 1/2)
+
+            file1, embed1 = util2.make_embed(game.white, title=f'Your game has ended',
+                                             description=f'Draw.\nYour new rating is {round(data.data_manager.get_rating(game.white))} ({white_delta})')
+            file2, embed2 = util2.make_embed(game.black, title=f'Your game has ended',
+                                             description=f'Draw.\nYour new rating is {round(data.data_manager.get_rating(game.black))} ({black_delta})')
+            await util2.send_notif(game.white, file=file1, embed=embed1)
+            await util2.send_notif(game.black, file=file2, embed=embed2)
+
+            data.data_manager.delete_game(game.white, 69)
+        else:
+            file, embed = util2.make_embed(game.to_move(), title=f'Your game with {await util2.get_name(person)}', description='It is your turn')
+            await util2.send_notif(game.black, embed=embed, file=file)
 
     @commands.group(invoke_without_command=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
@@ -282,7 +244,7 @@ class Engine(commands.Cog):
         {
             "name": "challenge",
             "description": "Challenges somebody to a game of chess. Use `$challenge bot` to challenge a bot, or `$challenge user` to challenge another person.",
-            "usage": "$challenge",
+            "usage": "$challenge <bot/user> <person>",
             "examples": [
                 "$challenge bot cb1",
                 "$challenge bot sf3",
@@ -327,43 +289,17 @@ class Engine(commands.Cog):
             await ctx.send(f'"{bot}" is not the valid tag of a bot. Use `$profiles` to see which bots you can challenge.')
             return
 
-        if True:
-            # EXPERIMENTAL
-            game = data.Game2()
-            color = random.randint(0, 1)
-            if color == 0:
-                game.white = botid
-                game.black = person
-            else:
-                game.white = person
-                game.black = botid
-            data.data_manager.change_game(None, game)
-            await ctx.send(f'Game started with {ProfileNames[bot].value}\nYou play the {whiteblack[color]} pieces.')
+        game = data.Game2()
+        color = random.randint(0, 1)
+        if color == 0:
+            game.white = botid
+            game.black = person
         else:
-            game = data.Game()
-            game.color = random.randint(0, 1)
-            game.bot = botid
-
-            data.data_manager.change_game(person, game)
-
-            await ctx.send(f'Game started with {ProfileNames[bot].value}\nYou play the {whiteblack[game.color]} pieces.')
-
-            move = None
-            if game.color == 0:
-                thonk = self.client.get_emoji(constants.THONK_EMOJI_ID)
-                await ctx.message.add_reaction(thonk)
-                util.thonking.append(person)
-
-                move, game = await run_engine(person)
-                await log(person, self.client, ctx)
-                if person in util.thonking:
-                    util.thonking.remove(person)
-                data.data_manager.change_game(person, game)
-
-            await output_move(ctx, person, move)
-            game.last_moved = time.time()
-            game.warned = False
-            data.data_manager.change_game(person, game)
+            game.white = person
+            game.black = botid
+        data.data_manager.change_game(None, game)
+        await ctx.send(f'Game started with {ProfileNames[bot].value}\nYou play the {whiteblack[color]} pieces.')
+        data.data_manager.change_settings(person, new_notif=ctx.channel.id)
 
     @challenge.command(aliases=['person'])
     async def user(self, ctx, person: Union[discord.Member, discord.User]):
@@ -408,28 +344,34 @@ class Engine(commands.Cog):
             reaction, user = await self.client.wait_for('reaction_add', timeout=600.0, check=check)
         except asyncio.TimeoutError:
             await challenge_msg.reply('Challenge timed out!')
+            return
+        except discord.HTTPException:
+            pass
+        if str(reaction.emoji) == '❌':
+            await challenge_msg.reply('Challenge declined / withdrawn')
+            return
+
+        if data.data_manager.get_game(ctx.author.id) is not None or data.data_manager.get_game(person.id) is not None:
+            await challenge_msg.reply('Challenge failed. One of the people already has a game in progress.')
+
+        game = data.Game2()
+        if random.randint(0, 1) == 0:
+            game.white = ctx.author.id
+            game.black = person.id
         else:
-            if str(reaction.emoji) == '❌':
-                await challenge_msg.reply('Challenge declined / withdrawn')
-                return
-
-            if data.data_manager.get_game(ctx.author.id) is not None or data.data_manager.get_game(person.id) is not None:
-                await challenge_msg.reply('Challenge failed. One of the people already has a game in progress.')
-
-            game = data.Game2()
-            if random.randint(0, 1) == 0:
-                game.white = ctx.author.id
-                game.black = person.id
-            else:
-                game.white = person.id
-                game.black = ctx.author.id
-            data.data_manager.change_game(None, game)
-            path = get_image2(ctx.author.id)
-            file = discord.File(path, filename='board.png')
-            embed = discord.Embed(
-                title='Game started!', description=f'White: {await util2.get_name(game.white)}\nBlack: {await util2.get_name(game.black)}')
-            embed.set_image(url='attachment://board.png')
-            await challenge_msg.reply(f'<@{game.white}> <@{game.black}>', file=file, embed=embed)
+            game.white = person.id
+            game.black = ctx.author.id
+        data.data_manager.change_game(None, game)
+        path = get_image2(ctx.author.id)
+        file = discord.File(path, filename='board.png')
+        embed = discord.Embed(
+            title='Game started!', description=f'White: {await util2.get_name(game.white)}\nBlack: {await util2.get_name(game.black)}')
+        embed.set_image(url='attachment://board.png')
+        await challenge_msg.reply(f'<@{game.white}> <@{game.black}>', file=file, embed=embed)
+        data.data_manager.change_settings(
+            game.white, new_notif=ctx.channel.id)
+        data.data_manager.change_settings(
+            game.black, new_notif=ctx.channel.id)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)

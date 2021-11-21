@@ -68,6 +68,8 @@ class Mooderation(commands.Cog):
             await bot.edit(nick=f'[{new_prefix}] - Chess Bot')
         except discord.Forbidden:
             await ctx.send(f'Changing nickname to "[{new_prefix}] - Chess Bot" failed. Missing permissions')
+        except discord.HTTPException:
+            pass
 
     @commands.command(hidden=True)
     @commands.cooldown(1, 3, commands.BucketType.user)

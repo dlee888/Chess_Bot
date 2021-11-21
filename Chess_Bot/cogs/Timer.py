@@ -107,15 +107,15 @@ class Timer(commands.Cog):
             elif isinstance(game, data.Game2):
                 if game.to_move() == chess.WHITE:
                     time_left = game.time_left()
-                    if time_left < constants.LOW_TIME_WARN and not game.white_warned:
+                    if time_left < constants.LOW_TIME_WARN and not game.warned:
                         await self.send_low_time_warning(game.white)
-                        game.white_warned = True
+                        game.warned = True
                         data.data_manager.change_game(None, game)
                 else:
                     time_left = game.time_left()
-                    if time_left < constants.LOW_TIME_WARN and not game.black_warned:
+                    if time_left < constants.LOW_TIME_WARN and not game.warned:
                         await self.send_low_time_warning(game.black)
-                        game.black_warned = True
+                        game.warned = True
                         data.data_manager.change_game(None, game)
 
     @tasks.loop(seconds=10)

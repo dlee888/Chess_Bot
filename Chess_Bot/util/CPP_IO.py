@@ -55,16 +55,18 @@ async def run_engine(person):
                 game.fen = out[i][6:].strip()
                 break
         return move, game
-    elif game.bot in all_sf:
+    elif bot in all_sf:
         transport, engine = await chess.engine.popen_uci("./stockfish")
         board = chess.Board(game.fen)
         skill = [1, 4, 8, 20]
         times = [0.2, 0.5, 1, 2]
-        result = await engine.play(board, chess.engine.Limit(time=times[game.bot - Profile.sf1.value]), options={"Skill Level": skill[game.bot - Profile.sf1.value]})
+        result = await engine.play(board, chess.engine.Limit(time=times[bot - Profile.sf1.value]), options={"Skill Level": skill[bot - Profile.sf1.value]})
         await engine.quit()
         if result.resigned:
             return 'RESIGN', game
         else:
+            if result.move is None:
+                return None, None
             san = board.san_and_push(result.move)
             game.fen = board.fen(en_passant='fen')
             return san, game

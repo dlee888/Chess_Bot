@@ -132,10 +132,7 @@ def get_image2(person, pov=None):
     board = str(chess.Board(game.fen)).split('\n')
     path = os.path.join(constants.TEMP_DIR, f'image-{person}.png')
     if pov is None:
-        if game.white == person:
-            pov = chess.WHITE
-        else:
-            pov = chess.BLACK
+        pov = game.get_color(person)
 
     result = Image.open(os.path.join(constants.ASSETS_DIR, 'blank_board.png'))
     result = result.resize((400, 400))
