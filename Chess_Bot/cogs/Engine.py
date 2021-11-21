@@ -420,6 +420,39 @@ class Engine(commands.Cog):
             data.data_manager.delete_game(
                 ctx.author.id, chess.WHITE if ctx.author.id == game.black else chess.BLACK)
 
+    @cog_ext.cog_slash(name='resign', description='Resigns your game.', options=[])
+    async def _resign(self, ctx):
+        game = data.data_manager.get_game(ctx.author.id)
+
+        if game is None:
+            await ctx.send('You do not have a game in progress')
+            return
+
+        if isinstance(game, data.Game):
+            data.data_manager.delete_game(ctx.author.id, False)
+            if ctx.author.id in util.thonking:
+                util.thonking.remove(ctx.author.id)
+
+            old_rating, new_rating = util.update_rating(
+                ctx.author.id, 0, game.bot)
+
+            await ctx.send(f'Game resigned. Your new rating is {round(new_rating)} ({round(old_rating)} + {round(new_rating - old_rating, 2)})')
+        elif isinstance(game, data.Game2):
+            util2 = self.client.get_cog('Util')
+            white_delta, black_delta = util.update_rating2(game.white, game.black,
+                                                           0 if ctx.author.id == game.black else 1)
+            if ctx.author.id == game.white:
+                await ctx.send(f'Game resigned. Your new rating is {round(data.data_manager.get_rating(ctx.author.id), 3)} ({round(white_delta, 3)})')
+                file, embed = util2.make_embed(
+                    game.black, title='Your game has ended', description=f'It was in this position that {ctx.author} resigned the game.\nYour new rating is {round(data.data_manager.get_rating(game.black), 3)} ({round(black_delta, 3)})')
+                await util2.send_notif(game.black, file=file, embed=embed)
+            else:
+                await ctx.send(f'Game resigned. Your new rating is {round(data.data_manager.get_rating(ctx.author.id), 3)} ({round(black_delta, 3)})')
+                file, embed = util2.make_embed(
+                    game.white, title='Your game has ended', description=f'It was in this position that {ctx.author} resigned the game.\nYour new rating is {round(data.data_manager.get_rating(game.white), 3)} ({round(white_delta, 3)})')
+                await util2.send_notif(game.white, file=file, embed=embed)
+            data.data_manager.delete_game(
+                ctx.author.id, chess.WHITE if ctx.author.id == game.black else chess.BLACK)
 
 def setup(bot):
     bot.add_cog(Engine(bot))
