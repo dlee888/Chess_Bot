@@ -109,14 +109,25 @@ int main() {
 			total_time = curr_time() - start_time;
 			std::cout << "Total time for " << n << " calls: " << total_time << "ms" << std::endl;
 			std::cout << "Average time: " << (double)total_time / n << "ms" << std::endl;
-			std::cout << "\n----------------------------------------------------------------\nTesting eval() with nnue...\n";
-			start_time = curr_time();
-			for (int i = 0; i < n; i++) {
-				eval(curr_state, false, true);
+			std::cout << "\n----------------------------------------------------------------\n";
+			if (options["use_nnue"]) {
+				std::cout << "Testing eval() with nnue...\n";
+				start_time = curr_time();
+				for (int i = 0; i < n; i++) {
+					eval(curr_state, false, true);
+				}
+				total_time = curr_time() - start_time;
+				std::cout << "Total time for " << n << " calls: " << total_time << "ms" << std::endl;
+				std::cout << "Average time: " << (double)total_time / n << "ms" << std::endl;
 			}
+			options["depth_limit"] = 4;
+			options["mcts_max_depth"] = -1;
+			std::cout << "Testing search...\n";
+			start_time = curr_time();
+			find_best_move();
 			total_time = curr_time() - start_time;
-			std::cout << "Total time for " << n << " calls: " << total_time << "ms" << std::endl;
-			std::cout << "Average time: " << (double)total_time / n << "ms" << std::endl;
+			std::cout << "Total time: " << total_time << "ms\n----------------------------------------------------------------" << std::endl;
+			set_default_options();
 		}
 	}
 	return 0;
