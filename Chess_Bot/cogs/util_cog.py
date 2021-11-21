@@ -43,7 +43,7 @@ class Util(commands.Cog):
         embed = discord.Embed(color=0x5ef29c, title=title,
                               description=description)
         game = data.data_manager.get_game(person)
-        path = Images.get_image2(person, game.turn() ^ flip)
+        path = Images.get_image2(person, game.get_color(person) ^ flip)
         embed.set_image(url='attachment://board.png')
         return discord.File(path, filename='board.png'), embed
 

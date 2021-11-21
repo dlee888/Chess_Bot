@@ -77,7 +77,8 @@ class Viewing(commands.Cog):
             return
 
         util2 = self.client.get_cog('Util')
-        file, embed = util2.make_embed(person.id, title=f'{await util2.get_name(game.white)} vs {await util2.get_name(game.black)}', description=f'{await util2.get_name(game.to_move())} to move.')
+        file, embed = util2.make_embed(person.id, title=f'{await util2.get_name(game.white)} vs {await util2.get_name(game.black)}',
+                                       description=f'{await util2.get_name(game.to_move())} to move.', flip=flip)
         await ctx.send(file=file, embed=embed)
 
     @commands.command()
