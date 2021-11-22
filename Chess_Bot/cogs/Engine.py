@@ -373,6 +373,101 @@ class Engine(commands.Cog):
         data.data_manager.change_settings(
             game.black, new_notif=ctx.channel.id)
 
+    @cog_ext.cog_slash(name='challenge-bot', description='Starts a game of chess against a bot.', options=[
+        create_option(name='bot', description='Challenge a bot', option_type=SlashCommandOptionType.STRING,
+                      required=True, choices=[name for name, member in Profile.__members__.items()])
+    ])
+    async def _challenge_bot(self, ctx, bot):
+        person = ctx.author.id
+
+        game = data.data_manager.get_game(person)
+        if game is not None:
+            await ctx.send('You already have a game in progress')
+            return
+
+        try:
+            botid = Profile[bot].value
+        except KeyError:
+            await ctx.send(f'"{bot}" is not the valid tag of a bot. Use `$profiles` to see which bots you can challenge.')
+            return
+
+        game = data.Game2()
+        color = random.randint(0, 1)
+        if color == 0:
+            game.white = botid
+            game.black = person
+        else:
+            game.white = person
+            game.black = botid
+        data.data_manager.change_game(None, game)
+        await ctx.send(f'Game started with {ProfileNames[bot].value}\nYou play the {whiteblack[color]} pieces.')
+        data.data_manager.change_settings(person, new_notif=ctx.channel.id)
+
+    @cog_ext.cog_slash(name='challenge-user', description='Starts a game of chess against another person.', options=[
+        create_option(name='person', description='The person you want to challenge.',
+                      option_type=SlashCommandOptionType.USER),
+        create_option(name='time_control', description='The maximum time per move, in seconds', option_type=SlashCommandOptionType.INTEGER, required=False)
+    ])
+    async def _challenge_user(self, ctx, person, time_control=3 * 86400):
+        if data.data_manager.get_game(ctx.author.id) is not None:
+            await ctx.send('You already have a game in progress.')
+            return
+        if data.data_manager.get_game(person.id) is not None:
+            await ctx.send(f'{person} already has a game in progress.')
+            return
+        if ctx.author.id == person.id:
+            await ctx.send(f'You cannot challenge yourself.')
+            return
+        if time_control < 3600 or time_control > 5 * 86400:
+            await ctx.send('The time must be between one hour and 5 days.')
+            return
+
+        util2 = self.client.get_cog('Util')
+
+        challenge_msg = await ctx.send((f'{person.mention}, {ctx.author} has challenged you to a game of chess.\n'
+                                        'React with :white_check_mark: to accept.\n'
+                                        'React with :x: to decline or withdraw your challenge.'))
+        await challenge_msg.add_reaction('✅')
+        await challenge_msg.add_reaction('❌')
+
+        def check(reaction, user):
+            return ((user.id == person.id and str(reaction.emoji) == '✅') or
+                    ((user.id == person.id or user.id == ctx.author.id) and str(reaction.emoji) == '❌'))
+
+        try:
+            reaction, user = await self.client.wait_for('reaction_add', timeout=600.0, check=check)
+        except asyncio.TimeoutError:
+            await challenge_msg.reply('Challenge timed out!')
+            return
+        except discord.HTTPException:
+            pass
+        if str(reaction.emoji) == '❌':
+            await challenge_msg.reply('Challenge declined / withdrawn')
+            return
+
+        if data.data_manager.get_game(ctx.author.id) is not None or data.data_manager.get_game(person.id) is not None:
+            await challenge_msg.reply('Challenge failed. One of the people already has a game in progress.')
+
+        game = data.Game2()
+        if random.randint(0, 1) == 0:
+            game.white = ctx.author.id
+            game.black = person.id
+        else:
+            game.white = person.id
+            game.black = ctx.author.id
+        game.time_control = time_control
+        data.data_manager.change_game(None, game)
+        path = get_image2(ctx.author.id)
+        file = discord.File(path, filename='board.png')
+        embed = discord.Embed(
+            title='Game started!', description=f'White: {await util2.get_name(game.white)}\nBlack: {await util2.get_name(game.black)}')
+        embed.set_image(url='attachment://board.png')
+        await challenge_msg.reply(f'<@{game.white}> <@{game.black}>', file=file, embed=embed)
+        data.data_manager.change_settings(
+            game.white, new_notif=ctx.channel.id)
+        data.data_manager.change_settings(
+            game.black, new_notif=ctx.channel.id)
+
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def resign(self, ctx):
@@ -453,6 +548,7 @@ class Engine(commands.Cog):
                 await util2.send_notif(game.white, file=file, embed=embed)
             data.data_manager.delete_game(
                 ctx.author.id, chess.WHITE if ctx.author.id == game.black else chess.BLACK)
+
 
 def setup(bot):
     bot.add_cog(Engine(bot))
