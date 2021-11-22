@@ -405,7 +405,7 @@ class Engine(commands.Cog):
 
     @cog_ext.cog_slash(name='challenge-user', description='Starts a game of chess against another person.', options=[
         create_option(name='person', description='The person you want to challenge.',
-                      option_type=SlashCommandOptionType.USER),
+                      option_type=SlashCommandOptionType.USER, required=True),
         create_option(name='time_control', description='The maximum time per move, in seconds', option_type=SlashCommandOptionType.INTEGER, required=False)
     ])
     async def _challenge_user(self, ctx, person, time_control=3 * 86400):
