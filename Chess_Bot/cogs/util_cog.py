@@ -39,10 +39,11 @@ class Util(commands.Cog):
             return get_name(person)
         return str(await self.client.fetch_user(person))
 
-    def make_embed(self, person, *, title='', description=''):
+    def make_embed(self, person, *, title='', description='', flip=False):
         embed = discord.Embed(color=0x5ef29c, title=title,
                               description=description)
-        path = Images.get_image2(person)
+        game = data.data_manager.get_game(person)
+        path = Images.get_image2(person, game.get_color(person) ^ flip)
         embed.set_image(url='attachment://board.png')
         return discord.File(path, filename='board.png'), embed
 

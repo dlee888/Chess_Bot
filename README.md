@@ -1,6 +1,6 @@
 # Chess Bot
 
-README for version 3.1.0
+README for version 3.2.1
 
 Chess Bot is a discord bot that plays chess.
 It also has a built-in elo rating system.
@@ -19,11 +19,9 @@ It also has a built-in elo rating system.
 
 ### Basic Mechanics
 
-You can use the command `$challenge` to challenge the bot to a game of chess.
+You can use the command `$challenge` to start a game of chess.
 
-> ## New in version 3!
-
-> You can now challenge other people in your server!. Use `$challenge user` to challenge a person, or `$challenge bot` to challenge a bot.
+Use `$challenge user` to challenge another person, or `$challenge bot` to challenge a bot.
 
 Use `$move` to make a move. Make sure your move is in SAN (Standard Algebraic Notation) or UCI (Universal Chess Interface). Otherwise, the bot will not understand it.
 
@@ -38,7 +36,7 @@ Note: the tag of a bot is **not** the same as it's name. For example, the tag of
 
 Chess Bot uses a custom built engine to determine which moves it plays. (It's not very good though, because I built it, and I'm bad at coding).
 
-You can also play against various levels of stockfish 13.
+You can also play against various levels of stockfish 14.
 
 ### Timer
 
@@ -52,7 +50,7 @@ Use `$time` to see how much time you have left.
 
 ### Slash commands
 
-I will be working on implementing all of the below commands as slash commands. Be sure to invite Chess Bot with the new invite link (https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=2147795008&scope=bot%20applications.commands) to be able to use them.
+All of the below commands are now implemented as slash commands. Be sure to invite Chess Bot with the new invite link (https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=2147795008&scope=bot%20applications.commands) to be able to use them.
 
 ### Playing
 
