@@ -5,6 +5,7 @@
 typedef std::pair<int, int> pii;
 
 typedef unsigned long long Bitstring;
+typedef unsigned long long Bitboard;
 
 #define BP -1
 #define WP 1
@@ -44,6 +45,13 @@ enum Depth : int {
 	DEPTH_QS_NO_CHECKS  = -1,
 
 	MAX_DEPTH = 69
+};
+
+enum Direction : int {
+	UP = 8,
+	DOWN = -8,
+	RIGHT = 1,
+	LEFT = -1
 };
 
 enum Score : int { 
