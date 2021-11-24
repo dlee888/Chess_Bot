@@ -32,7 +32,7 @@ class Game2:
         if len(row) == 5 or row[5] is None:
             self.time_control = constants.MAX_TIME_PER_MOVE
         else:
-            self.time_control = row[6]
+            self.time_control = row[5]
 
     def __str__(self) -> str:
         return self.fen
