@@ -78,6 +78,10 @@ int main() {
 				std::cin >> value;
 				options[option_name] = value;
 			}
+		} else if (cmnd == "options") {
+			for (auto& p : options) {
+				std::cout << p.first << ": " << p.second << std::endl;
+			}
 		} else if (cmnd == "stress") {
 			int n;
 			std::cin >> n;

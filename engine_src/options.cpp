@@ -9,4 +9,5 @@ void set_default_options() {
 	options["debug"] = 1;
 	options["mcts_prob"] = 200000000; // Probability of a MCTS prune, multiplied by INT_MAX
 	options["mctx_max_depth"] = 4;
+	options["use_nnue"] = 0;
 }
