@@ -194,12 +194,13 @@ class Data:
         elif isinstance(new_game, Game2):
             cur.execute(
                 f'DELETE FROM games2 WHERE white = {new_game.white} and black = {new_game.black};')
-            cur.execute('INSERT INTO games2 VALUES (%s, %s, %s, %s, %s)', (
+            cur.execute('INSERT INTO games2 VALUES (%s, %s, %s, %s, %s, %s)', (
                 new_game.fen,
                 new_game.white,
                 new_game.black,
                 new_game.last_moved,
-                int(new_game.warned)
+                int(new_game.warned),
+                new_game.time_control
             ))
 
         self.conn.commit()

@@ -170,7 +170,7 @@ class Engine(commands.Cog):
             data.data_manager.delete_game(game.white, 69)
         else:
             file, embed = util2.make_embed(game.to_move(), title=f'Your game with {await util2.get_name(person)}', description='It is your turn')
-            await util2.send_notif(game.black, embed=embed, file=file)
+            await util2.send_notif(game.to_move(), embed=embed, file=file)
 
     @cog_ext.cog_slash(name='move', description='Make a move in your game.', options=[
         create_option(name='move', description='What move you want to make',
@@ -235,7 +235,7 @@ class Engine(commands.Cog):
             data.data_manager.delete_game(game.white, 69)
         else:
             file, embed = util2.make_embed(game.to_move(), title=f'Your game with {await util2.get_name(person)}', description='It is your turn')
-            await util2.send_notif(game.black, embed=embed, file=file)
+            await util2.send_notif(game.to_move(), embed=embed, file=file)
 
     @commands.group(invoke_without_command=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
