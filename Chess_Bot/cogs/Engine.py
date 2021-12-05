@@ -74,12 +74,8 @@ class Engine(commands.Cog):
                             await util2.send_notif(person, f'Draw.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
                             data.data_manager.delete_game(person, 69)
                         continue
-                    if person == game.white:
-                        game.last_moved = time.time()
-                        game.white_warned = False
-                    else:
-                        game.last_moved = time.time()
-                        game.black_warned = False
+                    game.last_moved = time.time()
+                    game.warned = False
                     data.data_manager.change_game(None, game)
                     file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(game.not_to_move())}', description=f'The bot has moved\n{move}')
                     await util2.send_notif(person, 'The bot has moved', file=file, embed=embed)

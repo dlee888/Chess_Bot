@@ -83,6 +83,7 @@ def update_rating2(white, black, outcome):
 
 def pretty_time(time):
     days = time // 86400
+    time -= 86400 * days
     hours = time // 3600
     time -= 3600 * hours
     minutes = time // 60
@@ -97,32 +98,6 @@ def pretty_time(time):
     if time != 0:
         arr.append(f'{round(time, 3)} seconds')
     return ', '.join(arr)
-
-
-def cb_to_uci(cb_move):
-    if cb_move == 1835008:
-        return "O-O"
-    elif cb_move == 2883584:
-        return "O-O-O"
-
-    start_square = cb_move % 64
-    end_square = (cb_move // 64) % 64
-
-    start_row = start_square // 8
-    start_col = start_square % 8
-    end_row = end_square // 8
-    end_col = end_square % 8
-
-    rows = '87654321'
-    cols = 'abcdefgh'
-
-    res = cols[start_col] + rows[start_row] + cols[end_col] + rows[end_row]
-
-    if cb_move // (2 ** 18) % 4 == 2:
-        promote_to = 'nbrq'
-        res += promote_to[cb_move // (2 ** 20)]
-
-    return res
 
 
 def change_fen(person, new_fen):
