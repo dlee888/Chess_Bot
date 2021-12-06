@@ -5,8 +5,8 @@ import sys
 import sqlite3
 import chess
 
-sys.path.insert(1, '/home/apple/bots/Chess_Bot')
 from Chess_Bot import constants
+
 
 class Game:
 
@@ -30,7 +30,7 @@ class Game2:
         self.last_moved = row[3]
         self.warned = row[4]
         if len(row) == 5 or row[5] is None:
-            self.time_control = constants.MAX_TIME_PER_MOVE
+            self.time_control = constants.DEFAULT_TIME_CONTROL
         else:
             self.time_control = row[5]
 
@@ -93,14 +93,6 @@ class Data:
             self.conn = sqlite3.connect(os.path.join(
                 constants.DB_DIR, 'database'))
 
-        create_games_table = ('CREATE TABLE IF NOT EXISTS games ('
-                              'id bigint NOT NULL PRIMARY KEY UNIQUE,'
-                              'position text,'
-                              'bot integer,'
-                              'color integer,'
-                              'last_moved real,'
-                              'warned integer'
-                              ');')
         create_games2_table = ('CREATE TABLE IF NOT EXISTS games2 ('
                                'position text,'
                                'white bigint,'
@@ -127,7 +119,6 @@ class Data:
                                ');')
 
         cur = self.get_conn().cursor()
-        cur.execute(create_games_table)
         cur.execute(create_games2_table)
         cur.execute(create_user_table)
         cur.execute(create_votes_table)
@@ -150,59 +141,30 @@ class Data:
             return None
 
     def get_game(self, person):
-        rows = self.execute(f'SELECT * FROM games WHERE id = {person};')
-
+        rows = self.execute('SELECT * FROM games2 where white = %s or black = %s;', (person, person))
         if len(rows) == 0:
-            rows = self.execute(f'SELECT * FROM games2;')
-            for row in rows:
-                g = Game2(row)
-                if g.white == person or g.black == person:
-                    return g
             return None
-        return Game(rows[0])
+        return Game2(rows[0])
 
     def get_games(self):
-        cur = self.get_conn().cursor()
-        cur.execute('SELECT * FROM games')
-        rows = cur.fetchall()
         games = []
-        for row in rows:
-            games.append((row[0], Game(row)))
-
-        cur.execute('SELECT * FROM games2')
-        rows = cur.fetchall()
+        rows = self.execute('SELECT * FROM games2')
         for row in rows:
             games.append(Game2(row))
         return games
 
-    def get_games2(self):
+    def change_game(self, new_game):
         cur = self.get_conn().cursor()
-        cur.execute('SELECT * FROM games2')
-        rows = cur.fetchall()
-        games = []
-        for row in rows:
-            games.append(Game2(row))
-        return games
-
-    def change_game(self, person, new_game):
-        cur = self.get_conn().cursor()
-
-        if isinstance(new_game, Game):
-            update_sql = f'''INSERT INTO games VALUES ({person}, '{new_game.fen}', {new_game.bot}, {new_game.color}, {new_game.last_moved}, {int(new_game.warned)});'''
-            cur.execute(f'DELETE FROM games WHERE id = {person};')
-            cur.execute(update_sql)
-        elif isinstance(new_game, Game2):
-            cur.execute(
-                f'DELETE FROM games2 WHERE white = {new_game.white} and black = {new_game.black};')
-            cur.execute('INSERT INTO games2 VALUES (%s, %s, %s, %s, %s, %s)', (
-                new_game.fen,
-                new_game.white,
-                new_game.black,
-                new_game.last_moved,
-                int(new_game.warned),
-                new_game.time_control
-            ))
-
+        cur.execute(
+            f'DELETE FROM games2 WHERE white = {new_game.white} and black = {new_game.black};')
+        cur.execute('INSERT INTO games2 VALUES (%s, %s, %s, %s, %s, %s)', (
+            new_game.fen,
+            new_game.white,
+            new_game.black,
+            new_game.last_moved,
+            int(new_game.warned),
+            new_game.time_control
+        ))
         self.conn.commit()
 
     def get_rating(self, person):
@@ -265,36 +227,23 @@ class Data:
     def delete_game(self, person, winner):
         cur = self.get_conn().cursor()
         game = self.get_game(person)
-        if isinstance(game, Game):
-            num_lost, num_won, num_draw = self.get_stats(person)
-            bot_lost, bot_won, bot_draw = self.get_stats(game.bot)
-            if winner is None:
-                self.change_stats(person, num_lost, num_won, num_draw + 1)
-                self.change_stats(game.bot, bot_lost, bot_won, bot_draw + 1)
-            elif winner == 1:
-                self.change_stats(person, num_lost, num_won + 1, num_draw)
-                self.change_stats(game.bot, bot_lost + 1, bot_won, bot_draw)
-            elif winner == 0:
-                self.change_stats(person, num_lost + 1, num_won, num_draw)
-                self.change_stats(game.bot, bot_lost, bot_won + 1, bot_draw)
-            cur.execute(f'DELETE FROM games WHERE id = {person};')
-        elif isinstance(game, Game2):
-            white_lost, white_won, white_draw = self.get_stats(game.white)
-            black_lost, black_won, black_draw = self.get_stats(game.black)
-            if winner is not None:
-                if winner == chess.WHITE:
-                    white_won += 1
-                    black_lost += 1
-                elif winner == chess.BLACK:
-                    black_won += 1
-                    white_lost += 1
-                else:
-                    white_draw += 1
-                    black_draw += 1
-            self.change_stats(game.white, white_lost, white_won, white_draw)
-            self.change_stats(game.black, black_lost, black_won, black_draw)
-            cur.execute(
-                f'DELETE FROM games2 WHERE white = {game.white} and black = {game.black};')
+
+        white_lost, white_won, white_draw = self.get_stats(game.white)
+        black_lost, black_won, black_draw = self.get_stats(game.black)
+        if winner is not None:
+            if winner == chess.WHITE:
+                white_won += 1
+                black_lost += 1
+            elif winner == chess.BLACK:
+                black_won += 1
+                white_lost += 1
+            else:
+                white_draw += 1
+                black_draw += 1
+        self.change_stats(game.white, white_lost, white_won, white_draw)
+        self.change_stats(game.black, black_lost, black_won, black_draw)
+        cur.execute(
+            f'DELETE FROM games2 WHERE white = {game.white} and black = {game.black};')
 
         self.conn.commit()
 

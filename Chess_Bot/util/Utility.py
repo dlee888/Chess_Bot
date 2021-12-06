@@ -103,4 +103,4 @@ def pretty_time(time):
 def change_fen(person, new_fen):
     game = data.data_manager.get_game(person)
     game.fen = new_fen
-    data.data_manager.change_game(person, game)
+    data.data_manager.change_game(game)

@@ -41,24 +41,13 @@ class Viewing(commands.Cog):
         game = data.data_manager.get_game(person.id)
 
         if game == None:
-            await ctx.send(f'{person} does not have a game in progress')
+            await ctx.send(f'{"You do" if person == ctx.author else f"{person} does"} not have a game in progress')
             return
-        if isinstance(game, data.Game):
-            get_image(person.id)
-            embed = discord.Embed(
-                title=f'{ctx.author}\'s game against {ProfileNames[Profile(game.bot).name].value}', description=f'{whiteblack[game.color].capitalize()} to move.', color=0x5ef29c)
-            if person.id in util.thonking:
-                embed.description = f'{ProfileNames[Profile(game.bot).name].value} is thinking...'
-            embed.set_footer(
-                text=f'Requested by {ctx.author}', icon_url=ctx.author.avatar_url)
-            file = discord.File(
-                os.path.join(constants.TEMP_DIR, f'image-{person.id}.png'), filename='board.png')
-            embed.set_image(url=f'attachment://board.png')
-            await ctx.message.reply(embed=embed, file=file)
-        elif isinstance(game, data.Game2):
-            util2 = self.client.get_cog('Util')
-            file, embed = util2.make_embed(person.id, title=f'Your game with {await util2.get_name(game.white if game.black == person.id else game.black)}', description=f'{await util2.get_name(game.to_move())} to move.')
-            await ctx.send(file=file, embed=embed)
+            
+        util2 = self.client.get_cog('Util')
+        file, embed = util2.make_embed(person.id, title=f'{await util2.get_name(game.white)} vs {await util2.get_name(game.black)}',
+                                       description=f'{await util2.get_name(game.to_move())} to move.')
+        await ctx.send(file=file, embed=embed)
 
     @cog_ext.cog_slash(name='view', description='View a person\'s game.', options=[
         create_option(name='person', description='The person whose game you want to see.',
@@ -73,7 +62,7 @@ class Viewing(commands.Cog):
         game = data.data_manager.get_game(person.id)
 
         if game == None:
-            await ctx.send(f'{person} does not have a game in progress')
+            await ctx.send(f'{"You do" if person == ctx.author else f"{person} does"} not have a game in progress')
             return
 
         util2 = self.client.get_cog('Util')

@@ -90,19 +90,6 @@ class Development(commands.Cog):
 
         await ctx.send(status)
 
-    @commands.command(hidden=True)
-    @is_developer()
-    async def debug_load(self, ctx, user: typing.Union[discord.User, discord.Member]):
-        game = data.data_manager.get_game(user.id)
-
-        if game == None:
-            await ctx.send(f'{user} does not have a game in progress')
-            return
-
-        data.data_manager.change_game(ctx.author.id, game)
-
-        await ctx.send(f'Succesfully loaded game')
-
     def cleanup_code(self, content):
         """Automatically removes code blocks from the code."""
         # remove ```py\n```
@@ -164,37 +151,6 @@ class Development(commands.Cog):
     @is_developer()
     async def gimme(self, ctx, file):
         await ctx.send(file, file=discord.File(file))
-
-    @commands.command(hidden=True)
-    @is_developer()
-    async def load_db(self, ctx):
-        for attachment in ctx.message.attachments:
-            if attachment.filename == 'database':
-                await attachment.save(os.path.join(constants.TEMP_DIR, 'database'))
-                break
-
-        games, colors, time_control, ratings, last_moved, warned, prefixes = pickle.load(
-            open(os.path.join(constants.TEMP_DIR, 'database'), 'rb'))
-        print(games, colors, time_control, ratings,
-              last_moved, warned, prefixes)
-
-        # await ctx.send('Loading games...')
-
-        for k in games.keys():
-            print(games[k])
-            print(' '.join(str(x) for x in games[k]))
-            data.data_manager.change_game(k, data.Game(
-                colors[k], time_control[k], games[k], last_moved[k], warned[k]))
-
-        # await ctx.send('Loading ratings...')
-        for k in ratings.keys():
-            data.data_manager.change_rating(k, ratings[k])
-
-        # await ctx.send('Loading prefixes...')
-        for k in prefixes.keys():
-            data.data_manager.change_prefix(k, prefixes[k])
-
-        await ctx.send('Loaded')
 
 
 def setup(bot):

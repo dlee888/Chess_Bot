@@ -61,72 +61,8 @@ def load_all_themes():
             load_theme(file)
 
 
-def get_image(person):
-    game = data.data_manager.get_game(person)
-    if isinstance(game, data.Game2):
-        get_image2(person)
-        return
-
-    theme = data.data_manager.get_theme(person)
-    board = str(chess.Board(game.fen)).split('\n')
-
-    result = Image.open(os.path.join(constants.ASSETS_DIR, 'blank_board.png'))
-    result = result.resize((400, 400))
-
-    for i in range(8):
-        for j in range(0, 16, 2):
-            square = ''
-            if board[i][j] == '.':
-                square += 'blank'
-            elif board[i][j].islower():
-                square += 'B' + board[i][j].upper()
-            else:
-                square += 'W' + board[i][j]
-
-            x = i
-            y = j // 2
-
-            if (x + y) % 2 == 0:
-                square += '-light.png'
-            else:
-                square += '-dark.png'
-
-            square_img = Image.open(os.path.join(
-                constants.THEMES_DIR, theme, square))
-            square_img = square_img.resize((50, 50), Image.ANTIALIAS)
-
-            x *= 50
-            y *= 50
-
-            if game.color == 1:
-                result.paste(square_img, (y, x, y + 50, x + 50))
-            else:
-                result.paste(square_img, (350 - y, 350 - x, 400 - y, 400 - x))
-
-    new_res = Image.new(result.mode, (425, 425), color=(0, 0, 0))
-    new_res.paste(result, (25, 0, 425, 400))
-    result = new_res
-    draw = ImageDraw.Draw(result)
-    font = ImageFont.truetype(os.path.join(
-        constants.ASSETS_DIR, 'font.otf'), 13)
-    if game.color == 1:
-        cols = 'abcdefgh'
-        rows = '12345678'
-    else:
-        cols = 'hgfedcba'
-        rows = '87654321'
-    for i in range(8):
-        draw.text((40 + 50 * i, 405), cols[i], (255, 255, 255), font=font)
-        draw.text((10, 370 - 50 * i), rows[i], (255, 255, 255), font=font)
-
-    result.save(os.path.join(constants.TEMP_DIR, f'image-{person}.png'))
-
-
 def get_image2(person, pov=None):
     game = data.data_manager.get_game(person)
-    if isinstance(game, data.Game):
-        get_image(person)
-        return
 
     theme = data.data_manager.get_theme(person)
     board = str(chess.Board(game.fen)).split('\n')

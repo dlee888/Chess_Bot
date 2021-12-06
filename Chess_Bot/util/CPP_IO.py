@@ -96,39 +96,3 @@ async def run_engine(person):
     #             break
     #     return move, game
 
-
-async def output_move(ctx, person, move):
-    game = data.data_manager.get_game(person)
-
-    embed = discord.Embed(
-        title=f'{ctx.author}\'s game against {ProfileNames[Profile(game.bot).name].value}', description=f'{whiteblack[game.color].capitalize()} to move.', color=0x5ef29c)
-    embed.set_footer(
-        text=f'Requested by {ctx.author}', icon_url=ctx.author.avatar_url)
-
-    if move is not None:
-        embed.add_field(
-            name=f'{ProfileNames[Profile(game.bot).name].value} moved', value=move)
-
-    get_image(person)
-
-    file = discord.File(
-        os.path.join(constants.TEMP_DIR, f'image-{person}.png'), filename='board.png')
-    embed.set_image(url=f'attachment://board.png')
-
-    await ctx.message.reply(file=file, embed=embed)
-
-
-async def log(person, client, ctx):
-    game = data.data_manager.get_game(person)
-
-    if Profile(game.bot).name.startswith('cb'):
-        log_channel = client.get_channel(constants.LOG_CHANNEL_ID)
-        get_image(person)
-        await log_channel.send(f'Output for {ctx.author} (id = {ctx.author.id})\n'
-                               f'Request: {ctx.message.content}',
-                               files=[
-                                   discord.File(
-                                       os.path.join(constants.TEMP_DIR, f'input-{person}.txt')),
-                                   discord.File(
-                                       os.path.join(constants.TEMP_DIR, f'output-{person}.txt')),
-                                   discord.File(os.path.join(constants.TEMP_DIR, f'image-{person}.png'))])
