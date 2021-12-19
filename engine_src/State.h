@@ -66,6 +66,8 @@ class state {
 	void unmake_move(int move);
 
 	int attacking(int row, int col, bool color);
+	int attacker(int row, int col, bool color);
+	int see(int row, int col, bool color);
 
 	std::vector<int> list_moves();
 

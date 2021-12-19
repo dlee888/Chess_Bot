@@ -65,21 +65,23 @@ Value search(Depth depth, Value alpha, Value beta) {
 
 	bool mate = true;
 	for (int i : moves) {
+		int see_val = curr_state.see((i >> 9) & 7, (i >> 6) & 7, curr_state.to_move);
+		if (depth < 6 && see_val < 0) {
+			continue;
+		}
 		curr_state.make_move(i);
-
 		if (!curr_state.king_attacked()) {
 			mate = false;
-
 			Bitstring hash = curr_state.get_hash();
 			if (tt_exists[hash % TABLE_SIZE] && tt_hashes[hash % TABLE_SIZE] == hash) {
 				ordered_moves.push_back({tt_evals[hash % TABLE_SIZE], i});
 			} else {
-				ordered_moves.push_back({eval(curr_state), i});
+				ordered_moves.push_back({eval(curr_state) + see_val, i});
 			}
 		}
-
 		curr_state.unmake_move(i);
 	}
+
 	if (mate) {
 		if (curr_state.is_check()) {
 			// printf("checkmate\n");
@@ -174,6 +176,9 @@ Value qsearch(Value alpha, Value beta, Depth depth) {
 
 	bool mate = true;
 	for (int i : curr_state.list_moves()) {
+		if (curr_state.see((i >> 9) & 7, (i >> 6) & 7, curr_state.to_move) < 0) {
+			continue;
+		}
 		curr_state.make_move(i);
 		if (!curr_state.king_attacked()) {
 			mate = false;
@@ -187,7 +192,6 @@ Value qsearch(Value alpha, Value beta, Depth depth) {
 				}
 			}
 		}
-
 		curr_state.unmake_move(i);
 	}
 	if (mate) {

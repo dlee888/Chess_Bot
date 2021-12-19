@@ -3,7 +3,7 @@
 Score curr_psqt;
 
 int castle_bonus = 35, castle_right_bonus = 20, dpawn_coeff = 17, semi_open_bonus = 10, open_bonus = 16, bishop_pair_bonus = 43;
-
+int piece_vals[7] = {0, 100, 325, 371, 563, 1000, 100000};
 int cnts[13];
 
 // counting the number of pawns in each row to compute doubled pawns

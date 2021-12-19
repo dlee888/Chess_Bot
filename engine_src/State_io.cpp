@@ -209,10 +209,11 @@ std::string to_uci(int move) {
 }
 
 /*
-turns algebraic notation into 'move' notation
+Turns algebraic notation into 'move' notation
 A move is represented by a string of bits
-First 6 bits = original position
-Next 6 bits = final position
+First 6 bits = original square
+Next 6 bits = final square
+Each square is (row << 3) + col
 Next 3 bits = piece that is moved
 Next 3 bits: If it is a capture, then the piece that is captured, or 0 if it is not a capture
 Next 2 bits: This is for special moves
@@ -227,7 +228,6 @@ Next 2 bits: This is also for special moves
 note: the other 10 bits are not used
 */
 int state::parse_move(std::string move) {
-
 	char last = move[move.size() - 1];
 	while (last == '!' || last == '?' || last == '+' || last == '#') {
 		move.erase(move.end() - 1);

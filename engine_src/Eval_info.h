@@ -10,7 +10,7 @@
 extern Score curr_psqt;
 
 extern int castle_bonus, castle_right_bonus, dpawn_coeff, semi_open_bonus, open_bonus, bishop_pair_bonus;
-
+extern int piece_vals[7];
 extern int cnts[13];
 
 // counting the number of pawns in each row to compute doubled pawns

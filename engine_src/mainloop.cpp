@@ -132,6 +132,23 @@ int main() {
 			total_time = curr_time() - start_time;
 			std::cout << "Total time: " << total_time << "ms\n----------------------------------------------------------------" << std::endl;
 			set_default_options();
+		} else if (cmnd == "test") {
+			curr_state.load(start_fen);
+			while (true) {
+				curr_state.print();
+				std::string move;
+				std::cin >> move;
+				if (move == "see") {
+					int row, col, color;
+					std::cin >> row >> col >> color;
+					int see = curr_state.see(row, col, color);
+					std::cout << "SEE result: " << see << std::endl;
+				} else if (move == "fen") {
+					std::cout << curr_state.to_fen() << std::endl;
+				} else {
+					curr_state.make_move(curr_state.parse_move(move));
+				}
+			}
 		}
 	}
 	return 0;
