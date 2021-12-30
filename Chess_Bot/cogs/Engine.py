@@ -41,6 +41,7 @@ class Engine(commands.Cog):
         for person, task in thonk:
             if task.done():
                 try:
+                    self.thonking.pop(person)
                     # Person resigned while bot was thinking
                     if data.data_manager.get_game(person) is None:
                         continue
@@ -48,7 +49,6 @@ class Engine(commands.Cog):
                     if move is None:
                         continue
                     util2 = self.client.get_cog('Util')
-                    self.thonking.pop(person)
                     board = chess.Board(game.fen)
                     if person == game.white:
                         bot = game.black
@@ -65,13 +65,15 @@ class Engine(commands.Cog):
                         elif board.is_checkmate():
                             old_rating, new_rating = util.update_rating(
                                 person, 0, bot)
+                            file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(bot)}', description=f'The bot has moved.\n{move}\nCheckmate.')
                             data.data_manager.delete_game(
                                 person, not game.turn())
-                            await util2.send_notif(person, f'You lost.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
+                            await util2.send_notif(person, f'You lost.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})', file=file, embed=embed)
                         else:
                             old_rating, new_rating = util.update_rating(
                                 person, 1/2, bot)
-                            await util2.send_notif(person, f'Draw.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})')
+                            file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(bot)}', description=f'The bot has moved.\n{move}\nDraw.')
+                            await util2.send_notif(person, f'Draw.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})', file=file, embed=embed)
                             data.data_manager.delete_game(person, 69)
                         continue
                     game.last_moved = time.time()
@@ -128,8 +130,13 @@ class Engine(commands.Cog):
 
         move = game.parse_move(move)
         if move is None:
-            await ctx.send('Illegal move played. Make sure your move is in SAN or UCI notation.\nUse `$help move` for more info.')
+            await ctx.send('Illegal move played. Make sure your move is in SAN (standard algebraic notation).\n'
+                           'For example, Nxe4, Nge5, c4, Ke2, etc.\n'
+                           'More about algebraic notation [here](https://www.chess.com/article/view/chess-notation#algebraic-notation).\n'
+                           'You can also enter it in UCI (universal chess interface) notation.\n'
+                           'For example, e4e5, g1f3, e1e2, etc.')
             return
+
         board.push(move)
         game.last_moved = time.time()
         game.warned = False
@@ -173,65 +180,7 @@ class Engine(commands.Cog):
                       option_type=SlashCommandOptionType.STRING, required=True)
     ])
     async def _move(self, ctx, move):
-        person = ctx.author.id
-        game = data.data_manager.get_game(person)
-
-        if game == None:
-            await ctx.send('You do not have a game in progress.')
-            return
-        if 'resign' == move.lower():
-            await self.resign(ctx)
-            await ctx.send('Tip: Trying to resign? You can also use the `$resign` command.')
-            return
-
-        board = chess.Board(game.fen)
-        util2 = self.client.get_cog('Util')
-
-        if person != game.to_move():
-            await ctx.send(f'It is not your turn!')
-            return
-
-        move = game.parse_move(move)
-        if move is None:
-            await ctx.send('Illegal move played. Make sure your move is in SAN or UCI notation.\nUse `$help move` for more info.')
-            return
-        board.push(move)
-        game.last_moved = time.time()
-        game.warned = False
-        game.fen = board.fen(en_passant='fen')
-        data.data_manager.change_game(game)
-
-        file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(game.to_move())}', description='You have moved.')
-        await ctx.send(file=file, embed=embed)
-
-        if board.is_checkmate():
-            white_delta, black_delta = util.update_rating2(
-                game.white, game.black, 0 if board.turn == chess.BLACK else 1)
-
-            file1, embed1 = util2.make_embed(game.white, title='Your game has ended',
-                                             description=f'{whiteblack[not board.turn].capitalize()} won by checkmate.\nYour new rating is {round(data.data_manager.get_rating(game.white))} ({white_delta})')
-            file2, embed2 = util2.make_embed(game.black, title='Your game has ended',
-                                             description=f'{whiteblack[not board.turn].capitalize()} won by checkmate.\nYour new rating is {round(data.data_manager.get_rating(game.black))} ({black_delta})')
-
-            await util2.send_notif(game.white, file=file1, embed=embed1)
-            await util2.send_notif(game.black, file=file2, embed=embed2)
-
-            data.data_manager.delete_game(game.white, not board.turn)
-        elif board.can_claim_draw():
-            white_delta, black_delta = util.update_rating2(
-                game.white, game.black, 1/2)
-
-            file1, embed1 = util2.make_embed(game.white, title=f'Your game has ended',
-                                             description=f'Draw.\nYour new rating is {round(data.data_manager.get_rating(game.white))} ({white_delta})')
-            file2, embed2 = util2.make_embed(game.black, title=f'Your game has ended',
-                                             description=f'Draw.\nYour new rating is {round(data.data_manager.get_rating(game.black))} ({black_delta})')
-            await util2.send_notif(game.white, file=file1, embed=embed1)
-            await util2.send_notif(game.black, file=file2, embed=embed2)
-
-            data.data_manager.delete_game(game.white, 69)
-        else:
-            file, embed = util2.make_embed(game.to_move(), title=f'Your game with {await util2.get_name(person)}', description='It is your turn')
-            await util2.send_notif(game.to_move(), embed=embed, file=file)
+        await self.move(ctx, move)
 
     @commands.group(invoke_without_command=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
@@ -294,7 +243,12 @@ class Engine(commands.Cog):
             game.white = person
             game.black = botid
         data.data_manager.change_game(game)
-        await ctx.send(f'Game started with {ProfileNames[bot].value}\nYou play the {whiteblack[color]} pieces.')
+        util2 = self.client.get_cog('Util')
+        file, embed = util2.make_embed(game.white, title='Game started!',
+                                       description=(f'White: {await util2.get_name(game.white)}\n'
+                                                    f'Black: {await util2.get_name(game.black)}\n'
+                                                    'Use `$view` to view the game and use `$move` to make a move.\n'))
+        await ctx.send(f'Game started with {ProfileNames[bot].value}\nYou play the {whiteblack[color]} pieces.', file=file, embed=embed)
         data.data_manager.change_settings(person, new_notif=ctx.channel.id)
 
     @challenge.command(aliases=['person'])
@@ -302,7 +256,7 @@ class Engine(commands.Cog):
         '''
         {
             "name": "challenge user",
-            "description": "Challenges another user to a game of chess.\\nReact with a check mark to accept a challenge, and react with an X mark to decline\\nThe challenge will expire in 10 minutes.",
+            "description": "Challenges another user to a game of chess.\\nReact with a check mark to accept a challenge, and react with an X mark to decline\\nThe challenge will expire in 16 minutes.",
             "usage": "$challenge user <user>",
             "examples": [
                 "$challenge user <@person>"             
@@ -337,12 +291,13 @@ class Engine(commands.Cog):
                     ((user.id == person.id or user.id == ctx.author.id) and str(reaction.emoji) == '❌'))
 
         try:
-            reaction, user = await self.client.wait_for('reaction_add', timeout=600.0, check=check)
+            reaction, user = await self.client.wait_for('reaction_add', timeout=969.6, check=check)
         except asyncio.TimeoutError:
-            await challenge_msg.reply('Challenge timed out!')
-            return
-        except discord.HTTPException:
-            pass
+            try:
+                await challenge_msg.reply('Challenge timed out!')
+                return
+            except discord.HTTPException:
+                pass
         if str(reaction.emoji) == '❌':
             await challenge_msg.reply('Challenge declined / withdrawn')
             return
@@ -357,12 +312,11 @@ class Engine(commands.Cog):
         else:
             game.white = person.id
             game.black = ctx.author.id
-        data.data_manager.change_game(game)
-        path = get_image2(ctx.author.id)
-        file = discord.File(path, filename='board.png')
-        embed = discord.Embed(
-            title='Game started!', description=f'White: {await util2.get_name(game.white)}\nBlack: {await util2.get_name(game.black)}')
-        embed.set_image(url='attachment://board.png')
+
+        file, embed = util2.make_embed(game.white, title='Game started!',
+                                       description=(f'White: {await util2.get_name(game.white)}\n'
+                                                    f'Black: {await util2.get_name(game.black)}\n'
+                                                    'Use `$view` to view the game and use `$move` to make a move.\n'))
         await challenge_msg.reply(f'<@{game.white}> <@{game.black}>', file=file, embed=embed)
         data.data_manager.change_settings(
             game.white, new_notif=ctx.channel.id)
@@ -374,35 +328,13 @@ class Engine(commands.Cog):
                       required=True, choices=[name for name, member in Profile.__members__.items()])
     ])
     async def _challenge_bot(self, ctx, bot):
-        person = ctx.author.id
-
-        game = data.data_manager.get_game(person)
-        if game is not None:
-            await ctx.send('You already have a game in progress')
-            return
-
-        try:
-            botid = Profile[bot].value
-        except KeyError:
-            await ctx.send(f'"{bot}" is not the valid tag of a bot. Use `$profiles` to see which bots you can challenge.')
-            return
-
-        game = data.Game2()
-        color = random.randint(0, 1)
-        if color == 0:
-            game.white = botid
-            game.black = person
-        else:
-            game.white = person
-            game.black = botid
-        data.data_manager.change_game(game)
-        await ctx.send(f'Game started with {ProfileNames[bot].value}\nYou play the {whiteblack[color]} pieces.')
-        data.data_manager.change_settings(person, new_notif=ctx.channel.id)
+        await self.bot(ctx, bot)
 
     @cog_ext.cog_slash(name='challenge-user', description='Starts a game of chess against another person.', options=[
         create_option(name='person', description='The person you want to challenge.',
                       option_type=SlashCommandOptionType.USER, required=True),
-        create_option(name='time_control', description='The maximum time per move, in seconds', option_type=SlashCommandOptionType.INTEGER, required=False)
+        create_option(name='time_control', description='The maximum time per move, in seconds',
+                      option_type=SlashCommandOptionType.INTEGER, required=False)
     ])
     async def _challenge_user(self, ctx, person, time_control=3 * 86400):
         if data.data_manager.get_game(ctx.author.id) is not None:
@@ -419,8 +351,8 @@ class Engine(commands.Cog):
             return
 
         util2 = self.client.get_cog('Util')
-
         challenge_msg = await ctx.send((f'{person.mention}, {ctx.author} has challenged you to a game of chess.\n'
+                                        f'{util.pretty_time(time_control)} per move.\n'
                                         'React with :white_check_mark: to accept.\n'
                                         'React with :x: to decline or withdraw your challenge.'))
         await challenge_msg.add_reaction('✅')
@@ -431,12 +363,13 @@ class Engine(commands.Cog):
                     ((user.id == person.id or user.id == ctx.author.id) and str(reaction.emoji) == '❌'))
 
         try:
-            reaction, user = await self.client.wait_for('reaction_add', timeout=600.0, check=check)
+            reaction, user = await self.client.wait_for('reaction_add', timeout=969.6, check=check)
         except asyncio.TimeoutError:
-            await challenge_msg.reply('Challenge timed out!')
-            return
-        except discord.HTTPException:
-            pass
+            try:
+                await challenge_msg.reply('Challenge timed out!')
+                return
+            except discord.HTTPException:
+                pass
         if str(reaction.emoji) == '❌':
             await challenge_msg.reply('Challenge declined / withdrawn')
             return
@@ -453,11 +386,10 @@ class Engine(commands.Cog):
             game.black = ctx.author.id
         game.time_control = time_control
         data.data_manager.change_game(game)
-        path = get_image2(ctx.author.id)
-        file = discord.File(path, filename='board.png')
-        embed = discord.Embed(
-            title='Game started!', description=f'White: {await util2.get_name(game.white)}\nBlack: {await util2.get_name(game.black)}')
-        embed.set_image(url='attachment://board.png')
+        file, embed = util2.make_embed(game.white, title='Game started!',
+                                       description=(f'White: {await util2.get_name(game.white)}\n'
+                                                    f'Black: {await util2.get_name(game.black)}\n'
+                                                    'Use `$view` to view the game and use `$move` to make a move.\n'))
         await challenge_msg.reply(f'<@{game.white}> <@{game.black}>', file=file, embed=embed)
         data.data_manager.change_settings(
             game.white, new_notif=ctx.channel.id)
@@ -487,7 +419,7 @@ class Engine(commands.Cog):
 
         util2 = self.client.get_cog('Util')
         white_delta, black_delta = util.update_rating2(game.white, game.black,
-                                                        0 if ctx.author.id == game.black else 1)
+                                                       0 if ctx.author.id == game.black else 1)
         if ctx.author.id == game.white:
             await ctx.send(f'Game resigned. Your new rating is {round(data.data_manager.get_rating(ctx.author.id), 3)} ({round(white_delta, 3)})')
             file, embed = util2.make_embed(
@@ -503,27 +435,7 @@ class Engine(commands.Cog):
 
     @cog_ext.cog_slash(name='resign', description='Resigns your game.', options=[])
     async def _resign(self, ctx):
-        game = data.data_manager.get_game(ctx.author.id)
-
-        if game is None:
-            await ctx.send('You do not have a game in progress')
-            return
-
-        util2 = self.client.get_cog('Util')
-        white_delta, black_delta = util.update_rating2(game.white, game.black,
-                                                        0 if ctx.author.id == game.black else 1)
-        if ctx.author.id == game.white:
-            await ctx.send(f'Game resigned. Your new rating is {round(data.data_manager.get_rating(ctx.author.id), 3)} ({round(white_delta, 3)})')
-            file, embed = util2.make_embed(
-                game.black, title='Your game has ended', description=f'It was in this position that {ctx.author} resigned the game.\nYour new rating is {round(data.data_manager.get_rating(game.black), 3)} ({round(black_delta, 3)})')
-            await util2.send_notif(game.black, file=file, embed=embed)
-        else:
-            await ctx.send(f'Game resigned. Your new rating is {round(data.data_manager.get_rating(ctx.author.id), 3)} ({round(black_delta, 3)})')
-            file, embed = util2.make_embed(
-                game.white, title='Your game has ended', description=f'It was in this position that {ctx.author} resigned the game.\nYour new rating is {round(data.data_manager.get_rating(game.white), 3)} ({round(white_delta, 3)})')
-            await util2.send_notif(game.white, file=file, embed=embed)
-        data.data_manager.delete_game(
-            ctx.author.id, chess.WHITE if ctx.author.id == game.black else chess.BLACK)
+        await self.resign(ctx)
 
 
 def setup(bot):
