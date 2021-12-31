@@ -312,6 +312,7 @@ class Engine(commands.Cog):
         else:
             game.white = person.id
             game.black = ctx.author.id
+        data.data_manager.change_game(game)
 
         file, embed = util2.make_embed(game.white, title='Game started!',
                                        description=(f'White: {await util2.get_name(game.white)}\n'
@@ -386,6 +387,7 @@ class Engine(commands.Cog):
             game.black = ctx.author.id
         game.time_control = time_control
         data.data_manager.change_game(game)
+
         file, embed = util2.make_embed(game.white, title='Game started!',
                                        description=(f'White: {await util2.get_name(game.white)}\n'
                                                     f'Black: {await util2.get_name(game.black)}\n'
