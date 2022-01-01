@@ -244,7 +244,7 @@ class Engine(commands.Cog):
             game.black = botid
         data.data_manager.change_game(game)
         util2 = self.client.get_cog('Util')
-        file, embed = util2.make_embed(game.white, title='Game started!',
+        file, embed = util2.make_embed(ctx.author.id, title='Game started!',
                                        description=(f'White: {await util2.get_name(game.white)}\n'
                                                     f'Black: {await util2.get_name(game.black)}\n'
                                                     'Use `$view` to view the game and use `$move` to make a move.\n'))
