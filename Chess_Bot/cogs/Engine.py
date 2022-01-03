@@ -144,7 +144,7 @@ class Engine(commands.Cog):
         data.data_manager.change_game(game)
 
         file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(game.to_move())}', description='You have moved.')
-        await ctx.message.reply(file=file, embed=embed)
+        await ctx.send(file=file, embed=embed)
 
         if board.is_checkmate():
             white_delta, black_delta = util.update_rating2(
