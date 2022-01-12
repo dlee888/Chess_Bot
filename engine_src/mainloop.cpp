@@ -149,7 +149,17 @@ int main() {
 					curr_state.make_move(curr_state.parse_move(move));
 				}
 			}
-		}
+		} else if (cmnd == "self") {
+            curr_state.load(start_fen);
+			curr_state.print();
+            while (true) {
+                pii move = find_best_move();
+                std::cout << (double)move.first / 100 << " " << to_uci(move.second) << std::endl;
+                curr_state.make_move(move.second);
+				std::cout << curr_state.to_fen() << std::endl;
+                curr_state.print();
+            }
+        }
 	}
 	return 0;
 }

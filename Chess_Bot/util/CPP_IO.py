@@ -19,10 +19,8 @@ async def run_engine(person):
     all_cb = [bot.value for bot in Profile if bot.name.startswith('cb')]
     all_sf = [bot.value for bot in Profile if bot.name.startswith('sf')]
 
-    if isinstance(game, data.Game):
-        bot = game.bot
-    else:
-        bot = game.to_move()
+    bot = game.to_move()
+    orig_fen = game.fen
 
     if bot in all_cb:
         file_in = os.path.join(constants.TEMP_DIR, f'input-{person}.txt')
@@ -30,8 +28,8 @@ async def run_engine(person):
 
         f = open(file_in, 'w')
         time_control = [969, 1264, 3696, 9696, 20000]
-        max_depth = [3, 5, 7, 13, 69]
-        mcts_probs = [1000000000, 200000000, 100000000, 100000000, 30000000]
+        max_depth = [3, 5, 7, 15, 69]
+        mcts_probs = [1000000000, 200000000, 10000000, 100000, 0]
         mcts_depth = [10, 10, 5, 4, 2]
         f.write(
             f'setoption time_limit {time_control[bot]}\n'
@@ -54,6 +52,10 @@ async def run_engine(person):
             if out[i].startswith('GAME: '):
                 game.fen = out[i][6:].strip()
                 break
+        if person in constants.DEVELOPERS:
+            for i in range(len(out) - 1, 0, -1):
+                if out[i].startswith('GAME: '):
+                    return move, game, orig_fen, float(out[i][6:].strip())
         return move, game
     elif bot in all_sf:
         transport, engine = await chess.engine.popen_uci("./stockfish")

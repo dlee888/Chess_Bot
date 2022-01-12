@@ -66,7 +66,7 @@ Value search(Depth depth, Value alpha, Value beta) {
 	bool mate = true;
 	for (int i : moves) {
 		int see_val = curr_state.see((i >> 9) & 7, (i >> 6) & 7, curr_state.to_move);
-		if (depth < 6 && see_val < 0) {
+		if (depth < 5 && see_val < 0) {
 			continue;
 		}
 		curr_state.make_move(i);

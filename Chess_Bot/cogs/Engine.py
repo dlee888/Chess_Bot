@@ -45,7 +45,10 @@ class Engine(commands.Cog):
                     # Person resigned while bot was thinking
                     if data.data_manager.get_game(person) is None:
                         continue
-                    move, game = task.result()
+                    if person in constants.DEVELOPERS:
+                        move, game, fen, eval = task.result()
+                    else:
+                        move, game = task.result()
                     if move is None:
                         continue
                     util2 = self.client.get_cog('Util')
@@ -80,6 +83,8 @@ class Engine(commands.Cog):
                     game.warned = False
                     data.data_manager.change_game(game)
                     file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(game.not_to_move())}', description=f'The bot has moved\n{move}')
+                    if person in constants.DEVELOPERS:
+                        embed.description += f'Original FEN: `{fen}`\nEval: {eval}\n'
                     await util2.send_notif(person, 'The bot has moved', file=file, embed=embed)
                 except Exception as e:
                     logging.error(f'Error in run_engine:\n{e}')
