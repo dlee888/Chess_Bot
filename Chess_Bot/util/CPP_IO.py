@@ -56,12 +56,14 @@ async def run_engine(person):
             for i in range(len(out) - 1, 0, -1):
                 if out[i].startswith('GAME: '):
                     return move, game, orig_fen, float(out[i][6:].strip())
+                elif out[i].strip() == 'BOOK MOVE':
+                    return move, game, orig_fen, 0.0
         return move, game
     elif bot in all_sf:
         transport, engine = await chess.engine.popen_uci("./stockfish")
         board = chess.Board(game.fen)
         skill = [1, 4, 8, 20]
-        times = [0.2, 0.5, 1, 2]
+        times = [0.2, 0.5, 2, 5]
         result = await engine.play(board, chess.engine.Limit(time=times[bot - Profile.sf1.value]), options={"Skill Level": skill[bot - Profile.sf1.value]})
         await engine.quit()
         if result.resigned:

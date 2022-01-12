@@ -4,6 +4,7 @@ from discord.ext import tasks
 
 import logging
 import sys
+import asyncio
 
 from Chess_Bot.util import Utility as util
 from Chess_Bot.util import Data as data
@@ -44,6 +45,7 @@ class Autoposter(commands.Cog):
     async def wait_until_ready(self):
         logging.info('Cog Autoposter: waiting for bot to get ready.')
         await self.client.wait_until_ready()
+        await asyncio.sleep(9.69) # wait for all shards
 
 
 def setup(bot):
