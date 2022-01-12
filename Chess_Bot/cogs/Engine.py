@@ -12,6 +12,7 @@ from typing import Union
 import asyncio
 import json
 import logging
+import traceback
 
 import Chess_Bot.util.Data as data
 import Chess_Bot.util.Utility as util
@@ -84,10 +85,16 @@ class Engine(commands.Cog):
                     data.data_manager.change_game(game)
                     file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(game.not_to_move())}', description=f'The bot has moved\n{move}')
                     if person in constants.DEVELOPERS:
-                        embed.description += f'Original FEN: `{fen}`\nEval: {eval}\n'
+                        embed.description += f'\nOriginal FEN: `{fen}`\nEval: {eval}\n'
                     await util2.send_notif(person, 'The bot has moved', file=file, embed=embed)
-                except Exception as e:
-                    logging.error(f'Error in run_engine:\n{e}')
+                except Exception as exc:
+                    # get data from exception
+                    etype = type(exc)
+                    trace = exc.__traceback__
+
+                    lines = traceback.format_exception(etype, exc, trace)
+                    traceback_text = ''.join(lines)
+                    logging.error(f'Error in run_engine:\n{traceback_text}')
 
     @run_engine.before_loop
     @output_result.before_loop
