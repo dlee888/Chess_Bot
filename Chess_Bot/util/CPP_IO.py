@@ -54,7 +54,7 @@ async def run_engine(person):
                 break
         if person in constants.DEVELOPERS:
             for i in range(len(out) - 1, 0, -1):
-                if out[i].startswith('GAME: '):
+                if out[i].startswith('EVAL: '):
                     return move, game, orig_fen, float(out[i][6:].strip())
                 elif out[i].strip() == 'BOOK MOVE':
                     return move, game, orig_fen, 0.0
