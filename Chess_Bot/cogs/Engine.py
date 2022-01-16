@@ -311,7 +311,7 @@ class Engine(commands.Cog):
                 await challenge_msg.reply('Challenge timed out!')
                 return
             except discord.HTTPException:
-                pass
+                return
         if str(reaction.emoji) == '❌':
             await challenge_msg.reply('Challenge declined / withdrawn')
             return
@@ -384,7 +384,7 @@ class Engine(commands.Cog):
                 await challenge_msg.reply('Challenge timed out!')
                 return
             except discord.HTTPException:
-                pass
+                return
         if str(reaction.emoji) == '❌':
             await challenge_msg.reply('Challenge declined / withdrawn')
             return
