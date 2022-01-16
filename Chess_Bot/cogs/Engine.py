@@ -46,6 +46,8 @@ class Engine(commands.Cog):
                     # Person resigned while bot was thinking
                     if data.data_manager.get_game(person) is None:
                         continue
+                    if task.result() is None:
+                        continue
                     if person in constants.DEVELOPERS:
                         move, game, fen, eval = task.result()
                     else:

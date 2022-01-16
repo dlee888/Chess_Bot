@@ -71,16 +71,17 @@ async def on_command_error(ctx, exc):
         msg = ('Command Error:\n'
                f'Author: {ctx.author} ({ctx.author.id})\n'
                f'Guild: {ctx.guild} ({ctx.guild.id})\n'
+               f'Channel: {ctx.channel} ({ctx.channel.id})\n'
                f'Request: {ctx.message.content}\n'
-               f'{exc}, {type(exc)}'
-               f'```\n{traceback_text}\n```')
+               f'{exc}, {type(exc)}\n'
+               f'```\n{traceback_text}```\n')
     else:
         msg = ('Command Error:\n'
                f'Author: {ctx.author} ({ctx.author.id})\n'
                'Guild: None\n'
                f'Request: {ctx.message.content}\n'
-               f'{exc}, {type(exc)}'
-               f'```\n{traceback_text}\n```')
+               f'{exc}, {type(exc)}\n'
+               f'```\n{traceback_text}```\n')
     logging.error(msg)
 
     if await util.has_roles(ctx.author.id, ['Debugger', 'Tester', 'Mooderator'], bot):
