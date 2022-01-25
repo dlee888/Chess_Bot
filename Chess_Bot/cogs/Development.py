@@ -132,7 +132,12 @@ class Development(commands.Cog):
                 ret = await func()
         except Exception as e:
             value = stdout.getvalue()
-            await ctx.send(f'```py\n{value}{traceback.format_exc()}\n```')
+            if len(f'```py\n{value}{traceback.format_exc()}\n```') < 4000:
+                await ctx.send(f'```py\n{value}{traceback.format_exc()}\n```')
+            else:
+                with open('data/temp/message2.txt', 'w') as f:
+                    f.write(f'{value}\n-----------\n{traceback.format_exc()}')
+                await ctx.send(file=discord.File('data/temp/message2.txt'))
         else:
             value = stdout.getvalue()
             try:
@@ -142,7 +147,12 @@ class Development(commands.Cog):
 
             if ret is None:
                 if value:
-                    await ctx.send(f'```py\n{value}\n```')
+                    try:
+                        await ctx.send(f'```py\n{value}\n```')
+                    except:
+                        with open('data/temp/message.txt', 'w') as f:
+                            f.write(value)
+                        await ctx.send(file=discord.File('data/temp/message.txt'))
             else:
                 self._last_result = ret
                 await ctx.send(f'```py\n{value}{ret}\n```')
