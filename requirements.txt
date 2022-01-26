@@ -4,3 +4,4 @@ dblpy
 psycopg2-binary
 python-chess
 discord-py-slash-command
+pymongo[srv]
