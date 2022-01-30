@@ -112,10 +112,7 @@ Value search(Depth depth, Value alpha, Value beta) {
 		}
 	}
 
-	tt_exists[key] = true;
-	tt_depths[key] = depth;
-	tt_evals[key] = value;
-	tt_hashes[key] = curr_board_hash;
+	replace_tt(key, depth, value, curr_board_hash, curr_state.full_move);
 
 	// printf("done searching, returned %d\n", value);
 	// curr_state.print();
@@ -238,10 +235,7 @@ Value qsearch(Value alpha, Value beta, Depth depth) {
 		}
 	}
 
-	tt_exists[key] = true;
-	tt_depths[key] = depth - qs_depth_floor - Depth(10);
-	tt_evals[key] = value;
-	tt_hashes[key] = curr_board_hash;
+	replace_tt(key, depth - qs_depth_floor - Depth(10), value, curr_board_hash, curr_state.full_move);
 
 	// printf("done qsearching, returned %d\n", value);
 	// curr_state.print();

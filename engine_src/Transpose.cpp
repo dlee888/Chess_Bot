@@ -8,6 +8,7 @@ bool tt_exists[TABLE_SIZE];
 Depth tt_depths[TABLE_SIZE];
 Value tt_evals[TABLE_SIZE];
 Bitstring tt_hashes[TABLE_SIZE];
+int tt_fullmove[TABLE_SIZE];
 
 Bitstring rand_bitstrings[64][13], color_bitstring, en_passant_bistrings[8], castling_bitstrings[4];
 
@@ -34,4 +35,6 @@ void init_table() {
 void clear_table() {
 	std::memset(tt_exists, 0, sizeof(tt_exists));
 	std::memset(tt_depths, 0, sizeof(tt_depths));
+	std::memset(tt_fullmove, 0, sizeof(tt_fullmove));
 }
+

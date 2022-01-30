@@ -1,9 +1,5 @@
 #include "State.h"
 
-#pragma GCC target("avx2")
-#pragma GCC optimize("Ofast")
-#pragma GCC optimization("unroll-loops")
-
 std::vector<int> state::list_moves() {
 	std::vector<int> res;
 	if (to_move) {

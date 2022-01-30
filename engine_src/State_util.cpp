@@ -1,10 +1,6 @@
 #include "State.h"
 #include "psqt.h"
 
-#pragma GCC target("avx2")
-#pragma GCC optimize("Ofast")
-#pragma GCC optimization("unroll-loops")
-
 void state::replace_board(int row, int col, int piece) {
 	int orig_piece = board[row][col];
 	board_hash ^= rand_bitstrings[(row << 3) + col][orig_piece + 6];

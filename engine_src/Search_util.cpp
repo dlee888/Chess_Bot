@@ -21,6 +21,16 @@ bool done_searching = false;
 
 int futility_margin(int depth, bool improving) { return (175 - 50 * improving) * depth; }
 
+void replace_tt(Bitstring key, Depth depth, Value value, Bitstring hash, int fullmove) {
+	if (!tt_exists[key] || (tt_exists[key] && tt_fullmove[key] <= fullmove)) {
+		tt_exists[key] = true;
+		tt_fullmove[key] = fullmove;
+		tt_depths[key] = depth;
+		tt_evals[key] = value;
+		tt_hashes[key] = hash;
+	}
+}
+
 #if not defined __WIN32__ and not defined __WIN64__
 void break_after(int time) {
 	int time_left = time;
@@ -74,7 +84,7 @@ pii moves_loop() {
 		tb_hits = 0;
 		qsearch_hits = 0;
 		depth_qsearched = DEPTH_ZERO;
-		qs_depth_floor = std::max(Depth(-2 * curr_depth + 2), (Depth)-7);
+		qs_depth_floor = std::max(Depth(-curr_depth + 1), (Depth)-6);
 
 		int start_time = clock();
 
