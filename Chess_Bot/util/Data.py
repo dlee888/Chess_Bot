@@ -35,6 +35,7 @@ class Game2:
         self.warned = dict['warned']
         self.time_control = dict['time_control']
         self.fen = dict['fen']
+        return self
 
     def turn(self):
         board = chess.Board(self.fen)
@@ -308,34 +309,25 @@ class MongoData:
         self.client = MongoClient(url)
         self.db = self.client.database
 
+    def transfer_data(self):
+        games = data_manager.get_games()
+        self.db.insert_many([g.to_dict() for g in games])
+
     def get_game(self, person):
         white = self.db.games.find({'white': person})
         black = self.db.games.find({'black': person})
-        rows = black + white
+        rows = [x for x in white] + [x for x in black]
         if len(rows) == 0:
             return None
         return Game2().load_dict(rows[0])
 
     def get_games(self):
-        games = []
-        rows = self.execute('SELECT * FROM games2')
-        for row in rows:
-            games.append(Game2(row))
-        return games
+        games = self.db.games.find()
+        return [Game2().load_dict(g) for g in games]
 
     def change_game(self, new_game):
-        cur = self.get_conn().cursor()
-        cur.execute(
-            f'DELETE FROM games2 WHERE white = {new_game.white} and black = {new_game.black};')
-        cur.execute('INSERT INTO games2 VALUES (%s, %s, %s, %s, %s, %s)', (
-            new_game.fen,
-            new_game.white,
-            new_game.black,
-            new_game.last_moved,
-            int(new_game.warned),
-            new_game.time_control
-        ))
-        self.conn.commit()
+        self.db.games.update_one({'white': new_game.white, 'black': new_game.black}, {
+                                 '$set': new_game.to_dict()})
 
     def get_rating(self, person):
         rows = self.execute('SELECT * FROM users WHERE id = %s;', (person,))

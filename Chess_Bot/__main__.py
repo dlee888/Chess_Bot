@@ -24,7 +24,8 @@ async def get_prefix(bot, message):
 
 bot = commands.AutoShardedBot(command_prefix=get_prefix, help_command=None,
                    status='$help for commands, $botinfo for more information')
-slash = SlashCommand(bot, sync_commands=True)
+if not '-beta' in sys.argv:
+    slash = SlashCommand(bot, sync_commands=True)
 
 
 @bot.event

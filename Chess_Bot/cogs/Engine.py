@@ -1,7 +1,6 @@
 from discord.ext import commands
 from discord.ext import tasks
 
-from discord_slash import SlashContext
 from discord_slash import cog_ext
 from discord_slash.model import SlashCommandOptionType
 from discord_slash.utils.manage_commands import create_option
@@ -13,6 +12,7 @@ import asyncio
 import json
 import logging
 import traceback
+import sys
 
 import Chess_Bot.util.Data as data
 import Chess_Bot.util.Utility as util
@@ -25,8 +25,9 @@ class Engine(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.thonking = {}
-        self.run_engine.start()
-        self.output_result.start()
+        if not '-beta' in sys.argv:
+            self.run_engine.start()
+            self.output_result.start()
 
     @tasks.loop(seconds=3)
     async def run_engine(self):
