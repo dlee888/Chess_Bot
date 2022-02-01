@@ -347,7 +347,7 @@ class MongoData:
         rows = self.db.users.find()
         ratings = {}
         for row in rows:
-            if row['rating'] is not None:
+            if rating in row.keys() and row['rating'] is not None:
                 ratings[row['id']] = row['rating']
         return ratings
 
