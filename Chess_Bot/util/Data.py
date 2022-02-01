@@ -368,7 +368,7 @@ class MongoData:
     def get_stats(self, person):
         """Returns (lost, won, draw)"""
         data = list(self.db.users.find({'id': person}))
-        if len(data) == 0 or not 'won' in data.keys() or data[0]['won'] is None:
+        if len(data) == 0 or not 'won' in data[0].keys() or data[0]['won'] is None:
             return None
         return data[0]['lost'], data[0]['won'], data[0]['draw']
 
@@ -404,13 +404,13 @@ class MongoData:
 
     def get_theme(self, person):
         data = list(self.db.users.find({'id': person}))
-        if len(data) == 0 or not 'theme' in data.keys() or data[0]['theme'] is None:
+        if len(data) == 0 or not 'theme' in data[0].keys() or data[0]['theme'] is None:
             return 'default'
         return data[0]['theme']
 
     def get_notifchannel(self, person):
         data = list(self.db.users.find({'id': person}))
-        if len(data) == 0 or not 'notifchannel' in data.keys() or data[0]['notifchannel'] == -1:
+        if len(data) == 0 or not 'notifchannel' in data[0].keys() or data[0]['notifchannel'] == -1:
             return None
         return data[0]['notifchannel']
 
