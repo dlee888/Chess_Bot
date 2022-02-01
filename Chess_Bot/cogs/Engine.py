@@ -25,7 +25,7 @@ class Engine(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.thonking = {}
-        if not '-beta' in sys.argv:
+        if not '-beta' in sys.argv or '-run-engine' in sys.argv:
             self.run_engine.start()
             self.output_result.start()
 

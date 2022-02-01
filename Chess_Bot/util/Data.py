@@ -84,14 +84,9 @@ class Game2:
 class Data:
 
     def __init__(self, url):
-        if not '-beta' in sys.argv or '-use-real-db' in sys.argv:
-            self.DATABASE_URL = url
+        self.DATABASE_URL = url
 
-            self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
-        else:
-            self.DATABASE_URL = None
-            self.conn = sqlite3.connect(os.path.join(
-                constants.DB_DIR, 'database'))
+        self.conn = psycopg2.connect(self.DATABASE_URL, sslmode='require')
 
         create_games2_table = ('CREATE TABLE IF NOT EXISTS games2 ('
                                'position text,'
@@ -298,7 +293,7 @@ class Data:
         self.conn.commit()
 
 
-data_manager = Data(os.getenv('NEW_DB_URL'))
+old_data = Data(os.getenv('NEW_DB_URL'))
 
 
 class MongoData:
@@ -310,8 +305,21 @@ class MongoData:
         self.db = self.client.database
 
     def transfer_data(self):
-        games = data_manager.get_games()
-        self.db.insert_many([g.to_dict() for g in games])
+        games = old_data.get_games()
+        self.db.games.drop()
+        self.db.games.insert_many([g.to_dict() for g in games])
+        print('Games transferred')
+        rows = old_data.execute('SELECT * FROM prefixes')
+        update = [{'id': r[0], 'prefix': r[1]} for r in rows]
+        self.db.prefixes.drop()
+        self.db.prefixes.insert_many(update)
+        print('Prefixes transferred')
+        rows = old_data.execute(f'SELECT * FROM users')
+        update = [{'id': r[0], 'rating': r[1], 'lost': r[2], 'won': r[3],
+                   'draw': r[4], 'theme': r[5], 'notifchannel': r[6]} for r in rows]
+        self.db.users.drop()
+        self.db.users.insert_many(update)
+        print('User data transferred')
 
     def get_game(self, person):
         white = self.db.games.find({'white': person})
@@ -327,69 +335,58 @@ class MongoData:
 
     def change_game(self, new_game):
         self.db.games.update_one({'white': new_game.white, 'black': new_game.black}, {
-                                 '$set': new_game.to_dict()})
+                                 '$set': new_game.to_dict()}, upsert=True)
 
     def get_rating(self, person):
-        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person,))
-        if len(rows) == 0:
+        data = list(self.db.users.find({'id': person}))
+        if len(data) == 0:
             return None
-        return rows[0][1]
+        return data[0]['rating']
 
     def get_ratings(self):
-        rows = self.execute('SELECT * FROM users')
+        rows = self.db.users.find()
         ratings = {}
         for row in rows:
-            if row[1] is not None:
-                ratings[row[0]] = row[1]
+            if row['rating'] is not None:
+                ratings[row['id']] = row['rating']
         return ratings
 
     def change_rating(self, person, new_rating):
-        if len(self.execute('SELECT * FROM users where id = %s', (person,))) == 0:
-            self.execute('INSERT INTO users (id) VALUES (%s)', (person,))
-        self.execute('UPDATE users SET rating = %s WHERE id = %s;',
-                     (new_rating, person))
+        self.db.users.update_one(
+            {'id': person}, {'$set': {'rating': new_rating}}, upsert=True)
 
     def get_prefix(self, guild):
-        cur = self.get_conn().cursor()
-        cur.execute(f'SELECT * FROM prefixes WHERE id = {guild};')
-        rows = cur.fetchall()
-
+        rows = list(self.db.guilds.find({'id': guild}))
         if len(rows) == 0:
             return '$'
-        return rows[0][1]
+        return rows[0]['prefix']
 
     def change_prefix(self, guild, new_prefix):
-        cur = self.get_conn().cursor()
-        cur.execute(f'DELETE FROM prefixes WHERE id = {guild};')
-        cur.execute('INSERT INTO prefixes VALUES (%s, %s);',
-                    (guild, new_prefix))
-
-        self.conn.commit()
+        self.db.guilds.update_one(
+            {'id': guild}, {'$set': {'prefix': new_prefix}}, upsert=True)
 
     def get_stats(self, person):
-        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person,))
-        if len(rows) == 0 or rows[0][2] is None:
-            return 0, 0, 0
-        return rows[0][2], rows[0][3], rows[0][4]
+        """Returns (lost, won, draw)"""
+        data = list(self.db.users.find({'id': person}))
+        if len(data) == 0 or data[0]['won'] is None:
+            return None
+        return data[0]['lost'], data[0]['won'], data[0]['draw']
 
     def change_stats(self, person, lost, won, drew):
-        if len(self.execute('SELECT * FROM users where id = %s', (person,))) == 0:
-            self.execute('INSERT INTO users (id) VALUES (%s)', (person,))
-        self.execute(
-            'UPDATE users SET lost = %s, won = %s, drew = %s WHERE id = %s', (lost, won, drew, person))
+        self.db.users.update_one(
+            {'id': person}, {'$set': {'lost': lost, 'won': won, 'draw': drew}}, upsert=True)
 
     def total_games(self):
-        rows = self.execute('SELECT * FROM users;')
+        rows = list(self.db.users.find())
         ans = 0
         for row in rows:
-            if row[2] is not None and row[3] is not None and row[4] is not None:
-                ans += row[2] + row[3] + row[4]
+            if row['lost'] is not None and row['won'] is not None and row['draw'] is not None:
+                ans += row['lost'] + row['won'] + row['draw']
         return ans // 2
 
     def delete_game(self, person, winner):
-        cur = self.get_conn().cursor()
         game = self.get_game(person)
-
+        self.db.games.delete_one(game.to_dict())
         white_lost, white_won, white_draw = self.get_stats(game.white)
         black_lost, black_won, black_draw = self.get_stats(game.black)
         if winner is not None:
@@ -404,59 +401,43 @@ class MongoData:
                 black_draw += 1
         self.change_stats(game.white, white_lost, white_won, white_draw)
         self.change_stats(game.black, black_lost, black_won, black_draw)
-        cur.execute(
-            f'DELETE FROM games2 WHERE white = {game.white} and black = {game.black};')
-
-        self.conn.commit()
 
     def get_theme(self, person):
-        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person,))
-        if len(rows) == 0 or rows[0][5] is None:
+        data = list(self.db.users.find({'id': person}))
+        if len(data) == 0 or data[0]['theme'] is None:
             return 'default'
-        return rows[0][5]
+        return data[0]['theme']
 
     def get_notifchannel(self, person):
-        rows = self.execute('SELECT * FROM users WHERE id = %s;', (person,))
-        if len(rows) == 0 or rows[0][6] == -1:
+        data = list(self.db.users.find({'id': person}))
+        if len(data) == 0 or data[0]['notifchannel'] == -1:
             return None
-        return rows[0][6]
+        return data[0]['notifchannel']
 
     def change_settings(self, person, *, new_theme=None, new_notif=None):
-        if len(self.execute('SELECT * FROM users where id = %s', (person,))) == 0:
-            self.execute('INSERT INTO users (id) VALUES (%s)', (person,))
         if new_theme is not None:
-            self.execute(
-                'UPDATE users SET theme = %s WHERE id = %s', (new_theme, person))
+            self.db.users.update_one(
+                {'id': person}, {'$set': {'theme': new_theme}}, upsert=True)
         if new_notif is not None:
-            self.execute(
-                'UPDATE users SET notifchannel = %s WHERE id = %s', (new_notif, person))
+            self.db.users.update_one(
+                {'id': person}, {'$set': {'notifchannel': new_notif}}, upsert=True)
 
     def change_theme(self, person, new_theme):
         self.change_settings(person, new_theme=new_theme)
 
     def has_claimed(self, person):
-        cur = self.get_conn().cursor()
-        cur.execute(f'SELECT * FROM votes WHERE id = {person}')
-        rows = cur.fetchall()
-
+        rows = list(self.db.votes.find({'id': person}))
         return len(rows) == 1
 
     def get_claimed(self):
-        cur = self.get_conn().cursor()
-        cur.execute(f'SELECT * FROM votes')
-        rows = cur.fetchall()
-        return rows
+        rows = self.db.votes.find()
+        return [x['id'] for x in rows]
 
     def add_vote(self, person):
-        cur = self.get_conn().cursor()
-        cur.execute(f'DELETE FROM votes WHERE id = {person}')
-        cur.execute(f'INSERT INTO votes VALUES ({person})')
-        self.conn.commit()
+        self.db.votes.insert_one({'id': person})
 
     def remove_vote(self, person):
-        cur = self.get_conn().cursor()
-        cur.execute(f'DELETE FROM votes WHERE id = {person}')
-        self.conn.commit()
+        self.db.votes.delete_one({'id': person})
 
 
-mongo_manager = MongoData(os.getenv('MONGODB_URL'))
+data_manager = MongoData(os.getenv('MONGODB_URL'))

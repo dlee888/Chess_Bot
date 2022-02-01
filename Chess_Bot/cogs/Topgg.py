@@ -4,10 +4,9 @@ from discord.ext import commands, tasks
 
 from discord_slash import SlashContext
 from discord_slash import cog_ext
-from discord_slash.model import SlashCommandOptionType
-from discord_slash.utils.manage_commands import create_option
 
 import os
+import logging
 
 import Chess_Bot.util.Data as data
 from Chess_Bot import constants
@@ -18,14 +17,15 @@ class Topgg(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.dbl_token = os.environ.get('DBL_TOKEN')
-        self.password = os.environ.get('DBL_PASSWORD')
-        if self.password is not None:
+        if self.dbl_token is None:
             self.dbl_client = dbl.DBLClient(
-                self.client, self.dbl_token, autopost=True, webhook_path='/dblwebhook', webhook_auth=self.password, webhook_port=5000)
+                self.client, self.dbl_token, autopost=True)
             self.reset_votes.start()
+        else:
+            self.dbl_client = None
 
     async def on_guild_post(self):
-        print('Posted stats on top.gg')
+        logging.info('Posted stats on top.gg')
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
@@ -97,16 +97,6 @@ class Topgg(commands.Cog):
     @reset_votes.before_loop
     async def wait_until_ready(self):
         await self.client.wait_until_ready()
-
-    @commands.Cog.listener()
-    async def on_dbl_vote(data):
-        """An event that is called whenever someone votes for the bot on top.gg."""
-        print(f"Received an upvote:\n{data}")
-
-    @commands.Cog.listener()
-    async def on_dbl_test(data):
-        """An event that is called whenever someone tests the webhook system for your bot on top.gg."""
-        print(f"Received a test upvote:\n{data}")
 
 
 def setup(bot):
