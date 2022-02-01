@@ -356,13 +356,13 @@ class MongoData:
             {'id': person}, {'$set': {'rating': new_rating}}, upsert=True)
 
     def get_prefix(self, guild):
-        rows = list(self.db.guilds.find({'id': guild}))
+        rows = list(self.db.prefixes.find({'id': guild}))
         if len(rows) == 0:
             return '$'
         return rows[0]['prefix']
 
     def change_prefix(self, guild, new_prefix):
-        self.db.guilds.update_one(
+        self.db.prefixes.update_one(
             {'id': guild}, {'$set': {'prefix': new_prefix}}, upsert=True)
 
     def get_stats(self, person):
