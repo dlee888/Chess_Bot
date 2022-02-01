@@ -339,7 +339,7 @@ class MongoData:
 
     def get_rating(self, person):
         data = list(self.db.users.find({'id': person}))
-        if len(data) == 0:
+        if len(data) == 0 or not 'rating' in data[0].keys():
             return None
         return data[0]['rating']
 
