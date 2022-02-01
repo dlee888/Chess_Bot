@@ -369,7 +369,7 @@ class MongoData:
         """Returns (lost, won, draw)"""
         data = list(self.db.users.find({'id': person}))
         if len(data) == 0 or not 'won' in data[0].keys() or data[0]['won'] is None:
-            return None
+            return 0, 0, 0
         return data[0]['lost'], data[0]['won'], data[0]['draw']
 
     def change_stats(self, person, lost, won, drew):
