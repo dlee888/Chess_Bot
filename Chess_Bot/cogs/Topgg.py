@@ -17,7 +17,7 @@ class Topgg(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.dbl_token = os.environ.get('DBL_TOKEN')
-        if self.dbl_token is None:
+        if self.dbl_token is not None:
             self.dbl_client = dbl.DBLClient(
                 self.client, self.dbl_token, autopost=True)
             self.reset_votes.start()
