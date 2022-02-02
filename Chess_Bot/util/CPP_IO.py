@@ -67,12 +67,16 @@ async def run_engine(person):
         result = await engine.play(board, chess.engine.Limit(time=times[bot - Profile.sf1.value]), options={"Skill Level": skill[bot - Profile.sf1.value]})
         await engine.quit()
         if result.resigned:
+            if person in constants.DEVELOPERS:
+                return 'RESIGN', game, orig_fen, 0
             return 'RESIGN', game
         else:
             if result.move is None:
                 return None, None
             san = board.san_and_push(result.move)
             game.fen = board.fen(en_passant='fen')
+            if person in constants.DEVELOPERS:
+                return san, game, orig_fen, 0
             return san, game
     # elif game.bot == Profile.cbnnue.value:
     #     file_in = os.path.join(constants.TEMP_DIR, f'input-{person}.txt')
