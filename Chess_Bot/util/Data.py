@@ -356,20 +356,20 @@ class MongoData:
             {'id': person}, {'$set': {'rating': new_rating}}, upsert=True)
 
     def get_prefix(self, guild):
-        rows = list(self.db.guilds.find({'id': guild}))
+        rows = list(self.db.prefixes.find({'id': guild}))
         if len(rows) == 0:
             return '$'
         return rows[0]['prefix']
 
     def change_prefix(self, guild, new_prefix):
-        self.db.guilds.update_one(
+        self.db.prefixes.update_one(
             {'id': guild}, {'$set': {'prefix': new_prefix}}, upsert=True)
 
     def get_stats(self, person):
         """Returns (lost, won, draw)"""
         data = list(self.db.users.find({'id': person}))
         if len(data) == 0 or not 'won' in data[0].keys() or data[0]['won'] is None:
-            return None
+            return 0, 0, 0
         return data[0]['lost'], data[0]['won'], data[0]['draw']
 
     def change_stats(self, person, lost, won, drew):
