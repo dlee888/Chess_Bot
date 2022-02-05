@@ -88,7 +88,7 @@ class Timer(commands.Cog):
         util2 = self.client.get_cog('Util')
         for game in games:
             if game.time_left() < 0:
-                if game.to_move() == chess.WHITE:
+                if game.turn() == chess.WHITE:
                     white_delta, black_delta = util.update_rating2(
                         game.white, game.black, 1)
                     await util2.send_notif(game.white,
