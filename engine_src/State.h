@@ -93,17 +93,17 @@ class state {
 
 	bool is_check() {
 		if (to_move) {
-			return attacking(piecelists[WK + 6][0].first, piecelists[WK + 6][0].second, true) != 7;
+			return attacking(piecelists[WK + 6].front().first, piecelists[WK + 6].front().second, true) != 7;
 		} else {
-			return attacking(piecelists[BK + 6][0].first, piecelists[BK + 6][0].second, false) != 7;
+			return attacking(piecelists[BK + 6].front().first, piecelists[BK + 6].front().second, false) != 7;
 		}
 	}
 
 	bool king_attacked() {
 		if (!to_move) {
-			return attacking(piecelists[WK + 6][0].first, piecelists[WK + 6][0].second, true) != 7;
+			return attacking(piecelists[WK + 6].front().first, piecelists[WK + 6].front().second, true) != 7;
 		} else {
-			return attacking(piecelists[BK + 6][0].first, piecelists[BK + 6][0].second, false) != 7;
+			return attacking(piecelists[BK + 6].front().first, piecelists[BK + 6].front().second, false) != 7;
 		}
 	}
 };

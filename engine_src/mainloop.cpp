@@ -138,11 +138,7 @@ int main() {
 				curr_state.print();
 				std::string move;
 				std::cin >> move;
-				if (move == "see") {
-					int row, col, color;
-					std::cin >> row >> col >> color;
-					int see = curr_state.see(row, col, color);
-					std::cout << "SEE result: " << see << std::endl;
+				if (move == "debug") {
 				} else if (move == "fen") {
 					std::cout << curr_state.to_fen() << std::endl;
 				} else {

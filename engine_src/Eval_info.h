@@ -3,6 +3,7 @@
 #include <cassert>
 #include <map>
 #include <vector>
+#include <list>
 
 #include "psqt.h"
 #include "types.h"
