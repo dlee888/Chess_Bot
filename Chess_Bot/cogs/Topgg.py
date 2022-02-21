@@ -90,9 +90,9 @@ class Topgg(commands.Cog):
     async def reset_votes(self):
         votes = data.data_manager.get_claimed()
         for row in votes:
-            status = await self.dbl_client.get_user_vote(row[0])
+            status = await self.dbl_client.get_user_vote(row)
             if status == False:
-                data.data_manager.remove_vote(row[0])
+                data.data_manager.remove_vote(row)
 
     @reset_votes.before_loop
     async def wait_until_ready(self):
