@@ -22,8 +22,13 @@ void state::unmake_move(int move) {
 
 	en_passant_target.pop();
 
-	if (!to_move)
+	if (!to_move) {
 		full_move--;
+	}
+
+	if (move == 0) {
+		return;
+	}
 
 	if (((move >> 18) & 3) == 3) {
 		if (to_move) {

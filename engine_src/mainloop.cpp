@@ -134,6 +134,7 @@ int main() {
 			set_default_options();
 		} else if (cmnd == "test") {
 			curr_state.load(start_fen);
+			std::stack<int> moves;
 			while (true) {
 				curr_state.print();
 				std::string move;
@@ -141,7 +142,11 @@ int main() {
 				if (move == "debug") {
 				} else if (move == "fen") {
 					std::cout << curr_state.to_fen() << std::endl;
+				} else if (move == "undo") {
+					curr_state.unmake_move(moves.top());
+					moves.pop();
 				} else {
+					moves.push(curr_state.parse_move(move));
 					curr_state.make_move(curr_state.parse_move(move));
 				}
 			}
@@ -155,7 +160,15 @@ int main() {
 				std::cout << curr_state.to_fen() << std::endl;
                 curr_state.print();
             }
-        }
+        } else if (cmnd == "count") {
+			std::string fen = read_fen();
+			curr_state.load(fen);
+			for (int i = 1; i < 10; i++) {
+				auto start_time = curr_time();
+				std::cout << "Depth: " << i << " " << count_positions(i) << std::endl;
+				std::cout << "Total time: " << curr_time() - start_time << "ms\n----------------------------------------------------------------" << std::endl;
+			}
+		}
 	}
 	return 0;
 }

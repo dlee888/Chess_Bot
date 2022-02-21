@@ -228,6 +228,9 @@ Next 2 bits: This is also for special moves
 note: the other 10 bits are not used
 */
 int state::parse_move(std::string move) {
+	if (move == "null") {
+		return 0;
+	}
 	char last = move[move.size() - 1];
 	while (last == '!' || last == '?' || last == '+' || last == '#') {
 		move.erase(move.end() - 1);

@@ -53,11 +53,24 @@ Value search(Depth depth, Value alpha, Value beta) {
 	}
 
 	// Razor pruning and extended razor pruning
-	if (depth < 1) {
+	if (depth <= 1) {
 		if (curr_eval + RAZOR_MARGIN < alpha) {
 			// printf("razor prune\n");
 			return qsearch(alpha, beta, DEPTH_ZERO);
 		}
+	}
+
+	// Null move pruning
+	if (depth > 3 && !curr_state.is_check()) {
+		// curr_state.print();
+		curr_state.make_move(0);
+		Value x = -search(depth - Depth(3), -beta, -alpha);
+		// printf("x = %d, beta = %d\n", x, beta);
+		if (x >= beta - TEMPO) {
+			curr_state.unmake_move(0);
+			return beta;
+		}
+		curr_state.unmake_move(0);
 	}
 
 	std::vector<int> moves = curr_state.list_moves();

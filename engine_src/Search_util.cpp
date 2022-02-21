@@ -93,8 +93,12 @@ pii moves_loop() {
 		int best_move = -1;
 		Value evaluation = -RESIGN;
 		for (pii& p : ordered_moves) {
+			// printf("Considering %s\n", curr_state.move_to_string(p.second).c_str());
 			curr_state.make_move(p.second);
+			// curr_state.print();
 			Value x = -search(curr_depth, -VALUE_INFINITE, -evaluation);
+			// printf("x = %d\n", x);
+			// curr_state.print();
 			curr_state.unmake_move(p.second);
 
 			p.first = -x;
