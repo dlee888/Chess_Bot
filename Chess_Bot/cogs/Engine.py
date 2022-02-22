@@ -43,6 +43,9 @@ class Engine(commands.Cog):
         for person, task in thonk:
             if task.done():
                 try:
+                    game.last_moved = time.time()
+                    game.warned = False
+                    data.data_manager.change_game(game)
                     self.thonking.pop(person)
                     # Person resigned while bot was thinking
                     if data.data_manager.get_game(person) is None:
@@ -83,9 +86,6 @@ class Engine(commands.Cog):
                             await util2.send_notif(person, f'Draw.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})', file=file, embed=embed)
                             data.data_manager.delete_game(person, 69)
                         continue
-                    game.last_moved = time.time()
-                    game.warned = False
-                    data.data_manager.change_game(game)
                     file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(game.not_to_move())}', description=f'The bot has moved\n{move}')
                     if person in constants.DEVELOPERS:
                         embed.description += f'\nOriginal FEN: `{fen}`\nEval: {eval}\n'
