@@ -43,9 +43,6 @@ class Engine(commands.Cog):
         for person, task in thonk:
             if task.done():
                 try:
-                    game.last_moved = time.time()
-                    game.warned = False
-                    data.data_manager.change_game(game)
                     self.thonking.pop(person)
                     # Person resigned while bot was thinking
                     if data.data_manager.get_game(person) is None:
@@ -58,6 +55,9 @@ class Engine(commands.Cog):
                         move, game = task.result()
                     if move is None:
                         continue
+                    game.last_moved = time.time()
+                    game.warned = False
+                    data.data_manager.change_game(game)
                     util2 = self.client.get_cog('Util')
                     board = chess.Board(game.fen)
                     if person == game.white:
