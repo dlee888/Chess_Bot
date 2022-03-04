@@ -46,8 +46,7 @@ Value search(Depth depth, Value alpha, Value beta) {
 	}
 
 	// Futility pruning
-	// TODO: implement improving
-	if (depth < 7 && (curr_eval - futility_margin(depth, false) >= beta)) {
+	if (depth < 7 && (curr_eval - futility_margin(depth) >= beta)) {
 		// printf("futility prune: %d\n", curr_eval);
 		return curr_eval;
 	}
@@ -61,7 +60,7 @@ Value search(Depth depth, Value alpha, Value beta) {
 	}
 
 	// Null move pruning
-	if (depth > 3 && !curr_state.is_check()) {
+	if (depth >= 3 && !curr_state.is_check()) {
 		// curr_state.print();
 		curr_state.make_move(0);
 		Value x = -search(depth - Depth(3), -beta, -alpha);
@@ -177,7 +176,7 @@ Value qsearch(Value alpha, Value beta, Depth depth) {
 	// }
 
 	// Futility pruning
-	if (depth - qs_depth_floor < 5 && (curr_eval - futility_margin(depth - qs_depth_floor, false) >= beta)) {
+	if (depth - qs_depth_floor < 5 && (curr_eval - futility_margin(depth - qs_depth_floor) >= beta)) {
 		// printf("futility prune: %d\n", curr_eval);
 		return curr_eval;
 	}

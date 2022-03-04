@@ -185,7 +185,7 @@ class Engine(commands.Cog):
             await util2.send_notif(game.white, file=file1, embed=embed1)
             await util2.send_notif(game.black, file=file2, embed=embed2)
 
-            data.data_manager.delete_game(game.player(), game.black, 69)
+            data.data_manager.delete_game(game.player(), 69)
         else:
             file, embed = util2.make_embed(game.to_move(), title=f'Your game with {await util2.get_name(person)}', description='It is your turn')
             await util2.send_notif(game.to_move(), embed=embed, file=file)

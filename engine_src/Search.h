@@ -32,9 +32,9 @@ Value qsearch(Value, Value, Depth);
 pii find_best_move();
 
 const int RAZOR_MARGIN = 600;
-const int TEMPO = 15;
+const int TEMPO = 25;
 
-int futility_margin(int, bool);
+int futility_margin(int);
 
 extern std::mt19937 rng;
 
