@@ -25,7 +25,7 @@ extern bool use_nnue;
 
 void replace_tt(Bitstring, Depth, Value, Bitstring, int);
 
-Value search(Depth, Value, Value);
+Value search(Depth, Value, Value, bool = true);
 
 Value qsearch(Value, Value, Depth);
 

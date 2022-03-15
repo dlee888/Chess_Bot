@@ -4,7 +4,7 @@ bool break_now = false;
 
 state curr_state;
 
-Value search(Depth depth, Value alpha, Value beta) {
+Value search(Depth depth, Value alpha, Value beta, bool use_nullmove) {
 	nodes++;
 
 	// printf("search(%d, %d, %d)\n", depth, alpha, beta);
@@ -63,7 +63,7 @@ Value search(Depth depth, Value alpha, Value beta) {
 	if (depth >= 3 && !curr_state.is_check()) {
 		// curr_state.print();
 		curr_state.make_move(0);
-		Value x = -search(depth - Depth(3), -beta, -alpha);
+		Value x = -search(depth - Depth(3), -beta, -alpha, false);
 		// printf("x = %d, beta = %d\n", x, beta);
 		if (x >= beta - TEMPO) {
 			curr_state.unmake_move(0);
@@ -107,12 +107,17 @@ Value search(Depth depth, Value alpha, Value beta) {
 	std::stable_sort(ordered_moves.begin(), ordered_moves.end());
 
 	Value value = -VALUE_INFINITE;
-	for (const pii& p : ordered_moves) {
-		int move = p.second;
+	for (int i = 0; i < (int)ordered_moves.size(); i++) {
+		int move = ordered_moves[i].second;
 		// printf("Considering %s\n", curr_state.move_to_string(move).c_str());
 
 		curr_state.make_move(move);
-		Value x = -search(depth - ONE_PLY, -beta, -alpha);
+		Value x;
+		if ((int)ordered_moves.size() * 3 < i * 4) { // late move reduction
+			x = -search(depth - Depth(2), -beta, -alpha, use_nullmove);
+		} else {
+			x = -search(depth - ONE_PLY, -beta, -alpha, use_nullmove);
+		}
 		curr_state.unmake_move(move);
 
 		value = std::max(value, x);
