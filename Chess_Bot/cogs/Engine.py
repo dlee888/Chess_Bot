@@ -152,7 +152,8 @@ class Engine(commands.Cog):
                                                             'You can also enter it in UCI (universal chess interface) notation.\n'
                                                             'For example, e4e5, g1f3, e1e2, etc.\n'
                                                             'For promotions, specify the piece you want to promote to.\n'
-                                                            'For example, `a1=Q`, `b8=R`, `f1=Q`, etc.')))
+                                                            'For example, `a1=Q`, `b8=R`, `f1=Q`, etc.'),
+                                               color=0xff5555))
             return
 
         board.push(move)

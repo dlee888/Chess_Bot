@@ -2,6 +2,11 @@ import discord
 from discord.ext import commands
 import typing
 
+from discord_slash import SlashContext
+from discord_slash import cog_ext
+from discord_slash.model import SlashCommandOptionType
+from discord_slash.utils.manage_commands import create_option
+
 import Chess_Bot.util.Utility as util
 import Chess_Bot.util.Data as data
 from Chess_Bot import constants
@@ -70,6 +75,13 @@ class Mooderation(commands.Cog):
             await ctx.send(f'Changing nickname to "[{new_prefix}] - Chess Bot" failed. Missing permissions')
         except discord.HTTPException:
             pass
+
+    @cog_ext.cog_slash(name='prefix', description='Set a custom prefix for your server', options=[
+        create_option(name='new_prefix', description='The new prefix for your server',
+                      option_type=SlashCommandOptionType.STRING, required=False)
+    ])
+    async def _prefix(self, ctx: SlashContext, new_prefix: str = None):
+        await self.prefix(ctx, new_prefix=new_prefix)
 
     @commands.command(hidden=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
