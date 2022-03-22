@@ -145,11 +145,14 @@ class Engine(commands.Cog):
 
         move = game.parse_move(move)
         if move is None:
-            await ctx.send('Illegal move played. Make sure your move is in SAN (standard algebraic notation).\n'
-                           'For example, Nxe4, Nge5, c4, Ke2, etc.\n'
-                           'More about algebraic notation [here](https://www.chess.com/article/view/chess-notation#algebraic-notation).\n'
-                           'You can also enter it in UCI (universal chess interface) notation.\n'
-                           'For example, e4e5, g1f3, e1e2, etc.')
+            await ctx.send(embed=discord.Embed(title='Illegal move played.',
+                                               description=('Make sure your move is in SAN (standard algebraic notation).\n'
+                                                            'For example, Nxe4, Nge5, c4, Ke2, etc.\n'
+                                                            'More about algebraic notation [here](https://www.chess.com/article/view/chess-notation#algebraic-notation).\n'
+                                                            'You can also enter it in UCI (universal chess interface) notation.\n'
+                                                            'For example, e4e5, g1f3, e1e2, etc.\n'
+                                                            'For promotions, specify the piece you want to promote to.\n'
+                                                            'For example, `a1=Q`, `b8=R`, `f1=Q`, etc.')))
             return
 
         board.push(move)
