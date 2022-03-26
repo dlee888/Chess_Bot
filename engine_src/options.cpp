@@ -10,4 +10,5 @@ void set_default_options() {
 	options["mcts_prob"] = 0; // Probability of a MCTS prune, multiplied by INT_MAX
 	options["mctx_max_depth"] = 4;
 	options["use_nnue"] = 0;
+	options["table_size"] = 2000003;
 }

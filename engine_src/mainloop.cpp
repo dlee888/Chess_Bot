@@ -9,7 +9,7 @@
 std::string nnue_path = "./engine_src/nnue";
 
 void init_everything() {
-	init_table();
+	init_table(options["table_size"]);
 	load_openings();
 	if (options["use_nnue"]) {
 		load_nnue(nnue_path);

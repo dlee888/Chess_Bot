@@ -11,7 +11,7 @@ Value search(Depth depth, Value alpha, Value beta, bool use_nullmove) {
 	// curr_state.print();
 
 	Bitstring curr_board_hash = curr_state.get_hash();
-	Bitstring key = curr_board_hash % TABLE_SIZE;
+	int key = get_key(curr_board_hash);
 
 	if (tt_exists[key] && tt_depths[key] >= depth && tt_hashes[key] == curr_board_hash) {
 		// printf("tt hit, %d\n", tt_evals[key]);
@@ -85,8 +85,9 @@ Value search(Depth depth, Value alpha, Value beta, bool use_nullmove) {
 		if (!curr_state.king_attacked()) {
 			mate = false;
 			Bitstring hash = curr_state.get_hash();
-			if (tt_exists[hash % TABLE_SIZE] && tt_hashes[hash % TABLE_SIZE] == hash) {
-				ordered_moves.push_back({tt_evals[hash % TABLE_SIZE], i});
+			key = get_key(hash);
+			if (tt_exists[key] && tt_hashes[key] == hash) {
+				ordered_moves.push_back({tt_evals[key], i});
 			} else {
 				ordered_moves.push_back({eval(curr_state) + see_val, i});
 			}
@@ -147,7 +148,7 @@ Value qsearch(Value alpha, Value beta, Depth depth) {
 	// curr_state.print();
 
 	Bitstring curr_board_hash = curr_state.get_hash();
-	Bitstring key = curr_board_hash % TABLE_SIZE;
+	int key = get_key(curr_board_hash);
 
 	if (tt_exists[key] && tt_depths[key] >= DEPTH_QS_NO_CHECKS && tt_hashes[key] == curr_board_hash) {
 		// printf("tt hit: %d\n", tt_evals[key]);
@@ -198,9 +199,9 @@ Value qsearch(Value alpha, Value beta, Depth depth) {
 			mate = false;
 			if ((((i >> 15) & 7) != 0) || ((((i >> 18) & 3) == 2) && (((i >> 20) & 3) == 3))) {
 				Bitstring hash = curr_state.get_hash();
-				if (tt_exists[hash % TABLE_SIZE] && tt_hashes[hash % TABLE_SIZE] == hash) {
+				if (tt_exists[key] && tt_hashes[key] == hash) {
 					// printf("using tt for eval of move %s\n", curr_state.move_to_string(i).c_str());
-					ordered_moves.push_back({tt_evals[hash % TABLE_SIZE], i});
+					ordered_moves.push_back({tt_evals[key], i});
 				} else {
 					ordered_moves.push_back({eval(curr_state), i});
 				}
@@ -252,7 +253,7 @@ Value qsearch(Value alpha, Value beta, Depth depth) {
 		}
 	}
 
-	replace_tt(key, depth - qs_depth_floor - Depth(10), value, curr_board_hash, curr_state.full_move);
+	replace_tt(key, DEPTH_QS_NO_CHECKS, value, curr_board_hash, curr_state.full_move);
 
 	// printf("done qsearching, returned %d\n", value);
 	// curr_state.print();

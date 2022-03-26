@@ -57,9 +57,10 @@ pii moves_loop() {
 		curr_state.make_move(i);
 
 		if (!curr_state.king_attacked()) {
-			Bitstring hash = curr_state.get_hash();
-			if (tt_exists[hash % TABLE_SIZE] && tt_hashes[hash % TABLE_SIZE] == hash) {
-				ordered_moves.push_back({tt_evals[hash % TABLE_SIZE], i});
+			Bitboard hash = curr_state.get_hash();
+			int key = get_key(hash);
+			if (tt_exists[key] && tt_hashes[key] == hash) {
+				ordered_moves.push_back({tt_evals[key], i});
 			} else {
 				ordered_moves.push_back({eval(curr_state), i});
 			}

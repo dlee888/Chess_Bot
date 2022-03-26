@@ -488,7 +488,7 @@ class Misc(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def notif(self, ctx):
+    async def notif(self, ctx, type='view'):
         '''
         {
             "name": "notif",
@@ -500,15 +500,6 @@ class Misc(commands.Cog):
             "cooldown": 3
         }
         '''
-        data.data_manager.change_settings(
-            ctx.author.id, new_notif=ctx.channel.id)
-        await ctx.send(f'Notification channel set to `{ctx.channel.name if ctx.guild is not None else "DM channel"}`')
-
-    @cog_ext.cog_slash(name='notif', description='Sets your default channel for recieving notifications.', options=[
-        create_option(name='type', description='View your notification channel, Test a notification, or Set your default channel.',
-                      option_type=SlashCommandOptionType.STRING, required=True, choices=['view', 'test', 'set'])
-    ])
-    async def _notif(self, ctx, type):
         util2 = self.client.get_cog('Util')
         if type == 'view':
             channel = await util2.get_notifchannel(ctx.author.id)
@@ -517,9 +508,18 @@ class Misc(commands.Cog):
             data.data_manager.change_settings(
                 ctx.author.id, new_notif=ctx.channel.id)
             await ctx.send(f'Notification channel set to `{ctx.channel.name if ctx.guild is not None else "DM channel"}`.')
-        else:
+        elif type == 'test':
             await ctx.send(f'You should recieve a test notification. If you do not, try changing your notification channel or changing your settings.')
             await util2.send_notif(ctx.author.id, 'This is a test notification.')
+        else:
+            await ctx.send('Please specify either `view`, `set`, or `test`.')
+
+    @cog_ext.cog_slash(name='notif', description='Sets your default channel for recieving notifications.', options=[
+        create_option(name='type', description='View your notification channel, Test a notification, or Set your default channel.',
+                      option_type=SlashCommandOptionType.STRING, required=True, choices=['view', 'test', 'set'])
+    ])
+    async def _notif(self, ctx, type):
+        await self.notif(ctx, type)
 
 
 def setup(bot):

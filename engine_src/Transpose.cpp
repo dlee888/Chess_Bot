@@ -4,16 +4,24 @@
 
 #include "Transpose.h"
 
-bool tt_exists[TABLE_SIZE];
-Depth tt_depths[TABLE_SIZE];
-Value tt_evals[TABLE_SIZE];
-Bitstring tt_hashes[TABLE_SIZE];
-int tt_fullmove[TABLE_SIZE];
+bool* tt_exists;
+Depth* tt_depths;
+Value* tt_evals;
+Bitstring* tt_hashes;
+int* tt_fullmove;
+
+int table_size;
 
 Bitstring rand_bitstrings[64][13], color_bitstring, en_passant_bistrings[8], castling_bitstrings[4];
 
-void init_table() {
+void init_table(int new_table_size) {
 	clear_table();
+	table_size = new_table_size;
+	tt_exists = new bool[table_size];
+	tt_depths = new Depth[table_size];
+	tt_evals = new Value[table_size];
+	tt_hashes = new Bitstring[table_size];
+	tt_fullmove = new int[table_size];
 
 	Bitstring seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::mt19937_64 generator(seed);
@@ -33,8 +41,9 @@ void init_table() {
 }
 
 void clear_table() {
-	std::memset(tt_exists, 0, sizeof(tt_exists));
-	std::memset(tt_depths, 0, sizeof(tt_depths));
-	std::memset(tt_fullmove, 0, sizeof(tt_fullmove));
+	delete[] tt_exists;
+	delete[] tt_depths;
+	delete[] tt_evals;
+	delete[] tt_hashes;
+	delete[] tt_fullmove;
 }
-

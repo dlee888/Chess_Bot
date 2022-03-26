@@ -56,7 +56,7 @@ class Mooderation(commands.Cog):
             return
 
         if new_prefix is None:
-            await ctx.send(f'This server\'s prefix is "{data.data_manager.get_prefix(ctx.guild.id)}"')
+            await ctx.send(f'This server\'s prefix is `{data.data_manager.get_prefix(ctx.guild.id)}`')
             return
 
         if ctx.author.guild_permissions.administrator == False:
@@ -71,9 +71,7 @@ class Mooderation(commands.Cog):
 
         try:
             await bot.edit(nick=f'[{new_prefix}] - Chess Bot')
-        except discord.Forbidden:
-            await ctx.send(f'Changing nickname to "[{new_prefix}] - Chess Bot" failed. Missing permissions')
-        except discord.HTTPException:
+        except:
             pass
 
     @cog_ext.cog_slash(name='prefix', description='Set a custom prefix for your server', options=[

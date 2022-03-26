@@ -66,7 +66,10 @@ class Topgg(commands.Cog):
 
     @cog_ext.cog_slash(name='vote', description='Claim 5 free rating points for voting for Chess Bot on top.gg')
     async def _vote(self, ctx: SlashContext):
-        voted = await self.dbl_client.get_user_vote(ctx.author.id)
+        try:
+            voted = await self.dbl_client.get_user_vote(ctx.author.id)
+        except:
+            await ctx.send(f'An error occurred. Most likely top.gg is down.')
 
         if not voted:
             await ctx.send('You have not voted!\nPlease vote for Chess Bot at https://top.gg/bot/801501916810838066/vote')
