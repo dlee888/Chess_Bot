@@ -4,11 +4,11 @@
 
 #include "types.h"
 
-extern bool* tt_exists;
-extern Depth* tt_depths;
-extern Value* tt_evals;
-extern Bitstring* tt_hashes;
-extern int* tt_fullmove;
+extern std::vector<bool> tt_exists;
+extern std::vector<Depth> tt_depths;
+extern std::vector<Value> tt_evals;
+extern std::vector<Bitstring> tt_hashes;
+extern std::vector<int> tt_fullmove;
 
 extern int table_size;
 
@@ -18,4 +18,6 @@ void init_table(int);
 void clear_table();
 
 inline int get_key(Bitstring hash) { return hash % table_size; }
+
+void replace_tt(Depth, Value, Bitstring, int);
 #endif // !TRANSPOS_H_INCLUDED

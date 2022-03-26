@@ -21,16 +21,6 @@ bool done_searching = false;
 
 int futility_margin(int depth) { return 150 * depth; }
 
-void replace_tt(Bitstring key, Depth depth, Value value, Bitstring hash, int fullmove) {
-	if (!tt_exists[key] || (tt_exists[key] && tt_fullmove[key] <= fullmove)) {
-		tt_exists[key] = true;
-		tt_fullmove[key] = fullmove;
-		tt_depths[key] = depth;
-		tt_evals[key] = value;
-		tt_hashes[key] = hash;
-	}
-}
-
 #if not defined __WIN32__ and not defined __WIN64__
 void break_after(int time) {
 	int time_left = time;

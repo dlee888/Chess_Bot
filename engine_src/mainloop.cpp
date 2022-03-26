@@ -168,6 +168,10 @@ int main() {
 				std::cout << "Depth: " << i << " " << count_positions(i) << std::endl;
 				std::cout << "Total time: " << curr_time() - start_time << "ms\n----------------------------------------------------------------" << std::endl;
 			}
+		} else if (cmnd == "options") {
+			for (auto [name, value] : options) {
+				std::cout << name << ": " << value << std::endl;
+			}
 		}
 	}
 	return 0;

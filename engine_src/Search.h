@@ -23,8 +23,6 @@ extern unsigned int mcts_prob;
 extern int mcts_depth;
 extern bool use_nnue;
 
-void replace_tt(Bitstring, Depth, Value, Bitstring, int);
-
 Value search(Depth, Value, Value, bool = true);
 
 Value qsearch(Value, Value, Depth);

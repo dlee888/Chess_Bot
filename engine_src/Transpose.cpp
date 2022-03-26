@@ -4,11 +4,11 @@
 
 #include "Transpose.h"
 
-bool* tt_exists;
-Depth* tt_depths;
-Value* tt_evals;
-Bitstring* tt_hashes;
-int* tt_fullmove;
+std::vector<bool> tt_exists;
+std::vector<Depth> tt_depths;
+std::vector<Value> tt_evals;
+std::vector<Bitstring> tt_hashes;
+std::vector<int> tt_fullmove;
 
 int table_size;
 
@@ -17,11 +17,11 @@ Bitstring rand_bitstrings[64][13], color_bitstring, en_passant_bistrings[8], cas
 void init_table(int new_table_size) {
 	clear_table();
 	table_size = new_table_size;
-	tt_exists = new bool[table_size];
-	tt_depths = new Depth[table_size];
-	tt_evals = new Value[table_size];
-	tt_hashes = new Bitstring[table_size];
-	tt_fullmove = new int[table_size];
+	tt_exists.resize(table_size);
+	tt_depths.resize(table_size);
+	tt_evals.resize(table_size);
+	tt_hashes.resize(table_size);
+	tt_fullmove.resize(table_size);
 
 	Bitstring seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::mt19937_64 generator(seed);
@@ -41,9 +41,20 @@ void init_table(int new_table_size) {
 }
 
 void clear_table() {
-	delete[] tt_exists;
-	delete[] tt_depths;
-	delete[] tt_evals;
-	delete[] tt_hashes;
-	delete[] tt_fullmove;
+	tt_exists.clear();
+	tt_depths.clear();
+	tt_evals.clear();
+	tt_hashes.clear();
+	tt_fullmove.clear();
+}
+
+void replace_tt(Depth depth, Value value, Bitstring hash, int fullmove) {
+	int key = get_key(hash);
+	if (!tt_exists[key] || (tt_exists[key] && tt_fullmove[key] + tt_depths[key] <= fullmove + depth)) {
+		tt_exists[key] = true;
+		tt_fullmove[key] = fullmove;
+		tt_depths[key] = depth;
+		tt_evals[key] = value;
+		tt_hashes[key] = hash;
+	}
 }

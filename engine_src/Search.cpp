@@ -130,7 +130,7 @@ Value search(Depth depth, Value alpha, Value beta, bool use_nullmove) {
 		}
 	}
 
-	replace_tt(key, depth, value, curr_board_hash, curr_state.full_move);
+	replace_tt(depth, value, curr_board_hash, curr_state.full_move);
 
 	// printf("done searching, returned %d\n", value);
 	// curr_state.print();
@@ -253,7 +253,7 @@ Value qsearch(Value alpha, Value beta, Depth depth) {
 		}
 	}
 
-	replace_tt(key, DEPTH_QS_NO_CHECKS, value, curr_board_hash, curr_state.full_move);
+	replace_tt(DEPTH_QS_NO_CHECKS, value, curr_board_hash, curr_state.full_move);
 
 	// printf("done qsearching, returned %d\n", value);
 	// curr_state.print();
