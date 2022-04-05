@@ -106,32 +106,41 @@ int state::attacking(int row, int col, bool color) {
 				return 2;
 		}
 		for (int j = 0; j < 4; j++) {
+			int row_final = row, col_final = col;
 			for (int i = 1; i < 8; i++) {
-				if (out_of_bounds(row + dr_bishop[j] * i, col + dc_bishop[j] * i))
+				row_final += dr_bishop[j];
+				col_final += dc_bishop[j];
+				if (out_of_bounds(row_final, col_final))
 					break;
-				if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] == BB)
+				if (board[row_final][col_final] == BB)
 					return 3;
-				if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] != 0)
+				if (board[row_final][col_final] != 0)
 					break;
 			}
 		}
 		for (int j = 0; j < 4; j++) {
+			int row_final = row, col_final = col;
 			for (int i = 1; i < 8; i++) {
-				if (out_of_bounds(row + dr_rook[j] * i, col + dc_rook[j] * i))
+				row_final += dr_rook[j];
+				col_final += dc_rook[j];
+				if (out_of_bounds(row_final, col_final))
 					break;
-				if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] == BR)
+				if (board[row_final][col_final] == BR)
 					return 4;
-				if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] != 0)
+				if (board[row_final][col_final] != 0)
 					break;
 			}
 		}
 		for (int j = 0; j < 8; j++) {
+			int row_final = row, col_final = col;
 			for (int i = 1; i < 8; i++) {
-				if (out_of_bounds(row + dr_queen[j] * i, col + dc_queen[j] * i))
+				row_final += dr_queen[j];
+				col_final += dc_queen[j];
+				if (out_of_bounds(row_final, col_final))
 					break;
-				if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] == BQ)
+				if (board[row_final][col_final] == BQ)
 					return 5;
-				if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] != 0)
+				if (board[row_final][col_final] != 0)
 					break;
 			}
 		}
@@ -157,32 +166,41 @@ int state::attacking(int row, int col, bool color) {
 				return 2;
 		}
 		for (int j = 0; j < 4; j++) {
+			int row_final = row, col_final = col;
 			for (int i = 1; i < 8; i++) {
-				if (out_of_bounds(row + dr_bishop[j] * i, col + dc_bishop[j] * i))
+				row_final += dr_bishop[j];
+				col_final += dc_bishop[j];
+				if (out_of_bounds(row_final, col_final))
 					break;
-				if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] == WB)
+				if (board[row_final][col_final] == WB)
 					return 3;
-				if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] != 0)
+				if (board[row_final][col_final] != 0)
 					break;
 			}
 		}
 		for (int j = 0; j < 4; j++) {
+			int row_final = row, col_final = col;
 			for (int i = 1; i < 8; i++) {
-				if (out_of_bounds(row + dr_rook[j] * i, col + dc_rook[j] * i))
+				row_final += dr_rook[j];
+				col_final += dc_rook[j];
+				if (out_of_bounds(row_final, col_final))
 					break;
-				if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] == WR)
+				if (board[row_final][col_final] == WR)
 					return 4;
-				if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] != 0)
+				if (board[row_final][col_final] != 0)
 					break;
 			}
 		}
 		for (int j = 0; j < 8; j++) {
+			int row_final = row, col_final = col;
 			for (int i = 1; i < 8; i++) {
-				if (out_of_bounds(row + dr_queen[j] * i, col + dc_queen[j] * i))
+				row_final += dr_queen[j];
+				col_final += dc_queen[j];
+				if (out_of_bounds(row_final, col_final))
 					break;
-				if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] == WQ)
+				if (board[row_final][col_final] == WQ)
 					return 5;
-				if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] != 0)
+				if (board[row_final][col_final] != 0)
 					break;
 			}
 		}
@@ -194,111 +212,6 @@ int state::attacking(int row, int col, bool color) {
 		}
 	}
 	return 7;
-}
-// Square of the lowest piece attacking the square
-int state::attacker(int row, int col, bool color) {
-	if (color) {
-		if (!out_of_bounds(row - 1, col - 1)) {
-			if (board[row - 1][col - 1] == BP)
-				return make_square(row - 1, col - 1);
-		}
-		if (!out_of_bounds(row - 1, col + 1)) {
-			if (board[row - 1][col + 1] == BP)
-				return make_square(row - 1, col + 1);
-		}
-		for (int i = 0; i < 8; i++) {
-			if (!out_of_bounds(row + dr_knight[i], col + dc_knight[i]) && board[row + dr_knight[i]][col + dc_knight[i]] == BN) {
-				return make_square(row + dr_knight[i], col + dc_knight[i]);
-			}
-		}
-		for (int j = 0; j < 4; j++) {
-			for (int i = 1; i < 8; i++) {
-				if (out_of_bounds(row + dr_bishop[j] * i, col + dc_bishop[j] * i))
-					break;
-				if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] == BB)
-					return make_square(row + dr_bishop[j] * i, col + dc_bishop[j] * i);
-				if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] != 0)
-					break;
-			}
-		}
-		for (int j = 0; j < 4; j++) {
-			for (int i = 1; i < 8; i++) {
-				if (out_of_bounds(row + dr_rook[j] * i, col + dc_rook[j] * i))
-					break;
-				if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] == BR)
-					return make_square(row + dr_rook[j] * i, col + dc_rook[j] * i);
-				if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] != 0)
-					break;
-			}
-		}
-		for (int j = 0; j < 8; j++) {
-			for (int i = 1; i < 8; i++) {
-				if (out_of_bounds(row + dr_queen[j] * i, col + dc_queen[j] * i))
-					break;
-				if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] == BQ)
-					return make_square(row + dr_queen[j] * i, col + dc_queen[j] * i);
-				if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] != 0)
-					break;
-			}
-		}
-		for (int i = 0; i < 8; i++) {
-			if (out_of_bounds(row + dr_king[i], col + dc_king[i]))
-				continue;
-			if (board[row + dr_king[i]][col + dc_king[i]] == BK)
-				return make_square(row + dr_king[i], col + dc_king[i]);
-		}
-	} else {
-		if (!out_of_bounds(row + 1, col - 1)) {
-			if (board[row + 1][col - 1] == WP)
-				return make_square(row + 1, col - 1);
-		}
-		if (!out_of_bounds(row + 1, col + 1)) {
-			if (board[row + 1][col + 1] == WP)
-				return make_square(row + 1, col + 1);
-		}
-		for (int i = 0; i < 8; i++) {
-			if (!out_of_bounds(row + dr_knight[i], col + dc_knight[i]) && board[row + dr_knight[i]][col + dc_knight[i]] == WN) {
-				return make_square(row + dr_knight[i], col + dc_knight[i]);
-			}
-		}
-		for (int j = 0; j < 4; j++) {
-			for (int i = 1; i < 8; i++) {
-				if (out_of_bounds(row + dr_bishop[j] * i, col + dc_bishop[j] * i))
-					break;
-				if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] == WB)
-					return make_square(row + dr_bishop[j] * i, col + dc_bishop[j] * i);
-				if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] != 0)
-					break;
-			}
-		}
-		for (int j = 0; j < 4; j++) {
-			for (int i = 1; i < 8; i++) {
-				if (out_of_bounds(row + dr_rook[j] * i, col + dc_rook[j] * i))
-					break;
-				if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] == WR)
-					return make_square(row + dr_rook[j] * i, col + dc_rook[j] * i);
-				if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] != 0)
-					break;
-			}
-		}
-		for (int j = 0; j < 8; j++) {
-			for (int i = 1; i < 8; i++) {
-				if (out_of_bounds(row + dr_queen[j] * i, col + dc_queen[j] * i))
-					break;
-				if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] == WQ)
-					return make_square(row + dr_queen[j] * i, col + dc_queen[j] * i);
-				if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] != 0)
-					break;
-			}
-		}
-		for (int i = 0; i < 8; i++) {
-			if (out_of_bounds(row + dr_king[i], col + dc_king[i]))
-				continue;
-			if (board[row + dr_king[i]][col + dc_king[i]] == WK)
-				return make_square(row + dr_king[i], col + dc_king[i]);
-		}
-	}
-	return -1;
 }
 
 // Static exchange evaluation function
@@ -325,32 +238,41 @@ int state::see(int row, int col, bool color) {
 			black_attacking.push_back(2);
 	}
 	for (int j = 0; j < 4; j++) {
+		int row_final = row, col_final = col;
 		for (int i = 1; i < 8; i++) {
-			if (out_of_bounds(row + dr_bishop[j] * i, col + dc_bishop[j] * i))
+			row_final += dr_bishop[j];
+			col_final += dc_bishop[j];
+			if (out_of_bounds(row_final, col_final))
 				break;
-			if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] == BB)
+			if (board[row_final][col_final] == BB)
 				black_attacking.push_back(3);
-			if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] != 0)
+			if (board[row_final][col_final] != 0)
 				break;
 		}
 	}
 	for (int j = 0; j < 4; j++) {
+		int row_final = row, col_final = col;
 		for (int i = 1; i < 8; i++) {
-			if (out_of_bounds(row + dr_rook[j] * i, col + dc_rook[j] * i))
+			row_final += dr_rook[j];
+			col_final += dc_rook[j];
+			if (out_of_bounds(row_final, col_final))
 				break;
-			if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] == BR)
+			if (board[row_final][col_final] == BR)
 				black_attacking.push_back(4);
-			if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] != 0)
+			if (board[row_final][col_final] != 0)
 				break;
 		}
 	}
 	for (int j = 0; j < 8; j++) {
+		int row_final = row, col_final = col;
 		for (int i = 1; i < 8; i++) {
-			if (out_of_bounds(row + dr_queen[j] * i, col + dc_queen[j] * i))
+			row_final += dr_queen[j];
+			col_final += dc_queen[j];
+			if (out_of_bounds(row_final, col_final))
 				break;
-			if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] == BQ)
+			if (board[row_final][col_final] == BQ)
 				black_attacking.push_back(5);
-			if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] != 0)
+			if (board[row_final][col_final] != 0)
 				break;
 		}
 	}
@@ -375,32 +297,41 @@ int state::see(int row, int col, bool color) {
 			white_attacking.push_back(2);
 	}
 	for (int j = 0; j < 4; j++) {
+		int row_final = row, col_final = col;
 		for (int i = 1; i < 8; i++) {
-			if (out_of_bounds(row + dr_bishop[j] * i, col + dc_bishop[j] * i))
+			row_final += dr_bishop[j];
+			col_final += dc_bishop[j];
+			if (out_of_bounds(row_final, col_final))
 				break;
-			if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] == WB)
+			if (board[row_final][col_final] == WB)
 				white_attacking.push_back(3);
-			if (board[row + dr_bishop[j] * i][col + dc_bishop[j] * i] != 0)
+			if (board[row_final][col_final] != 0)
 				break;
 		}
 	}
 	for (int j = 0; j < 4; j++) {
+		int row_final = row, col_final = col;
 		for (int i = 1; i < 8; i++) {
-			if (out_of_bounds(row + dr_rook[j] * i, col + dc_rook[j] * i))
+			row_final += dr_rook[j];
+			col_final += dc_rook[j];
+			if (out_of_bounds(row_final, col_final))
 				break;
-			if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] == WR)
+			if (board[row_final][col_final] == WR)
 				white_attacking.push_back(4);
-			if (board[row + dr_rook[j] * i][col + dc_rook[j] * i] != 0)
+			if (board[row_final][col_final] != 0)
 				break;
 		}
 	}
 	for (int j = 0; j < 8; j++) {
+		int row_final = row, col_final = col;
 		for (int i = 1; i < 8; i++) {
-			if (out_of_bounds(row + dr_queen[j] * i, col + dc_queen[j] * i))
+			row_final += dr_queen[j];
+			col_final += dc_queen[j];
+			if (out_of_bounds(row_final, col_final))
 				break;
-			if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] == WQ)
+			if (board[row_final][col_final] == WQ)
 				white_attacking.push_back(5);
-			if (board[row + dr_queen[j] * i][col + dc_queen[j] * i] != 0)
+			if (board[row_final][col_final] != 0)
 				break;
 		}
 	}

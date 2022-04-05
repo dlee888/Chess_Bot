@@ -77,8 +77,10 @@ std::vector<int> state::list_moves() {
 		}
 		for (const pii& p : piecelists[WB + 6]) {
 			for (int j = 0; j < 4; j++) {
+				int row_final = p.first, col_final = p.second;
 				for (int i = 1; i < 8; i++) {
-					int row_final = p.first + dr_bishop[j] * i, col_final = p.second + dc_bishop[j] * i;
+					row_final += dr_bishop[j];
+					col_final += dc_bishop[j];
 					if (out_of_bounds(row_final, col_final) || board[row_final][col_final] > 0) {
 						break;
 					}
@@ -92,8 +94,10 @@ std::vector<int> state::list_moves() {
 		}
 		for (const pii& p : piecelists[WR + 6]) {
 			for (int j = 0; j < 4; j++) {
+				int row_final = p.first, col_final = p.second;
 				for (int i = 1; i < 8; i++) {
-					int row_final = p.first + dr_rook[j] * i, col_final = p.second + dc_rook[j] * i;
+					row_final += dr_rook[j];
+					col_final += dc_rook[j];
 					if (out_of_bounds(row_final, col_final) || board[row_final][col_final] > 0) {
 						break;
 					}
@@ -107,8 +111,10 @@ std::vector<int> state::list_moves() {
 		}
 		for (const pii& p : piecelists[WQ + 6]) {
 			for (int j = 0; j < 8; j++) {
+				int row_final = p.first, col_final = p.second;
 				for (int i = 1; i < 8; i++) {
-					int row_final = p.first + dr_queen[j] * i, col_final = p.second + dc_queen[j] * i;
+					row_final += dr_queen[j];
+					col_final += dc_queen[j];
 					if (out_of_bounds(row_final, col_final) || board[row_final][col_final] > 0) {
 						break;
 					}
@@ -208,8 +214,10 @@ std::vector<int> state::list_moves() {
 		}
 		for (const pii& p : piecelists[BB + 6]) {
 			for (int j = 0; j < 4; j++) {
+				int row_final = p.first, col_final = p.second;
 				for (int i = 1; i < 8; i++) {
-					int row_final = p.first + dr_bishop[j] * i, col_final = p.second + dc_bishop[j] * i;
+					row_final += dr_bishop[j];
+					col_final += dc_bishop[j];
 					if (out_of_bounds(row_final, col_final) || board[row_final][col_final] < 0) {
 						break;
 					}
@@ -223,8 +231,10 @@ std::vector<int> state::list_moves() {
 		}
 		for (const pii& p : piecelists[BR + 6]) {
 			for (int j = 0; j < 4; j++) {
+				int row_final = p.first, col_final = p.second;
 				for (int i = 1; i < 8; i++) {
-					int row_final = p.first + dr_rook[j] * i, col_final = p.second + dc_rook[j] * i;
+					row_final += dr_rook[j];
+					col_final += dc_rook[j];
 					if (out_of_bounds(row_final, col_final) || board[row_final][col_final] < 0) {
 						break;
 					}
@@ -238,8 +248,10 @@ std::vector<int> state::list_moves() {
 		}
 		for (const pii& p : piecelists[BQ + 6]) {
 			for (int j = 0; j < 8; j++) {
+				int row_final = p.first, col_final = p.second;
 				for (int i = 1; i < 8; i++) {
-					int row_final = p.first + dr_queen[j] * i, col_final = p.second + dc_queen[j] * i;
+					row_final += dr_queen[j];
+					col_final += dc_queen[j];
 					if (out_of_bounds(row_final, col_final) || board[row_final][col_final] < 0) {
 						break;
 					}

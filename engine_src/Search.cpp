@@ -182,7 +182,7 @@ Value qsearch(Value alpha, Value beta, Depth depth) {
 	// }
 
 	// Futility pruning
-	if (depth - qs_depth_floor < 5 && (curr_eval - futility_margin(depth - qs_depth_floor) >= beta)) {
+	if (depth - qs_depth_floor <= 5 && (curr_eval - futility_margin(depth - qs_depth_floor) >= beta)) {
 		// printf("futility prune: %d\n", curr_eval);
 		return curr_eval;
 	}
@@ -236,12 +236,17 @@ Value qsearch(Value alpha, Value beta, Depth depth) {
 
 	std::stable_sort(ordered_moves.begin(), ordered_moves.end());
 
-	for (const pii& p : ordered_moves) {
-		int move = p.second;
+	for (int i = 0; i < (int)ordered_moves.size(); i++) {
+		int move = ordered_moves[i].second;
 		// printf("Considering %s\n", curr_state.move_to_string(move).c_str());
 
 		curr_state.make_move(move);
-		Value x = -qsearch(-beta, -alpha, depth - ONE_PLY);
+		Value x;
+		if ((int)ordered_moves.size() * 3 < i * 4) { // late move reduction
+			x = -qsearch(-beta, -alpha, depth - Depth(2));
+		} else {
+			x = -qsearch(-beta, -alpha, depth - ONE_PLY);
+		}
 		curr_state.unmake_move(move);
 
 		value = std::max(value, x);
