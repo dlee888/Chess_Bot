@@ -41,31 +41,6 @@ class Topgg(commands.Cog):
             "cooldown": 3
         }
         '''
-        if self.dbl_client is None:
-            return
-
-        voted = await self.dbl_client.get_user_vote(ctx.author.id)
-
-        if not voted:
-            await ctx.send('You have not voted!\nPlease vote for Chess Bot at https://top.gg/bot/801501916810838066/vote')
-            return
-
-        claimed = data.data_manager.has_claimed(ctx.author.id)
-        if claimed:
-            await ctx.send('You have already claimed your rating points. Vote again to claim more.')
-            return
-
-        rating = data.data_manager.get_rating(ctx.author.id)
-        if rating == None:
-            rating = constants.DEFAULT_RATING
-        rating += 5
-        data.data_manager.change_rating(ctx.author.id, rating)
-        data.data_manager.add_vote(ctx.author.id)
-
-        await ctx.send('Thank you for voting for Chess Bot! You have been gifted 5 rating points.')
-
-    @cog_ext.cog_slash(name='vote', description='Claim 5 free rating points for voting for Chess Bot on top.gg')
-    async def _vote(self, ctx: SlashContext):
         try:
             voted = await self.dbl_client.get_user_vote(ctx.author.id)
         except:
@@ -88,6 +63,10 @@ class Topgg(commands.Cog):
         data.data_manager.add_vote(ctx.author.id)
 
         await ctx.send('Thank you for voting for Chess Bot! You have been gifted 5 rating points.')
+
+    @cog_ext.cog_slash(name='vote', description='Claim 5 free rating points for voting for Chess Bot on top.gg')
+    async def _vote(self, ctx: SlashContext):
+        await self.vote(ctx)
 
     @tasks.loop(seconds=3)
     async def reset_votes(self):
