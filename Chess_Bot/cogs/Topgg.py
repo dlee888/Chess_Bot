@@ -45,6 +45,7 @@ class Topgg(commands.Cog):
             voted = await self.dbl_client.get_user_vote(ctx.author.id)
         except:
             await ctx.send(f'An error occurred. Most likely top.gg is down.')
+            return
 
         if not voted:
             await ctx.send('You have not voted!\nPlease vote for Chess Bot at https://top.gg/bot/801501916810838066/vote')
