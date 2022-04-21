@@ -140,6 +140,9 @@ int main() {
 				std::string move;
 				std::cin >> move;
 				if (move == "debug") {
+					int row, col, color;
+					std::cin >> row >> col >> color;
+					std::cout << curr_state.see(row, col, color) << std::endl;
 				} else if (move == "fen") {
 					std::cout << curr_state.to_fen() << std::endl;
 				} else if (move == "undo") {

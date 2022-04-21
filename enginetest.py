@@ -1,7 +1,18 @@
 import chess
 import chess.pgn
 import asyncio
-from Chess_Bot.util.Utility import run
+
+
+async def run(cmd):
+    proc = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE,
+                                                 stderr=asyncio.subprocess.PIPE)
+
+    stdout, stderr = await proc.communicate()
+
+    stdout = str(stdout, 'utf-8')
+    stderr = str(stderr, 'utf-8')
+
+    return stdout, stderr, f'[{cmd!r} exited with {proc.returncode}]'
 
 engine1 = input('Engine playing white: ')
 engine2 = input('Engine playing black: ')

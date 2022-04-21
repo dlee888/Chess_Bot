@@ -120,7 +120,9 @@ pii moves_loop() {
 
 		search_result = std::make_pair(evaluation, best_move);
 
-		if (abs(evaluation) >= MATE || curr_depth >= (int)options["depth_limit"]) {
+		curr_depth += ONE_PLY;
+
+		if (abs(evaluation) >= MATE || curr_depth >= options["depth_limit"] + 1) {
 			break;
 		}
 
@@ -130,11 +132,9 @@ pii moves_loop() {
 			break;
 		}
 #endif
-
-		curr_depth += ONE_PLY;
 	}
 
-	if (curr_depth == ONE_PLY) {
+	if (break_now && curr_depth == ONE_PLY) {
 		search_result = ordered_moves[0];
 	}
 
@@ -144,7 +144,7 @@ pii moves_loop() {
 
 pii find_best_move() {
 	// TODO: Make search multi-threaded
-	search_result = {0.0, -1};
+	search_result = {0, -1};
 	break_now = false;
 	done_searching = false;
 	mcts_prob = options["mcts_prob"];

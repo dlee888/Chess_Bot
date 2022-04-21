@@ -60,7 +60,7 @@ Value search(Depth depth, Value alpha, Value beta, bool use_nullmove) {
 	}
 
 	// Null move pruning
-	if (depth >= 3 && !curr_state.is_check()) {
+	if (use_nullmove && depth >= 3 && !curr_state.is_check()) {
 		// curr_state.print();
 		curr_state.make_move(0);
 		Value x = -search(depth - Depth(3), -beta, -alpha, false);
@@ -77,13 +77,15 @@ Value search(Depth depth, Value alpha, Value beta, bool use_nullmove) {
 
 	bool mate = true;
 	for (int i : moves) {
+		// printf("Trying move %s\n", curr_state.move_to_string(i).c_str());
 		int see_val = curr_state.see((i >> 9) & 7, (i >> 6) & 7, curr_state.to_move);
-		if (depth < 5 && see_val < 0) {
-			continue;
-		}
 		curr_state.make_move(i);
 		if (!curr_state.king_attacked()) {
 			mate = false;
+			if (depth < 5 && see_val < 0) {
+				curr_state.unmake_move(i);
+				continue;
+			}
 			Bitstring hash = curr_state.get_hash();
 			key = get_key(hash);
 			if (tt_exists[key] && tt_hashes[key] == hash) {

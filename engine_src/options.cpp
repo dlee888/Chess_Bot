@@ -1,6 +1,6 @@
 #include "options.h"
 
-std::map<std::string, unsigned int> options;
+std::map<std::string, int> options;
 
 void set_default_options() {
 	options["time_limit"] = 969696;

@@ -1,3 +1,5 @@
+#include <deque>
+
 #include "State.h"
 #include "psqt.h"
 
@@ -214,6 +216,21 @@ int state::attacking(int row, int col, bool color) {
 	return 7;
 }
 
+int _see(std::deque<int>& white_attacking, std::deque<int>& black_attacking, bool color) {
+	if (white_attacking.empty() || black_attacking.empty()) {
+		return 0;
+	}
+	if (color) {
+		int first = black_attacking.front();
+		black_attacking.pop_front();
+		return std::max(0, piece_vals[first] - _see(white_attacking, black_attacking, !color));
+	} else {
+		int first = white_attacking.front();
+		white_attacking.pop_front();
+		return std::max(0, piece_vals[first] - _see(white_attacking, black_attacking, !color));
+	}
+}
+
 // Static exchange evaluation function
 int state::see(int row, int col, bool color) {
 	if (color && board[row][col] > 0) {
@@ -222,7 +239,7 @@ int state::see(int row, int col, bool color) {
 	if (!color && board[row][col] < 0) {
 		return 0;
 	}
-	std::vector<int> white_attacking, black_attacking;
+	std::deque<int> white_attacking, black_attacking;
 	if (!out_of_bounds(row - 1, col - 1)) {
 		if (board[row - 1][col - 1] == BP)
 			black_attacking.push_back(1);
@@ -341,55 +358,7 @@ int state::see(int row, int col, bool color) {
 		if (board[row + dr_king[i]][col + dc_king[i]] == WK)
 			white_attacking.push_back(6);
 	}
-	// std::cout << "white_attacking:\n";
-	// for (int i : white_attacking) {
-	// 	std::cout << i << " ";
-	// }
-	// std::cout << std::endl;
-	// std::cout << "black_attacking:\n";
-	// for (int i : black_attacking) {
-	// 	std::cout << i << " ";
-	// }
-	// std::cout << std::endl;
-	if (color) {
-		if (white_attacking.size() == 0) {
-			return 0;
-		}
-		int res = 0;
-		if (board[row][col] < 0) {
-			res += piece_vals[-board[row][col]];
-		}
-		for (int i = 0; i < std::min((int)white_attacking.size() - 1, (int)black_attacking.size()); i++) {
-			res -= piece_vals[white_attacking[i]];
-			if (res > 0) {
-				return res;
-			}
-			res += piece_vals[black_attacking[i]];
-		}
-		if (black_attacking.size() >= white_attacking.size()) {
-			res -= piece_vals[white_attacking[white_attacking.size() - 1]];
-		}
-		return res;
-	} else {
-		if (black_attacking.size() == 0) {
-			return 0;
-		}
-		int res = 0;
-		if (board[row][col] > 0) {
-			res += piece_vals[board[row][col]];
-		}
-		for (int i = 0; i < std::min((int)white_attacking.size(), (int)black_attacking.size() - 1); i++) {
-			res -= piece_vals[black_attacking[i]];
-			if (res > 0) {
-				return res;
-			}
-			res += piece_vals[white_attacking[i]];
-		}
-		if (black_attacking.size() <= white_attacking.size()) {
-			res -= piece_vals[black_attacking[black_attacking.size() - 1]];
-		}
-		return res;
-	}
+	return piece_vals[abs(board[row][col])] - _see(white_attacking, black_attacking, !color);
 }
 
 // SLOW
