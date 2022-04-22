@@ -148,28 +148,33 @@ int main() {
 				} else if (move == "undo") {
 					curr_state.unmake_move(moves.top());
 					moves.pop();
+				} else if (move == "set") {
+					std::string position = read_fen();
+					curr_state.load(position);
+					moves = std::stack<int>();
 				} else {
 					moves.push(curr_state.parse_move(move));
 					curr_state.make_move(curr_state.parse_move(move));
 				}
 			}
 		} else if (cmnd == "self") {
-            curr_state.load(start_fen);
+			curr_state.load(start_fen);
 			curr_state.print();
-            while (true) {
-                pii move = find_best_move();
-                std::cout << (double)move.first / 100 << " " << to_uci(move.second) << std::endl;
-                curr_state.make_move(move.second);
+			while (true) {
+				pii move = find_best_move();
+				std::cout << (double)move.first / 100 << " " << to_uci(move.second) << std::endl;
+				curr_state.make_move(move.second);
 				std::cout << curr_state.to_fen() << std::endl;
-                curr_state.print();
-            }
-        } else if (cmnd == "count") {
+				curr_state.print();
+			}
+		} else if (cmnd == "count") {
 			std::string fen = read_fen();
 			curr_state.load(fen);
 			for (int i = 1; i < 10; i++) {
 				auto start_time = curr_time();
 				std::cout << "Depth: " << i << " " << count_positions(i) << std::endl;
-				std::cout << "Total time: " << curr_time() - start_time << "ms\n----------------------------------------------------------------" << std::endl;
+				std::cout << "Total time: " << curr_time() - start_time << "ms\n----------------------------------------------------------------"
+						  << std::endl;
 			}
 		} else if (cmnd == "options") {
 			for (auto [name, value] : options) {
