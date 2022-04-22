@@ -69,7 +69,7 @@ class state {
 	int attacker(int row, int col, bool color);
 	int see(int row, int col, bool color);
 
-	std::vector<int> list_moves();
+	std::vector<int> list_moves(bool = false);
 
 	bool adjucation();
 

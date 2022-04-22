@@ -149,6 +149,13 @@ Value qsearch(Value alpha, Value beta, Depth depth) {
 	// printf("qsearch(%d, %d)\n", alpha, beta);
 	// curr_state.print();
 
+	if ((cnts[WK + 6] == 0 && curr_state.to_move) || (cnts[BK + 6] == 0 && !curr_state.to_move)) {
+		return MATED;
+	}
+	if ((cnts[WK + 6] == 0 && !curr_state.to_move) || (cnts[BK + 6] == 0 && curr_state.to_move)) {
+		return MATE;
+	}
+
 	Bitstring curr_board_hash = curr_state.get_hash();
 	int key = get_key(curr_board_hash);
 
@@ -191,34 +198,21 @@ Value qsearch(Value alpha, Value beta, Depth depth) {
 
 	std::vector<pii> ordered_moves;
 
-	bool mate = true;
-	for (int i : curr_state.list_moves()) {
+	for (int i : curr_state.list_moves(true)) {
 		if (curr_state.see((i >> 9) & 7, (i >> 6) & 7, curr_state.to_move) < 0) {
 			continue;
 		}
 		curr_state.make_move(i);
-		if (!curr_state.king_attacked()) {
-			mate = false;
-			if ((((i >> 15) & 7) != 0) || ((((i >> 18) & 3) == 2) && (((i >> 20) & 3) == 3))) {
-				Bitstring hash = curr_state.get_hash();
-				if (tt_exists[key] && tt_hashes[key] == hash) {
-					// printf("using tt for eval of move %s\n", curr_state.move_to_string(i).c_str());
-					ordered_moves.push_back({tt_evals[key], i});
-				} else {
-					ordered_moves.push_back({eval(curr_state), i});
-				}
+		if ((((i >> 15) & 7) != 0) || ((((i >> 18) & 3) == 2) && (((i >> 20) & 3) == 3))) {
+			Bitstring hash = curr_state.get_hash();
+			if (tt_exists[key] && tt_hashes[key] == hash) {
+				// printf("using tt for eval of move %s\n", curr_state.move_to_string(i).c_str());
+				ordered_moves.push_back({tt_evals[key], i});
+			} else {
+				ordered_moves.push_back({eval(curr_state), i});
 			}
 		}
 		curr_state.unmake_move(i);
-	}
-	if (mate) {
-		if (curr_state.is_check()) {
-			// printf("checkmate\n");
-			return MATED;
-		} else {
-			// printf("stalemate\n");
-			return DRAWN;
-		}
 	}
 
 	if (break_now || ordered_moves.size() == 0) {

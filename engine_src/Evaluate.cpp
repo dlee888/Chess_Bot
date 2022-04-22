@@ -60,12 +60,13 @@ Value eval(state& s, bool trace, bool use_nnue) {
 		score += mg_value(curr_psqt);
 
 		// material
-		int mat = PawnValueMg * (cnts[WP + 6] - cnts[BP + 6]) + KnightValueMg * (cnts[WN + 6] - cnts[BN + 6]) +
-				  BishopValueMg * (cnts[WB + 6] - cnts[BB + 6]) + RookValueMg * (cnts[WR + 6] - cnts[BR + 6]) +
-				  QueenValueMg * (cnts[WQ + 6] - cnts[BQ + 6]);
-		score += mat;
+		score += PawnValueMg * (cnts[WP + 6] - cnts[BP + 6]) + KnightValueMg * (cnts[WN + 6] - cnts[BN + 6]) +
+				 BishopValueMg * (cnts[WB + 6] - cnts[BB + 6]) + RookValueMg * (cnts[WR + 6] - cnts[BR + 6]) +
+				 QueenValueMg * (cnts[WQ + 6] - cnts[BQ + 6]) + MATE * (cnts[WK + 6] - cnts[BK + 6]);
 		if (trace)
-			printf("Material: %d\n", mat);
+			printf("Material: %d\n", PawnValueMg * (cnts[WP + 6] - cnts[BP + 6]) + KnightValueMg * (cnts[WN + 6] - cnts[BN + 6]) +
+										 BishopValueMg * (cnts[WB + 6] - cnts[BB + 6]) + RookValueMg * (cnts[WR + 6] - cnts[BR + 6]) +
+										 QueenValueMg * (cnts[WQ + 6] - cnts[BQ + 6]) + MATE * (cnts[WK + 6] - cnts[BK + 6]));
 	} else {
 		if (trace)
 			printf("End game:\n");
@@ -75,7 +76,7 @@ Value eval(state& s, bool trace, bool use_nnue) {
 		// material
 		score += PawnValueEg * (cnts[WP + 6] - cnts[BP + 6]) + KnightValueEg * (cnts[WN + 6] - cnts[BN + 6]) +
 				 BishopValueEg * (cnts[WB + 6] - cnts[BB + 6]) + RookValueEg * (cnts[WR + 6] - cnts[BR + 6]) +
-				 QueenValueEg * (cnts[WQ + 6] - cnts[BQ + 6]);
+				 QueenValueEg * (cnts[WQ + 6] - cnts[BQ + 6]) + MATE * (cnts[WK + 6] - cnts[BK + 6]);
 		if (trace)
 			printf("Material: %d\n", PawnValueEg * (cnts[WP + 6] - cnts[BP + 6]) + KnightValueEg * (cnts[WN + 6] - cnts[BN + 6]) +
 										 BishopValueEg * (cnts[WB + 6] - cnts[BB + 6]) + RookValueEg * (cnts[WR + 6] - cnts[BR + 6]) +
