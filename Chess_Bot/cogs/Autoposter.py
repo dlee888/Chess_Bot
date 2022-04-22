@@ -45,7 +45,7 @@ class Autoposter(commands.Cog):
     async def wait_until_ready(self):
         logging.info('Cog Autoposter: waiting for bot to get ready.')
         await self.client.wait_until_ready()
-        await asyncio.sleep(100) # wait for all shards
+        await asyncio.sleep(100)  # wait for all shards
 
 
 def setup(bot):

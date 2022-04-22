@@ -92,20 +92,20 @@ class Timer(commands.Cog):
                     white_delta, black_delta = util.update_rating2(
                         game.white, game.black, 1)
                     await util2.send_notif(game.white,
-                                            ('You automatically forfeited on time.\n'
+                                           ('You automatically forfeited on time.\n'
                                             f'Your new rating is {data.data_manager.get_rating(game.white)} ({white_delta})'))
                     await util2.send_notif(game.black,
-                                            ('Your opponent automatically forfeited on time.\n'
+                                           ('Your opponent automatically forfeited on time.\n'
                                             f'Your new rating is {data.data_manager.get_rating(game.black)} ({black_delta})'))
                     data.data_manager.delete_game(game.player(), chess.BLACK)
                 else:
                     white_delta, black_delta = util.update_rating2(
                         game.white, game.black, 0)
                     await util2.send_notif(game.white,
-                                            ('Your opponent automatically forfeited on time.\n'
+                                           ('Your opponent automatically forfeited on time.\n'
                                             f'Your new rating is {data.data_manager.get_rating(game.white)} ({white_delta})'))
                     await util2.send_notif(game.black,
-                                            ('You automatically forfeited on time.\n'
+                                           ('You automatically forfeited on time.\n'
                                             f'Your new rating is {data.data_manager.get_rating(game.black)} ({black_delta})'))
                     data.data_manager.delete_game(game.player(), chess.WHITE)
 

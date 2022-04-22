@@ -23,7 +23,7 @@ async def get_prefix(bot, message):
     return [data.data_manager.get_prefix(message.guild.id), f'<@{bot.user.id}> ', f'<@!{bot.user.id}> ']
 
 bot = commands.AutoShardedBot(command_prefix=get_prefix, help_command=None,
-                   status='$help for commands, $botinfo for more information')
+                              status='$help for commands, $botinfo for more information')
 if not '-beta' in sys.argv:
     slash = SlashCommand(bot, sync_commands=True)
 

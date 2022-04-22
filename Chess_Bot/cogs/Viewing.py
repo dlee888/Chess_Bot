@@ -43,7 +43,7 @@ class Viewing(commands.Cog):
         if game == None:
             await ctx.send(f'{"You do" if person == ctx.author else f"{person} does"} not have a game in progress')
             return
-            
+
         util2 = self.client.get_cog('Util')
         file, embed = util2.make_embed(person.id, title=f'{await util2.get_name(game.white)} vs {await util2.get_name(game.black)}',
                                        description=f'{await util2.get_name(game.to_move())} to move.')
