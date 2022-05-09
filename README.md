@@ -15,6 +15,9 @@ It also has a built-in elo rating system.
 
 [Invite](https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=2147795008&scope=bot%20applications.commands)
 
+Play the bot on Lichess: https://lichess.org/@/AppleBot4143
+(Hosted locally, may not be always online)
+
 ## Mechanics
 
 ### Basic Mechanics
