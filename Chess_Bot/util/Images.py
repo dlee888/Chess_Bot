@@ -1,3 +1,4 @@
+import itertools
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
@@ -14,7 +15,7 @@ themes_available = []
 def load_theme(theme):
     themes_available.append(theme)
 
-    im = Image.open(os.path.join(constants.THEMES_DIR, theme + '.png'))
+    im = Image.open(os.path.join(constants.THEMES_DIR, f'{theme}.png'))
 
     os.makedirs(os.path.join(constants.THEMES_DIR, theme), exist_ok=True)
 
@@ -30,10 +31,7 @@ def load_theme(theme):
                    (row, col), (row, col + 1)]
 
         for square in range(4):
-            if square < 2:
-                name = 'W'
-            else:
-                name = 'B'
+            name = 'W' if square < 2 else 'B'
             name += piece_names[piece]
             if (squares[square][0] + squares[square][1]) % 2 == 0:
                 name += '-light.png'
@@ -73,34 +71,29 @@ def get_image2(person, pov=None):
     result = Image.open(os.path.join(constants.ASSETS_DIR, 'blank_board.png'))
     result = result.resize((400, 400))
 
-    for i in range(8):
-        for j in range(0, 16, 2):
-            square = ''
-            if board[i][j] == '.':
-                square += 'blank'
-            elif board[i][j].islower():
-                square += 'B' + board[i][j].upper()
-            else:
-                square += 'W' + board[i][j]
+    for i, j in itertools.product(range(8), range(0, 16, 2)):
+        square = ''
+        if board[i][j] == '.':
+            square += 'blank'
+        elif board[i][j].islower():
+            square += f'B{board[i][j].upper()}'
+        else:
+            square += f'W{board[i][j]}'
 
-            x = i
-            y = j // 2
+        x = i
+        y = j // 2
 
-            if (x + y) % 2 == 0:
-                square += '-light.png'
-            else:
-                square += '-dark.png'
+        square += '-light.png' if (x + y) % 2 == 0 else '-dark.png'
+        square_img = Image.open(os.path.join(
+            constants.THEMES_DIR, theme, square))
+        square_img = square_img.resize((50, 50), Image.ANTIALIAS)
 
-            square_img = Image.open(os.path.join(
-                constants.THEMES_DIR, theme, square))
-            square_img = square_img.resize((50, 50), Image.ANTIALIAS)
-
-            x *= 50
-            y *= 50
-            if pov == chess.WHITE:
-                result.paste(square_img, (y, x, y + 50, x + 50))
-            else:
-                result.paste(square_img, (350 - y, 350 - x, 400 - y, 400 - x))
+        x *= 50
+        y *= 50
+        if pov == chess.WHITE:
+            result.paste(square_img, (y, x, y + 50, x + 50))
+        else:
+            result.paste(square_img, (350 - y, 350 - x, 400 - y, 400 - x))
 
     new_res = Image.new(result.mode, (425, 425), color=(0, 0, 0))
     new_res.paste(result, (25, 0, 425, 400))

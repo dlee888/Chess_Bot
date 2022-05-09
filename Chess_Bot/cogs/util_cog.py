@@ -3,6 +3,7 @@ from discord.ext import commands
 
 import random
 import sys
+import contextlib
 
 from Chess_Bot import constants
 from Chess_Bot.cogs.Profiles import Profile, get_name
@@ -48,17 +49,15 @@ class Util(commands.Cog):
         return discord.File(path, filename='board.png'), embed
 
     async def send_notif(self, person, text='', **kwargs):
-        if '-beta' in sys.argv and not person in constants.DEVELOPERS:
+        if '-beta' in sys.argv and person not in constants.DEVELOPERS:
             return
         channel, is_default = await self.get_notifchannel(person)
         if channel is not None:
-            text = f'<@{person}>' + text
+            text = f'<@{person}> {text}'
             if is_default and random.randint(1, 3) == 1:
-                text = 'Tip: set your notification channel by using the `$notif` command!.\n' + text
-            try:
+                text = 'Tip: change your default notification channel by using the `$notif set` command!.\n' + text
+            with contextlib.suppress(Exception):
                 await channel.send(text, **kwargs)
-            except Exception:
-                pass
 
 
 def setup(bot):

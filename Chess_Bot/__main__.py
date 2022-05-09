@@ -18,13 +18,13 @@ import sys
 
 
 async def get_prefix(bot, message):
-    if message.guild == None:
+    if message.guild is None:
         return ['$', f'<@{bot.user.id}> ', f'<@!{bot.user.id}> ']
     return [data.data_manager.get_prefix(message.guild.id), f'<@{bot.user.id}> ', f'<@!{bot.user.id}> ']
 
 bot = commands.AutoShardedBot(command_prefix=get_prefix, help_command=None,
                               status='$help for commands, $botinfo for more information')
-if not '-beta' in sys.argv:
+if '-beta' not in sys.argv:
     slash = SlashCommand(bot, sync_commands=True)
 
 
@@ -35,21 +35,21 @@ async def on_command_error(ctx, exc):
             await ctx.send(f'Chess Bot is missing permissions.\nThe missing permissions are: `{" ".join(exc.missing_perms)}`')
             return
         elif isinstance(exc, discord.Forbidden) or str(exc).startswith('Command raised an exception: Forbidden'):
-            await ctx.send(f'Chess Bot is missing permissions.')
+            await ctx.send('Chess Bot is missing permissions.')
             return
         elif type(exc) == commands.errors.MissingRequiredArgument:
             await ctx.send(f'Missing required argument.\nPlease enter a value for: `{exc.param}`.\nUse `$help <command name>` to get more information about a command.')
             return
         elif issubclass(type(exc), commands.errors.UserInputError):
-            await ctx.send(f'There was an error parsing your argument')
+            await ctx.send('There was an error parsing your argument')
             return
         elif type(exc) == commands.errors.TooManyArguments:
-            await ctx.send(f'Bruh what why are there so many arguments?')
+            await ctx.send('Bruh what why are there so many arguments?')
             return
         elif type(exc) == commands.errors.CommandOnCooldown:
             await ctx.send(f'You are on cooldown. Try again in {round(exc.retry_after, 3)} seconds')
             return
-        elif type(exc) == commands.errors.CommandNotFound or type(exc) == commands.errors.CheckFailure:
+        elif type(exc) in [commands.errors.CommandNotFound, commands.errors.CheckFailure]:
             # await ctx.send('Command not found.')
             return
         elif type(exc) == commands.errors.MissingPermissions:
@@ -92,7 +92,7 @@ async def on_command_error(ctx, exc):
             msg_txt_path = os.path.join(constants.TEMP_DIR, 'message.txt')
             with open(msg_txt_path, 'w') as file:
                 file.write(msg)
-            await ctx.send(f'Command Error:\n', file=discord.File(msg_txt_path))
+            await ctx.send('Command Error:\\n', file=discord.File(msg_txt_path))
     else:
         await ctx.send('Uh oh. Something went wrong.\n'
                        'If you feel that this is a bug, please contact the bot developers in the chess bot support server.\n'
@@ -105,7 +105,7 @@ async def on_command_error(ctx, exc):
         msg_txt_path = os.path.join(constants.TEMP_DIR, 'message.txt')
         with open(msg_txt_path, 'w') as file:
             file.write(msg)
-        await error_channel.send(f'Command Error:\n', file=discord.File(msg_txt_path))
+        await error_channel.send('Command Error:\\n', file=discord.File(msg_txt_path))
 
 
 def setup():
@@ -133,9 +133,10 @@ def main():
         bot.add_check(lambda ctx: ctx.channel.id in constants.BETA_CHANNELS)
     else:
         bot.add_check(
-            lambda ctx: not ctx.channel.id in constants.BETA_CHANNELS)
+            lambda ctx: ctx.channel.id not in constants.BETA_CHANNELS)
 
-    token = os.getenv('BOT_TOKEN')
+    token = os.getenv(
+        'BOT_TOKEN') if '-beta-bot' not in sys.argv else os.getenv('BETA_TOKEN')
     if token is None:
         token = input('Token? ')
     bot.run(token)

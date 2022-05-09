@@ -29,7 +29,7 @@ Value qsearch(Value, Value, Depth);
 
 pii find_best_move();
 
-const int RAZOR_MARGIN = 600, TEMPO = 25;
+const int RAZOR_MARGIN = 600, TEMPO = 25, LMR_CUTOFF = 300;
 
 int futility_margin(int);
 

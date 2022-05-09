@@ -17,3 +17,5 @@ image-*
 data/db
 
 message.txt
+
+venv/

@@ -438,9 +438,9 @@ int state::see(int row, int col, bool color) {
 			col_final += dc_rook[j];
 			if (out_of_bounds(row_final, col_final))
 				break;
-			if (board[row_final][col_final] == WR && board[row_final][col_final] != WR && board[row_final][col_final] != WQ)
+			if (board[row_final][col_final] == WR)
 				white_attacking.push_back(4);
-			if (board[row_final][col_final] != 0)
+			if (board[row_final][col_final] != 0 && board[row_final][col_final] != WR && board[row_final][col_final] != WQ)
 				break;
 		}
 	}
@@ -451,9 +451,9 @@ int state::see(int row, int col, bool color) {
 			col_final += dc_queen[j];
 			if (out_of_bounds(row_final, col_final))
 				break;
-			if (board[row_final][col_final] == WQ && board[row_final][col_final] != WB && board[row_final][col_final] != WR && board[row_final][col_final] != WQ)
+			if (board[row_final][col_final] == WQ)
 				white_attacking.push_back(5);
-			if (board[row_final][col_final] != 0)
+			if (board[row_final][col_final] != 0 && board[row_final][col_final] != WB && board[row_final][col_final] != WR && board[row_final][col_final] != WQ)
 				break;
 		}
 	}

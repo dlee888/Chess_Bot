@@ -1,8 +1,6 @@
-import psycopg2
 import time
 import os
 import sys
-import sqlite3
 import chess
 from pymongo import MongoClient
 
@@ -11,7 +9,10 @@ from Chess_Bot import constants
 
 class Game2:
 
-    def __init__(self, row=['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', -1, -1, time.time(), False, None]) -> None:
+    def __init__(self, row = None) -> None:
+        if row is None:
+            row = ['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', -1, -1, time.time(), False, None]
+
         self.fen = row[0]
         self.white = row[1]
         self.black = row[2]
@@ -43,29 +44,17 @@ class Game2:
 
     def to_move(self):
         board = chess.Board(self.fen)
-        if board.turn == chess.WHITE:
-            return self.white
-        else:
-            return self.black
+        return self.white if board.turn == chess.WHITE else self.black
 
     def not_to_move(self):
         board = chess.Board(self.fen)
-        if board.turn == chess.WHITE:
-            return self.black
-        else:
-            return self.white
+        return self.black if board.turn == chess.WHITE else self.white
 
     def get_color(self, person):
-        if person == self.white:
-            return chess.WHITE
-        else:
-            return chess.BLACK
+        return chess.WHITE if person == self.white else chess.BLACK
 
     def get_person(self, color):
-        if color == chess.WHITE:
-            return self.white
-        else:
-            return self.black
+        return self.white if color == chess.WHITE else self.black
 
     def time_left(self):
         return self.time_control - (time.time() - self.last_moved)
@@ -82,9 +71,15 @@ class Game2:
 
     def player(self):
         """Player that is not a computer"""
+        return self.black if self.white < 69 else self.white
+
+    def bot(self):
+        """Player that is a computer"""
         if self.white < 69:
+            return self.white
+        if self.black < 69:
             return self.black
-        return self.white
+        return None
 
 
 class MongoData:
@@ -98,7 +93,7 @@ class MongoData:
     def get_game(self, person):
         white = self.db.games.find({'white': person})
         black = self.db.games.find({'black': person})
-        rows = [x for x in white] + [x for x in black]
+        rows = list(white) + list(black)
         if len(rows) == 0:
             return None
         return Game2().load_dict(rows[0])
@@ -113,17 +108,13 @@ class MongoData:
 
     def get_rating(self, person):
         data = list(self.db.users.find({'id': person}))
-        if len(data) == 0 or not 'rating' in data[0].keys():
+        if not data or 'rating' not in data[0].keys():
             return None
         return data[0]['rating']
 
     def get_ratings(self):
         rows = self.db.users.find()
-        ratings = {}
-        for row in rows:
-            if 'rating' in row.keys() and row['rating'] is not None:
-                ratings[row['id']] = row['rating']
-        return ratings
+        return {row['id']: row['rating'] for row in rows if 'rating' in row.keys() and row['rating'] is not None}
 
     def change_rating(self, person, new_rating):
         self.db.users.update_one(
@@ -131,7 +122,7 @@ class MongoData:
 
     def get_prefix(self, guild):
         rows = list(self.db.prefixes.find({'id': guild}))
-        if len(rows) == 0:
+        if not rows:
             return '$'
         return rows[0]['prefix']
 
@@ -142,7 +133,7 @@ class MongoData:
     def get_stats(self, person):
         """Returns (lost, won, draw)"""
         data = list(self.db.users.find({'id': person}))
-        if len(data) == 0 or not 'won' in data[0].keys() or data[0]['won'] is None:
+        if not data or 'won' not in data[0].keys() or data[0]['won'] is None:
             return 0, 0, 0
         return data[0]['lost'], data[0]['won'], data[0]['draw']
 
@@ -152,14 +143,12 @@ class MongoData:
 
     def total_games(self):
         rows = list(self.db.users.find())
-        ans = 0
-        for row in rows:
-            if 'lost' in row.keys() and row['lost'] is not None and row['won'] is not None and row['draw'] is not None:
-                ans += row['lost'] + row['won'] + row['draw']
-        return ans // 2
+        return sum(row['lost'] + row['won'] + row['draw'] for row in rows if 'lost' in row.keys() and row['lost'] is not None) // 2
 
     def delete_game(self, person, winner):
         game = self.get_game(person)
+        if game is None:
+            return
         self.db.games.delete_one(game.to_dict())
         white_lost, white_won, white_draw = self.get_stats(game.white)
         black_lost, black_won, black_draw = self.get_stats(game.black)
@@ -178,13 +167,13 @@ class MongoData:
 
     def get_theme(self, person):
         data = list(self.db.users.find({'id': person}))
-        if len(data) == 0 or not 'theme' in data[0].keys() or data[0]['theme'] is None:
+        if not data or 'theme' not in data[0].keys() or data[0]['theme'] is None:
             return 'default'
         return data[0]['theme']
 
     def get_notifchannel(self, person):
         data = list(self.db.users.find({'id': person}))
-        if len(data) == 0 or not 'notifchannel' in data[0].keys() or data[0]['notifchannel'] == -1:
+        if not data or 'notifchannel' not in data[0].keys() or data[0]['notifchannel'] == -1:
             return None
         return data[0]['notifchannel']
 
@@ -214,4 +203,4 @@ class MongoData:
         self.db.votes.delete_one({'id': person})
 
 
-data_manager = MongoData(os.getenv('MONGODB_URL'))
+data_manager = MongoData(os.getenv('MONGODB_URL') if '-beta-bot' not in sys.argv else os.getenv('BETA_DB'))

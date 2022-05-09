@@ -37,9 +37,8 @@ class Development(commands.Cog):
         message = f'Updated\nCompile Message: {out}\nStderr: {err}'
 
         if len(message) >= 2000:
-            f = open(os.path.join(constants.TEMP_DIR, 'message.txt'), 'w')
-            f.write(message)
-            f.close()
+            with open(os.path.join(constants.TEMP_DIR, 'message.txt'), 'w') as f:
+                f.write(message)
             await ctx.send(file=discord.File(os.path.join(constants.TEMP_DIR, 'message.txt')))
         else:
             await ctx.send(message)
@@ -55,9 +54,8 @@ class Development(commands.Cog):
         message = f'Stdout: {stdout}\nStderr: {stderr}'
 
         if len(message) >= 2000:
-            f = open(os.path.join(constants.TEMP_DIR, 'message.txt'), 'w')
-            f.write(message)
-            f.close()
+            with open(os.path.join(constants.TEMP_DIR, 'message.txt'), 'w') as f:
+                f.write(message)
             await ctx.send(file=discord.File(os.path.join(constants.TEMP_DIR, 'message.txt')))
         else:
             await ctx.send(message)
@@ -68,27 +66,8 @@ class Development(commands.Cog):
     @commands.cooldown(1, 15, commands.BucketType.user)
     @is_developer()
     async def restart(self, ctx):
-        await ctx.send(f'Restarting...')
+        await ctx.send('Restarting...')
         sys.exit()
-
-    @commands.command(hidden=True)
-    @is_developer()
-    async def git_pull(self, ctx):
-        await ctx.send(f'Executing command "git pull"...')
-
-        stdout, stderr, status = await util.run(f'git pull')
-
-        message = f'```\nStdout:\n{stdout}Stderr: {stderr}```'
-
-        if len(message) >= 2000:
-            f = open(os.path.join(constants.TEMP_DIR, 'message.txt'), 'w')
-            f.write(message)
-            f.close()
-            await ctx.send(file=discord.File(os.path.join(constants.TEMP_DIR, 'message.txt')))
-        else:
-            await ctx.send(message)
-
-        await ctx.send(status)
 
     def cleanup_code(self, content):
         """Automatically removes code blocks from the code."""
@@ -104,17 +83,7 @@ class Development(commands.Cog):
     async def debug(self, ctx, *, body: str):
         """Evaluates a code"""
 
-        env = {
-            'bot': self.client,
-            'ctx': ctx,
-            'channel': ctx.channel,
-            'author': ctx.author,
-            'guild': ctx.guild,
-            'message': ctx.message,
-            '_': self._last_result
-        }
-
-        env.update(globals())
+        env = {'bot': self.client, 'ctx': ctx, 'channel': ctx.channel, 'author': ctx.author, 'guild': ctx.guild, 'message': ctx.message, '_': self._last_result} | globals()
 
         body = self.cleanup_code(body)
         stdout = io.StringIO()
@@ -142,14 +111,14 @@ class Development(commands.Cog):
             value = stdout.getvalue()
             try:
                 await ctx.message.add_reaction('\u2705')
-            except:
+            except Exception:
                 pass
 
             if ret is None:
                 if value:
                     try:
                         await ctx.send(f'```py\n{value}\n```')
-                    except:
+                    except Exception:
                         with open('data/temp/message.txt', 'w') as f:
                             f.write(value)
                         await ctx.send(file=discord.File('data/temp/message.txt'))

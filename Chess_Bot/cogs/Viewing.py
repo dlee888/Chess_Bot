@@ -40,7 +40,7 @@ class Viewing(commands.Cog):
 
         game = data.data_manager.get_game(person.id)
 
-        if game == None:
+        if game is None:
             await ctx.send(f'{"You do" if person == ctx.author else f"{person} does"} not have a game in progress')
             return
 
@@ -61,7 +61,7 @@ class Viewing(commands.Cog):
 
         game = data.data_manager.get_game(person.id)
 
-        if game == None:
+        if game is None:
             await ctx.send(f'{"You do" if person == ctx.author else f"{person} does"} not have a game in progress')
             return
 
@@ -91,8 +91,8 @@ class Viewing(commands.Cog):
 
         game = data.data_manager.get_game(person.id)
 
-        if game == None:
-            await ctx.send(f'{person} does not have a game in progress')
+        if game is None:
+            await ctx.send(f'{"You do" if person == ctx.author else f"{person} does"} not have a game in progress')
             return
 
         await ctx.send(f'```{game.fen}```')
@@ -102,16 +102,7 @@ class Viewing(commands.Cog):
                       option_type=SlashCommandOptionType.USER, required=False)
     ])
     async def _fen(self, ctx: SlashContext, person: typing.Union[discord.User, discord.Member] = None):
-        if person is None:
-            person = ctx.author
-
-        game = data.data_manager.get_game(person.id)
-
-        if game == None:
-            await ctx.send(f'{person} does not have a game in progress')
-            return
-
-        await ctx.send(f'```{game.fen}```')
+        await self.fen(ctx, person)
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
@@ -128,7 +119,7 @@ class Viewing(commands.Cog):
             "cooldown": 3
         }
         '''
-        if new_theme == None:
+        if new_theme is None:
             cur_theme = data.data_manager.get_theme(ctx.author.id)
             await ctx.send(f'Your current theme is "{cur_theme}"\n'
                            f'Use `$theme <new theme>` to change your theme.\n'
@@ -136,7 +127,7 @@ class Viewing(commands.Cog):
                            f'`{"`, `".join(image.themes_available)}`')
             return
 
-        if not new_theme in image.themes_available:
+        if new_theme not in image.themes_available:
             await ctx.send(f'That theme is not available.\n'
                            'Available themes are:\n'
                            f'`{"`, `".join(image.themes_available)}`')
@@ -150,22 +141,47 @@ class Viewing(commands.Cog):
                       option_type=SlashCommandOptionType.STRING, required=False)
     ])
     async def _theme(self, ctx: SlashContext, new_theme=None):
-        if new_theme == None:
-            cur_theme = data.data_manager.get_theme(ctx.author.id)
-            await ctx.send(f'Your current theme is `{cur_theme}`\n'
-                           f'Use `/theme <new theme>` to change your theme.\n'
-                           'Available themes are:\n'
-                           f'`{"`, `".join(image.themes_available)}`')
-            return
+        await self.theme(ctx, new_theme)
 
-        if not new_theme in image.themes_available:
-            await ctx.send(f'That theme is not available.\n'
-                           'Available themes are:\n'
-                           f'`{"`, `".join(image.themes_available)}`')
-            return
+    @commands.command()
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    async def notif(self, ctx, type='view'):
+        '''
+        {
+            "name": "notif",
+            "description": "Sets the channel for your notifications.",
+            "usage": "$notif",
+            "examples": [
+                "$notif"
+            ],
+            "cooldown": 3
+        }
+        '''
+        util2 = self.client.get_cog('Util')
+        if type == 'view':
+            channel, is_default = await util2.get_notifchannel(ctx.author.id)
+            if channel is None:
+                await ctx.send('No notification channel found. Make sure to specify a channel using the `$notif set` command to receive messages whenever your opponent moves.')
+            elif is_default:
+                await ctx.send(f'Your notification channel is `{"DM channel" if isinstance(channel, discord.DMChannel) else channel.name}`.\nYou can change this using the `$notif set` command.')
+            else:
+                await ctx.send(f'Your notification channel is `{"DM channel" if isinstance(channel, discord.DMChannel) else channel.name}`.')
+        elif type == 'set':
+            data.data_manager.change_settings(
+                ctx.author.id, new_notif=ctx.channel.id)
+            await ctx.send(f'Notification channel set to `{ctx.channel.name if ctx.guild is not None else "DM channel"}`.')
+        elif type == 'test':
+            await ctx.send('You should recieve a test notification. If you do not, try changing your notification channel or changing your settings.')
+            await util2.send_notif(ctx.author.id, 'This is a test notification.')
+        else:
+            await ctx.send('Please specify either `view`, `set`, or `test`.')
 
-        data.data_manager.change_theme(ctx.author.id, new_theme)
-        await ctx.send('Theme sucessfully updated')
+    @cog_ext.cog_slash(name='notif', description='Sets your default channel for recieving notifications.', options=[
+        create_option(name='type', description='View your notification channel, Test a notification, or Set your default channel.',
+                      option_type=SlashCommandOptionType.STRING, required=True, choices=['view', 'test', 'set'])
+    ])
+    async def _notif(self, ctx, type):
+        await self.notif(ctx, type)
 
 
 def setup(bot):

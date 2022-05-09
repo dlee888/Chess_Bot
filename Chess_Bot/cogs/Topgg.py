@@ -43,21 +43,20 @@ class Topgg(commands.Cog):
         '''
         try:
             voted = await self.dbl_client.get_user_vote(ctx.author.id)
-        except:
-            await ctx.send(f'An error occurred. Most likely top.gg is down.')
+        except Exception:
+            await ctx.send('An error occurred. Most likely top.gg is down.')
             return
 
         if not voted:
             await ctx.send('You have not voted!\nPlease vote for Chess Bot at https://top.gg/bot/801501916810838066/vote')
             return
 
-        claimed = data.data_manager.has_claimed(ctx.author.id)
-        if claimed:
+        if data.data_manager.has_claimed(ctx.author.id):
             await ctx.send('You have already claimed your rating points. Vote again to claim more.')
             return
 
         rating = data.data_manager.get_rating(ctx.author.id)
-        if rating == None:
+        if rating is None:
             rating = constants.DEFAULT_RATING
         rating += 5
         data.data_manager.change_rating(ctx.author.id, rating)

@@ -1,3 +1,4 @@
+import discord
 from discord.ext import commands
 from discord.ext import tasks
 
@@ -25,17 +26,74 @@ class Engine(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.thonking = {}
-        if not '-beta' in sys.argv or '-run-engine' in sys.argv:
+        if '-beta' not in sys.argv or '-run-engine' in sys.argv:
             self.run_engine.start()
             self.output_result.start()
 
+    async def make_move(self, game, move):
+        util2 = self.client.get_cog('Util')
+
+        board = chess.Board(game.fen)
+        board.push(move)
+        game.last_moved = time.time()
+        game.warned = False
+        game.fen = board.fen(en_passant='fen')
+        data.data_manager.change_game(game)
+
+        if board.is_checkmate():
+            white_delta, black_delta = util.update_rating2(
+                game.white, game.black, 0 if board.turn == chess.BLACK else 1)
+
+            file1, embed1 = util2.make_embed(game.white, title='Your game has ended',
+                                             description=(f'{"Your opponent has" if board.turn == chess.WHITE else "You have"} moved: {move}.\n'
+                                                          f'{whiteblack[not board.turn].capitalize()} won by checkmate.\n'
+                                                          f'Your new rating is {round(data.data_manager.get_rating(game.white), 3)} ({round(white_delta, 3)})'))
+            file2, embed2 = util2.make_embed(game.black, title='Your game has ended',
+                                             description=(f'{"Your opponent has" if board.turn == chess.BLACK else "You have"} has moved: {move}.\n'
+                                                          f'{whiteblack[not board.turn].capitalize()} won by checkmate.\n'
+                                                          f'Your new rating is {round(data.data_manager.get_rating(game.black), 3)} ({round(black_delta, 3)})'))
+
+            await util2.send_notif(game.white, file=file1, embed=embed1)
+            await util2.send_notif(game.black, file=file2, embed=embed2)
+
+            data.data_manager.delete_game(game.player(), not board.turn)
+        elif board.can_claim_draw() or board.is_stalemate():
+            white_delta, black_delta = util.update_rating2(
+                game.white, game.black, 1/2)
+
+            file1, embed1 = util2.make_embed(game.white, title='Your game has ended',
+                                             description=(f'Your opponent has moved: {move}.\n'
+                                                          'Draw.\n'
+                                                          f'Your new rating is {round(data.data_manager.get_rating(game.white), 3)} ({round(white_delta, 3)})'))
+
+            file2, embed2 = util2.make_embed(game.black, title='Your game has ended',
+                                             description=(f'Your opponent has moved: {move}.\n'
+                                                          'Draw.\n'
+                                                          f'Your new rating is {round(data.data_manager.get_rating(game.black), 3)} ({round(black_delta, 3)})'))
+
+            await util2.send_notif(game.white, file=file1, embed=embed1)
+            await util2.send_notif(game.black, file=file2, embed=embed2)
+
+            data.data_manager.delete_game(game.player(), 69)
+        else:
+            file, embed = util2.make_embed(game.to_move(), title=f'Your game with {await util2.get_name(game.not_to_move())}', description=f'Your opponent has moved: {move}.')
+            await util2.send_notif(game.to_move(), embed=embed, file=file)
+
     @tasks.loop(seconds=3)
     async def run_engine(self):
-        games = data.data_manager.get_games()
-        for game in games:
-            person = game.not_to_move()
-            if game.to_move() < len(Profile) and not person in self.thonking.keys():
-                self.thonking[person] = asyncio.create_task(run_engine(person))
+        try:
+            games = data.data_manager.get_games()
+            for game in games:
+                person = game.not_to_move()
+                if game.to_move() < len(Profile) and person not in self.thonking.keys():
+                    self.thonking[person] = asyncio.create_task(
+                        run_engine(person))
+        except Exception as exc:
+            etype = type(exc)
+            trace = exc.__traceback__
+            lines = traceback.format_exception(etype, exc, trace)
+            traceback_text = ''.join(lines)
+            logging.error(f'Error in run_engine:\n{traceback_text}')
 
     @tasks.loop(seconds=3)
     async def output_result(self):
@@ -44,57 +102,36 @@ class Engine(commands.Cog):
             if task.done():
                 try:
                     self.thonking.pop(person)
-                    # Person resigned while bot was thinking
-                    if data.data_manager.get_game(person) is None:
+                    game = data.data_manager.get_game(person)
+                    if game is None or task.result() is None:
                         continue
-                    if task.result() is None:
-                        continue
-                    if person in constants.DEVELOPERS:
-                        move, game, fen, eval = task.result()
-                    else:
-                        move, game = task.result()
+                    move = task.result()
                     if move is None:
+                        logging.error(
+                            f'`move=None` in run_engine:\n`{game.fen}`\n{game.white} vs {game.black}')
                         continue
-                    game.last_moved = time.time()
-                    game.warned = False
-                    data.data_manager.change_game(game)
-                    util2 = self.client.get_cog('Util')
-                    board = chess.Board(game.fen)
-                    if person == game.white:
-                        bot = game.black
-                    else:
-                        bot = game.white
-                    if board.is_game_over(claim_draw=True) or move == 'RESIGN':
-                        if move == 'RESIGN':
-                            old_rating, new_rating = util.update_rating(
-                                person, 1, bot)
-                            file, embed = util2.make_embed(person, title='Game over', description=f'It was in this position that {await util2.get_name(bot)} resigned the game.')
-                            await util2.send_notif(person, f'Chess Bot resigned.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})', file=file, embed=embed)
-                            data.data_manager.delete_game(
-                                person, not game.turn())
-                        elif board.is_checkmate():
-                            old_rating, new_rating = util.update_rating(
-                                person, 0, bot)
-                            file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(bot)}', description=f'The bot has moved.\n{move}\nCheckmate.')
-                            data.data_manager.delete_game(
-                                person, not game.turn())
-                            await util2.send_notif(person, f'You lost.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})', file=file, embed=embed)
+                    if move == 'RESIGN':
+                        util2 = self.client.get_cog('Util')
+                        white_delta, black_delta = util.update_rating2(game.white, game.black,
+                                                                       0 if game.bot() == game.black else 1)
+                        if game.bot() == game.white:
+                            file, embed = util2.make_embed(
+                                game.black, title='Your game has ended',
+                                description=(f'It was in this position that {await util2.get_name(game.bot())} resigned the game.\n'
+                                             f'Your new rating is {round(data.data_manager.get_rating(game.black), 3)} ({round(black_delta, 3)})'))
                         else:
-                            old_rating, new_rating = util.update_rating(
-                                person, 1/2, bot)
-                            file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(bot)}', description=f'The bot has moved.\n{move}\nDraw.')
-                            await util2.send_notif(person, f'Draw.\nYour new rating is {round(new_rating)} ({round(new_rating - old_rating, 2)})', file=file, embed=embed)
-                            data.data_manager.delete_game(person, 69)
-                        continue
-                    file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(game.not_to_move())}', description=f'The bot has moved\n{move}')
-                    if person in constants.DEVELOPERS:
-                        embed.description += f'\nOriginal FEN: `{fen}`\nEval: {eval}\n'
-                    await util2.send_notif(person, 'The bot has moved', file=file, embed=embed)
+                            file, embed = util2.make_embed(
+                                game.white, title='Your game has ended',
+                                description=(f'It was in this position that {await util2.get_name(game.bot())} resigned the game.\n'
+                                             f'Your new rating is {round(data.data_manager.get_rating(game.white), 3)} ({round(white_delta, 3)})'))
+                        await util2.send_notif(game.player(), file=file, embed=embed)
+                        data.data_manager.delete_game(
+                            game.player(), chess.WHITE if game.bot() == game.black else chess.BLACK)
+                    else:
+                        await self.make_move(game, game.parse_move(move))
                 except Exception as exc:
-                    # get data from exception
                     etype = type(exc)
                     trace = exc.__traceback__
-
                     lines = traceback.format_exception(etype, exc, trace)
                     traceback_text = ''.join(lines)
                     logging.error(f'Error in run_engine:\n{traceback_text}')
@@ -124,23 +161,20 @@ class Engine(commands.Cog):
             "cooldown": 3
         }
         '''
+        util2 = self.client.get_cog('Util')
 
         person = ctx.author.id
         game = data.data_manager.get_game(person)
 
-        if game == None:
+        if game is None:
             await ctx.send('You do not have a game in progress.')
             return
-        if 'resign' == move.lower():
+        if person != game.to_move():
+            await ctx.send('It is not your turn!')
+            return
+        if move.lower() == 'resign':
             await self.resign(ctx)
             await ctx.send('Tip: Trying to resign? You can also use the `$resign` command.')
-            return
-
-        board = chess.Board(game.fen)
-        util2 = self.client.get_cog('Util')
-
-        if person != game.to_move():
-            await ctx.send(f'It is not your turn!')
             return
 
         move = game.parse_move(move)
@@ -156,43 +190,10 @@ class Engine(commands.Cog):
                                                color=0xff5555))
             return
 
-        board.push(move)
-        game.last_moved = time.time()
-        game.warned = False
-        game.fen = board.fen(en_passant='fen')
-        data.data_manager.change_game(game)
-
-        file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(game.to_move())}', description='You have moved.')
-        await ctx.send(file=file, embed=embed)
-
-        if board.is_checkmate():
-            white_delta, black_delta = util.update_rating2(
-                game.white, game.black, 0 if board.turn == chess.BLACK else 1)
-
-            file1, embed1 = util2.make_embed(game.white, title='Your game has ended',
-                                             description=f'{whiteblack[not board.turn].capitalize()} won by checkmate.\nYour new rating is {round(data.data_manager.get_rating(game.white))} ({white_delta})')
-            file2, embed2 = util2.make_embed(game.black, title='Your game has ended',
-                                             description=f'{whiteblack[not board.turn].capitalize()} won by checkmate.\nYour new rating is {round(data.data_manager.get_rating(game.black))} ({black_delta})')
-
-            await util2.send_notif(game.white, file=file1, embed=embed1)
-            await util2.send_notif(game.black, file=file2, embed=embed2)
-
-            data.data_manager.delete_game(game.player(), not board.turn)
-        elif board.can_claim_draw() or board.is_stalemate():
-            white_delta, black_delta = util.update_rating2(
-                game.white, game.black, 1/2)
-
-            file1, embed1 = util2.make_embed(game.white, title=f'Your game has ended',
-                                             description=f'Draw.\nYour new rating is {round(data.data_manager.get_rating(game.white))} ({white_delta})')
-            file2, embed2 = util2.make_embed(game.black, title=f'Your game has ended',
-                                             description=f'Draw.\nYour new rating is {round(data.data_manager.get_rating(game.black))} ({black_delta})')
-            await util2.send_notif(game.white, file=file1, embed=embed1)
-            await util2.send_notif(game.black, file=file2, embed=embed2)
-
-            data.data_manager.delete_game(game.player(), 69)
-        else:
-            file, embed = util2.make_embed(game.to_move(), title=f'Your game with {await util2.get_name(person)}', description='It is your turn')
-            await util2.send_notif(game.to_move(), embed=embed, file=file)
+        await self.make_move(game, move)
+        if data.data_manager.get_game(person) is not None:
+            file, embed = util2.make_embed(person, title=f'Your game with {await util2.get_name(game.to_move())}', description='You have moved.')
+            await ctx.send(file=file, embed=embed)
 
     @cog_ext.cog_slash(name='move', description='Make a move in your game.', options=[
         create_option(name='move', description='What move you want to make',
@@ -306,8 +307,7 @@ class Engine(commands.Cog):
         await challenge_msg.add_reaction('❌')
 
         def check(reaction, user):
-            return ((user.id == person.id and str(reaction.emoji) == '✅') or
-                    ((user.id == person.id or user.id == ctx.author.id) and str(reaction.emoji) == '❌'))
+            return (user.id == person.id and str(reaction.emoji) == '✅') or user.id in [person.id, ctx.author.id] and str(reaction.emoji) == '❌'
 
         try:
             reaction, user = await self.client.wait_for('reaction_add', timeout=969.6, check=check)
@@ -379,8 +379,7 @@ class Engine(commands.Cog):
         await challenge_msg.add_reaction('❌')
 
         def check(reaction, user):
-            return ((user.id == person.id and str(reaction.emoji) == '✅') or
-                    ((user.id == person.id or user.id == ctx.author.id) and str(reaction.emoji) == '❌'))
+            return (user.id == person.id and str(reaction.emoji) == '✅') or user.id in [person.id, ctx.author.id] and str(reaction.emoji) == '❌'
 
         try:
             reaction, user = await self.client.wait_for('reaction_add', timeout=969.6, check=check)

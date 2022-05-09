@@ -65,17 +65,14 @@ class Help(commands.Cog):
                 name='Rating', value='`rating`, `leaderboard`, `rank`, `stats`', inline=False)
             embed.add_field(
                 name='Other', value='`ping`, `help`, `botinfo`, `invite`, `prefix`, `vote`, `notif`')
-
-            await ctx.send(embed=embed)
         else:
             cmd = self.client.get_command(command)
             if cmd is None or cmd.hidden or not cmd.enabled:
                 await ctx.send('That command doesn\'t exist!')
                 return
-
             kwargs = json.loads(cmd.help)
             embed = self.make_help_embed(**kwargs)
-            await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
 
 
 def setup(bot):

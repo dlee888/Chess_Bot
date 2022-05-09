@@ -3,16 +3,17 @@ import discord
 import asyncio
 
 import Chess_Bot.util.Data as data
+import itertools
 from Chess_Bot import constants
 
 thonking = []
 
 
-async def run(cmd):
-    proc = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE,
+async def run(cmd, stdin=''):
+    proc = await asyncio.create_subprocess_shell(cmd, stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE,
                                                  stderr=asyncio.subprocess.PIPE)
 
-    stdout, stderr = await proc.communicate()
+    stdout, stderr = await proc.communicate(input=bytes(stdin, encoding='utf-8'))
 
     stdout = str(stdout, 'utf-8')
     stderr = str(stderr, 'utf-8')
@@ -27,21 +28,16 @@ async def has_roles(person, roles, client):
     except discord.HTTPException:
         return False
 
-    for role in roles:
-        for member_role in member.roles:
-            if member_role.name == role:
-                return True
-
-    return False
+    return any(member_role.name == role for role, member_role in itertools.product(roles, member.roles))
 
 
 def update_rating(user, outcome, bot):
     bot_rating = data.data_manager.get_rating(bot)
     person_rating = data.data_manager.get_rating(user)
 
-    if bot_rating == None:
+    if bot_rating is None:
         bot_rating = constants.DEFAULT_RATING
-    if person_rating == None:
+    if person_rating is None:
         person_rating = constants.DEFAULT_RATING
 
     old_rating = person_rating
@@ -62,9 +58,9 @@ def update_rating2(white, black, outcome):
     returns (white_delta, black_delta)'''
     white_rating = data.data_manager.get_rating(white)
     black_rating = data.data_manager.get_rating(black)
-    if white_rating == None:
+    if white_rating is None:
         white_rating = constants.DEFAULT_RATING
-    if black_rating == None:
+    if black_rating is None:
         black_rating = constants.DEFAULT_RATING
 
     old_white = white_rating

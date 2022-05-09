@@ -36,6 +36,9 @@ class ProfileNames(enum.Enum):
     sfmax = 'Stockfish max strength'
 
 
+default_ratings = [800, 1000, 1200, 1400, 1600, 900, 1200, 1500, 1800]
+
+
 def get_name(bot_id: int):
     return ProfileNames[Profile(bot_id).name].value
 
@@ -58,7 +61,9 @@ def get_description(bot_name: str):
 class Profiles(commands.Cog):
 
     def __init__(self, client) -> None:
-        super().__init__()
+        for bot in Profile:
+            if data.data_manager.get_rating(bot.value) is None:
+                data.data_manager.change_rating(bot.value, default_ratings[bot.value])
         self.client = client
 
     async def get_default_embed(self, thumbnail=constants.AVATAR_URL):
@@ -154,13 +159,13 @@ class Profiles(commands.Cog):
                         value=get_description(bot.name))
         embed.add_field(name='Tag', value=f'`{bot.name}`')
 
-        id = bot.value
+        botid = bot.value
         embed.add_field(
             name='Stats', value='Stats about this bot.', inline=False)
         embed.add_field(name='Rating', value=str(
-            round(data.data_manager.get_rating(id), 3)), inline=False)
+            round(data.data_manager.get_rating(botid), 3)), inline=False)
 
-        lost, won, drew = data.data_manager.get_stats(id)
+        lost, won, drew = data.data_manager.get_stats(botid)
         embed.add_field(name='Games played', value=str(
             lost + won + drew), inline=False)
         embed.add_field(name='Games lost', value=str(lost)).add_field(
@@ -172,33 +177,7 @@ class Profiles(commands.Cog):
                       option_type=SlashCommandOptionType.STRING, required=True)
     ])
     async def _view(self, ctx: SlashContext, tag):
-        try:
-            bot = Profile[tag]
-        except KeyError:
-            await ctx.send('That isn\'t a valid bot. Use `$profiles` to see which bots you can challenge.')
-            return
-
-        embed = await self.get_default_embed()
-        if bot.name.startswith('sf'):
-            embed.set_thumbnail(
-                url='https://stockfishchess.org/images/logo/icon_512x512@2x.png')
-
-        embed.add_field(name=get_name(bot.value),
-                        value=get_description(bot.name))
-        embed.add_field(name='Tag', value=f'`{bot.name}`')
-
-        id = bot.value
-        embed.add_field(
-            name='Stats', value='Stats about this bot.', inline=False)
-        embed.add_field(name='Rating', value=str(
-            round(data.data_manager.get_rating(id), 3)), inline=False)
-
-        lost, won, drew = data.data_manager.get_stats(id)
-        embed.add_field(name='Games played', value=str(
-            lost + won + drew), inline=False)
-        embed.add_field(name='Games lost', value=str(lost)).add_field(
-            name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
-        await ctx.send(embed=embed)
+        await self.view(ctx, tag)
 
 
 def setup(bot):

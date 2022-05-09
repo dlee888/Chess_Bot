@@ -15,7 +15,7 @@ class Autoposter(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-        if not '-beta' in sys.argv:
+        if '-beta' not in sys.argv and '-beta-bot' not in sys.argv:
             self.post_stats.start()
 
     @tasks.loop(hours=5)
@@ -23,9 +23,7 @@ class Autoposter(commands.Cog):
         embed = discord.Embed(title="Bot Info", color=0xff0000)
 
         try:
-            users = 0
-            for guild in self.client.guilds:
-                users += guild.member_count
+            users = sum(guild.member_count for guild in self.client.guilds)
         except Exception:
             users = 696969696969
 

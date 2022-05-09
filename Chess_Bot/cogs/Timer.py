@@ -21,7 +21,7 @@ class Timer(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-        if not '-beta' in sys.argv:
+        if '-beta' not in sys.argv:
             self.no_time_check.start()
             self.low_time_warn.start()
 
@@ -45,8 +45,8 @@ class Timer(commands.Cog):
 
         game = data.data_manager.get_game(person.id)
 
-        if game == None:
-            await ctx.send(f'{person} does not have a game in progress')
+        if game is None:
+            await ctx.send(f'{"You do" if person == ctx.author else f"{person} does"} not have a game in progress')
             return
 
         util2 = self.client.get_cog('Util')
@@ -58,18 +58,7 @@ class Timer(commands.Cog):
                       option_type=SlashCommandOptionType.USER, required=False)
     ])
     async def _time(self, ctx, person: typing.Union[discord.User, discord.Member] = None):
-        if person is None:
-            person = ctx.author
-
-        game = data.data_manager.get_game(person.id)
-
-        if game == None:
-            await ctx.send(f'{person} does not have a game in progress')
-            return
-
-        util2 = self.client.get_cog('Util')
-        to_move = game.to_move()
-        await ctx.send(f'{await util2.get_name(to_move)} to move against {await util2.get_name(game.get_person(not game.turn()))} with {util.pretty_time(game.time_left())} left.')
+        await self.time(ctx, person)
 
     @tasks.loop(seconds=10)
     async def low_time_warn(self):

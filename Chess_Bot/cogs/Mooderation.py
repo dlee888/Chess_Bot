@@ -26,13 +26,11 @@ class Mooderation(commands.Cog):
         Aborts a game
         '''
 
-        if data.data_manager.get_game(user.id) == None:
+        if data.data_manager.get_game(user.id) is None:
             await ctx.send(f'{user} does not have a game in progress')
             return
 
-        data.data_manager.delete_game(user.id, 69)
-        if user.id in util.thonking:
-            util.thonking.remove(user.id)
+        data.data_manager.delete_game(user.id, None)
 
         await ctx.send('Game aborted')
 
@@ -60,7 +58,7 @@ class Mooderation(commands.Cog):
             return
 
         if ctx.author.guild_permissions.administrator == False:
-            await ctx.send(f'You do not have permission to change this server\'s custom prefix')
+            await ctx.send("You do not have permission to change this server\'s custom prefix")
             return
 
         data.data_manager.change_prefix(ctx.guild.id, new_prefix)
@@ -71,7 +69,7 @@ class Mooderation(commands.Cog):
 
         try:
             await bot.edit(nick=f'[{new_prefix}] - Chess Bot')
-        except:
+        except Exception:
             pass
 
     @cog_ext.cog_slash(name='prefix', description='Set a custom prefix for your server', options=[
@@ -85,7 +83,7 @@ class Mooderation(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.user)
     @is_developer()
     async def gift(self, ctx, person: typing.Union[discord.User, discord.Member], amount: float):
-        if data.data_manager.get_rating(person.id) == None:
+        if data.data_manager.get_rating(person.id) is None:
             data.data_manager.change_rating(
                 person.id, constants.DEFAULT_RATING)
 

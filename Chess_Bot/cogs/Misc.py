@@ -9,15 +9,14 @@ from discord_slash.utils.manage_commands import create_option
 import time
 import typing
 import logging
-import sys
+import textwrap
 
 import Chess_Bot.util.Utility as util
 import Chess_Bot.util.Data as data
-from Chess_Bot.cogs.Profiles import Profile
 from Chess_Bot.cogs import Profiles as profiles
 from Chess_Bot import constants
 
-version = '3.2.1'
+version = '3.3.0'
 
 
 class CachedUsernames:
@@ -27,11 +26,12 @@ class CachedUsernames:
         self.cache = {}
 
     async def get_username(self, id):
+        if id < len(profiles.Profile):
+            return profiles.get_name(id)
         if id in self.cache.keys() and self.cache[id][1] >= time.time():
             return self.cache[id][0]
         name = str(await self.client.fetch_user(id))
-        if len(name) > 30:
-            name = name[:27] + '...'
+        name = textwrap.shorten(name, 30, placeholder='...')
         self.cache[id] = (name, time.time() + constants.CACHE_REFRESH_TIME)
         return name
 
@@ -91,7 +91,7 @@ class Misc(commands.Cog):
 
         result = data.data_manager.get_rating(person.id)
 
-        if result == None:
+        if result is None:
             person_str = 'You are' if person == ctx.author else f'{person} is'
             await ctx.send(f'{person_str} unrated.')
         else:
@@ -108,7 +108,7 @@ class Misc(commands.Cog):
 
         result = data.data_manager.get_rating(person.id)
 
-        if result == None:
+        if result is None:
             person_str = 'You are' if person == ctx.author else f'{person} is'
             await ctx.send(f'{person_str} unrated.')
         else:
@@ -139,16 +139,15 @@ class Misc(commands.Cog):
         embed = discord.Embed(title="Leaderboard", color=0xffb521)
 
         ratings = data.data_manager.get_ratings()
-        all_players = []
+        all_players = list(ratings.items())
 
-        if num == 'bots' or num == 'bot':
-            for bot in Profile:
-                all_players.append((bot.value, ratings[bot.value]))
+        if num in ['bots', 'bot']:
+            all_players = [(bot.value, ratings[bot.value]) for bot in profiles.Profile]
             all_players.sort(reverse=True, key=lambda a: a[1])
             embed.set_footer(text='Top rated bots')
         else:
             number = constants.DEFAULT_LEADERBOARD_SIZE
-            if num == 'all' or num == 'max':
+            if num in ['all', 'max']:
                 number = min(constants.MAX_LEADERBOARD_SIZE,
                              len(ratings.keys()))
             elif num == '-1':
@@ -171,34 +170,12 @@ class Misc(commands.Cog):
 
             embed.set_footer(text=f'Top {number} rated players')
 
-            for k in ratings.keys():
-                if k in constants.LEADERBOARD_IGNORE:
-                    continue
-                all_players.append((k, ratings[k]))
             all_players.sort(reverse=True, key=lambda a: a[1])
             all_players = all_players[:number]
 
-        rows = []
-        for i, person in enumerate(all_players):
-            if person[0] < len(Profile):
-                rows.append(
-                    (i + 1, profiles.get_name(person[0]), round(person[1], 2)))
-            else:
-                rows.append((i + 1, await self.cache.get_username(person[0]), round(person[1], 2)))
-
-        length1 = 0
-        length2 = 0
-        length3 = 0
-        for i in rows:
-            length1 = max(length1, len(str(i[0])))
-            length2 = max(length2, len(str(i[1])))
-            length3 = max(length3, len(str(i[2])))
-        for ind, i in enumerate(rows):
-            rows[ind] = (' ' * (length1 - len(str(i[0]))) + str(i[0]), ' ' *
-                         (length2 - len(i[1])) + i[1], ' ' * (length3 - len(str(i[2]))) + str(i[2]))
-
-        embed.description = '```\n' + \
-            '\n'.join([f'{i[0]}: {i[1]} ({i[2]})' for i in rows]) + '\n```'
+        rows = [f"{str(i + 1).rjust(2)}: {(await self.cache.get_username(person[0])).rjust(30)} ({f'{round(person[1], 2):.2f}'.rjust(7)})" for i, person in enumerate(all_players)]
+        body = '\n'.join(rows)
+        embed.description = f'```\n{body}\n```'
         embed.set_thumbnail(url=constants.AVATAR_URL)
         await ctx.send(embed=embed)
 
@@ -209,26 +186,23 @@ class Misc(commands.Cog):
                       option_type=SlashCommandOptionType.BOOLEAN, required=False)
     ])
     async def _leaderboard(self, ctx: SlashContext, number='-1', bots=False):
-        if number is None:
-            number = '-1'
-        if bots is not None and bots:
-            number = 'bots'
+        ratings = data.data_manager.get_ratings()
+
+        if number is None or number == '-1':
+            number = min(constants.DEFAULT_LEADERBOARD_SIZE,
+                         len(ratings.keys()))
+
         embed = discord.Embed(title="Leaderboard", color=0xffb521)
 
-        ratings = data.data_manager.get_ratings()
-        all_players = []
+        all_players = list(ratings.items())
 
-        if number == 'bots' or number == 'bot':
-            for bot in Profile:
-                all_players.append((bot.value, ratings[bot.value]))
+        if bots is not None and bots:
+            all_players = [(bot.value, ratings[bot.value]) for bot in profiles.Profile]
             all_players.sort(reverse=True, key=lambda a: a[1])
             embed.set_footer(text='Top rated bots')
         else:
-            if number == 'all' or number == 'max':
+            if number in ['all', 'max']:
                 number = min(constants.MAX_LEADERBOARD_SIZE,
-                             len(ratings.keys()))
-            elif number == '-1':
-                number = min(constants.DEFAULT_LEADERBOARD_SIZE,
                              len(ratings.keys()))
             else:
                 try:
@@ -247,34 +221,12 @@ class Misc(commands.Cog):
 
             embed.set_footer(text=f'Top {number} rated players')
 
-            for k in ratings.keys():
-                if k in constants.LEADERBOARD_IGNORE:
-                    continue
-                all_players.append((k, ratings[k]))
             all_players.sort(reverse=True, key=lambda a: a[1])
             all_players = all_players[:number]
 
-        rows = []
-        for i, person in enumerate(all_players):
-            if person[0] < len(Profile):
-                rows.append(
-                    (i + 1, profiles.get_name(person[0]), round(person[1], 2)))
-            else:
-                rows.append((i + 1, await self.cache.get_username(person[0]), round(person[1], 2)))
-
-        length1 = 0
-        length2 = 0
-        length3 = 0
-        for i in rows:
-            length1 = max(length1, len(str(i[0])))
-            length2 = max(length2, len(str(i[1])))
-            length3 = max(length3, len(str(i[2])))
-        for ind, i in enumerate(rows):
-            rows[ind] = (' ' * (length1 - len(str(i[0]))) + str(i[0]), ' ' *
-                         (length2 - len(i[1])) + i[1], ' ' * (length3 - len(str(i[2]))) + str(i[2]))
-
-        embed.description = '```\n' + \
-            '\n'.join([f'{i[0]}: {i[1]} ({i[2]})' for i in rows]) + '\n```'
+        rows = [f"{str(i + 1).rjust(2)}: {(await self.cache.get_username(person[0])).rjust(30)} ({f'{round(person[1], 2):.2f}'.rjust(7)})" for i, person in enumerate(all_players)]
+        body = '\n'.join(rows)
+        embed.description = f'```\n{body}\n```'
         embed.set_thumbnail(url=constants.AVATAR_URL)
         await ctx.send(embed=embed)
 
@@ -299,20 +251,12 @@ class Misc(commands.Cog):
 
         ratings = data.data_manager.get_ratings()
 
-        all_players = []
-
-        for k in ratings.keys():
-            if k in constants.LEADERBOARD_IGNORE:
-                continue
-            all_players.append((k, ratings[k]))
+        all_players = [(k, ratings[k]) for k in ratings.keys()]
 
         all_players.sort(reverse=True, key=lambda a: a[1])
 
-        rank = None
-        for i in range(len(all_players)):
-            if all_players[i][0] == ctx.author.id:
-                rank = i + 1
-                break
+        rank = next((i + 1 for i in range(len(all_players))
+                    if all_players[i][0] == ctx.author.id), None)
 
         await ctx.send(f'Your rating is {round(data.data_manager.get_rating(ctx.author.id), 2)}. You are ranked {rank} out of {len(all_players)} players.')
 
@@ -324,20 +268,12 @@ class Misc(commands.Cog):
 
         ratings = data.data_manager.get_ratings()
 
-        all_players = []
-
-        for k in ratings.keys():
-            if k in constants.LEADERBOARD_IGNORE:
-                continue
-            all_players.append((k, ratings[k]))
+        all_players = [(k, ratings[k]) for k in ratings.keys()]
 
         all_players.sort(reverse=True, key=lambda a: a[1])
 
-        rank = None
-        for i in range(len(all_players)):
-            if all_players[i][0] == ctx.author.id:
-                rank = i + 1
-                break
+        rank = next((i + 1 for i in range(len(all_players))
+                    if all_players[i][0] == ctx.author.id), None)
 
         await ctx.send(f'Your rating is {round(data.data_manager.get_rating(ctx.author.id), 2)}. You are ranked {rank} out of {len(all_players)} players.')
 
@@ -367,10 +303,7 @@ class Misc(commands.Cog):
         embed.add_field(name="Info",
                         value='Chess Bot is a bot that plays chess. Use `$help` for a list of commands.', inline=False)
 
-        users = 0
-        for guild in self.client.guilds:
-            users += guild.member_count
-
+        users = sum(guild.member_count for guild in self.client.guilds)
         embed.add_field(name="Stats", value="Stats", inline=False)
         embed.add_field(name="Server Count", value=str(
             len(self.client.guilds)), inline=True)
@@ -398,10 +331,7 @@ class Misc(commands.Cog):
         embed.add_field(name="Info",
                         value='Chess Bot is a bot that plays chess. Use `$help` for a list of commands.', inline=False)
 
-        users = 0
-        for guild in self.client.guilds:
-            users += guild.member_count
-
+        users = sum(guild.member_count for guild in self.client.guilds)
         embed.add_field(name="Stats", value="Stats", inline=False)
         embed.add_field(name="Server Count", value=str(
             len(self.client.guilds)), inline=True)
@@ -458,7 +388,7 @@ class Misc(commands.Cog):
         if person is None:
             person = ctx.author
         lost, won, drew = data.data_manager.get_stats(person.id)
-        embed = discord.Embed(title=f'{person}\'s stats', color=0xfc26e0)
+        embed = discord.Embed(title=f'{person}\'s stats', color=0xf9ff82)
         embed.add_field(name='Rating', value=str(
             data.data_manager.get_rating(person.id)), inline=False)
         embed.add_field(name='Games Played', value=str(
@@ -466,6 +396,7 @@ class Misc(commands.Cog):
         embed.add_field(name='Lost', value=str(lost))
         embed.add_field(name='Won', value=str(won))
         embed.add_field(name='Drawn', value=str(drew))
+        embed.set_thumbnail(url=person.avatar_url)
         await ctx.send(embed=embed)
 
     @cog_ext.cog_slash(name='stats', description='Basic stats about a user', options=[
@@ -473,53 +404,7 @@ class Misc(commands.Cog):
                       option_type=SlashCommandOptionType.USER, required=False)
     ])
     async def _stats(self, ctx, person=None):
-        if person is None:
-            person = ctx.author
-        lost, won, drew = data.data_manager.get_stats(person.id)
-        embed = discord.Embed(title=f'{person}\'s stats', color=0xfc26e0)
-        embed.add_field(name='Rating', value=str(
-            data.data_manager.get_rating(person.id)), inline=False)
-        embed.add_field(name='Games Played', value=str(
-            lost+won+drew), inline=False)
-        embed.add_field(name='Lost', value=str(lost))
-        embed.add_field(name='Won', value=str(won))
-        embed.add_field(name='Drawn', value=str(drew))
-        await ctx.send(embed=embed)
-
-    @commands.command()
-    @commands.cooldown(1, 3, commands.BucketType.user)
-    async def notif(self, ctx, type='view'):
-        '''
-        {
-            "name": "notif",
-            "description": "Sets the channel for your notifications.",
-            "usage": "$notif",
-            "examples": [
-                "$notif"
-            ],
-            "cooldown": 3
-        }
-        '''
-        util2 = self.client.get_cog('Util')
-        if type == 'view':
-            channel = await util2.get_notifchannel(ctx.author.id)
-            await ctx.send(f'Your notification channel is `{channel}`.')
-        elif type == 'set':
-            data.data_manager.change_settings(
-                ctx.author.id, new_notif=ctx.channel.id)
-            await ctx.send(f'Notification channel set to `{ctx.channel.name if ctx.guild is not None else "DM channel"}`.')
-        elif type == 'test':
-            await ctx.send(f'You should recieve a test notification. If you do not, try changing your notification channel or changing your settings.')
-            await util2.send_notif(ctx.author.id, 'This is a test notification.')
-        else:
-            await ctx.send('Please specify either `view`, `set`, or `test`.')
-
-    @cog_ext.cog_slash(name='notif', description='Sets your default channel for recieving notifications.', options=[
-        create_option(name='type', description='View your notification channel, Test a notification, or Set your default channel.',
-                      option_type=SlashCommandOptionType.STRING, required=True, choices=['view', 'test', 'set'])
-    ])
-    async def _notif(self, ctx, type):
-        await self.notif(ctx, type)
+        await self.stats(ctx, person)
 
 
 def setup(bot):

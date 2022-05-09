@@ -24,11 +24,6 @@ Value search(Depth depth, Value alpha, Value beta, bool use_nullmove) {
 		return DRAWN;
 	}
 
-	// if (curr_state.king_attacked()) {
-	// 	// printf("king attacked\n");
-	// 	return MATE;
-	// }
-
 	if (break_now || (depth <= mcts_depth && mcts_prob > rng())) {
 		return eval(curr_state);
 	}
@@ -67,6 +62,7 @@ Value search(Depth depth, Value alpha, Value beta, bool use_nullmove) {
 		// printf("x = %d, beta = %d\n", x, beta);
 		if (x >= beta - TEMPO) {
 			curr_state.unmake_move(0);
+			// printf("nullmove prune: %d\n", beta);
 			return beta;
 		}
 		curr_state.unmake_move(0);
@@ -91,7 +87,7 @@ Value search(Depth depth, Value alpha, Value beta, bool use_nullmove) {
 			if (tt_exists[key] && tt_hashes[key] == hash) {
 				ordered_moves.push_back({tt_evals[key], i});
 			} else {
-				ordered_moves.push_back({eval(curr_state) + see_val, i});
+				ordered_moves.push_back({eval(curr_state) - see_val, i});
 			}
 		}
 		curr_state.unmake_move(i);
@@ -116,12 +112,15 @@ Value search(Depth depth, Value alpha, Value beta, bool use_nullmove) {
 
 		curr_state.make_move(move);
 		Value x;
-		if ((int)ordered_moves.size() * 3 < i * 4) { // late move reduction
+		if (alpha > -ordered_moves[i].first + LMR_CUTOFF) { // late move reduction
+			// printf("Late move reduction\n");
 			x = -search(depth - Depth(2), -beta, -alpha, use_nullmove);
 		} else {
 			x = -search(depth - ONE_PLY, -beta, -alpha, use_nullmove);
 		}
 		curr_state.unmake_move(move);
+
+		// printf("x = %d\n", x);
 
 		value = std::max(value, x);
 		alpha = std::max(alpha, value);
@@ -169,12 +168,7 @@ Value qsearch(Value alpha, Value beta, Depth depth) {
 		// printf("adjucation\n");
 		return DRAWN;
 	}
-
-	// if (curr_state.king_attacked()){
-	// 	// printf("king attacked\n");
-	// 	return MATE;
-	// }
-
+	
 	Value curr_eval;
 	if (tt_exists[key] && tt_hashes[key] == curr_board_hash) {
 		// tt entry can be used as more accurate static eval
@@ -199,18 +193,17 @@ Value qsearch(Value alpha, Value beta, Depth depth) {
 	std::vector<pii> ordered_moves;
 
 	for (int i : curr_state.list_moves(true)) {
-		if (curr_state.see((i >> 9) & 7, (i >> 6) & 7, curr_state.to_move) < 0) {
+		int see_val = curr_state.see((i >> 9) & 7, (i >> 6) & 7, curr_state.to_move);
+		if (see_val < 0) {
 			continue;
 		}
 		curr_state.make_move(i);
-		if ((((i >> 15) & 7) != 0) || ((((i >> 18) & 3) == 2) && (((i >> 20) & 3) == 3))) {
-			Bitstring hash = curr_state.get_hash();
-			if (tt_exists[key] && tt_hashes[key] == hash) {
-				// printf("using tt for eval of move %s\n", curr_state.move_to_string(i).c_str());
-				ordered_moves.push_back({tt_evals[key], i});
-			} else {
-				ordered_moves.push_back({eval(curr_state), i});
-			}
+		Bitstring hash = curr_state.get_hash();
+		if (tt_exists[key] && tt_hashes[key] == hash) {
+			// printf("using tt for eval of move %s\n", curr_state.move_to_string(i).c_str());
+			ordered_moves.push_back({tt_evals[key], i});
+		} else {
+			ordered_moves.push_back({eval(curr_state) - see_val, i});
 		}
 		curr_state.unmake_move(i);
 	}
@@ -238,7 +231,7 @@ Value qsearch(Value alpha, Value beta, Depth depth) {
 
 		curr_state.make_move(move);
 		Value x;
-		if ((int)ordered_moves.size() * 3 < i * 4) { // late move reduction
+		if (alpha > -ordered_moves[i].first + LMR_CUTOFF) { // late move reduction
 			x = -qsearch(-beta, -alpha, depth - Depth(2));
 		} else {
 			x = -qsearch(-beta, -alpha, depth - ONE_PLY);
