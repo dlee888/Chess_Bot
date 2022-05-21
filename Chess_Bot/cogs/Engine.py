@@ -57,7 +57,7 @@ class Engine(commands.Cog):
             await util2.send_notif(game.black, file=file2, embed=embed2)
 
             data.data_manager.delete_game(game.player(), not board.turn)
-        elif board.can_claim_draw() or board.is_stalemate():
+        elif board.can_claim_draw() or board.is_stalemate() or board.is_insufficient_material():
             white_delta, black_delta = util.update_rating2(
                 game.white, game.black, 1/2)
 
