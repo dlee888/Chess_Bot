@@ -83,7 +83,8 @@ class Development(commands.Cog):
     async def debug(self, ctx, *, body: str):
         """Evaluates a code"""
 
-        env = {'bot': self.client, 'ctx': ctx, 'channel': ctx.channel, 'author': ctx.author, 'guild': ctx.guild, 'message': ctx.message, '_': self._last_result} | globals()
+        env = {'bot': self.client, 'ctx': ctx, 'channel': ctx.channel, 'author': ctx.author,
+               'guild': ctx.guild, 'message': ctx.message, '_': self._last_result, **globals()}
 
         body = self.cleanup_code(body)
         stdout = io.StringIO()
