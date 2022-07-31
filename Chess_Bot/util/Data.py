@@ -9,9 +9,10 @@ from Chess_Bot import constants
 
 class Game2:
 
-    def __init__(self, row = None) -> None:
+    def __init__(self, row=None) -> None:
         if row is None:
-            row = ['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', -1, -1, time.time(), False, None]
+            row = ['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', -
+                   1, -1, time.time(), False, None]
 
         self.fen = row[0]
         self.white = row[1]
@@ -86,9 +87,8 @@ class MongoData:
 
     def __init__(self, url):
         self.DATABASE_URL = url
-
         self.client = MongoClient(url)
-        self.db = self.client.database
+        self.db = self.client.test if '-beta-bot' in sys.argv else self.client.database
 
     def get_game(self, person):
         white = self.db.games.find({'white': person})
@@ -203,4 +203,4 @@ class MongoData:
         self.db.votes.delete_one({'id': person})
 
 
-data_manager = MongoData(os.getenv('MONGODB_URL') if '-beta-bot' not in sys.argv else os.getenv('BETA_DB'))
+data_manager = MongoData(os.getenv('MONGODB_URL'))

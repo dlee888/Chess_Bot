@@ -144,7 +144,7 @@ def main():
             lambda ctx: ctx.channel.id not in constants.BETA_CHANNELS)
 
     token = os.getenv(
-        'BOT_TOKEN') if '-beta-bot' not in sys.argv else os.getenv('BETA_TOKEN')
+        'BOT_TOKEN') if '-beta-bot' not in sys.argv else os.getenv('TEST_TOKEN')
     if token is None:
         token = input('Token? ')
     bot.run(token)

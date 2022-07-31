@@ -16,7 +16,7 @@ import Chess_Bot.util.Data as data
 from Chess_Bot.cogs import Profiles as profiles
 from Chess_Bot import constants
 
-version = '3.3.0'
+version = '3.3.1'
 
 
 class CachedUsernames:
