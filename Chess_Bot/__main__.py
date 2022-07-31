@@ -22,8 +22,16 @@ async def get_prefix(bot, message):
         return ['$', f'<@{bot.user.id}> ', f'<@!{bot.user.id}> ']
     return [data.data_manager.get_prefix(message.guild.id), f'<@{bot.user.id}> ', f'<@!{bot.user.id}> ']
 
-bot = commands.AutoShardedBot(command_prefix=get_prefix, help_command=None,
-                              status='$help for commands, $botinfo for more information')
+total = os.getenv('TOTAL_SHARDS')
+start = os.getenv('SHARD_START')
+end = os.getenv('SHARD_END')
+if total is not None and start is not None and end is not None:
+    bot = commands.AutoShardedBot(command_prefix=get_prefix, shard_count=int(
+        total), shard_ids=range(int(start), int(end)), help_command=None,
+        status='$help for commands, $botinfo for more information')
+else:
+    bot = commands.AutoShardedBot(command_prefix=get_prefix, help_command=None,
+                                  status='$help for commands, $botinfo for more information')
 if '-beta' not in sys.argv:
     slash = SlashCommand(bot, sync_commands=True)
 
