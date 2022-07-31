@@ -27,7 +27,7 @@ start = os.getenv('SHARD_START')
 end = os.getenv('SHARD_END')
 if total is not None and start is not None and end is not None:
     bot = commands.AutoShardedBot(command_prefix=get_prefix, shard_count=int(
-        total), shard_ids=range(int(start), int(end)), help_command=None,
+        total), shard_ids=list(range(int(start), int(end))), help_command=None,
         status='$help for commands, $botinfo for more information')
 else:
     bot = commands.AutoShardedBot(command_prefix=get_prefix, help_command=None,
