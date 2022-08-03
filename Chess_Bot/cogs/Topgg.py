@@ -1,4 +1,4 @@
-import dbl
+import topgg
 import discord
 from discord.ext import commands, tasks
 
@@ -18,8 +18,8 @@ class Topgg(commands.Cog):
         self.client = client
         self.dbl_token = os.environ.get('DBL_TOKEN')
         if self.dbl_token is not None:
-            self.dbl_client = dbl.DBLClient(
-                self.client, self.dbl_token, autopost=True)
+            self.dbl_client = topgg.DBLClient(
+                self.client, self.dbl_token, autopost=True, post_shard_count=True)
             self.reset_votes.start()
         else:
             self.dbl_client = None

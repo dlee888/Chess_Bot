@@ -1,6 +1,6 @@
 discord.py
 pillow
-dblpy
+topggpy
 psycopg2-binary
 python-chess
 discord-py-slash-command==3.0.3
