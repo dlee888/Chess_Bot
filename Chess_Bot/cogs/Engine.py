@@ -85,7 +85,7 @@ class Engine(commands.Cog):
             games = data.data_manager.get_games()
             for game in games:
                 person = game.not_to_move()
-                if game.to_move() < len(Profile) and person not in self.thonking.keys() and len(self.thonking) < 10:
+                if game.to_move() < len(Profile) and person not in self.thonking.keys() and len(self.thonking) < 3:
                     self.thonking[person] = asyncio.create_task(
                         run_engine(person))
         except Exception as exc:
