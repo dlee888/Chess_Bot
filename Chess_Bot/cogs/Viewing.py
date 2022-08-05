@@ -5,7 +5,6 @@ from discord.ext import commands
 
 import typing
 
-import Chess_Bot.util.Utility as util
 import Chess_Bot.util.Data as data
 import Chess_Bot.util.Images as image
 from Chess_Bot.util.CPP_IO import *
@@ -43,9 +42,12 @@ class Viewing(commands.Cog):
             return
 
         util2 = self.client.get_cog('Util')
-        file, embed = util2.make_embed(person.id, title=f'{await util2.get_name(game.white)} vs {await util2.get_name(game.black)}',
+        file, embed, view = util2.make_embed(person.id, title=f'{await util2.get_name(game.white)} vs {await util2.get_name(game.black)}',
                                        description=f'{await util2.get_name(game.to_move())} to move.', flip=flip)
-        await ctx.send(file=file, embed=embed)
+        if ctx.author.id in [game.white, game.black]:
+            await ctx.send(file=file, embed=embed, view=view)
+        else:
+            await ctx.send(file=file, embed=embed)
 
     @commands.hybrid_command(name='fen', description='Views the FEN of the game.')
     @app_commands.describe(person='The person to view the FEN of. If no person is specified, it will default to your own game.')
