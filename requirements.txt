@@ -1,5 +1,5 @@
 # discord.py
-git+https://github.com/Rapptz/discord.py
+git+https://github.com/Rapptz/discord.py#egg=discord.py
 
 pillow
 topggpy

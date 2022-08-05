@@ -21,16 +21,6 @@ async def run(cmd, stdin=''):
     return stdout, stderr, f'[{cmd!r} exited with {proc.returncode}]'
 
 
-async def has_roles(person, roles, client):
-    support_server = await client.fetch_guild(constants.SUPPORT_SERVER_ID)
-    try:
-        member = await support_server.fetch_member(person)
-    except discord.HTTPException:
-        return False
-
-    return any(member_role.name == role for role, member_role in itertools.product(roles, member.roles))
-
-
 def update_rating(user, outcome, bot):
     bot_rating = data.data_manager.get_rating(bot)
     person_rating = data.data_manager.get_rating(user)

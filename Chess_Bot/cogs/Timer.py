@@ -1,20 +1,14 @@
 import discord
+from discord import app_commands
 from discord.ext import commands
 from discord.ext import tasks
 
-from discord_slash import cog_ext
-from discord_slash.model import SlashCommandOptionType
-from discord_slash.utils.manage_commands import create_option
-
-import logging
-import time
 import typing
 import sys
 
 import Chess_Bot.util.Utility as util
 import Chess_Bot.util.Data as data
 from Chess_Bot.util.CPP_IO import *
-from Chess_Bot import constants
 
 
 class Timer(commands.Cog):
@@ -25,7 +19,8 @@ class Timer(commands.Cog):
             self.no_time_check.start()
             self.low_time_warn.start()
 
-    @commands.command()
+    @commands.hybrid_command(name='time', description='Shows how much time you (or someone else) has left.')
+    @app_commands.describe(person='The person to view the time of. If no person is specified, it will default to your own game.')
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def time(self, ctx, person: typing.Union[discord.User, discord.Member] = None):
         '''
@@ -52,13 +47,6 @@ class Timer(commands.Cog):
         util2 = self.client.get_cog('Util')
         to_move = game.to_move()
         await ctx.send(f'{await util2.get_name(to_move)} to move against {await util2.get_name(game.get_person(not game.turn()))} with {util.pretty_time(game.time_left())} left.')
-
-    @cog_ext.cog_slash(name='time', description='Shows how much time you (or someone else) has left.', options=[
-        create_option(name='person', description='The person you want to get the time for.',
-                      option_type=SlashCommandOptionType.USER, required=False)
-    ])
-    async def _time(self, ctx, person: typing.Union[discord.User, discord.Member] = None):
-        await self.time(ctx, person)
 
     @tasks.loop(seconds=10)
     async def low_time_warn(self):
@@ -104,5 +92,5 @@ class Timer(commands.Cog):
         await self.client.wait_until_ready()
 
 
-def setup(bot):
-    bot.add_cog(Timer(bot))
+async def setup(bot):
+    await bot.add_cog(Timer(bot))

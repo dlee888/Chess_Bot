@@ -60,5 +60,5 @@ class Util(commands.Cog):
                 await channel.send(text, **kwargs)
 
 
-def setup(bot):
-    bot.add_cog(Util(bot))
+async def setup(bot):
+    await bot.add_cog(Util(bot))

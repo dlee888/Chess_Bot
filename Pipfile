@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+"discord.py" = {git = "https://github.com/Rapptz/discord.py"}
+pillow = "*"
+topggpy = "*"
+python-chess = "*"
+pymongo = {extras = ["srv"], version = "*"}
+
+[dev-packages]
+autopep8 = "*"
+
+[requires]
+python_version = "3.8"

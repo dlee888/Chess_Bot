@@ -1,11 +1,6 @@
 import discord
 from discord.ext import commands
 
-from discord_slash import SlashContext
-from discord_slash import cog_ext
-from discord_slash.model import SlashCommandOptionType
-from discord_slash.utils.manage_commands import create_option
-
 import enum
 
 import Chess_Bot.util.Data as data
@@ -63,19 +58,16 @@ class Profiles(commands.Cog):
     def __init__(self, client) -> None:
         for bot in Profile:
             if data.data_manager.get_rating(bot.value) is None:
-                data.data_manager.change_rating(bot.value, default_ratings[bot.value])
+                data.data_manager.change_rating(
+                    bot.value, default_ratings[bot.value])
         self.client = client
 
     async def get_default_embed(self, thumbnail=constants.AVATAR_URL):
         embed = discord.Embed(title='Profiles', color=0xe3a617)
-
-        owner = (await self.client.application_info()).owner
-        embed.set_footer(text=f"Made by {owner}", icon_url=owner.avatar_url)
         embed.set_thumbnail(url=thumbnail)
-
         return embed
 
-    @commands.group(invoke_without_command=True, aliases=['profiles', 'levels'])
+    @commands.hybrid_group(name='profile', description='List the chess bot computers you can challenge', invoke_without_command=True, aliases=['profiles', 'levels'])
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def profile(self, ctx):
         '''
@@ -111,23 +103,7 @@ class Profiles(commands.Cog):
             name='Stockfish', value='\n'.join(all_sf))
         await ctx.send(embed=embed)
 
-    @cog_ext.cog_slash(name='profiles', description="Shows a list of the Chess Bot computers that you can challenge.")
-    async def _profiles(self, ctx: SlashContext):
-        embed = await self.get_default_embed()
-        embed.description = ('These are the Chess Bot computers that you can challenge.\n'
-                             'Use the command `$profile view <bot tag>` for more information on a bot.\n'
-                             'For example, `$profile view cb1` to get info about Chess Bot level 1.')
-        all_cb = [
-            f'`{bot.name}` ({get_name(bot.value)})' for bot in Profile if bot.name.startswith('cb')]
-        all_sf = [
-            f'`{bot.name}` ({get_name(bot.value)})' for bot in Profile if bot.name.startswith('sf')]
-        embed.add_field(
-            name='Chess Bot', value='\n'.join(all_cb))
-        embed.add_field(
-            name='Stockfish', value='\n'.join(all_sf))
-        await ctx.send(embed=embed)
-
-    @profile.command(aliases=['info'])
+    @profile.command(aliases=['info'], name='view', description='Shows information about a Chess Bot computer.')
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def view(self, ctx, tag):
         '''
@@ -172,13 +148,6 @@ class Profiles(commands.Cog):
             name='Games won', value=str(won)).add_field(name='Games drawn', value=str(drew))
         await ctx.send(embed=embed)
 
-    @cog_ext.cog_slash(name='profile-info', description="Views information about a specific Chess Bot profile that you can challenge.", options=[
-        create_option(name='tag', description='The tag of the bot. For example, `cb1`.',
-                      option_type=SlashCommandOptionType.STRING, required=True)
-    ])
-    async def _view(self, ctx: SlashContext, tag):
-        await self.view(ctx, tag)
 
-
-def setup(bot):
-    bot.add_cog(Profiles(bot))
+async def setup(bot):
+    await bot.add_cog(Profiles(bot))

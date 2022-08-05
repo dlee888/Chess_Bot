@@ -75,8 +75,8 @@ class Viewing(commands.Cog):
 
         await ctx.send(f'```{game.fen}```')
 
-    @commands.hybrid_command()
-    @app_commands.describe(person='The new theme to set. If left blank, you will see your current theme')
+    @commands.hybrid_command(name='theme', description='Changes the theme of the board.')
+    @app_commands.describe(new_theme='The new theme to set. If left blank, you will see your current theme')
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def theme(self, ctx, new_theme=None):
         '''
@@ -108,10 +108,10 @@ class Viewing(commands.Cog):
         data.data_manager.change_theme(ctx.author.id, new_theme)
         await ctx.send('Theme sucessfully updated')
 
-    @commands.hybrid_command()
-    @app_commands.describe(person='Change, test, or view the channel used for notifications.')
+    @commands.hybrid_command(name='notif', description='Changes the notification settings for your game.')
+    @app_commands.describe(type='Change, test, or view the channel used for notifications.')
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def notif(self, ctx, type=typing.Literal['apple', 'banana', 'cherry']):
+    async def notif(self, ctx, type):
         """
         {
             "name": "notif",
@@ -145,5 +145,5 @@ class Viewing(commands.Cog):
             await ctx.send('Please specify either `view`, `set`, or `test`.')
 
 
-def setup(bot):
-    bot.add_cog(Viewing(bot))
+async def setup(bot):
+    await bot.add_cog(Viewing(bot))
