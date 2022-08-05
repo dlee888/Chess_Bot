@@ -33,6 +33,7 @@ async def run_engine(person):
                  f'setoption depth_limit {max_depth[bot]}\n'
                  f'setoption mcts_prob {mcts_probs[bot]}\n'
                  f'setoption mcts_max_depth {mcts_depth[bot]}\n'
+                 'setoption table_size 666667\n'
                  f'go {game.fen}\nquit')
         out, _, _ = await util.run('./engine', stdin=stdin)
         out = out.split('\n')

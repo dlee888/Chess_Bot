@@ -1,7 +1,7 @@
-discord.py
+# discord.py
+git+https://github.com/Rapptz/discord.py
+
 pillow
 topggpy
-psycopg2-binary
 python-chess
-discord-py-slash-command==3.0.3
 pymongo[srv]

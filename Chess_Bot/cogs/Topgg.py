@@ -2,9 +2,6 @@ import topgg
 import discord
 from discord.ext import commands, tasks
 
-from discord_slash import SlashContext
-from discord_slash import cog_ext
-
 import os
 import logging
 
@@ -27,7 +24,7 @@ class Topgg(commands.Cog):
     async def on_guild_post(self):
         logging.info('Posted stats on top.gg')
 
-    @commands.command()
+    @commands.hybrid_command()
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def vote(self, ctx):
         '''

@@ -1,8 +1,6 @@
 import discord
 from discord.ext import commands
 
-from discord_slash import SlashCommand
-
 import Chess_Bot.util.Data as data
 import Chess_Bot.util.Utility as util
 import Chess_Bot.util.Images as image
@@ -22,6 +20,8 @@ async def get_prefix(bot, message):
         return ['$', f'<@{bot.user.id}> ', f'<@!{bot.user.id}> ']
     return [data.data_manager.get_prefix(message.guild.id), f'<@{bot.user.id}> ', f'<@!{bot.user.id}> ']
 
+intents = discord.Intents.none()
+intents.message_content = True
 total = os.getenv('TOTAL_SHARDS')
 start = os.getenv('SHARD_START')
 end = os.getenv('SHARD_END')
@@ -32,8 +32,6 @@ if total is not None and start is not None and end is not None:
 else:
     bot = commands.AutoShardedBot(command_prefix=get_prefix, help_command=None,
                                   status='$help for commands, $botinfo for more information', max_messages=None)
-if '-beta' not in sys.argv:
-    slash = SlashCommand(bot, sync_commands=True)
 
 
 @bot.event
@@ -129,7 +127,7 @@ def setup():
     image.load_all_themes()
 
 
-def main():
+async def main():
     setup()
 
     cogs = [file.stem for file in Path('Chess_Bot', 'cogs').glob('*.py')]
@@ -147,8 +145,11 @@ def main():
         'BOT_TOKEN') if '-beta-bot' not in sys.argv else os.getenv('TEST_TOKEN')
     if token is None:
         token = input('Token? ')
-    bot.run(token)
+    await bot.login(token)
+    await bot.tree.sync()
+    logging.info('Done syncing')
+    await bot.start(token, reconnect=True)
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
