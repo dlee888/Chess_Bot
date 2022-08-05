@@ -52,9 +52,9 @@ class Mooderation(commands.Cog):
             await ctx.send(f'This server\'s prefix is `{data.data_manager.get_prefix(ctx.guild.id)}`')
             return
 
-        if ctx.author.guild_permissions.administrator == False:
-            await ctx.send("You do not have permission to change this server\'s custom prefix")
-            return
+        # if ctx.author.guild_permissions.administrator == False:
+        #     await ctx.send("You do not have permission to change this server\'s custom prefix")
+        #     return
 
         data.data_manager.change_prefix(ctx.guild.id, new_prefix)
 

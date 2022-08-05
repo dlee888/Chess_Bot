@@ -21,10 +21,8 @@ async def get_prefix(bot, message):
     return [data.data_manager.get_prefix(message.guild.id), f'<@{bot.user.id}> ', f'<@!{bot.user.id}> ']
 
 intents = discord.Intents.none()
-intents.message_content = True
 intents.messages = True
 intents.reactions = True
-intents.guilds = True
 
 total = os.getenv('TOTAL_SHARDS')
 start = os.getenv('SHARD_START')
