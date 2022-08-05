@@ -9,7 +9,7 @@ while true; do
 
 	git pull
 
-	python3 -m Chess_Bot
+	python3.8 -m Chess_Bot
 
 	(($? == 69)) && break
 done
