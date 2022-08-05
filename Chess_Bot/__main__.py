@@ -22,16 +22,22 @@ async def get_prefix(bot, message):
         return ['$', f'<@{bot.user.id}> ', f'<@!{bot.user.id}> ']
     return [data.data_manager.get_prefix(message.guild.id), f'<@{bot.user.id}> ', f'<@!{bot.user.id}> ']
 
+intents = discord.Intents.none()
+intents.message_content = True
+intents.messages = True
+intents.dm_messages = True
+intents.reactions = True
+intents.guild_reactions = True
 total = os.getenv('TOTAL_SHARDS')
 start = os.getenv('SHARD_START')
 end = os.getenv('SHARD_END')
 if total is not None and start is not None and end is not None:
     bot = commands.AutoShardedBot(command_prefix=get_prefix, shard_count=int(
         total), shard_ids=list(range(int(start), int(end))), help_command=None,
-        status='$help for commands, $botinfo for more information', max_messages=None)
+        status='$help for commands, $botinfo for more information', max_messages=None, intents=intents)
 else:
     bot = commands.AutoShardedBot(command_prefix=get_prefix, help_command=None,
-                                  status='$help for commands, $botinfo for more information', max_messages=None)
+                                  status='$help for commands, $botinfo for more information', max_messages=None, intents=intents)
 if '-beta' not in sys.argv:
     slash = SlashCommand(bot, sync_commands=True)
 
@@ -121,7 +127,7 @@ def setup():
         os.makedirs(path, exist_ok=True)
 
     logging.basicConfig(format='{asctime}:{levelname}:{name}:{message}', style='{',
-                        datefmt='%d-%m-%Y %H:%M:%S', level=logging.INFO,
+                        datefmt='%d-%m-%Y %H:%M:%S', level=logging.DEBUG,
                         handlers=[logging.StreamHandler(),
                                   TimedRotatingFileHandler(constants.LOG_FILE_PATH, when='D',
                                                            backupCount=3, utc=True)])
