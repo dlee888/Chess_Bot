@@ -127,7 +127,7 @@ def setup():
         os.makedirs(path, exist_ok=True)
 
     logging.basicConfig(format='{asctime}:{levelname}:{name}:{message}', style='{',
-                        datefmt='%d-%m-%Y %H:%M:%S', level=logging.DEBUG,
+                        datefmt='%d-%m-%Y %H:%M:%S', level=logging.INFO,
                         handlers=[logging.StreamHandler(),
                                   TimedRotatingFileHandler(constants.LOG_FILE_PATH, when='D',
                                                            backupCount=3, utc=True)])
