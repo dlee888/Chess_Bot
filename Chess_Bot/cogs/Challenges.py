@@ -114,7 +114,7 @@ class Challenges(commands.Cog):
 
     @challenge.command(name='bot', description='Challenges a bot to a game of chess.')
     @app_commands.describe(bot='The bot you want to challenge.')
-    async def bot(self, ctx, bot: Profile):
+    async def bot(self, ctx, bot: str):
         '''
         {
             "name": "challenge bot",
@@ -127,6 +127,12 @@ class Challenges(commands.Cog):
             "cooldown": 3
         }
         '''
+        try:
+            bot = Profile[bot]
+        except KeyError:
+            await ctx.send('That isn\'t a valid bot. Use `$profiles` to see which bots you can challenge.')
+            return
+
         person = ctx.author.id
 
         game = data.data_manager.get_game(person)
@@ -145,9 +151,9 @@ class Challenges(commands.Cog):
         data.data_manager.change_game(game)
         util2 = self.client.get_cog('Util')
         file, embed, view = util2.make_embed(ctx.author.id, title='Game started!',
-                                       description=(f'White: {await util2.get_name(game.white)}\n'
-                                                    f'Black: {await util2.get_name(game.black)}\n'
-                                                    'Use `$view` to view the game and use `$move` to make a move.\n'))
+                                             description=(f'White: {await util2.get_name(game.white)}\n'
+                                                          f'Black: {await util2.get_name(game.black)}\n'
+                                                          'Use `$view` to view the game and use `$move` to make a move.\n'))
         await ctx.send(f'Game started with {ProfileNames[bot.name].value}\nYou play the {whiteblack[color]} pieces.', file=file, embed=embed, view=view)
         data.data_manager.change_settings(person, new_notif=ctx.channel.id)
 
