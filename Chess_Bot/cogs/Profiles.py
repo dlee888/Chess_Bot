@@ -138,8 +138,7 @@ class Profiles(commands.Cog):
         try:
             bot = Profile[tag]
         except KeyError:
-            # TODO: Update to use slash commands reference
-            await ctx.send('That isn\'t a valid bot. Use `$profiles` to see which bots you can challenge.')
+            await ctx.send('That isn\'t a valid bot. Use </profile list:1005187298817736715> to see which bots you can challenge.')
             return
 
         embed = await self.get_default_embed()

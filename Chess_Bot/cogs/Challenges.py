@@ -130,8 +130,7 @@ class Challenges(commands.Cog):
         try:
             bot = Profile[bot]
         except KeyError:
-            # TODO: Update to use slash commands reference
-            await ctx.send('That isn\'t a valid bot. Use `$profiles` to see which bots you can challenge.')
+            await ctx.send('That isn\'t a valid bot. Use </profile list:1005187298817736715> to see which bots you can challenge.')
             return
 
         person = ctx.author.id
