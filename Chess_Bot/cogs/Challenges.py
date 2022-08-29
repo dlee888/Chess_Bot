@@ -93,7 +93,7 @@ class Challenges(commands.Cog):
         '''
         {
             "name": "challenge",
-            "description": "Challenges somebody to a game of chess. Use `$challenge bot` to challenge a bot, or `$challenge user` to challenge another person.",
+            "description": "Challenges somebody to a game of chess. Use </challenge bot:1005187298817736714> to challenge a bot, or </challenge user:1005187298817736714> to challenge another person.",
             "usage": "$challenge <bot/user> <person>",
             "examples": [
                 "$challenge bot cb1",
@@ -130,6 +130,7 @@ class Challenges(commands.Cog):
         try:
             bot = Profile[bot]
         except KeyError:
+            # TODO: Update to use slash commands reference
             await ctx.send('That isn\'t a valid bot. Use `$profiles` to see which bots you can challenge.')
             return
 

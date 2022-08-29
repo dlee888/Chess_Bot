@@ -91,8 +91,23 @@ class Profiles(commands.Cog):
         '''
         embed = await self.get_default_embed()
         embed.description = ('These are the Chess Bot computers that you can challenge.\n'
-                             'Use the command `$profile view <bot tag>` for more information on a bot.\n'
-                             'For example, `$profile view cb1` to get info about Chess Bot level 1.')
+                             'Use the command </profile view:1005187298817736715> followed by a tag (such as `cb1`) for more information on a bot.')
+        all_cb = [
+            f'`{bot.name}` ({get_name(bot.value)})' for bot in Profile if bot.name.startswith('cb')]
+        all_sf = [
+            f'`{bot.name}` ({get_name(bot.value)})' for bot in Profile if bot.name.startswith('sf')]
+        embed.add_field(
+            name='Chess Bot', value='\n'.join(all_cb))
+        embed.add_field(
+            name='Stockfish', value='\n'.join(all_sf))
+        await ctx.send(embed=embed)
+
+    @profile.command(name='list', description='List the chess bot computers you can challenge', aliases=['all'])
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    async def list(self, ctx):
+        embed = await self.get_default_embed()
+        embed.description = ('These are the Chess Bot computers that you can challenge.\n'
+                             'Use the command </profile view:1005187298817736715> followed by a tag (such as `cb1`) for more information on a bot.')
         all_cb = [
             f'`{bot.name}` ({get_name(bot.value)})' for bot in Profile if bot.name.startswith('cb')]
         all_sf = [
@@ -123,6 +138,7 @@ class Profiles(commands.Cog):
         try:
             bot = Profile[tag]
         except KeyError:
+            # TODO: Update to use slash commands reference
             await ctx.send('That isn\'t a valid bot. Use `$profiles` to see which bots you can challenge.')
             return
 

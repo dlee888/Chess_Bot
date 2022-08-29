@@ -55,7 +55,7 @@ class Timer(commands.Cog):
         for game in games:
             if game.time_left() * 3 < game.time_control and not game.warned:
                 util2 = self.client.get_cog('Util')
-                await util2.send_notif(game.to_move(), 'You are low on time. Use `$time` to get how much time you have left before you automatically forfeit you game.')
+                await util2.send_notif(game.to_move(), 'You are low on time. Use </time:968575170958749699> to get how much time you have left before you automatically forfeit you game.')
                 game.warned = True
                 data.data_manager.change_game(game)
 
