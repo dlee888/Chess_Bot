@@ -204,6 +204,8 @@ class Misc(commands.Cog):
         }
         '''
 
+        msg = await ctx.send('Getting info...')
+
         embed = discord.Embed(title="Bot Info", color=0xff0000)
         embed.add_field(name="Links",
                         value=f"[Github]({constants.GITHUB_LINK}) | [Invite]({constants.INVITE_LINK}) | [Join the discord server]({constants.SUPPORT_SERVER_INVITE}) | [Top.gg]({constants.TOPGG_LINK})",
@@ -221,13 +223,13 @@ class Misc(commands.Cog):
         embed.add_field(name='Games in progress', value=str(
             data.data_manager.current_games()), inline=True)
         embed.add_field(name='Games finished', value=str(
-            data.data_manager.total_games()), inline=True)
+            await data.data_manager.total_games()), inline=True)
         owner = (await self.client.application_info()).owner
         embed.set_footer(text=f"Made by {owner}")
 
         embed.set_thumbnail(url=constants.AVATAR_URL)
 
-        await ctx.send(embed=embed)
+        await msg.edit(embed=embed)
 
     @commands.hybrid_command(name='invite', description='Sends an invite link for the bot.')
     @commands.cooldown(1, 1, commands.BucketType.user)

@@ -152,7 +152,7 @@ class MongoData:
         self.db.users.update_one(
             {'id': person}, {'$set': {'lost': lost, 'won': won, 'draw': drew}}, upsert=True)
 
-    def total_games(self):
+    async def total_games(self):
         rows = list(self.db.users.find({}, {'lost': 1, 'won': 1, 'draw': 1}))
         return sum(row['lost'] + row['won'] + row['draw'] for row in rows if 'lost' in row.keys() and row['lost'] is not None) // 2
 
