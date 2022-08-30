@@ -215,11 +215,11 @@ class Misc(commands.Cog):
         embed.add_field(name="Stats", value="Stats", inline=False)
         embed.add_field(name="Server Count", value=str(
             len(self.client.guilds)), inline=True)
-        embed.add_field(name="Total rated users", value=str(len(data.data_manager.get_ratings())), inline=True)
+        embed.add_field(name="Total rated users", value=str(data.data_manager.rated_users()), inline=True)
         embed.add_field(
             name="Up time", value=f'{util.pretty_time(time.time() - self.start_time)}', inline=True)
         embed.add_field(name='Games in progress', value=str(
-            len(data.data_manager.get_games())), inline=True)
+            data.data_manager.current_games()), inline=True)
         embed.add_field(name='Games finished', value=str(
             data.data_manager.total_games()), inline=True)
         owner = (await self.client.application_info()).owner

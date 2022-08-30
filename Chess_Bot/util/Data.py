@@ -110,6 +110,9 @@ class MongoData:
     def get_games(self):
         games = self.db.games.find()
         return [Game2().load_dict(g) for g in games]
+    
+    def current_games(self):
+        return self.db.games.count_documents({})
 
     def change_game(self, new_game):
         self.db.games.update_one({'white': new_game.white, 'black': new_game.black}, {
@@ -122,6 +125,9 @@ class MongoData:
     def get_ratings(self):
         rows = self.db.users.find()
         return {row['id']: row['rating'] for row in rows if 'rating' in row.keys() and row['rating'] is not None}
+
+    def rated_users(self):
+        return self.db.users.count_documents({'rating': {'$ne': None}})
 
     def change_rating(self, person, new_rating):
         self.db.users.update_one(
@@ -147,7 +153,7 @@ class MongoData:
             {'id': person}, {'$set': {'lost': lost, 'won': won, 'draw': drew}}, upsert=True)
 
     def total_games(self):
-        rows = list(self.db.users.find())
+        rows = list(self.db.users.find({}, {'lost': 1, 'won': 1, 'draw': 1}))
         return sum(row['lost'] + row['won'] + row['draw'] for row in rows if 'lost' in row.keys() and row['lost'] is not None) // 2
 
     def delete_game(self, person, winner):
