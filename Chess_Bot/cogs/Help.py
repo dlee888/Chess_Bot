@@ -38,7 +38,7 @@ class Help(commands.Cog):
             embed.add_field(name="Cooldown:", value=f'{cooldown} seconds')
         return embed
 
-    @commands.command()
+    @commands.hybrid_command(name='help', description='Lists all commands')
     @commands.cooldown(1, 2, commands.BucketType.user)
     async def help(self, ctx, *, command=None):
         '''
@@ -75,5 +75,5 @@ class Help(commands.Cog):
         await ctx.send(embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(Help(bot))
+async def setup(bot):
+    await bot.add_cog(Help(bot))

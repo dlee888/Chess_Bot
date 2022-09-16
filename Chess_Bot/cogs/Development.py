@@ -133,5 +133,5 @@ class Development(commands.Cog):
         await ctx.send(file, file=discord.File(file))
 
 
-def setup(bot):
-    bot.add_cog(Development(bot))
+async def setup(bot):
+    await bot.add_cog(Development(bot))

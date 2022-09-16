@@ -23,20 +23,33 @@ class Game2:
             self.time_control = constants.DEFAULT_TIME_CONTROL
         else:
             self.time_control = row[5]
+        self.white_draw = False
+        self.black_draw = False
 
     def __str__(self) -> str:
         return self.fen
 
     def to_dict(self):
-        return {'white': self.white, 'black': self.black, 'fen': self.fen, 'time_control': self.time_control, 'last_moved': self.last_moved, 'warned': self.warned}
+        return {
+            'white': self.white,
+            'black': self.black,
+            'fen': self.fen,
+            'time_control': self.time_control,
+            'last_moved': self.last_moved,
+            'warned': self.warned,
+            'white_draw': self.white_draw,
+            'black_draw': self.black_draw
+        }
 
     def load_dict(self, dict):
-        self.white = dict['white']
-        self.black = dict['black']
-        self.last_moved = dict['last_moved']
-        self.warned = dict['warned']
-        self.time_control = dict['time_control']
-        self.fen = dict['fen']
+        self.white = dict.get('white')
+        self.black = dict.get('black')
+        self.last_moved = dict.get('last_moved')
+        self.warned = dict.get('warned')
+        self.time_control = dict.get('time_control')
+        self.fen = dict.get('fen')
+        self.white_draw = dict.get('white_draw')
+        self.black_draw = dict.get('black_draw')
         return self
 
     def turn(self):
@@ -78,9 +91,7 @@ class Game2:
         """Player that is a computer"""
         if self.white < 69:
             return self.white
-        if self.black < 69:
-            return self.black
-        return None
+        return self.black if self.black < 69 else None
 
 
 class MongoData:
@@ -94,13 +105,14 @@ class MongoData:
         white = self.db.games.find({'white': person})
         black = self.db.games.find({'black': person})
         rows = list(white) + list(black)
-        if len(rows) == 0:
-            return None
-        return Game2().load_dict(rows[0])
+        return None if len(rows) == 0 else Game2().load_dict(rows[0])
 
     def get_games(self):
         games = self.db.games.find()
         return [Game2().load_dict(g) for g in games]
+    
+    def current_games(self):
+        return self.db.games.count_documents({})
 
     def change_game(self, new_game):
         self.db.games.update_one({'white': new_game.white, 'black': new_game.black}, {
@@ -108,13 +120,14 @@ class MongoData:
 
     def get_rating(self, person):
         data = list(self.db.users.find({'id': person}))
-        if not data or 'rating' not in data[0].keys():
-            return None
-        return data[0]['rating']
+        return data[0]['rating'] if data and 'rating' in data[0].keys() else None
 
     def get_ratings(self):
         rows = self.db.users.find()
         return {row['id']: row['rating'] for row in rows if 'rating' in row.keys() and row['rating'] is not None}
+
+    def rated_users(self):
+        return self.db.users.count_documents({'rating': {'$ne': None}})
 
     def change_rating(self, person, new_rating):
         self.db.users.update_one(
@@ -122,9 +135,7 @@ class MongoData:
 
     def get_prefix(self, guild):
         rows = list(self.db.prefixes.find({'id': guild}))
-        if not rows:
-            return '$'
-        return rows[0]['prefix']
+        return rows[0]['prefix'] if rows else '$'
 
     def change_prefix(self, guild, new_prefix):
         self.db.prefixes.update_one(
@@ -141,8 +152,8 @@ class MongoData:
         self.db.users.update_one(
             {'id': person}, {'$set': {'lost': lost, 'won': won, 'draw': drew}}, upsert=True)
 
-    def total_games(self):
-        rows = list(self.db.users.find())
+    async def total_games(self):
+        rows = list(self.db.users.find({}, {'lost': 1, 'won': 1, 'draw': 1}))
         return sum(row['lost'] + row['won'] + row['draw'] for row in rows if 'lost' in row.keys() and row['lost'] is not None) // 2
 
     def delete_game(self, person, winner):

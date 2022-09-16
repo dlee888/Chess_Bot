@@ -26,13 +26,13 @@ async def run_engine(person):
     game = data.data_manager.get_game(person)
 
     bot = game.to_move()
-    orig_fen = game.fen
 
     if bot in all_cb:
         stdin = (f'setoption time_limit {time_control[bot]}\n'
                  f'setoption depth_limit {max_depth[bot]}\n'
                  f'setoption mcts_prob {mcts_probs[bot]}\n'
                  f'setoption mcts_max_depth {mcts_depth[bot]}\n'
+                 'setoption table_size 666667\n'
                  f'go {game.fen}\nquit')
         out, _, _ = await util.run('./engine', stdin=stdin)
         out = out.split('\n')

@@ -8,8 +8,8 @@ while true; do
 	echo '==================================================================='
 
 	git pull
-
-	python3.8 -m Chess_Bot
+	make
+	python3 -m Chess_Bot
 
 	(($? == 69)) && break
 done

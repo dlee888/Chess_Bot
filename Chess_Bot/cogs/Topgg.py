@@ -2,9 +2,6 @@ import topgg
 import discord
 from discord.ext import commands, tasks
 
-from discord_slash import SlashContext
-from discord_slash import cog_ext
-
 import os
 import logging
 
@@ -14,20 +11,16 @@ from Chess_Bot import constants
 
 class Topgg(commands.Cog):
 
-    def __init__(self, client):
+    def __init__(self, client, dbl_client):
         self.client = client
-        self.dbl_token = os.environ.get('DBL_TOKEN')
-        if self.dbl_token is not None:
-            self.dbl_client = topgg.DBLClient(
-                self.client, self.dbl_token, autopost=True, post_shard_count=True)
+        self.dbl_client = dbl_client
+        if self.dbl_client is not None:
             self.reset_votes.start()
-        else:
-            self.dbl_client = None
 
     async def on_guild_post(self):
         logging.info('Posted stats on top.gg')
 
-    @commands.command()
+    @commands.hybrid_command(name='vote', description='Vote for Chess Bot on top.gg to get 5 free rating points.')
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def vote(self, ctx):
         '''
@@ -64,10 +57,6 @@ class Topgg(commands.Cog):
 
         await ctx.send('Thank you for voting for Chess Bot! You have been gifted 5 rating points.')
 
-    @cog_ext.cog_slash(name='vote', description='Claim 5 free rating points for voting for Chess Bot on top.gg')
-    async def _vote(self, ctx: SlashContext):
-        await self.vote(ctx)
-
     @tasks.loop(seconds=3)
     async def reset_votes(self):
         votes = data.data_manager.get_claimed()
@@ -81,5 +70,11 @@ class Topgg(commands.Cog):
         await self.client.wait_until_ready()
 
 
-def setup(bot):
-    bot.add_cog(Topgg(bot))
+async def setup(bot):
+    dbl_token = os.environ.get('DBL_TOKEN')
+    if dbl_token is not None:
+        dbl_client = topgg.DBLClient(
+            bot, dbl_token, autopost=True, post_shard_count=True)
+    else:
+        dbl_client = None
+    await bot.add_cog(Topgg(bot, dbl_client))

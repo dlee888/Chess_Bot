@@ -1,14 +1,12 @@
 import discord
 from discord.ext import commands
 
-from discord_slash import SlashCommand
-
 import Chess_Bot.util.Data as data
-import Chess_Bot.util.Utility as util
 import Chess_Bot.util.Images as image
 
 from Chess_Bot import constants
 
+import asyncio
 import os
 import logging
 from logging.handlers import TimedRotatingFileHandler
@@ -23,11 +21,9 @@ async def get_prefix(bot, message):
     return [data.data_manager.get_prefix(message.guild.id), f'<@{bot.user.id}> ', f'<@!{bot.user.id}> ']
 
 intents = discord.Intents.none()
-intents.message_content = True
 intents.messages = True
-intents.dm_messages = True
 intents.reactions = True
-intents.guild_reactions = True
+
 total = os.getenv('TOTAL_SHARDS')
 start = os.getenv('SHARD_START')
 end = os.getenv('SHARD_END')
@@ -38,9 +34,6 @@ if total is not None and start is not None and end is not None:
 else:
     bot = commands.AutoShardedBot(command_prefix=get_prefix, help_command=None,
                                   status='$help for commands, $botinfo for more information', max_messages=None, intents=intents)
-if '-beta' not in sys.argv:
-    slash = SlashCommand(bot, sync_commands=True)
-
 
 @bot.event
 async def on_command_error(ctx, exc):
@@ -99,7 +92,7 @@ async def on_command_error(ctx, exc):
                f'```\n{traceback_text}```\n')
     logging.error(msg)
 
-    if await util.has_roles(ctx.author.id, ['Debugger', 'Tester', 'Mooderator'], bot):
+    if ctx.author.id in constants.DEVELOPERS:
         try:
             await ctx.send(msg)
         except discord.errors.HTTPException:
@@ -135,12 +128,18 @@ def setup():
     image.load_all_themes()
 
 
-def main():
+async def main():
     setup()
+
+    token = os.getenv(
+        'BOT_TOKEN') if '-beta-bot' not in sys.argv else os.getenv('TEST_TOKEN')
+    if token is None:
+        token = input('Token? ')
+    await bot.login(token)
 
     cogs = [file.stem for file in Path('Chess_Bot', 'cogs').glob('*.py')]
     for extension in cogs:
-        bot.load_extension(f'Chess_Bot.cogs.{extension}')
+        await bot.load_extension(f'Chess_Bot.cogs.{extension}')
     logging.info(f'Cogs loaded: {", ".join(bot.cogs)}')
 
     if '-beta' in sys.argv:
@@ -149,12 +148,10 @@ def main():
         bot.add_check(
             lambda ctx: ctx.channel.id not in constants.BETA_CHANNELS)
 
-    token = os.getenv(
-        'BOT_TOKEN') if '-beta-bot' not in sys.argv else os.getenv('TEST_TOKEN')
-    if token is None:
-        token = input('Token? ')
-    bot.run(token)
+    await bot.tree.sync()
+    logging.info('Done syncing')
+    await bot.start(token, reconnect=True)
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
