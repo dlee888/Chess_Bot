@@ -35,7 +35,6 @@ else:
     bot = commands.AutoShardedBot(command_prefix=get_prefix, help_command=None,
                                   status='$help for commands, $botinfo for more information', max_messages=None, intents=intents)
 
-
 @bot.event
 async def on_command_error(ctx, exc):
     try:
