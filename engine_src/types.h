@@ -7,18 +7,7 @@ typedef std::pair<int, int> pii;
 typedef unsigned long long Bitstring;
 typedef unsigned long long Bitboard;
 
-#define BP -1
-#define WP 1
-#define BN -2
-#define WN 2
-#define BB -3
-#define WB 3
-#define BR -4
-#define WR 4
-#define BQ -5
-#define WQ 5
-#define BK -6
-#define WK 6
+enum Piece : int { BK = -6, BQ, BR, BB, BN, BP, EMPTY_SQUARE, WP, WN, WB, WR, WQ, WK };
 
 // Definitely not copied from SF
 enum Value : int {
@@ -74,24 +63,24 @@ inline Value mg_value(Score s) {
 
 inline int make_square(int row, int col) { return (row << 3) + col; }
 
-#define ENABLE_BASE_OPERATORS_ON(T)                                                                                                                  \
-	constexpr T operator+(T d1, T d2) { return T(int(d1) + int(d2)); }                                                                               \
-	constexpr T operator-(T d1, T d2) { return T(int(d1) - int(d2)); }                                                                               \
-	constexpr T operator-(T d) { return T(-int(d)); }                                                                                                \
-	inline T& operator+=(T& d1, T d2) { return d1 = d1 + d2; }                                                                                       \
+#define ENABLE_BASE_OPERATORS_ON(T)                                                                                    \
+	constexpr T operator+(T d1, T d2) { return T(int(d1) + int(d2)); }                                                 \
+	constexpr T operator-(T d1, T d2) { return T(int(d1) - int(d2)); }                                                 \
+	constexpr T operator-(T d) { return T(-int(d)); }                                                                  \
+	inline T& operator+=(T& d1, T d2) { return d1 = d1 + d2; }                                                         \
 	inline T& operator-=(T& d1, T d2) { return d1 = d1 - d2; }
 
-#define ENABLE_INCR_OPERATORS_ON(T)                                                                                                                  \
-	inline T& operator++(T& d) { return d = T(int(d) + 1); }                                                                                         \
+#define ENABLE_INCR_OPERATORS_ON(T)                                                                                    \
+	inline T& operator++(T& d) { return d = T(int(d) + 1); }                                                           \
 	inline T& operator--(T& d) { return d = T(int(d) - 1); }
 
-#define ENABLE_FULL_OPERATORS_ON(T)                                                                                                                  \
-	ENABLE_BASE_OPERATORS_ON(T)                                                                                                                      \
-	constexpr T operator*(int i, T d) { return T(i * int(d)); }                                                                                      \
-	constexpr T operator*(T d, int i) { return T(int(d) * i); }                                                                                      \
-	constexpr T operator/(T d, int i) { return T(int(d) / i); }                                                                                      \
-	constexpr int operator/(T d1, T d2) { return int(d1) / int(d2); }                                                                                \
-	inline T& operator*=(T& d, int i) { return d = T(int(d) * i); }                                                                                  \
+#define ENABLE_FULL_OPERATORS_ON(T)                                                                                    \
+	ENABLE_BASE_OPERATORS_ON(T)                                                                                        \
+	constexpr T operator*(int i, T d) { return T(i * int(d)); }                                                        \
+	constexpr T operator*(T d, int i) { return T(int(d) * i); }                                                        \
+	constexpr T operator/(T d, int i) { return T(int(d) / i); }                                                        \
+	constexpr int operator/(T d1, T d2) { return int(d1) / int(d2); }                                                  \
+	inline T& operator*=(T& d, int i) { return d = T(int(d) * i); }                                                    \
 	inline T& operator/=(T& d, int i) { return d = T(int(d) / i); }
 
 ENABLE_FULL_OPERATORS_ON(Value)

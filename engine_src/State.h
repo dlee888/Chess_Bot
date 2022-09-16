@@ -65,7 +65,7 @@ class state {
 	void make_move(int move);
 	void unmake_move(int move);
 
-	int attacking(int row, int col, bool color);
+	bool attacking(int row, int col, bool color);
 	int attacker(int row, int col, bool color);
 	int see(int row, int col, bool color);
 
@@ -93,17 +93,17 @@ class state {
 
 	bool is_check() {
 		if (to_move) {
-			return attacking(piecelists[WK + 6].front().first, piecelists[WK + 6].front().second, true) != 7;
+			return attacking(piecelists[WK + 6].front().first, piecelists[WK + 6].front().second, true);
 		} else {
-			return attacking(piecelists[BK + 6].front().first, piecelists[BK + 6].front().second, false) != 7;
+			return attacking(piecelists[BK + 6].front().first, piecelists[BK + 6].front().second, false);
 		}
 	}
 
 	bool king_attacked() {
 		if (!to_move) {
-			return attacking(piecelists[WK + 6].front().first, piecelists[WK + 6].front().second, true) != 7;
+			return attacking(piecelists[WK + 6].front().first, piecelists[WK + 6].front().second, true);
 		} else {
-			return attacking(piecelists[BK + 6].front().first, piecelists[BK + 6].front().second, false) != 7;
+			return attacking(piecelists[BK + 6].front().first, piecelists[BK + 6].front().second, false);
 		}
 	}
 };

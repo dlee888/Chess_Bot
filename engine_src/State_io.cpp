@@ -239,15 +239,15 @@ int state::parse_move(std::string move) {
 
 	if (move == "0-0" || move == "O-O") {
 		if (to_move) {
-			if (wk_rights.top() && !board[7][5] && !board[7][6] && attacking(7, 4, true) == 7 && attacking(7, 5, true) == 7 &&
-				attacking(7, 6, true) == 7) {
+			if (wk_rights.top() && !board[7][5] && !board[7][6] && !attacking(7, 4, true) && !attacking(7, 5, true) &&
+				!attacking(7, 6, true)) {
 				return 1835008;
 			} else {
 				return -1;
 			}
 		} else {
-			if (bk_rights.top() && !board[0][5] && !board[0][6] && attacking(0, 4, false) == 7 && attacking(0, 5, false) == 7 &&
-				attacking(0, 6, false) == 7) {
+			if (bk_rights.top() && !board[0][5] && !board[0][6] && !attacking(0, 4, false) && !attacking(0, 5, false) &&
+				!attacking(0, 6, false)) {
 				return 1835008;
 			} else {
 				return -1;
@@ -255,15 +255,15 @@ int state::parse_move(std::string move) {
 		}
 	} else if (move == "0-0-0" || move == "O-O-O") {
 		if (to_move) {
-			if (wq_rights.top() && !board[7][2] && !board[7][3] && !board[7][1] && attacking(7, 4, true) == 7 && attacking(7, 3, true) == 7 &&
-				attacking(7, 2, true) == 7) {
+			if (wq_rights.top() && !board[7][2] && !board[7][3] && !board[7][1] && !attacking(7, 4, true) && !attacking(7, 3, true) &&
+				!attacking(7, 2, true)) {
 				return 2883584;
 			} else {
 				return -1;
 			}
 		} else {
-			if (bq_rights.top() && !board[0][2] && !board[0][3] && !board[0][1] && attacking(0, 4, false) == 7 && attacking(0, 3, false) == 7 &&
-				attacking(0, 2, false) == 7) {
+			if (bq_rights.top() && !board[0][2] && !board[0][3] && !board[0][1] && !attacking(0, 4, false) && !attacking(0, 3, false) &&
+				!attacking(0, 2, false)) {
 				return 2883584;
 			} else {
 				return -1;
