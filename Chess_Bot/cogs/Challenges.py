@@ -153,7 +153,7 @@ class Challenges(commands.Cog):
         file, embed, view = util2.make_embed(ctx.author.id, title='Game started!',
                                              description=(f'White: {await util2.get_name(game.white)}\n'
                                                           f'Black: {await util2.get_name(game.black)}\n'
-                                                          'Use `$view` to view the game and use `$move` to make a move.\n'))
+                                                          'Use </view:968575170958749698> to view the game and use </move:968575170958749704> to make a move.\n'))
         await ctx.send(f'Game started with {ProfileNames[bot.name].value}\nYou play the {whiteblack[color]} pieces.', file=file, embed=embed, view=view)
         data.data_manager.change_settings(person, new_notif=ctx.channel.id)
 

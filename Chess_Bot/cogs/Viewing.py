@@ -111,7 +111,7 @@ class Viewing(commands.Cog):
         await ctx.send('Theme sucessfully updated')
 
     @commands.hybrid_command(name='notif', description='Changes the notification settings for your game.')
-    @app_commands.describe(type='Change, test, or view the channel used for notifications.')
+    @app_commands.describe(type='Set, test, or view the channel used for notifications.')
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def notif(self, ctx, type):
         """
@@ -130,19 +130,17 @@ class Viewing(commands.Cog):
             data.data_manager.change_settings(
                 ctx.author.id, new_notif=ctx.channel.id)
             await ctx.send(f'Notification channel set to `{ctx.channel.name if ctx.guild is not None else "DM channel"}`.')
-
         elif type == 'test':
             await ctx.send('You should recieve a test notification. If you do not, try changing your notification channel or changing your settings.')
             await util2.send_notif(ctx.author.id, 'This is a test notification.')
         elif type == 'view':
             channel, is_default = await util2.get_notifchannel(ctx.author.id)
             if channel is None:
-                await ctx.send('No notification channel found. Make sure to specify a channel using the `$notif set` command to receive messages whenever your opponent moves.')
+                await ctx.send('No notification channel found. Make sure to set a channel using the </notif:968575170547712044> `set` command to receive messages whenever your opponent moves.')
             elif is_default:
-                await ctx.send(f'Your notification channel is `{"DM channel" if isinstance(channel, discord.DMChannel) else channel.name}`.\nYou can change this using the `$notif set` command.')
+                await ctx.send(f'Your notification channel is `{"DM channel" if isinstance(channel, discord.DMChannel) else channel.name}`.\nYou can change this using the </notif:968575170547712044> `set` command.')
             else:
                 await ctx.send(f'Your notification channel is `{"DM channel" if isinstance(channel, discord.DMChannel) else channel.name}`.')
-
         else:
             await ctx.send('Please specify either `view`, `set`, or `test`.')
 
