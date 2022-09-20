@@ -184,7 +184,7 @@ class Challenges(commands.Cog):
             await ctx.send('You cannot challenge yourself.')
             return
 
-        await ctx.send(f'{person.mention}, {ctx.author} has challenged you to a game of chess.\n', view=ChallengeView(self.client, ctx.author.id, person.id))
+        await ctx.send(f'{person.mention}, {ctx.author} has challenged you to a game of chess.\nNote: the challenge will time out if you wait too long to accept', view=ChallengeView(self.client, ctx.author.id, person.id))
 
 
 async def setup(bot):

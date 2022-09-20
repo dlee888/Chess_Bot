@@ -49,9 +49,12 @@ class Mooderation(commands.Cog):
             return
 
         if new_prefix is None:
-            await ctx.send(f'This server\'s prefix is `{data.data_manager.get_prefix(ctx.guild.id)}`')
+            await ctx.send((f'This server\'s prefix is `{data.data_manager.get_prefix(ctx.guild.id)}`\nNote:\nPlease use slash commands instead of normal commands.\n'
+                            'As some of you may know, discord has made message content a privileged intent, which means that bots cannot access the contents of messages you send. This stops the normal commands from working. Instead, users are expected to interact with bots using slash commands.\n'
+                            'If you still want to use the normal message commands, there are ways, though. You can still use commands by DMing the bot, or mentioning the bot instead of using a prefix, such as <@801501916810838066> help.\n'))
             return
 
+        # Disabled due to disabling guild intents
         # if ctx.author.guild_permissions.administrator == False:
         #     await ctx.send("You do not have permission to change this server\'s custom prefix")
         #     return
