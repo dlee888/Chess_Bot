@@ -43,14 +43,10 @@ void state::load(std::string fen) {
 	std::string castlerights;
 	ss >> castlerights;
 	for (char c : castlerights) {
-		if (c == 'K')
-			wk = true;
-		if (c == 'Q')
-			wq = true;
-		if (c == 'k')
-			bk = true;
-		if (c == 'q')
-			bq = true;
+		if (c == 'K') wk = true;
+		if (c == 'Q') wq = true;
+		if (c == 'k') bk = true;
+		if (c == 'q') bq = true;
 	}
 	wk_rights.push(wk);
 	wq_rights.push(wq);
@@ -90,13 +86,13 @@ std::string state::to_fen() {
 		if (last != -1) {
 			res << 8 - last;
 		}
-		if (i != 7)
-			res << '/';
+		if (i != 7) res << '/';
 	}
 	res << " "
 		<< "bw"[to_move] << " ";
 
-	res << (wk_rights.top() ? "K" : "") << (wq_rights.top() ? "Q" : "") << (bk_rights.top() ? "k" : "") << (bq_rights.top() ? "q" : "");
+	res << (wk_rights.top() ? "K" : "") << (wq_rights.top() ? "Q" : "") << (bk_rights.top() ? "k" : "")
+		<< (bq_rights.top() ? "q" : "");
 
 	if (res.str()[res.str().size() - 1] == ' ') {
 		res << '-';
@@ -114,46 +110,28 @@ std::string state::to_fen() {
 }
 
 char state::to_piece(int x) {
-	if (x == BK)
-		return 'k';
-	if (x == BQ)
-		return 'q';
-	if (x == BR)
-		return 'r';
-	if (x == BB)
-		return 'b';
-	if (x == BN)
-		return 'n';
-	if (x == BP)
-		return 'p';
-	if (x == WK)
-		return 'K';
-	if (x == WQ)
-		return 'Q';
-	if (x == WR)
-		return 'R';
-	if (x == WB)
-		return 'B';
-	if (x == WN)
-		return 'N';
-	if (x == WP)
-		return 'P';
+	if (x == BK) return 'k';
+	if (x == BQ) return 'q';
+	if (x == BR) return 'r';
+	if (x == BB) return 'b';
+	if (x == BN) return 'n';
+	if (x == BP) return 'p';
+	if (x == WK) return 'K';
+	if (x == WQ) return 'Q';
+	if (x == WR) return 'R';
+	if (x == WB) return 'B';
+	if (x == WN) return 'N';
+	if (x == WP) return 'P';
 	return ' ';
 }
 
 int state::piece_to_int(char c) {
-	if (c == 'P')
-		return 1;
-	if (c == 'N')
-		return 2;
-	if (c == 'B')
-		return 3;
-	if (c == 'R')
-		return 4;
-	if (c == 'Q')
-		return 5;
-	if (c == 'K')
-		return 6;
+	if (c == 'P') return 1;
+	if (c == 'N') return 2;
+	if (c == 'B') return 3;
+	if (c == 'R') return 4;
+	if (c == 'Q') return 5;
+	if (c == 'K') return 6;
 	return 0;
 }
 
@@ -255,15 +233,15 @@ int state::parse_move(std::string move) {
 		}
 	} else if (move == "0-0-0" || move == "O-O-O") {
 		if (to_move) {
-			if (wq_rights.top() && !board[7][2] && !board[7][3] && !board[7][1] && !attacking(7, 4, true) && !attacking(7, 3, true) &&
-				!attacking(7, 2, true)) {
+			if (wq_rights.top() && !board[7][2] && !board[7][3] && !board[7][1] && !attacking(7, 4, true) &&
+				!attacking(7, 3, true) && !attacking(7, 2, true)) {
 				return 2883584;
 			} else {
 				return -1;
 			}
 		} else {
-			if (bq_rights.top() && !board[0][2] && !board[0][3] && !board[0][1] && !attacking(0, 4, false) && !attacking(0, 3, false) &&
-				!attacking(0, 2, false)) {
+			if (bq_rights.top() && !board[0][2] && !board[0][3] && !board[0][1] && !attacking(0, 4, false) &&
+				!attacking(0, 3, false) && !attacking(0, 2, false)) {
 				return 2883584;
 			} else {
 				return -1;
@@ -282,21 +260,18 @@ int state::parse_move(std::string move) {
 		}
 		int row_init = -1, col_init = -1;
 		int king = BK;
-		if (to_move)
-			king = WK;
+		if (to_move) king = WK;
 		for (int i = 0; i < 8; i++) {
-			if (out_of_bounds(row_final - dr_king[i], col_final - dc_king[i]))
-				continue;
+			if (out_of_bounds(row_final - dr_king[i], col_final - dc_king[i])) continue;
 			if (board[row_final - dr_king[i]][col_final - dc_king[i]] == king) {
 				row_init = row_final - dr_king[i];
 				col_init = col_final - dc_king[i];
 				break;
 			}
 		}
-		if (row_init == -1)
-			return -1;
-		return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) + (abs(board[row_init][col_init]) << 12) +
-			   (abs(board[row_final][col_final]) << 15);
+		if (row_init == -1) return -1;
+		return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) +
+			   (abs(board[row_init][col_init]) << 12) + (abs(board[row_final][col_final]) << 15);
 	} else if (move[0] == 'Q') {
 		int row_final, col_final;
 		if (move[1] == 'x') {
@@ -307,16 +282,14 @@ int state::parse_move(std::string move) {
 			col_final = move[1] - 'a';
 		}
 		int queen = BQ;
-		if (to_move)
-			queen = WQ;
+		if (to_move) queen = WQ;
 		for (int x = 0; x < 8; x++) {
 			for (int i = 1; i < 8; i++) {
 				int row_init = row_final + dr_queen[x] * i, col_init = col_final + dc_queen[x] * i;
-				if (out_of_bounds(row_init, col_init))
-					break;
+				if (out_of_bounds(row_init, col_init)) break;
 				if (board[row_init][col_init] == queen) {
-					return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) + (abs(board[row_init][col_init]) << 12) +
-						   (abs(board[row_final][col_final]) << 15);
+					return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) +
+						   (abs(board[row_init][col_init]) << 12) + (abs(board[row_final][col_final]) << 15);
 				}
 				if (board[row_init][col_init] != 0) {
 					break;
@@ -334,16 +307,14 @@ int state::parse_move(std::string move) {
 			col_final = move[1] - 'a';
 		}
 		int bishop = BB;
-		if (to_move)
-			bishop = WB;
+		if (to_move) bishop = WB;
 		for (int x = 0; x < 4; x++) {
 			for (int i = 1; i < 8; i++) {
 				int row_init = row_final + dr_bishop[x] * i, col_init = col_final + dc_bishop[x] * i;
-				if (out_of_bounds(row_init, col_init))
-					break;
+				if (out_of_bounds(row_init, col_init)) break;
 				if (board[row_init][col_init] == bishop) {
-					return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) + (abs(board[row_init][col_init]) << 12) +
-						   (abs(board[row_final][col_final]) << 15);
+					return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) +
+						   (abs(board[row_init][col_init]) << 12) + (abs(board[row_final][col_final]) << 15);
 				}
 				if (board[row_init][col_init] != 0) {
 					break;
@@ -380,20 +351,16 @@ int state::parse_move(std::string move) {
 			}
 		}
 		int rook = BR;
-		if (to_move)
-			rook = WR;
+		if (to_move) rook = WR;
 		for (int x = 0; x < 4; x++) {
 			for (int i = 1; i < 8; i++) {
 				int row_init = row_final + dr_rook[x] * i, col_init = col_final + dc_rook[x] * i;
-				if (out_of_bounds(row_init, col_init))
-					continue;
-				if (flag == 1 && col_init != move[1] - 'a')
-					continue;
-				if (flag == 2 && row_init != '8' - move[1])
-					continue;
+				if (out_of_bounds(row_init, col_init)) continue;
+				if (flag == 1 && col_init != move[1] - 'a') continue;
+				if (flag == 2 && row_init != '8' - move[1]) continue;
 				if (board[row_init][col_init] == rook) {
-					return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) + (abs(board[row_init][col_init]) << 12) +
-						   (abs(board[row_final][col_final]) << 15);
+					return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) +
+						   (abs(board[row_init][col_init]) << 12) + (abs(board[row_final][col_final]) << 15);
 				}
 				if (board[row_init][col_init] != 0) {
 					break;
@@ -430,19 +397,15 @@ int state::parse_move(std::string move) {
 			}
 		}
 		int knight = BN;
-		if (to_move)
-			knight = WN;
+		if (to_move) knight = WN;
 		for (int x = 0; x < 8; x++) {
 			int row_init = row_final + dr_knight[x], col_init = col_final + dc_knight[x];
-			if (out_of_bounds(row_init, col_init))
-				continue;
-			if (flag == 1 && col_init != move[1] - 'a')
-				continue;
-			if (flag == 2 && row_init != '8' - move[1])
-				continue;
+			if (out_of_bounds(row_init, col_init)) continue;
+			if (flag == 1 && col_init != move[1] - 'a') continue;
+			if (flag == 2 && row_init != '8' - move[1]) continue;
 			if (board[row_init][col_init] == knight) {
-				return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) + (abs(board[row_init][col_init]) << 12) +
-					   (abs(board[row_final][col_final]) << 15);
+				return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) +
+					   (abs(board[row_init][col_init]) << 12) + (abs(board[row_final][col_final]) << 15);
 			}
 		}
 		return -1;
@@ -458,20 +421,18 @@ int state::parse_move(std::string move) {
 			}
 			if (move[1] == 'x') {
 				col_init = move[0] - 'a';
-				if (move[2] < 'a' || move[2] > 'h')
-					return -1;
+				if (move[2] < 'a' || move[2] > 'h') return -1;
 				col_final = move[2] - 'a';
 			} else {
 				col_init = move[0] - 'a';
 				col_final = move[0] - 'a';
 			}
 			int promote_to = piece_to_int(move[move.size() - 1]);
-			if (promote_to < 2 || promote_to > 5)
-				return -1;
-			if (out_of_bounds(row_final, col_final) || out_of_bounds(row_init, col_init))
-				return -1;
-			return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) + (abs(board[row_init][col_init]) << 12) +
-				   (abs(board[row_final][col_final]) << 15) + (1 << 19) + ((promote_to - 2) << 20);
+			if (promote_to < 2 || promote_to > 5) return -1;
+			if (out_of_bounds(row_final, col_final) || out_of_bounds(row_init, col_init)) return -1;
+			return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) +
+				   (abs(board[row_init][col_init]) << 12) + (abs(board[row_final][col_final]) << 15) + (1 << 19) +
+				   ((promote_to - 2) << 20);
 		} else if (move[1] == 'x') {
 			int row_init, row_final = '8' - move[3], col_init = move[0] - 'a', col_final = move[2] - 'a';
 			bool en_passant = false;
@@ -480,47 +441,40 @@ int state::parse_move(std::string move) {
 			}
 			if (to_move) {
 				row_init = row_final + 1;
-				if (board[row_init][col_init] != WP)
-					return -1;
+				if (board[row_init][col_init] != WP) return -1;
 			} else {
 				row_init = row_final - 1;
-				if (board[row_init][col_init] != BP)
-					return -1;
+				if (board[row_init][col_init] != BP) return -1;
 			}
-			if (out_of_bounds(row_final, col_final) || out_of_bounds(row_init, col_init))
-				return -1;
+			if (out_of_bounds(row_final, col_final) || out_of_bounds(row_init, col_init)) return -1;
 			if (!en_passant) {
-				return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) + (abs(board[row_init][col_init]) << 12) +
-					   (abs(board[row_final][col_final]) << 15);
+				return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) +
+					   (abs(board[row_init][col_init]) << 12) + (abs(board[row_final][col_final]) << 15);
 			} else {
-				if ((row_final << 3) + col_final != en_passant_target.top())
-					return -1;
-				return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) + (abs(board[row_init][col_init]) << 12) +
-					   (abs(board[row_final][col_final]) << 15) + (1 << 18);
+				if ((row_final << 3) + col_final != en_passant_target.top()) return -1;
+				return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) +
+					   (abs(board[row_init][col_init]) << 12) + (abs(board[row_final][col_final]) << 15) + (1 << 18);
 			}
 		} else {
 			int row_init, row_final = '8' - move[1], col_init = move[0] - 'a', col_final = move[0] - 'a';
-			if (board[row_final][col_final] != 0)
-				return -1;
+			if (board[row_final][col_final] != 0) return -1;
 			if (to_move) {
 				if (row_final == 4 && board[row_final + 1][col_init] == 0) {
 					row_init = row_final + 2;
 				} else {
 					row_init = row_final + 1;
 				}
-				if (board[row_init][col_init] != WP)
-					return -1;
+				if (board[row_init][col_init] != WP) return -1;
 			} else {
 				if (row_final == 3 && board[row_final - 1][col_init] == 0) {
 					row_init = row_final - 2;
 				} else {
 					row_init = row_final - 1;
 				}
-				if (board[row_init][col_init] != BP)
-					return -1;
+				if (board[row_init][col_init] != BP) return -1;
 			}
-			return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) + (abs(board[row_init][col_init]) << 12) +
-				   (abs(board[row_final][col_final]) << 15);
+			return (row_init << 3) + col_init + (((row_final << 3) + col_final) << 6) +
+				   (abs(board[row_init][col_init]) << 12) + (abs(board[row_final][col_final]) << 15);
 		}
 	}
 	return -1;

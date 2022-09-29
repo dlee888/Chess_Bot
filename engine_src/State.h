@@ -13,21 +13,18 @@
 
 extern std::string start_fen;
 
-extern int dr_knight[8], dc_knight[8], dr_bishop[4], dc_bishop[4], dr_rook[4], dc_rook[4], dr_queen[8], dc_queen[8], dr_king[8], dc_king[8];
+extern int dr_knight[8], dc_knight[8], dr_bishop[4], dc_bishop[4], dr_rook[4], dc_rook[4], dr_queen[8], dc_queen[8],
+	dr_king[8], dc_king[8];
 
 std::string to_uci(int move);
 
 class state {
   public:
 	bool out_of_bounds(int row, int column) {
-		if (row < 0)
-			return true;
-		if (column < 0)
-			return true;
-		if (row >= 8)
-			return true;
-		if (column >= 8)
-			return true;
+		if (row < 0) return true;
+		if (column < 0) return true;
+		if (row >= 8) return true;
+		if (column >= 8) return true;
 		return false;
 	}
 

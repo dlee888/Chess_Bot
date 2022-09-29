@@ -29,7 +29,7 @@ class Mooderation(commands.Cog):
 
         await ctx.send('Game aborted')
 
-    @commands.hybrid_command(name='prefix', description='Set a custom prefix for your server.')
+    @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def prefix(self, ctx, *, new_prefix: str = None):
         '''

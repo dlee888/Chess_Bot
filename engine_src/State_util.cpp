@@ -301,8 +301,10 @@ int state::see(int row, int col, bool color) {
 	}
 	for (int i = 0; i < 8; i++) {
 		if (out_of_bounds(row + dr_knight[i], col + dc_knight[i])) continue;
-		if (board[row + dr_knight[i]][col + dc_knight[i]] == BN) black_attacking.push_back(2);
-		else if (board[row + dr_knight[i]][col + dc_knight[i]] == WN) white_attacking.push_back(2);
+		if (board[row + dr_knight[i]][col + dc_knight[i]] == BN)
+			black_attacking.push_back(2);
+		else if (board[row + dr_knight[i]][col + dc_knight[i]] == WN)
+			white_attacking.push_back(2);
 	}
 	for (int j = 0; j < 4; j++) {
 		int row_final = row, col_final = col;
@@ -310,10 +312,14 @@ int state::see(int row, int col, bool color) {
 			row_final += dr_bishop[j];
 			col_final += dc_bishop[j];
 			if (out_of_bounds(row_final, col_final)) break;
-			if (board[row_final][col_final] == BB) black_attacking.push_back(3);
-			else if (board[row_final][col_final] == BQ) black_attacking.push_back(5);
-			else if (board[row_final][col_final] == WB) white_attacking.push_back(3);
-			else if (board[row_final][col_final] == WQ) white_attacking.push_back(5);
+			if (board[row_final][col_final] == BB)
+				black_attacking.push_back(3);
+			else if (board[row_final][col_final] == BQ)
+				black_attacking.push_back(5);
+			else if (board[row_final][col_final] == WB)
+				white_attacking.push_back(3);
+			else if (board[row_final][col_final] == WQ)
+				white_attacking.push_back(5);
 			if (board[row_final][col_final] != 0 && board[row_final][col_final] != BB &&
 				board[row_final][col_final] != BQ && board[row_final][col_final] != WB &&
 				board[row_final][col_final] != WQ)
@@ -326,10 +332,14 @@ int state::see(int row, int col, bool color) {
 			row_final += dr_rook[j];
 			col_final += dc_rook[j];
 			if (out_of_bounds(row_final, col_final)) break;
-			if (board[row_final][col_final] == BR) black_attacking.push_back(4);
-			else if (board[row_final][col_final] == BQ) black_attacking.push_back(5);
-			else if (board[row_final][col_final] == WR) white_attacking.push_back(4);
-			else if (board[row_final][col_final] == WQ) white_attacking.push_back(5);
+			if (board[row_final][col_final] == BR)
+				black_attacking.push_back(4);
+			else if (board[row_final][col_final] == BQ)
+				black_attacking.push_back(5);
+			else if (board[row_final][col_final] == WR)
+				white_attacking.push_back(4);
+			else if (board[row_final][col_final] == WQ)
+				white_attacking.push_back(5);
 			if (board[row_final][col_final] != 0 && board[row_final][col_final] != BR &&
 				board[row_final][col_final] != BQ && board[row_final][col_final] != WR &&
 				board[row_final][col_final] != WQ)
@@ -338,8 +348,10 @@ int state::see(int row, int col, bool color) {
 	}
 	for (int i = 0; i < 8; i++) {
 		if (out_of_bounds(row + dr_king[i], col + dc_king[i])) continue;
-		if (board[row + dr_king[i]][col + dc_king[i]] == BK) black_attacking.push_back(6);
-		else if (board[row + dr_king[i]][col + dc_king[i]] == WK) white_attacking.push_back(6);
+		if (board[row + dr_king[i]][col + dc_king[i]] == BK)
+			black_attacking.push_back(6);
+		else if (board[row + dr_king[i]][col + dc_king[i]] == WK)
+			white_attacking.push_back(6);
 	}
 	return piece_vals[abs(board[row][col])] - _see(white_attacking, black_attacking, !color);
 }

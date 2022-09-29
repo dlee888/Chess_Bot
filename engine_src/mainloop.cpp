@@ -24,7 +24,8 @@ std::string read_fen() {
 }
 
 unsigned long long curr_time() {
-	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())
+		.count();
 }
 
 int main() {
@@ -44,7 +45,8 @@ int main() {
 			if (options["use_opening_book"]) {
 				if (curr_state.to_move && curr_state.full_move > 2 && white_openings[curr_state.get_hash()].size()) {
 					move = white_openings[curr_state.get_hash()][0];
-				} else if (!curr_state.to_move && curr_state.full_move > 2 && black_openings[curr_state.get_hash()].size()) {
+				} else if (!curr_state.to_move && curr_state.full_move > 2 &&
+						   black_openings[curr_state.get_hash()].size()) {
 					move = black_openings[curr_state.get_hash()][0];
 				} else if (openings[curr_state.get_hash()].size()) {
 					move = openings[curr_state.get_hash()][0];
@@ -52,7 +54,8 @@ int main() {
 			}
 			if (move == -1) {
 				pii best_move = find_best_move();
-				if ((curr_state.to_move && best_move.first <= -RESIGN) || (!curr_state.to_move && best_move.first >= RESIGN)) {
+				if ((curr_state.to_move && best_move.first <= -RESIGN) ||
+					(!curr_state.to_move && best_move.first >= RESIGN)) {
 					std::cout << "COMPUTER PLAYED RESIGN" << std::endl;
 					continue;
 				}
@@ -105,7 +108,7 @@ int main() {
 			total_time = curr_time() - start_time;
 			std::cout << "Total time for " << n << " calls: " << total_time << "ms" << std::endl;
 			std::cout << "Average time: " << (double)total_time / n << "ms" << std::endl;
-			std::cout << "\n----------------------------------------------------------------\nTesting list_moves()...\n";
+			std::cout << "\n--------------------------------------------------------------\nTesting list_moves()...\n";
 			start_time = curr_time();
 			for (int i = 0; i < n; i++) {
 				curr_state.list_moves();
@@ -130,7 +133,7 @@ int main() {
 			start_time = curr_time();
 			find_best_move();
 			total_time = curr_time() - start_time;
-			std::cout << "Total time: " << total_time << "ms\n----------------------------------------------------------------" << std::endl;
+			std::cout << "Total time: " << total_time << "ms\n-----------------------------------------------------\n";
 			set_default_options();
 		} else if (cmnd == "test") {
 			curr_state.load(start_fen);
@@ -173,8 +176,8 @@ int main() {
 			for (int i = 1; i < 10; i++) {
 				auto start_time = curr_time();
 				std::cout << "Depth: " << i << " " << count_positions(i) << std::endl;
-				std::cout << "Total time: " << curr_time() - start_time << "ms\n----------------------------------------------------------------"
-						  << std::endl;
+				std::cout << "Total time: " << curr_time() - start_time
+						  << "ms\n----------------------------------------------------------------" << std::endl;
 			}
 		} else if (cmnd == "options") {
 			for (auto [name, value] : options) {

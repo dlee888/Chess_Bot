@@ -75,7 +75,7 @@ pii moves_loop() {
 		tb_hits = 0;
 		qsearch_hits = 0;
 		depth_qsearched = DEPTH_ZERO;
-		qs_depth_floor = std::max(Depth(-curr_depth + 2), (Depth)-5);
+		qs_depth_floor = std::max(Depth(-curr_depth / 3 + 2), (Depth)-7);
 
 		int start_time = clock();
 
@@ -111,7 +111,7 @@ pii moves_loop() {
 		int time_taken = clock() - start_time;
 
 		if (options["debug"])
-			std::cout << "Done searching, actual depth = " << curr_depth - depth_qsearched << std::endl
+			std::cout << "Done searching, seldepth = " << curr_depth - depth_qsearched << std::endl
 					  << "Best move is " << curr_state.move_to_string(best_move) << ", EVAL = " << (double)evaluation / 100 << std::endl
 					  << (double)time_taken / CLOCKS_PER_SEC << " seconds taken" << std::endl
 					  << nodes << " nodes searched, " << qsearch_nodes << " nodes qsearched "

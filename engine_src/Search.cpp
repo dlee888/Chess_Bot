@@ -168,7 +168,7 @@ Value qsearch(Value alpha, Value beta, Depth depth) {
 		// printf("adjucation\n");
 		return DRAWN;
 	}
-	
+
 	Value curr_eval;
 	if (tt_exists[key] && tt_hashes[key] == curr_board_hash) {
 		// tt entry can be used as more accurate static eval
