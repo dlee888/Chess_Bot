@@ -35,14 +35,14 @@ class Viewing(commands.Cog):
         if person is None:
             person = ctx.author
 
-        game = data.data_manager.get_game(person.id)
+        game = await data.data_manager.get_game(person.id)
 
         if game is None:
             await ctx.send(f'{"You do" if person == ctx.author else f"{person} does"} not have a game in progress')
             return
 
         util2 = self.client.get_cog('Util')
-        file, embed, view = util2.make_embed(person.id, title=f'{await util2.get_name(game.white)} vs {await util2.get_name(game.black)}',
+        file, embed, view = await util2.make_embed(person.id, title=f'{await util2.get_name(game.white)} vs {await util2.get_name(game.black)}',
                                        description=f'{await util2.get_name(game.to_move())} to move.', flip=flip)
         if ctx.author.id in [game.white, game.black]:
             await ctx.send(file=file, embed=embed, view=view)
@@ -69,7 +69,7 @@ class Viewing(commands.Cog):
         if person is None:
             person = ctx.author
 
-        game = data.data_manager.get_game(person.id)
+        game = await data.data_manager.get_game(person.id)
 
         if game is None:
             await ctx.send(f'{"You do" if person == ctx.author else f"{person} does"} not have a game in progress')
@@ -94,7 +94,7 @@ class Viewing(commands.Cog):
         }
         '''
         if new_theme is None:
-            cur_theme = data.data_manager.get_theme(ctx.author.id)
+            cur_theme = await data.data_manager.get_theme(ctx.author.id)
             await ctx.send(f'Your current theme is "{cur_theme}"\n'
                            f'Use `$theme <new theme>` to change your theme.\n'
                            'Available themes are:\n'
@@ -107,7 +107,7 @@ class Viewing(commands.Cog):
                            f'`{"`, `".join(image.themes_available)}`')
             return
 
-        data.data_manager.change_theme(ctx.author.id, new_theme)
+        await data.data_manager.change_theme(ctx.author.id, new_theme)
         await ctx.send('Theme sucessfully updated')
 
     @commands.hybrid_command(name='notif', description='Changes the notification settings for your game.')
@@ -127,7 +127,7 @@ class Viewing(commands.Cog):
         """
         util2 = self.client.get_cog('Util')
         if type == 'set':
-            data.data_manager.change_settings(
+            await data.data_manager.change_settings(
                 ctx.author.id, new_notif=ctx.channel.id)
             await ctx.send(f'Notification channel set to `{ctx.channel.name if ctx.guild is not None else "DM channel"}`.')
         elif type == 'test':

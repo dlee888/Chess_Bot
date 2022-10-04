@@ -56,10 +56,6 @@ def get_description(bot_name: str):
 class Profiles(commands.Cog):
 
     def __init__(self, client) -> None:
-        for bot in Profile:
-            if data.data_manager.get_rating(bot.value) is None:
-                data.data_manager.change_rating(
-                    bot.value, default_ratings[bot.value])
         self.client = client
 
     async def get_default_embed(self, thumbnail=constants.AVATAR_URL):
@@ -154,9 +150,9 @@ class Profiles(commands.Cog):
         embed.add_field(
             name='Stats', value='Stats about this bot.', inline=False)
         embed.add_field(name='Rating', value=str(
-            round(data.data_manager.get_rating(botid), 3)), inline=False)
+            round(await data.data_manager.get_rating(botid), 3)), inline=False)
 
-        lost, won, drew = data.data_manager.get_stats(botid)
+        lost, won, drew = await data.data_manager.get_stats(botid)
         embed.add_field(name='Games played', value=str(
             lost + won + drew), inline=False)
         embed.add_field(name='Games lost', value=str(lost)).add_field(
@@ -164,5 +160,9 @@ class Profiles(commands.Cog):
         await ctx.send(embed=embed)
 
 
-async def setup(bot):
+async def setup(bot):    
+    for b in Profile:
+        if await data.data_manager.get_rating(b.value) is None:
+            await data.data_manager.change_rating(
+                b.value, default_ratings[b.value])
     await bot.add_cog(Profiles(bot))

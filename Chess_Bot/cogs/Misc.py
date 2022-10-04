@@ -82,7 +82,7 @@ class Misc(commands.Cog):
         if person is None:
             person = ctx.author
 
-        result = data.data_manager.get_rating(person.id)
+        result = await data.data_manager.get_rating(person.id)
 
         if result is None:
             person_str = 'You are' if person == ctx.author else f'{person} is'
@@ -114,7 +114,7 @@ class Misc(commands.Cog):
 
         embed = discord.Embed(title="Leaderboard", color=0xffb521)
 
-        ratings = data.data_manager.get_ratings()
+        ratings = await data.data_manager.get_ratings()
         all_players = list(ratings.items())
 
         if num in ['bots', 'bot']:
@@ -171,11 +171,11 @@ class Misc(commands.Cog):
         }
         '''
 
-        if data.data_manager.get_rating(ctx.author.id) is None:
+        if await data.data_manager.get_rating(ctx.author.id) is None:
             await ctx.send('You are unrated.')
             return
 
-        ratings = data.data_manager.get_ratings()
+        ratings = await data.data_manager.get_ratings()
 
         all_players = [(k, ratings[k]) for k in ratings.keys()]
 
@@ -184,7 +184,7 @@ class Misc(commands.Cog):
         rank = next((i + 1 for i in range(len(all_players))
                     if all_players[i][0] == ctx.author.id), None)
 
-        await ctx.send(f'Your rating is {round(data.data_manager.get_rating(ctx.author.id), 2)}. You are ranked {rank} out of {len(all_players)} players.')
+        await ctx.send(f'Your rating is {round(await data.data_manager.get_rating(ctx.author.id), 2)}. You are ranked {rank} out of {len(all_players)} players.')
 
     @commands.hybrid_command(aliases=['info', 'about'], name='botinfo', description='Sends information about the bot.')
     @commands.cooldown(1, 3, commands.BucketType.user)
@@ -217,11 +217,11 @@ class Misc(commands.Cog):
         embed.add_field(name="Stats", value="Stats", inline=False)
         embed.add_field(name="Server Count", value=str(
             len(self.client.guilds)), inline=True)
-        embed.add_field(name="Total rated users", value=str(data.data_manager.rated_users()), inline=True)
+        embed.add_field(name="Total rated users", value=str(await data.data_manager.rated_users()), inline=True)
         embed.add_field(
             name="Up time", value=f'{util.pretty_time(time.time() - self.start_time)}', inline=True)
         embed.add_field(name='Games in progress', value=str(
-            data.data_manager.current_games()), inline=True)
+            await data.data_manager.current_games()), inline=True)
         embed.add_field(name='Games finished', value=str(
             await data.data_manager.total_games()), inline=True)
         owner = (await self.client.application_info()).owner
@@ -266,10 +266,10 @@ class Misc(commands.Cog):
 
         if person is None:
             person = ctx.author
-        lost, won, drew = data.data_manager.get_stats(person.id)
+        lost, won, drew = await data.data_manager.get_stats(person.id)
         embed = discord.Embed(title=f'{person}\'s stats', color=0xf9ff82)
         embed.add_field(name='Rating', value=str(
-            data.data_manager.get_rating(person.id)), inline=False)
+            await data.data_manager.get_rating(person.id)), inline=False)
         embed.add_field(name='Games Played', value=str(
             lost+won+drew), inline=False)
         embed.add_field(name='Lost', value=str(lost))

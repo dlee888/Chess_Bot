@@ -59,10 +59,10 @@ def load_all_themes():
             load_theme(file)
 
 
-def get_image2(person, pov=None):
-    game = data.data_manager.get_game(person)
+async def get_image2(person, pov=None):
+    game = await data.data_manager.get_game(person)
 
-    theme = data.data_manager.get_theme(person)
+    theme = await data.data_manager.get_theme(person)
     board = str(chess.Board(game.fen)).split('\n')
     path = os.path.join(constants.TEMP_DIR, f'image-{person}.png')
     if pov is None:

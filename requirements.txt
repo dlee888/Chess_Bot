@@ -1,7 +1,6 @@
-# discord.py
-git+https://github.com/Rapptz/discord.py#egg=discord.py
-
+discord.py
 pillow
 topggpy
 python-chess
 pymongo[srv]
+motor[srv]

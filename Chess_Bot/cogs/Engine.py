@@ -34,51 +34,51 @@ class Engine(commands.Cog):
         game.fen = board.fen(en_passant='fen')
         game.white_draw = False
         game.black_draw = False
-        data.data_manager.change_game(game)
+        await data.data_manager.change_game(game)
 
         if board.is_checkmate():
-            white_delta, black_delta = util.update_rating2(
+            white_delta, black_delta = await util.update_rating2(
                 game.white, game.black, 0 if board.turn == chess.BLACK else 1)
 
-            file1, embed1, _ = util2.make_embed(game.white, title='Your game has ended',
+            file1, embed1, _ = await util2.make_embed(game.white, title='Your game has ended',
                                              description=(f'{"Your opponent has" if board.turn == chess.WHITE else "You have"} moved: {move}.\n'
                                                           f'{whiteblack[not board.turn].capitalize()} won by checkmate.\n'
-                                                          f'Your new rating is {round(data.data_manager.get_rating(game.white), 3)} ({round(white_delta, 3)})'))
-            file2, embed2, _ = util2.make_embed(game.black, title='Your game has ended',
+                                                          f'Your new rating is {round(await data.data_manager.get_rating(game.white), 3)} ({round(white_delta, 3)})'))
+            file2, embed2, _ = await util2.make_embed(game.black, title='Your game has ended',
                                              description=(f'{"Your opponent has" if board.turn == chess.BLACK else "You have"} has moved: {move}.\n'
                                                           f'{whiteblack[not board.turn].capitalize()} won by checkmate.\n'
-                                                          f'Your new rating is {round(data.data_manager.get_rating(game.black), 3)} ({round(black_delta, 3)})'))
+                                                          f'Your new rating is {round(await data.data_manager.get_rating(game.black), 3)} ({round(black_delta, 3)})'))
 
             await util2.send_notif(game.white, file=file1, embed=embed1)
             await util2.send_notif(game.black, file=file2, embed=embed2)
 
-            data.data_manager.delete_game(game.player(), not board.turn)
+            await data.data_manager.delete_game(game.player(), not board.turn)
         elif board.can_claim_draw() or board.is_stalemate() or board.is_insufficient_material():
-            white_delta, black_delta = util.update_rating2(
+            white_delta, black_delta = await util.update_rating2(
                 game.white, game.black, 1/2)
 
-            file1, embed1, _ = util2.make_embed(game.white, title='Your game has ended',
+            file1, embed1, _ = await util2.make_embed(game.white, title='Your game has ended',
                                              description=(f'Your opponent has moved: {move}.\n'
                                                           'Draw.\n'
-                                                          f'Your new rating is {round(data.data_manager.get_rating(game.white), 3)} ({round(white_delta, 3)})'))
+                                                          f'Your new rating is {round(await data.data_manager.get_rating(game.white), 3)} ({round(white_delta, 3)})'))
 
-            file2, embed2, _ = util2.make_embed(game.black, title='Your game has ended',
+            file2, embed2, _ = await util2.make_embed(game.black, title='Your game has ended',
                                              description=(f'Your opponent has moved: {move}.\n'
                                                           'Draw.\n'
-                                                          f'Your new rating is {round(data.data_manager.get_rating(game.black), 3)} ({round(black_delta, 3)})'))
+                                                          f'Your new rating is {round(await data.data_manager.get_rating(game.black), 3)} ({round(black_delta, 3)})'))
 
             await util2.send_notif(game.white, file=file1, embed=embed1)
             await util2.send_notif(game.black, file=file2, embed=embed2)
 
-            data.data_manager.delete_game(game.player(), 69)
+            await data.data_manager.delete_game(game.player(), 69)
         else:
-            file, embed, view = util2.make_embed(game.to_move(), title=f'Your game with {await util2.get_name(game.not_to_move())}', description=f'Your opponent has moved: {move}.')
+            file, embed, view = await util2.make_embed(game.to_move(), title=f'Your game with {await util2.get_name(game.not_to_move())}', description=f'Your opponent has moved: {move}.')
             await util2.send_notif(game.to_move(), embed=embed, file=file, view=view)
 
     @tasks.loop(seconds=3)
     async def run_engine(self):
         try:
-            games = data.data_manager.get_games()
+            games = await data.data_manager.get_games()
             for game in games:
                 person = game.not_to_move()
                 if game.to_move() < len(Profile) and person not in self.thonking.keys() and len(self.thonking) < 3:
@@ -92,7 +92,7 @@ class Engine(commands.Cog):
             logging.error(f'Error in run_engine:\n{traceback_text}')
 
     async def process_task(self, person, task):
-        game = data.data_manager.get_game(person)
+        game = await data.data_manager.get_game(person)
         if game is None or task.result() is None:
             return
         move = task.result()
@@ -102,20 +102,20 @@ class Engine(commands.Cog):
             return
         if move == 'RESIGN':
             util2 = self.client.get_cog('Util')
-            white_delta, black_delta = util.update_rating2(game.white, game.black,
+            white_delta, black_delta = await util.update_rating2(game.white, game.black,
                                                            0 if game.bot() == game.black else 1)
             if game.bot() == game.white:
-                file, embed, _ = util2.make_embed(
+                file, embed, _ = await util2.make_embed(
                     game.black, title='Your game has ended',
                     description=(f'It was in this position that {await util2.get_name(game.bot())} resigned the game.\n'
-                                 f'Your new rating is {round(data.data_manager.get_rating(game.black), 3)} ({round(black_delta, 3)})'))
+                                 f'Your new rating is {round(await data.data_manager.get_rating(game.black), 3)} ({round(black_delta, 3)})'))
             else:
-                file, embed, _ = util2.make_embed(
+                file, embed, _ = await util2.make_embed(
                     game.white, title='Your game has ended',
                     description=(f'It was in this position that {await util2.get_name(game.bot())} resigned the game.\n'
-                                 f'Your new rating is {round(data.data_manager.get_rating(game.white), 3)} ({round(white_delta, 3)})'))
+                                 f'Your new rating is {round(await data.data_manager.get_rating(game.white), 3)} ({round(white_delta, 3)})'))
             await util2.send_notif(game.player(), file=file, embed=embed)
-            data.data_manager.delete_game(
+            await data.data_manager.delete_game(
                 game.player(), chess.WHITE if game.bot() == game.black else chess.BLACK)
         else:
             await self.make_move(game, game.parse_move(move))
@@ -164,7 +164,7 @@ class Engine(commands.Cog):
         util2 = self.client.get_cog('Util')
 
         person = ctx.author.id
-        game = data.data_manager.get_game(person)
+        game = await data.data_manager.get_game(person)
 
         if game is None:
             await ctx.send('You do not have a game in progress.')
@@ -191,8 +191,8 @@ class Engine(commands.Cog):
             return
 
         await self.make_move(game, move)
-        if data.data_manager.get_game(person) is not None:
-            file, embed, _ = util2.make_embed(person, title=f'Your game with {await util2.get_name(game.to_move())}', description='You have moved.')
+        if await data.data_manager.get_game(person) is not None:
+            file, embed, _ = await util2.make_embed(person, title=f'Your game with {await util2.get_name(game.to_move())}', description='You have moved.')
             await ctx.send(file=file, embed=embed)
 
     @commands.hybrid_command(name='resign', description='Resigns your current game')
@@ -210,26 +210,26 @@ class Engine(commands.Cog):
         }
         '''
 
-        game = data.data_manager.get_game(ctx.author.id)
+        game = await data.data_manager.get_game(ctx.author.id)
 
         if game is None:
             await ctx.send('You do not have a game in progress')
             return
 
         util2 = self.client.get_cog('Util')
-        white_delta, black_delta = util.update_rating2(game.white, game.black,
+        white_delta, black_delta = await util.update_rating2(game.white, game.black,
                                                        0 if ctx.author.id == game.black else 1)
         if ctx.author.id == game.white:
-            await ctx.send(f'Game resigned. Your new rating is {round(data.data_manager.get_rating(ctx.author.id), 3)} ({round(white_delta, 3)})')
-            file, embed, _ = util2.make_embed(
-                game.black, title='Your game has ended', description=f'It was in this position that {ctx.author} resigned the game.\nYour new rating is {round(data.data_manager.get_rating(game.black), 3)} ({round(black_delta, 3)})')
+            await ctx.send(f'Game resigned. Your new rating is {round(await data.data_manager.get_rating(ctx.author.id), 3)} ({round(white_delta, 3)})')
+            file, embed, _ = await util2.make_embed(
+                game.black, title='Your game has ended', description=f'It was in this position that {ctx.author} resigned the game.\nYour new rating is {round(await data.data_manager.get_rating(game.black), 3)} ({round(black_delta, 3)})')
             await util2.send_notif(game.black, file=file, embed=embed)
         else:
-            await ctx.send(f'Game resigned. Your new rating is {round(data.data_manager.get_rating(ctx.author.id), 3)} ({round(black_delta, 3)})')
-            file, embed, _ = util2.make_embed(
-                game.white, title='Your game has ended', description=f'It was in this position that {ctx.author} resigned the game.\nYour new rating is {round(data.data_manager.get_rating(game.white), 3)} ({round(white_delta, 3)})')
+            await ctx.send(f'Game resigned. Your new rating is {round(await data.data_manager.get_rating(ctx.author.id), 3)} ({round(black_delta, 3)})')
+            file, embed, _ = await util2.make_embed(
+                game.white, title='Your game has ended', description=f'It was in this position that {ctx.author} resigned the game.\nYour new rating is {round(await data.data_manager.get_rating(game.white), 3)} ({round(white_delta, 3)})')
             await util2.send_notif(game.white, file=file, embed=embed)
-        data.data_manager.delete_game(
+        await data.data_manager.delete_game(
             ctx.author.id, chess.WHITE if ctx.author.id == game.black else chess.BLACK)
 
 

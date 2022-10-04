@@ -30,7 +30,7 @@ class AcceptButton(discord.ui.Button):
                 component.disabled = True
 
         util2 = self.client.get_cog('Util')
-        if data.data_manager.get_game(self.challenger) is not None or data.data_manager.get_game(self.challengee) is not None:
+        if await data.data_manager.get_game(self.challenger) is not None or await data.data_manager.get_game(self.challengee) is not None:
             await interaction.message.reply('Challenge failed. One of the people already has a game in progress.')
             return
 
@@ -41,14 +41,14 @@ class AcceptButton(discord.ui.Button):
         else:
             game.white = self.challenger
             game.black = self.challengee
-        data.data_manager.change_game(game)
-        file, embed, view = util2.make_embed(game.white, title='Game started!', description=f'White: {await util2.get_name(game.white)}\nBlack: {await util2.get_name(game.black)}\nUse `$view` to view the game and use `$move` to make a move.\n')
+        await data.data_manager.change_game(game)
+        file, embed, view = await util2.make_embed(game.white, title='Game started!', description=f'White: {await util2.get_name(game.white)}\nBlack: {await util2.get_name(game.black)}\nUse `$view` to view the game and use `$move` to make a move.\n')
 
         await interaction.message.reply(f'<@{game.white}> <@{game.black}>\nYour game has started!', file=file, embed=embed, view=view)
 
-        data.data_manager.change_settings(
+        await data.data_manager.change_settings(
             game.white, new_notif=interaction.message.channel.id)
-        data.data_manager.change_settings(
+        await data.data_manager.change_settings(
             game.black, new_notif=interaction.message.channel.id)
 
         await interaction.response.edit_message(view=view)
@@ -135,7 +135,7 @@ class Challenges(commands.Cog):
 
         person = ctx.author.id
 
-        game = data.data_manager.get_game(person)
+        game = await data.data_manager.get_game(person)
         if game is not None:
             await ctx.send('You already have a game in progress')
             return
@@ -148,14 +148,14 @@ class Challenges(commands.Cog):
         else:
             game.white = person
             game.black = bot.value
-        data.data_manager.change_game(game)
+        await data.data_manager.change_game(game)
         util2 = self.client.get_cog('Util')
-        file, embed, view = util2.make_embed(ctx.author.id, title='Game started!',
+        file, embed, view = await util2.make_embed(ctx.author.id, title='Game started!',
                                              description=(f'White: {await util2.get_name(game.white)}\n'
                                                           f'Black: {await util2.get_name(game.black)}\n'
                                                           'Use </view:968575170958749698> to view the game and use </move:968575170958749704> to make a move.\n'))
         await ctx.send(f'Game started with {ProfileNames[bot.name].value}\nYou play the {whiteblack[color]} pieces.', file=file, embed=embed, view=view)
-        data.data_manager.change_settings(person, new_notif=ctx.channel.id)
+        await data.data_manager.change_settings(person, new_notif=ctx.channel.id)
 
     @challenge.command(aliases=['person'], name='user', description='Challenges another person to a game of chess.')
     @app_commands.describe(person='The person you want to challenge.')
@@ -174,10 +174,10 @@ class Challenges(commands.Cog):
             ]
         }
         """
-        if data.data_manager.get_game(ctx.author.id) is not None:
+        if await data.data_manager.get_game(ctx.author.id) is not None:
             await ctx.send('You already have a game in progress.')
             return
-        if data.data_manager.get_game(person.id) is not None:
+        if await data.data_manager.get_game(person.id) is not None:
             await ctx.send(f'{person} already has a game in progress.')
             return
         if ctx.author.id == person.id:

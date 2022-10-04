@@ -2,7 +2,7 @@ import time
 import os
 import sys
 import chess
-from pymongo import MongoClient
+from motor.motor_asyncio import AsyncIOMotorClient
 
 from Chess_Bot import constants
 
@@ -98,71 +98,74 @@ class MongoData:
 
     def __init__(self, url):
         self.DATABASE_URL = url
-        self.client = MongoClient(url)
+        self.client = AsyncIOMotorClient(url)
         self.db = self.client.test if '-beta-bot' in sys.argv else self.client.database
 
-    def get_game(self, person):
+    async def to_list(self, cursor):
+        return [document async for document in cursor]
+
+    async def get_game(self, person):
         white = self.db.games.find({'white': person})
         black = self.db.games.find({'black': person})
-        rows = list(white) + list(black)
+        rows = await self.to_list(white) + await self.to_list(black)
         return None if len(rows) == 0 else Game2().load_dict(rows[0])
 
-    def get_games(self):
+    async def get_games(self):
         games = self.db.games.find()
-        return [Game2().load_dict(g) for g in games]
+        return [Game2().load_dict(g) async for g in games]
     
-    def current_games(self):
-        return self.db.games.count_documents({})
+    async def current_games(self):
+        return await self.db.games.count_documents({})
 
-    def change_game(self, new_game):
-        self.db.games.update_one({'white': new_game.white, 'black': new_game.black}, {
+    async def change_game(self, new_game):
+        await self.db.games.update_one({'white': new_game.white, 'black': new_game.black}, {
                                  '$set': new_game.to_dict()}, upsert=True)
 
-    def get_rating(self, person):
-        data = list(self.db.users.find({'id': person}))
+    async def get_rating(self, person):
+        data = await self.to_list(self.db.users.find({'id': person}))
         return data[0]['rating'] if data and 'rating' in data[0].keys() else None
 
-    def get_ratings(self):
+    async def get_ratings(self):
         rows = self.db.users.find()
-        return {row['id']: row['rating'] for row in rows if 'rating' in row.keys() and row['rating'] is not None}
+        return {row['id']: row['rating'] async for row in rows if 'rating' in row.keys() and row['rating'] is not None}
 
-    def rated_users(self):
-        return self.db.users.count_documents({'rating': {'$ne': None}})
+    async def rated_users(self):
+        return await self.db.users.count_documents({'rating': {'$ne': None}})
 
-    def change_rating(self, person, new_rating):
-        self.db.users.update_one(
+    async def change_rating(self, person, new_rating):
+        await self.db.users.update_one(
             {'id': person}, {'$set': {'rating': new_rating}}, upsert=True)
 
-    def get_prefix(self, guild):
-        rows = list(self.db.prefixes.find({'id': guild}))
+    async def get_prefix(self, guild):
+        rows = await self.to_list(self.db.prefixes.find({'id': guild}))
         return rows[0]['prefix'] if rows else '$'
 
     def change_prefix(self, guild, new_prefix):
         self.db.prefixes.update_one(
             {'id': guild}, {'$set': {'prefix': new_prefix}}, upsert=True)
 
-    def get_stats(self, person):
+    async def get_stats(self, person):
         """Returns (lost, won, draw)"""
-        data = list(self.db.users.find({'id': person}))
+        data = await self.to_list(self.db.users.find({'id': person}))
         if not data or 'won' not in data[0].keys() or data[0]['won'] is None:
             return 0, 0, 0
         return data[0]['lost'], data[0]['won'], data[0]['draw']
 
-    def change_stats(self, person, lost, won, drew):
-        self.db.users.update_one(
+    async def change_stats(self, person, lost, won, drew):
+        await self.db.users.update_one(
             {'id': person}, {'$set': {'lost': lost, 'won': won, 'draw': drew}}, upsert=True)
 
     async def total_games(self):
-        rows = list(self.db.users.find({}, {'lost': 1, 'won': 1, 'draw': 1}))
+        rows = await self.to_list(self.db.users.find({}, {'lost': 1, 'won': 1, 'draw': 1}))
         return sum(row['lost'] + row['won'] + row['draw'] for row in rows if 'lost' in row.keys() and row['lost'] is not None) // 2
 
-    def delete_game(self, person, winner):
-        game = self.get_game(person)
+    async def delete_game(self, person, winner):
+        game = await self.get_game(person)
         if game is None:
             return
-        self.db.games.delete_one(game.to_dict())
-        white_lost, white_won, white_draw = self.get_stats(game.white)
-        black_lost, black_won, black_draw = self.get_stats(game.black)
+        await self.db.games.delete_one(game.to_dict())
+        white_lost, white_won, white_draw = await self.get_stats(game.white)
+        black_lost, black_won, black_draw = await self.get_stats(game.black)
         if winner is not None:
             if winner == chess.WHITE:
                 white_won += 1
@@ -173,45 +176,45 @@ class MongoData:
             else:
                 white_draw += 1
                 black_draw += 1
-        self.change_stats(game.white, white_lost, white_won, white_draw)
-        self.change_stats(game.black, black_lost, black_won, black_draw)
+        await self.change_stats(game.white, white_lost, white_won, white_draw)
+        await self.change_stats(game.black, black_lost, black_won, black_draw)
 
-    def get_theme(self, person):
-        data = list(self.db.users.find({'id': person}))
+    async def get_theme(self, person):
+        data = await self.to_list(self.db.users.find({'id': person}))
         if not data or 'theme' not in data[0].keys() or data[0]['theme'] is None:
             return 'default'
         return data[0]['theme']
 
-    def get_notifchannel(self, person):
-        data = list(self.db.users.find({'id': person}))
+    async def get_notifchannel(self, person):
+        data = await self.to_list(self.db.users.find({'id': person}))
         if not data or 'notifchannel' not in data[0].keys() or data[0]['notifchannel'] == -1:
             return None
         return data[0]['notifchannel']
 
-    def change_settings(self, person, *, new_theme=None, new_notif=None):
+    async def change_settings(self, person, *, new_theme=None, new_notif=None):
         if new_theme is not None:
-            self.db.users.update_one(
+            await self.db.users.update_one(
                 {'id': person}, {'$set': {'theme': new_theme}}, upsert=True)
         if new_notif is not None:
-            self.db.users.update_one(
+            await self.db.users.update_one(
                 {'id': person}, {'$set': {'notifchannel': new_notif}}, upsert=True)
 
-    def change_theme(self, person, new_theme):
-        self.change_settings(person, new_theme=new_theme)
+    async def change_theme(self, person, new_theme):
+        await self.change_settings(person, new_theme=new_theme)
 
-    def has_claimed(self, person):
-        rows = list(self.db.votes.find({'id': person}))
+    async def has_claimed(self, person):
+        rows = await self.to_list(self.db.votes.find({'id': person}))
         return len(rows) == 1
 
-    def get_claimed(self):
+    async def get_claimed(self):
         rows = self.db.votes.find()
-        return [x['id'] for x in rows]
+        return [x['id'] async for x in rows]
 
-    def add_vote(self, person):
-        self.db.votes.insert_one({'id': person})
+    async def add_vote(self, person):
+        await self.db.votes.insert_one({'id': person})
 
-    def remove_vote(self, person):
-        self.db.votes.delete_one({'id': person})
+    async def remove_vote(self, person):
+        await self.db.votes.delete_one({'id': person})
 
 
 data_manager = MongoData(os.getenv('MONGODB_URL'))

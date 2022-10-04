@@ -25,7 +25,7 @@ class DrawButton(discord.ui.Button):
             await interaction.response.send_message('This is not your game!', ephemeral=True)
             return
 
-        game = data.data_manager.get_game(interaction.user.id)
+        game = await data.data_manager.get_game(interaction.user.id)
         if game is None:
             await interaction.response.send_message('Game not found.', ephemeral=True)
             return
@@ -51,7 +51,7 @@ class DrawButton(discord.ui.Button):
             game.black_draw = True
             await interaction.response.send_message('Draw offer sent.', ephemeral=True)
             await util2.send_notif(game.white, 'Your opponent has offered a draw')
-        data.data_manager.change_game(game)
+        await data.data_manager.change_game(game)
 
 
 class AcceptDrawButton(discord.ui.Button):
@@ -66,7 +66,7 @@ class AcceptDrawButton(discord.ui.Button):
             await interaction.response.send_message('This is not your game!', ephemeral=True)
             return
 
-        game = data.data_manager.get_game(interaction.user.id)
+        game = await data.data_manager.get_game(interaction.user.id)
         if game is None:
             await interaction.response.send_message('Game not found.', ephemeral=True)
             return
@@ -78,19 +78,19 @@ class AcceptDrawButton(discord.ui.Button):
         await interaction.response.edit_message(view=view)
 
         util2 = self.client.get_cog('Util')
-        white_delta, black_delta = util.update_rating2(
+        white_delta, black_delta = await util.update_rating2(
             self.game.white, self.game.black, 1 / 2)
         if interaction.user.id == self.game.white:
-            await interaction.message.reply(f'Draw accepted. Your new rating is {round(data.data_manager.get_rating(interaction.user.id), 3)} ({round(white_delta, 3)})')
-            file, embed, _ = util2.make_embed(
-                self.game.black, title='Your game has ended', description=f'{interaction.user} accepted your draw offer.\nYour new rating is {round(data.data_manager.get_rating(self.game.black), 3)} ({round(black_delta, 3)})')
+            await interaction.message.reply(f'Draw accepted. Your new rating is {round(await data.data_manager.get_rating(interaction.user.id), 3)} ({round(white_delta, 3)})')
+            file, embed, _ = await util2.make_embed(
+                self.game.black, title='Your game has ended', description=f'{interaction.user} accepted your draw offer.\nYour new rating is {round(await data.data_manager.get_rating(self.game.black), 3)} ({round(black_delta, 3)})')
             await util2.send_notif(self.game.black, file=file, embed=embed)
         else:
-            await interaction.message.reply(f'Draw accepted. Your new rating is {round(data.data_manager.get_rating(interaction.user.id), 3)} ({round(black_delta, 3)})')
-            file, embed, _ = util2.make_embed(
-                self.game.white, title='Your game has ended', description=f'{interaction.user} accepted your draw offer.\nYour new rating is {round(data.data_manager.get_rating(self.game.white), 3)} ({round(white_delta, 3)})')
+            await interaction.message.reply(f'Draw accepted. Your new rating is {round(await data.data_manager.get_rating(interaction.user.id), 3)} ({round(black_delta, 3)})')
+            file, embed, _ = await util2.make_embed(
+                self.game.white, title='Your game has ended', description=f'{interaction.user} accepted your draw offer.\nYour new rating is {round(await data.data_manager.get_rating(self.game.white), 3)} ({round(white_delta, 3)})')
             await util2.send_notif(self.game.white, file=file, embed=embed)
-        data.data_manager.delete_game(
+        await data.data_manager.delete_game(
             interaction.user.id, 69)
 
 
@@ -105,7 +105,7 @@ class ResignButton(discord.ui.Button):
             await interaction.response.send_message('This is not your game!', ephemeral=True)
             return
 
-        game = data.data_manager.get_game(interaction.user.id)
+        game = await data.data_manager.get_game(interaction.user.id)
         if game is None:
             await interaction.response.send_message('Game not found.', ephemeral=True)
             return
@@ -117,19 +117,19 @@ class ResignButton(discord.ui.Button):
         await interaction.response.edit_message(view=view)
 
         util2 = self.client.get_cog('Util')
-        white_delta, black_delta = util.update_rating2(self.game.white, self.game.black,
+        white_delta, black_delta = await util.update_rating2(self.game.white, self.game.black,
                                                        0 if interaction.user.id == self.game.black else 1)
         if interaction.user.id == self.game.white:
-            await interaction.message.reply(f'Game resigned. Your new rating is {round(data.data_manager.get_rating(interaction.user.id), 3)} ({round(white_delta, 3)})')
-            file, embed, _ = util2.make_embed(
-                self.game.black, title='Your game has ended', description=f'It was in this position that {interaction.user} resigned the game.\nYour new rating is {round(data.data_manager.get_rating(self.game.black), 3)} ({round(black_delta, 3)})')
+            await interaction.message.reply(f'Game resigned. Your new rating is {round(await data.data_manager.get_rating(interaction.user.id), 3)} ({round(white_delta, 3)})')
+            file, embed, _ = await util2.make_embed(
+                self.game.black, title='Your game has ended', description=f'It was in this position that {interaction.user} resigned the game.\nYour new rating is {round(await data.data_manager.get_rating(self.game.black), 3)} ({round(black_delta, 3)})')
             await util2.send_notif(self.game.black, file=file, embed=embed)
         else:
-            await interaction.message.reply(f'Game resigned. Your new rating is {round(data.data_manager.get_rating(interaction.user.id), 3)} ({round(black_delta, 3)})')
-            file, embed, _ = util2.make_embed(
-                self.game.white, title='Your game has ended', description=f'It was in this position that {interaction.user} resigned the game.\nYour new rating is {round(data.data_manager.get_rating(self.game.white), 3)} ({round(white_delta, 3)})')
+            await interaction.message.reply(f'Game resigned. Your new rating is {round(await data.data_manager.get_rating(interaction.user.id), 3)} ({round(black_delta, 3)})')
+            file, embed, _ = await util2.make_embed(
+                self.game.white, title='Your game has ended', description=f'It was in this position that {interaction.user} resigned the game.\nYour new rating is {round(await data.data_manager.get_rating(self.game.white), 3)} ({round(white_delta, 3)})')
             await util2.send_notif(self.game.white, file=file, embed=embed)
-        data.data_manager.delete_game(
+        await data.data_manager.delete_game(
             interaction.user.id, chess.WHITE if interaction.user.id == self.game.black else chess.BLACK)
 
 
@@ -155,7 +155,7 @@ class Util(commands.Cog):
     async def get_notifchannel(self, person):
         if person < len(Profile):
             return None, None
-        channelid = data.data_manager.get_notifchannel(person)
+        channelid = await data.data_manager.get_notifchannel(person)
         if channelid is not None:
             try:
                 return await self.client.fetch_channel(channelid), False
@@ -176,11 +176,11 @@ class Util(commands.Cog):
             return get_name(person)
         return str(await self.client.fetch_user(person))
 
-    def make_embed(self, person, *, title='', description='', flip=False):
+    async def make_embed(self, person, *, title='', description='', flip=False):
         embed = discord.Embed(color=0x5ef29c, title=title,
                               description=description)
-        game = data.data_manager.get_game(person)
-        path = Images.get_image2(person, game.get_color(person) ^ flip)
+        game = await data.data_manager.get_game(person)
+        path = await Images.get_image2(person, game.get_color(person) ^ flip)
         embed.set_image(url='attachment://board.png')
         if person not in [game.white, game.black]:
             return discord.File(path, filename='board.png'), embed, None

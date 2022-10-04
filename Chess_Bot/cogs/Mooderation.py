@@ -21,11 +21,11 @@ class Mooderation(commands.Cog):
         Aborts a game
         '''
 
-        if data.data_manager.get_game(user.id) is None:
+        if await data.data_manager.get_game(user.id) is None:
             await ctx.send(f'{user} does not have a game in progress')
             return
 
-        data.data_manager.delete_game(user.id, None)
+        await data.data_manager.delete_game(user.id, None)
 
         await ctx.send('Game aborted')
 
@@ -49,7 +49,7 @@ class Mooderation(commands.Cog):
             return
 
         if new_prefix is None:
-            await ctx.send((f'This server\'s prefix is `{data.data_manager.get_prefix(ctx.guild.id)}`\nNote:\nPlease use slash commands instead of normal commands.\n'
+            await ctx.send((f'This server\'s prefix is `{await data.data_manager.get_prefix(ctx.guild.id)}`\nNote:\nPlease use slash commands instead of normal commands.\n'
                             'As some of you may know, discord has made message content a privileged intent, which means that bots cannot access the contents of messages you send. This stops the normal commands from working. Instead, users are expected to interact with bots using slash commands.\n'
                             'If you still want to use the normal message commands, there are ways, though. You can still use commands by DMing the bot, or mentioning the bot instead of using a prefix, such as <@801501916810838066> help.\n'))
             return
@@ -59,7 +59,7 @@ class Mooderation(commands.Cog):
         #     await ctx.send("You do not have permission to change this server\'s custom prefix")
         #     return
 
-        data.data_manager.change_prefix(ctx.guild.id, new_prefix)
+        await data.data_manager.change_prefix(ctx.guild.id, new_prefix)
 
         await ctx.send('Prefix successfully updated')
 
@@ -74,12 +74,12 @@ class Mooderation(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.user)
     @is_developer()
     async def gift(self, ctx, person: typing.Union[discord.User, discord.Member], amount: float):
-        if data.data_manager.get_rating(person.id) is None:
-            data.data_manager.change_rating(
+        if await data.data_manager.get_rating(person.id) is None:
+            await data.data_manager.change_rating(
                 person.id, constants.DEFAULT_RATING)
 
-        data.data_manager.change_rating(
-            person.id, data.data_manager.get_rating(person.id) + amount)
+        await data.data_manager.change_rating(
+            person.id, await data.data_manager.get_rating(person.id) + amount)
 
         await ctx.send(f'{amount} rating points gifted.')
 

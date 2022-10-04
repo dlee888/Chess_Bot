@@ -8,7 +8,7 @@ name = "pypi"
 pillow = "*"
 topggpy = "*"
 python-chess = "*"
-pymongo = {extras = ["srv"], version = "*"}
+motor = {extras = ["srv"], version = "*"}
 
 [dev-packages]
 autopep8 = "*"

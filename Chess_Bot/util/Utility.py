@@ -21,9 +21,9 @@ async def run(cmd, stdin=''):
     return stdout, stderr, f'[{cmd!r} exited with {proc.returncode}]'
 
 
-def update_rating(user, outcome, bot):
-    bot_rating = data.data_manager.get_rating(bot)
-    person_rating = data.data_manager.get_rating(user)
+async def update_rating(user, outcome, bot):
+    bot_rating = await data.data_manager.get_rating(bot)
+    person_rating = await data.data_manager.get_rating(user)
 
     if bot_rating is None:
         bot_rating = constants.DEFAULT_RATING
@@ -37,17 +37,17 @@ def update_rating(user, outcome, bot):
     bot_rating += 32 * (E - outcome)
     person_rating += 32 * (outcome - E)
 
-    data.data_manager.change_rating(bot, bot_rating)
-    data.data_manager.change_rating(user, person_rating)
+    await data.data_manager.change_rating(bot, bot_rating)
+    await data.data_manager.change_rating(user, person_rating)
 
     return old_rating, person_rating
 
 
-def update_rating2(white, black, outcome):
+async def update_rating2(white, black, outcome):
     '''Outcome: 1 if white loses, 0 if black loses
     returns (white_delta, black_delta)'''
-    white_rating = data.data_manager.get_rating(white)
-    black_rating = data.data_manager.get_rating(black)
+    white_rating = await data.data_manager.get_rating(white)
+    black_rating = await data.data_manager.get_rating(black)
     if white_rating is None:
         white_rating = constants.DEFAULT_RATING
     if black_rating is None:
@@ -61,8 +61,8 @@ def update_rating2(white, black, outcome):
     white_rating += 32 * (E - outcome)
     black_rating += 32 * (outcome - E)
 
-    data.data_manager.change_rating(white, white_rating)
-    data.data_manager.change_rating(black, black_rating)
+    await data.data_manager.change_rating(white, white_rating)
+    await data.data_manager.change_rating(black, black_rating)
 
     return white_rating - old_white, black_rating - old_black
 
@@ -86,7 +86,7 @@ def pretty_time(time):
     return ', '.join(arr)
 
 
-def change_fen(person, new_fen):
-    game = data.data_manager.get_game(person)
+async def change_fen(person, new_fen):
+    game = await data.data_manager.get_game(person)
     game.fen = new_fen
-    data.data_manager.change_game(game)
+    await data.data_manager.change_game(game)

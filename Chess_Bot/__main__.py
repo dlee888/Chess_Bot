@@ -18,7 +18,7 @@ import sys
 async def get_prefix(bot, message):
     if message.guild is None:
         return ['$', f'<@{bot.user.id}> ', f'<@!{bot.user.id}> ']
-    return [data.data_manager.get_prefix(message.guild.id), f'<@{bot.user.id}> ', f'<@!{bot.user.id}> ']
+    return [await data.data_manager.get_prefix(message.guild.id), f'<@{bot.user.id}> ', f'<@!{bot.user.id}> ']
 
 intents = discord.Intents.none()
 intents.messages = True
