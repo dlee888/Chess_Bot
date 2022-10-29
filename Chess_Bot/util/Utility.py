@@ -43,7 +43,7 @@ async def update_rating(user, outcome, bot):
     return old_rating, person_rating
 
 
-async def update_rating2(white, black, outcome):
+async def update_rating2(white, black, outcome) -> tuple:
     '''Outcome: 1 if white loses, 0 if black loses
     returns (white_delta, black_delta)'''
     white_rating = await data.data_manager.get_rating(white)
@@ -88,5 +88,7 @@ def pretty_time(time):
 
 async def change_fen(person, new_fen):
     game = await data.data_manager.get_game(person)
+    if game is None:
+        return False
     game.fen = new_fen
     await data.data_manager.change_game(game)

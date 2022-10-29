@@ -110,7 +110,7 @@ class Challenges(commands.Cog):
         helpcog = self.client.get_cog('Help')
         docstr = self.client.get_command('challenge').help
         kwargs = json.loads(docstr)
-        await ctx.send(embed=helpcog.make_help_embed(**kwargs))
+        await ctx.send(embed=await helpcog.make_help_embed(**kwargs))
 
     @challenge.command(name='bot', description='Challenges a bot to a game of chess.')
     @app_commands.describe(bot='The bot you want to challenge.')

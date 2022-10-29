@@ -113,6 +113,8 @@ async def on_command_error(ctx, exc):
         with open(msg_txt_path, 'w') as file:
             file.write(msg)
         await error_channel.send('Command Error:\\n', file=discord.File(msg_txt_path))
+    except AttributeError:
+        pass
 
 
 def setup():

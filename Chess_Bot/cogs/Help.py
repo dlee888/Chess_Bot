@@ -77,10 +77,11 @@ class Help(commands.Cog):
                     [command_dict[i].mention for i in commands]), inline=False)
         else:
             cmd = self.client.get_command(command)
-            if cmd is None or cmd.hidden or not cmd.enabled:
+            if cmd is None or cmd.hidden or not cmd.enabled or cmd.help is None:
                 await ctx.send('That command doesn\'t exist!')
                 return
-            kwargs = json.loads(cmd.help.replace(f'${command}', (await self.get_command(command)).mention))
+            command_obj = await self.get_command(command)
+            kwargs = json.loads(cmd.help.replace(f'${command}', f'${command}' if command_obj is None else command_obj.mention))
             embed = await self.make_help_embed(**kwargs)
         await ctx.send(embed=embed)
 
