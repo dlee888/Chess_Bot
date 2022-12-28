@@ -112,6 +112,8 @@ class Misc(commands.Cog):
         }
         '''
 
+        msg = await ctx.send('Fetching leaderboard (may take time)...')
+
         embed = discord.Embed(title="Leaderboard", color=0xffb521)
 
         ratings = await data.data_manager.get_ratings()
@@ -154,7 +156,7 @@ class Misc(commands.Cog):
         body = '\n'.join(rows)
         embed.description = f'```\n{body}\n```'
         embed.set_thumbnail(url=constants.AVATAR_URL)
-        await ctx.send(embed=embed)
+        await msg.reply(embed=embed)
 
     @commands.hybrid_command(name='rank', description='Get your rank.')
     @commands.cooldown(1, 7, commands.BucketType.user)
@@ -175,6 +177,8 @@ class Misc(commands.Cog):
             await ctx.send('You are unrated.')
             return
 
+        msg = await ctx.send('Fetching ratings...')
+
         ratings = await data.data_manager.get_ratings()
 
         all_players = [(k, ratings[k]) for k in ratings.keys()]
@@ -184,7 +188,7 @@ class Misc(commands.Cog):
         rank = next((i + 1 for i in range(len(all_players))
                     if all_players[i][0] == ctx.author.id), None)
 
-        await ctx.send(f'Your rating is {round(await data.data_manager.get_rating(ctx.author.id), 2)}. You are ranked {rank} out of {len(all_players)} players.')
+        await msg.reply(f'Your rating is {round(await data.data_manager.get_rating(ctx.author.id), 2)}. You are ranked {rank} out of {len(all_players)} players.')
 
     @commands.hybrid_command(aliases=['info', 'about'], name='botinfo', description='Sends information about the bot.')
     @commands.cooldown(1, 3, commands.BucketType.user)

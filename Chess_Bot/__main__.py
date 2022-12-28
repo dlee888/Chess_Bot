@@ -35,6 +35,7 @@ else:
     bot = commands.AutoShardedBot(command_prefix=get_prefix, help_command=None,
                                   status='$help for commands, $botinfo for more information', max_messages=None, intents=intents)
 
+
 @bot.event
 async def on_command_error(ctx, exc):
     try:
@@ -75,7 +76,7 @@ async def on_command_error(ctx, exc):
     lines = traceback.format_exception(etype, exc, trace)
     traceback_text = ''.join(lines)
 
-    if ctx.guild.id is not None:
+    if ctx.guild is not None:
         msg = ('Command Error:\n'
                f'Author: {ctx.author} ({ctx.author.id})\n'
                f'Guild: {ctx.guild} ({ctx.guild.id})\n'
@@ -106,9 +107,9 @@ async def on_command_error(ctx, exc):
                        'https://discord.gg/Bm4zjtNTD2')
 
     error_channel = bot.get_channel(constants.ERROR_CHANNEL_ID)
-    try:
+    if len(msg) < 2000:
         await error_channel.send(msg)
-    except discord.errors.HTTPException:
+    else:
         msg_txt_path = os.path.join(constants.TEMP_DIR, 'message.txt')
         with open(msg_txt_path, 'w') as file:
             file.write(msg)
