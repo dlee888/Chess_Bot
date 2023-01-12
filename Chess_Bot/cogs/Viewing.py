@@ -18,7 +18,7 @@ class Viewing(commands.Cog):
     @commands.hybrid_command(name='view', description="Views [person]'s game. If no person is specified, it will default to your own game.")
     @app_commands.describe(person='The person to view the game of.', flip='Whether to flip the board or not.')
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def view(self, ctx, person: typing.Union[discord.User, discord.Member] = None, flip: bool = False):
+    async def view(self, ctx, person: typing.Optional[typing.Union[discord.User, discord.Member]] = None, flip: bool = False):
         '''
         {
             "name": "view",
@@ -52,7 +52,7 @@ class Viewing(commands.Cog):
     @commands.hybrid_command(name='fen', description='Views the FEN of the game.')
     @app_commands.describe(person='The person to view the FEN of. If no person is specified, it will default to your own game.')
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def fen(self, ctx, person: typing.Union[discord.User, discord.Member] = None):
+    async def fen(self, ctx, person: typing.Optional[typing.Union[discord.User, discord.Member]] = None):
         '''
         {
             "name": "fen",

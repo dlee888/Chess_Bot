@@ -3,6 +3,7 @@ import os
 import sys
 import chess
 from motor.motor_asyncio import AsyncIOMotorClient
+import typing
 
 from Chess_Bot import constants
 
@@ -113,20 +114,20 @@ class MongoData:
     async def get_games(self):
         games = self.db.games.find()
         return [Game2().load_dict(g) async for g in games]
-    
+
     async def current_games(self):
         return await self.db.games.count_documents({})
 
     async def change_game(self, new_game):
         await self.db.games.update_one({'white': new_game.white, 'black': new_game.black}, {
-                                 '$set': new_game.to_dict()}, upsert=True)
+            '$set': new_game.to_dict()}, upsert=True)
 
-    async def get_rating(self, person):
+    async def get_rating(self, person) -> typing.Optional[float]:
         data = await self.to_list(self.db.users.find({'id': person}))
         return data[0]['rating'] if data and 'rating' in data[0].keys() else None
 
     async def get_ratings(self):
-        rows = self.db.users.find()
+        rows = self.db.users.find().sort([("rating", -1)]).limit(40)
         return {row['id']: row['rating'] async for row in rows if 'rating' in row.keys() and row['rating'] is not None}
 
     async def rated_users(self):

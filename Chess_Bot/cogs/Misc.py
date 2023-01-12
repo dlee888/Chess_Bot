@@ -254,7 +254,7 @@ class Misc(commands.Cog):
     @commands.hybrid_command(name='stats', description='Sends some stats about some person.')
     @app_commands.describe(person='The person to get stats about. Defaults to you.')
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def stats(self, ctx, person: typing.Union[discord.Member, discord.User] = None):
+    async def stats(self, ctx, person: typing.Optional[typing.Union[discord.Member, discord.User]] = None):
         """
         {
             "name": "stats",

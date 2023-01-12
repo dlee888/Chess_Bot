@@ -72,9 +72,8 @@ class AcceptDrawButton(discord.ui.Button):
             return
 
         view = discord.ui.View.from_message(interaction.message)
-        for component in view.children:
-            if issubclass(type(component), discord.ui.Button):
-                component.disabled = True
+        [setattr(component, "disabled", True) for component in view.children if isinstance(component, discord.ui.Button)]
+
         await interaction.response.edit_message(view=view)
 
         util2 = self.client.get_cog('Util')
@@ -180,6 +179,7 @@ class Util(commands.Cog):
         embed = discord.Embed(color=0x5ef29c, title=title,
                               description=description)
         game = await data.data_manager.get_game(person)
+        assert game is not None
         path = await Images.get_image2(person, game.get_color(person) ^ flip)
         embed.set_image(url='attachment://board.png')
         if person not in [game.white, game.black]:

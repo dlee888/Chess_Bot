@@ -13,7 +13,7 @@ from Chess_Bot.cogs.Profiles import Profile, ProfileNames
 
 
 class AcceptButton(discord.ui.Button):
-    def __init__(self, client, challenger, challengee):
+    def __init__(self, client: commands.Bot, challenger: int, challengee: int):
         super().__init__(label='Accept', style=discord.ButtonStyle.green)
         self.client = client
         self.challenger = challenger
@@ -24,6 +24,7 @@ class AcceptButton(discord.ui.Button):
             await interaction.response.send_message('You are not the challengee!', ephemeral=True)
             return
 
+        assert interaction.message is not None
         view = discord.ui.View.from_message(interaction.message)
         for component in view.children:
             if issubclass(type(component), discord.ui.Button):
@@ -55,7 +56,7 @@ class AcceptButton(discord.ui.Button):
 
 
 class DeclineButton(discord.ui.Button):
-    def __init__(self, client, challenger, challengee):
+    def __init__(self, client: commands.Bot, challenger: int, challengee: int):
         super().__init__(label='Decline', style=discord.ButtonStyle.red)
         self.client = client
         self.challenger = challenger
@@ -66,6 +67,7 @@ class DeclineButton(discord.ui.Button):
             await interaction.response.send_message('You are not the challengee or challenger!', ephemeral=True)
             return
 
+        assert interaction.message is not None
         view = discord.ui.View.from_message(interaction.message)
         for component in view.children:
             if issubclass(type(component), discord.ui.Button):
@@ -76,7 +78,7 @@ class DeclineButton(discord.ui.Button):
 
 
 class ChallengeView(discord.ui.View):
-    def __init__(self, client, challenger, challenged):
+    def __init__(self, client: commands.Bot, challenger: int, challenged: int):
         super().__init__()
         self.add_item(AcceptButton(client, challenger, challenged))
         self.add_item(DeclineButton(client, challenger, challenged))
@@ -84,7 +86,7 @@ class ChallengeView(discord.ui.View):
 
 class Challenges(commands.Cog):
 
-    def __init__(self, client):
+    def __init__(self, client: commands.Bot):
         self.client = client
 
     @commands.hybrid_group(invoke_without_command=True, name='challenge', description='Challenges a user or bot to a game of chess.')
@@ -151,9 +153,9 @@ class Challenges(commands.Cog):
         await data.data_manager.change_game(game)
         util2 = self.client.get_cog('Util')
         file, embed, view = await util2.make_embed(ctx.author.id, title='Game started!',
-                                             description=(f'White: {await util2.get_name(game.white)}\n'
-                                                          f'Black: {await util2.get_name(game.black)}\n'
-                                                          'Use </view:968575170958749698> to view the game and use </move:968575170958749704> to make a move.\n'))
+                                                   description=(f'White: {await util2.get_name(game.white)}\n'
+                                                                f'Black: {await util2.get_name(game.black)}\n'
+                                                                'Use </view:968575170958749698> to view the game and use </move:968575170958749704> to make a move.\n'))
         await ctx.send(f'Game started with {ProfileNames[bot.name].value}\nYou play the {whiteblack[color]} pieces.', file=file, embed=embed, view=view)
         await data.data_manager.change_settings(person, new_notif=ctx.channel.id)
 
