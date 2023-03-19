@@ -25,6 +25,8 @@ class Engine(commands.Cog):
             self.output_result.start()
 
     async def make_move(self, game, move):
+        if move is None:
+            return
         util2 = self.client.get_cog('Util')
 
         board = chess.Board(game.fen)
@@ -97,7 +99,7 @@ class Engine(commands.Cog):
             return
         move = task.result()
         if move is None:
-            logging.error(
+            logging.warning(
                 f'`move=None` in run_engine:\n`{game.fen}`\n{game.white} vs {game.black}')
             return
         if move == 'RESIGN':

@@ -157,8 +157,9 @@ class MongoData:
             {'id': person}, {'$set': {'lost': lost, 'won': won, 'draw': drew}}, upsert=True)
 
     async def total_games(self):
-        rows = await self.to_list(self.db.users.find({}, {'lost': 1, 'won': 1, 'draw': 1}))
-        return sum(row['lost'] + row['won'] + row['draw'] for row in rows if 'lost' in row.keys() and row['lost'] is not None) // 2
+        total = await self.to_list(self.db.users.aggregate([{'$group': {'_id': 'null',
+                                                               'total': {'$sum': {'$add': ['$lost', '$won', '$draw']}}}}]))
+        return total[0]['total'] // 2
 
     async def delete_game(self, person, winner):
         game = await self.get_game(person)

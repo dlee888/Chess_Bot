@@ -106,7 +106,8 @@ async def on_command_error(ctx, exc):
                        'If you feel that this is a bug, please contact the bot developers in the chess bot support server.\n'
                        'https://discord.gg/Bm4zjtNTD2')
 
-    error_channel = bot.get_channel(constants.ERROR_CHANNEL_ID)
+    error_channel = await bot.fetch_channel(constants.ERROR_CHANNEL_ID if '-beta-bot' not in sys.argv else constants.BETA_LOG_CHANNEL_ID)
+    assert isinstance(error_channel, discord.TextChannel)
     if len(msg) < 2000:
         await error_channel.send(msg)
     else:

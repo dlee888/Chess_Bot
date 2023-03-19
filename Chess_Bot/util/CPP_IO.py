@@ -24,6 +24,8 @@ all_sf = [bot.value for bot in Profile if bot.name.startswith('sf')]
 
 async def run_engine(person):
     game = await data.data_manager.get_game(person)
+    if game is None:
+        return None
 
     bot = game.to_move()
 
