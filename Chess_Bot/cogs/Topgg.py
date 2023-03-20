@@ -62,7 +62,7 @@ class Topgg(commands.Cog):
         votes = await data.data_manager.get_claimed()
         for row in votes:
             status = await self.dbl_client.get_user_vote(row)
-            if status == False:
+            if not status:
                 await data.data_manager.remove_vote(row)
 
     @reset_votes.before_loop

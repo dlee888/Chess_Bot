@@ -158,7 +158,7 @@ class MongoData:
 
     async def total_games(self):
         total = await self.to_list(self.db.users.aggregate([{'$group': {'_id': 'null',
-                                                               'total': {'$sum': {'$add': ['$lost', '$won', '$draw']}}}}]))
+                                                                        'total': {'$sum': {'$add': ['$lost', '$won', '$draw']}}}}]))
         return total[0]['total'] // 2
 
     async def delete_game(self, person, winner):

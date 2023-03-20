@@ -17,9 +17,10 @@ class Help(commands.Cog):
         embed.set_footer(
             text="Usage syntax: <required argument>, [optional argument]")
         embed.set_thumbnail(url=constants.AVATAR_URL)
-        embed.description = ('Note: Please use slash commands instead of normal commands.\n'
-                             'As some of you may know, discord has made message content a privileged intent, which stops normal commands from working.'
-                             'If you still want to use the normal message commands, you have to DM the bot, or mention it as a prefix, such as <@801501916810838066> help.')
+        embed.description = (
+            'Note: Please use slash commands instead of normal commands.\n'
+            'As some of you may know, discord has made message content a privileged intent, which stops normal commands from working.'
+            'If you still want to use the normal message commands, you have to DM the bot, or mention it as a prefix, such as <@801501916810838066> help.')
         return embed
 
     async def get_command(self, name):
@@ -67,8 +68,12 @@ class Help(commands.Cog):
             command_dict = {}
             for command in command_list:
                 command_dict[command.name] = command
-            help_list = {'Playing': ['challenge', 'move', 'profile', 'resign'], 'Viewing': [
-                'view', 'fen', 'time', 'theme'], 'Rating': ['rating', 'leaderboard', 'rank', 'stats'], 'Miscellaneous': ['ping', 'help', 'botinfo', 'invite', 'vote', 'notif']}
+            help_list = {
+                'Playing': [
+                    'challenge', 'move', 'profile', 'resign'], 'Viewing': [
+                    'view', 'fen', 'time', 'theme'], 'Rating': [
+                    'rating', 'leaderboard', 'rank', 'stats'], 'Miscellaneous': [
+                    'ping', 'help', 'botinfo', 'invite', 'vote', 'notif']}
             embed = self.get_default_help_embed()
             embed.description = 'List of commands. Use `/help [command]` for more information about a certain command'
 

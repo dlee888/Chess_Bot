@@ -117,7 +117,7 @@ class ResignButton(discord.ui.Button):
 
         util2 = self.client.get_cog('Util')
         white_delta, black_delta = await util.update_rating2(self.game.white, self.game.black,
-                                                       0 if interaction.user.id == self.game.black else 1)
+                                                             0 if interaction.user.id == self.game.black else 1)
         if interaction.user.id == self.game.white:
             await interaction.message.reply(f'Game resigned. Your new rating is {round(await data.data_manager.get_rating(interaction.user.id), 3)} ({round(white_delta, 3)})')
             file, embed, _ = await util2.make_embed(

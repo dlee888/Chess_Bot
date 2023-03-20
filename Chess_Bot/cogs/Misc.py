@@ -135,7 +135,7 @@ class Misc(commands.Cog):
             else:
                 try:
                     number = int(num)
-                    assert(1 <= number <= constants.MAX_LEADERBOARD_SIZE)
+                    assert (1 <= number <= constants.MAX_LEADERBOARD_SIZE)
                 except (ValueError, AssertionError):
                     await ctx.send(f'Please enter an integer from 1 to {constants.MAX_LEADERBOARD_SIZE}.')
                     return
@@ -211,9 +211,10 @@ class Misc(commands.Cog):
         msg = await ctx.send('Getting info...')
 
         embed = discord.Embed(title="Bot Info", color=0xff0000)
-        embed.add_field(name="Links",
-                        value=f"[Github]({constants.GITHUB_LINK}) | [Invite]({constants.INVITE_LINK}) | [Join the discord server]({constants.SUPPORT_SERVER_INVITE}) | [Top.gg]({constants.TOPGG_LINK})",
-                        inline=False)
+        embed.add_field(
+            name="Links",
+            value=f"[Github]({constants.GITHUB_LINK}) | [Invite]({constants.INVITE_LINK}) | [Join the discord server]({constants.SUPPORT_SERVER_INVITE}) | [Top.gg]({constants.TOPGG_LINK})",
+            inline=False)
         embed.add_field(name='Version', value=version, inline=True)
         embed.add_field(name="Info",
                         value='Chess Bot is a bot that plays chess. Use `$help` for a list of commands.', inline=False)
@@ -275,7 +276,7 @@ class Misc(commands.Cog):
         embed.add_field(name='Rating', value=str(
             await data.data_manager.get_rating(person.id)), inline=False)
         embed.add_field(name='Games Played', value=str(
-            lost+won+drew), inline=False)
+            lost + won + drew), inline=False)
         embed.add_field(name='Lost', value=str(lost))
         embed.add_field(name='Won', value=str(won))
         embed.add_field(name='Drawn', value=str(drew))

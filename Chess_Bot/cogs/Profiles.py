@@ -63,7 +63,8 @@ class Profiles(commands.Cog):
         embed.set_thumbnail(url=thumbnail)
         return embed
 
-    @commands.hybrid_group(name='profile', description='List the chess bot computers you can challenge', invoke_without_command=True, aliases=['profiles', 'levels'])
+    @commands.hybrid_group(name='profile', description='List the chess bot computers you can challenge',
+                           invoke_without_command=True, aliases=['profiles', 'levels'])
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def profile(self, ctx):
         '''
@@ -86,8 +87,9 @@ class Profiles(commands.Cog):
         }
         '''
         embed = await self.get_default_embed()
-        embed.description = ('These are the Chess Bot computers that you can challenge.\n'
-                             'Use the command </profile view:1005187298817736715> followed by a tag (such as `cb1`) for more information on a bot.')
+        embed.description = (
+            'These are the Chess Bot computers that you can challenge.\n'
+            'Use the command </profile view:1005187298817736715> followed by a tag (such as `cb1`) for more information on a bot.')
         all_cb = [
             f'`{bot.name}` ({get_name(bot.value)})' for bot in Profile if bot.name.startswith('cb')]
         all_sf = [
@@ -102,8 +104,9 @@ class Profiles(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def list(self, ctx):
         embed = await self.get_default_embed()
-        embed.description = ('These are the Chess Bot computers that you can challenge.\n'
-                             'Use the command </profile view:1005187298817736715> followed by a tag (such as `cb1`) for more information on a bot.')
+        embed.description = (
+            'These are the Chess Bot computers that you can challenge.\n'
+            'Use the command </profile view:1005187298817736715> followed by a tag (such as `cb1`) for more information on a bot.')
         all_cb = [
             f'`{bot.name}` ({get_name(bot.value)})' for bot in Profile if bot.name.startswith('cb')]
         all_sf = [
@@ -160,7 +163,7 @@ class Profiles(commands.Cog):
         await ctx.send(embed=embed)
 
 
-async def setup(bot):    
+async def setup(bot):
     for b in Profile:
         if await data.data_manager.get_rating(b.value) is None:
             await data.data_manager.change_rating(

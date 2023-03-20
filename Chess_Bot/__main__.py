@@ -39,28 +39,28 @@ else:
 @bot.event
 async def on_command_error(ctx, exc):
     try:
-        if type(exc) == commands.errors.BotMissingPermissions:
+        if isinstance(exc, commands.errors.BotMissingPermissions):
             await ctx.send(f'Chess Bot is missing permissions.\nThe missing permissions are: `{" ".join(exc.missing_perms)}`')
             return
         elif isinstance(exc, discord.Forbidden) or str(exc).startswith('Command raised an exception: Forbidden'):
             await ctx.send('Chess Bot is missing permissions.')
             return
-        elif type(exc) == commands.errors.MissingRequiredArgument:
+        elif isinstance(exc, commands.errors.MissingRequiredArgument):
             await ctx.send(f'Missing required argument.\nPlease enter a value for: `{exc.param}`.\nUse `$help <command name>` to get more information about a command.')
             return
         elif issubclass(type(exc), commands.errors.UserInputError):
             await ctx.send('There was an error parsing your argument')
             return
-        elif type(exc) == commands.errors.TooManyArguments:
+        elif isinstance(exc, commands.errors.TooManyArguments):
             await ctx.send('Bruh what why are there so many arguments?')
             return
-        elif type(exc) == commands.errors.CommandOnCooldown:
+        elif isinstance(exc, commands.errors.CommandOnCooldown):
             await ctx.send(f'You are on cooldown. Try again in {round(exc.retry_after, 3)} seconds')
             return
         elif type(exc) in [commands.errors.CommandNotFound, commands.errors.CheckFailure]:
             # await ctx.send('Command not found.')
             return
-        elif type(exc) == commands.errors.MissingPermissions:
+        elif isinstance(exc, commands.errors.MissingPermissions):
             await ctx.send(f'You are missing permissions.\nThe missing permissions are: {" ".join(exc.missing_perms)}')
             return
     except Exception as e:
