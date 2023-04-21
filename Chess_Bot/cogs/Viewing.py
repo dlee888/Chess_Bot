@@ -84,7 +84,7 @@ class Viewing(commands.Cog):
         '''
         {
             "name": "theme",
-            "description": "Customize your board theme.\\nYou can also use `$theme` without a new theme specified to see your current theme and a list of all available themes.",
+            "description": "Customize your board theme.\\nYou can also use $theme without a new theme specified to see your current theme and a list of all available themes.",
             "usage": "$theme [new theme]",
             "examples": [
                 "$theme",

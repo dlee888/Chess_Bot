@@ -184,22 +184,17 @@ class Util(commands.Cog):
         embed.set_image(url='attachment://board.png')
         if person not in [game.white, game.black]:
             return discord.File(path, filename='board.png'), embed, None
-        elif game.turn() == chess.WHITE:
+        if game.turn() == chess.WHITE:
             embed.set_footer(text='White to move')
-            if game.black_draw and person == game.white:
-                embed.set_footer(
-                    text='White to move. Black has offered a draw')
-                return discord.File(path, filename='board.png'), embed, GameViewDraw(self.client, game)
-            else:
-                return discord.File(path, filename='board.png'), embed, GameView(self.client, game)
         else:
             embed.set_footer(text='Black to move')
-            if game.white_draw and person == game.black:
-                embed.set_footer(
-                    text='Black to move. White has offered a draw')
-                return discord.File(path, filename='board.png'), embed, GameViewDraw(self.client, game)
-            else:
-                return discord.File(path, filename='board.png'), embed, GameView(self.client, game)
+        if person == game.white and game.black_draw:
+            embed.set_footer(text=embed.footer.text + ' Black has offered a draw')
+            return discord.File(path, filename='board.png'), embed, GameViewDraw(self.client, game)
+        if person == game.black and game.white_draw:
+            embed.set_footer(text=embed.footer.text + ' White has offered a draw')
+            return discord.File(path, filename='board.png'), embed, GameViewDraw(self.client, game)
+        return discord.File(path, filename='board.png'), embed, GameView(self.client, game)
 
     async def send_notif(self, person, text='', **kwargs):
         if '-beta' in sys.argv and person not in constants.DEVELOPERS:
