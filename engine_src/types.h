@@ -1,6 +1,7 @@
 #ifndef TYPES_INCLUDED
 #define TYPES_INCLUDED
 #include <map>
+#include <cstdint>
 
 typedef std::pair<int, int> pii;
 
