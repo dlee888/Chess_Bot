@@ -39,9 +39,9 @@ async def run_engine(person):
                  'setoption table_size 666667\n'
                  f'go {game.fen}\nquit')
         out, _, _ = await util.run('./engine', stdin=stdin)
-        out = out.split('\n')
         if 'COMPUTER PLAYED' not in out:
             logging.error(f'Chess Bot {bot} failed to play a move. Output:\n{out}')
+        out = out.split('\n')
         return next((line[16:].strip() for line in out if line.startswith('COMPUTER PLAYED')), None)
     elif bot in all_sf:
         transport, engine = await chess.engine.popen_uci("./stockfish")
