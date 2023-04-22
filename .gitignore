@@ -1,6 +1,7 @@
 *.vscode/
 
 *.log*
+nohup.out
 
 __pycache__
 

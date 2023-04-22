@@ -1,6 +1,8 @@
 import chess
 import chess.engine
 
+import logging
+
 import Chess_Bot.util.Data as data
 import Chess_Bot.util.Utility as util
 from Chess_Bot.util.Images import *
