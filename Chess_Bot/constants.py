@@ -29,6 +29,8 @@ DEFAULT_LEADERBOARD_SIZE = 10
 CACHE_REFRESH_TIME = 3600
 
 DEFAULT_TIME_CONTROL = 3 * 86400
+MIN_TIME_CONTROL = 600
+MAX_TIME_CONTROL = 7 * 86400
 
 INVITE_LINK = r'https://discord.com/api/oauth2/authorize?client_id=801501916810838066&permissions=2147795008&scope=bot%20applications.commands'
 GITHUB_LINK = 'https://github.com/jeffarjeffar/Chess_Bot'

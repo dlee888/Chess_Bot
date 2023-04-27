@@ -1,23 +1,24 @@
+import asyncio
+import json
+import random
+from typing import Union
+
 import discord
 from discord import app_commands
 from discord.ext import commands
 
-import random
-from typing import Union
-import asyncio
-import json
-
 import Chess_Bot.util.Data as data
-from Chess_Bot.util.CPP_IO import *
 from Chess_Bot.cogs.Profiles import Profile, ProfileNames
+from Chess_Bot.util.CPP_IO import *
 
 
 class AcceptButton(discord.ui.Button):
-    def __init__(self, client: commands.Bot, challenger: int, challengee: int):
+    def __init__(self, client: commands.Bot, challenger: int, challengee: int, time_limit: int):
         super().__init__(label='Accept', style=discord.ButtonStyle.green)
         self.client = client
         self.challenger = challenger
         self.challengee = challengee
+        self.time_limit = time_limit
 
     async def callback(self, interaction: discord.Interaction):
         if interaction.user.id != self.challengee:
@@ -42,6 +43,7 @@ class AcceptButton(discord.ui.Button):
         else:
             game.white = self.challenger
             game.black = self.challengee
+        game.time_control = self.time_limit
         await data.data_manager.change_game(game)
         file, embed, view = await util2.make_embed(game.white, title='Game started!', description=f'White: {await util2.get_name(game.white)}\nBlack: {await util2.get_name(game.black)}\nUse `$view` to view the game and use `$move` to make a move.\n')
 
@@ -78,9 +80,9 @@ class DeclineButton(discord.ui.Button):
 
 
 class ChallengeView(discord.ui.View):
-    def __init__(self, client: commands.Bot, challenger: int, challenged: int):
+    def __init__(self, client: commands.Bot, challenger: int, challenged: int, time_limit: int):
         super().__init__()
-        self.add_item(AcceptButton(client, challenger, challenged))
+        self.add_item(AcceptButton(client, challenger, challenged, time_limit))
         self.add_item(DeclineButton(client, challenger, challenged))
 
 
@@ -161,14 +163,14 @@ class Challenges(commands.Cog):
 
     @challenge.command(aliases=['person'], name='user', description='Challenges another person to a game of chess.')
     @app_commands.describe(person='The person you want to challenge.')
-    async def user(self, ctx, person: Union[discord.Member, discord.User]):
+    async def user(self, ctx, person: Union[discord.Member, discord.User], timeout: int = constants.DEFAULT_TIME_CONTROL):
         """
         {
-            "name": "challenge user",
-            "description": "Challenges another user to a game of chess.\\\\nReact with a check mark to accept a challenge, and react with an X mark to decline\\\\nThe challenge will expire in 16 minutes.",
-            "usage": "$challenge user <user>",
+            "name": "challenge user [time control]",
+            "description": "Challenges another user to a game of chess.\\\\nReact with a check mark to accept a challenge, and react with an X mark to decline\\\\nThe challenge will expire in 16 minutes.\\\\nOptionally, you can specify a time control, in seconds. It must be between 10 minutes and 7 days.",
+            "usage": "/challenge user <user>",
             "examples": [
-                "$challenge user <@person>"
+                "/challenge user <@person>"
             ],
             "cooldown": 3,
             "aliases": [
@@ -185,8 +187,11 @@ class Challenges(commands.Cog):
         if ctx.author.id == person.id:
             await ctx.send('You cannot challenge yourself.')
             return
+        if timeout < constants.MIN_TIME_CONTROL or timeout > constants.MAX_TIME_CONTROL:
+            await ctx.send(f'The time control must be between {util.pretty_time(constants.MIN_TIME_CONTROL)} and {util.pretty_time(constants.MAX_TIME_CONTROL)}.')
+            return
 
-        await ctx.send(f'{person.mention}, {ctx.author} has challenged you to a game of chess.\nNote: the challenge will time out if you wait too long to accept', view=ChallengeView(self.client, ctx.author.id, person.id))
+        await ctx.send(f'{person.mention}, {ctx.author} has challenged you to a game of chess, with {util.pretty_time(timeout)} per move.\nNote: the challenge will time out if you wait too long to accept', view=ChallengeView(self.client, ctx.author.id, person.id, timeout))
 
 
 async def setup(bot):
