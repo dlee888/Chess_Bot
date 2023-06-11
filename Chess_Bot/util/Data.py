@@ -133,6 +133,9 @@ class MongoData:
     async def rated_users(self):
         return await self.db.users.count_documents({'rating': {'$ne': None}})
 
+    async def get_rank(self, person: int) -> int:
+        return await self.db.users.count_documents({'rating': {'$gte': await self.get_rating(person)}})
+
     async def change_rating(self, person, new_rating):
         await self.db.users.update_one(
             {'id': person}, {'$set': {'rating': new_rating}}, upsert=True)

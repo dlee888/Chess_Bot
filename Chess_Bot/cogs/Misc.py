@@ -1,16 +1,16 @@
+import logging
+import textwrap
+import time
+import typing
+
 import discord
 from discord import app_commands
 from discord.ext import commands
 
-import time
-import typing
-import logging
-import textwrap
-
-import Chess_Bot.util.Utility as util
 import Chess_Bot.util.Data as data
-from Chess_Bot.cogs import Profiles as profiles
+import Chess_Bot.util.Utility as util
 from Chess_Bot import constants
+from Chess_Bot.cogs import Profiles as profiles
 
 version = '4.1.0'
 
@@ -173,22 +173,12 @@ class Misc(commands.Cog):
         }
         '''
 
-        if await data.data_manager.get_rating(ctx.author.id) is None:
+        rating = await data.data_manager.get_rating(ctx.author.id)
+        if rating is None:
             await ctx.send('You are unrated.')
             return
 
-        msg = await ctx.send('Fetching ratings...')
-
-        ratings = await data.data_manager.get_ratings()
-
-        all_players = [(k, ratings[k]) for k in ratings.keys()]
-
-        all_players.sort(reverse=True, key=lambda a: a[1])
-
-        rank = next((i + 1 for i in range(len(all_players))
-                    if all_players[i][0] == ctx.author.id), None)
-
-        await msg.reply(f'Your rating is {round(await data.data_manager.get_rating(ctx.author.id), 2)}. You are ranked {rank} out of {len(all_players)} players.')
+        await ctx.send(f'Your rating is {round(rating, 2)}. You are ranked {await data.data_manager.get_rank(ctx.author.id)} out of {await data.data_manager.rated_users()} players.')
 
     @commands.hybrid_command(aliases=['info', 'about'], name='botinfo', description='Sends information about the bot.')
     @commands.cooldown(1, 3, commands.BucketType.user)
