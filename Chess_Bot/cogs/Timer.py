@@ -1,13 +1,12 @@
+import sys
+import typing
+
 import discord
 from discord import app_commands
-from discord.ext import commands
-from discord.ext import tasks
+from discord.ext import commands, tasks
 
-import typing
-import sys
-
-import Chess_Bot.util.Utility as util
 import Chess_Bot.util.Data as data
+import Chess_Bot.util.Utility as util
 from Chess_Bot.util.CPP_IO import *
 
 
@@ -55,39 +54,54 @@ class Timer(commands.Cog):
         for game in games:
             if game.time_left() * 3 < game.time_control and not game.warned:
                 util2 = self.client.get_cog('Util')
-                await util2.send_notif(game.to_move(), 'You are low on time. Use </time:968575170958749699> to get how much time you have left before you automatically forfeit you game.')
+                file, embed, view = await util2.make_embed(game.to_move(),
+                                                           title=f'{await util2.get_name(game.white)} vs {await util2.get_name(game.black)}',
+                                                           description=f'{util.pretty_time(game.time_left())} left')
+                await util2.send_notif(game.to_move(), ('You are low on time.\n'
+                                                        'Use </time:968575170958749699> to get how much time you have left '
+                                                        'before you automatically forfeit your game.'), file=file, embed=embed, view=view)
                 game.warned = True
                 await data.data_manager.change_game(game)
 
-    @tasks.loop(seconds=10)
+    @ tasks.loop(seconds=10)
     async def no_time_check(self):
         games = await data.data_manager.get_games()
         util2 = self.client.get_cog('Util')
         for game in games:
             if game.time_left() < 0:
+                white_file, white_embed, _ = await util2.make_embed(game.white, title=f'{await util2.get_name(game.white)} vs {await util2.get_name(game.black)}')
+                black_file, black_embed, _ = await util2.make_embed(game.black, title=f'{await util2.get_name(game.white)} vs {await util2.get_name(game.black)}')
                 if game.turn() == chess.WHITE:
+                    white_embed.description = f'{await util2.get_name(game.black)} won on time'
+                    black_embed.description = f'{await util2.get_name(game.black)} won on time'
                     white_delta, black_delta = await util.update_rating2(
                         game.white, game.black, 1)
                     await util2.send_notif(game.white,
                                            ('You automatically forfeited on time.\n'
-                                            f'Your new rating is {await data.data_manager.get_rating(game.white)} ({white_delta})'))
+                                            f'Your new rating is {await data.data_manager.get_rating(game.white)} ({white_delta})'),
+                                           file=white_file, embed=white_embed)
                     await util2.send_notif(game.black,
                                            ('Your opponent automatically forfeited on time.\n'
-                                            f'Your new rating is {await data.data_manager.get_rating(game.black)} ({black_delta})'))
+                                            f'Your new rating is {await data.data_manager.get_rating(game.black)} ({black_delta})'),
+                                           file=black_file, embed=black_embed)
                     await data.data_manager.delete_game(game.player(), chess.BLACK)
                 else:
+                    white_embed.description = f'{await util2.get_name(game.white)} won on time'
+                    black_embed.description = f'{await util2.get_name(game.white)} won on time'
                     white_delta, black_delta = await util.update_rating2(
                         game.white, game.black, 0)
                     await util2.send_notif(game.white,
                                            ('Your opponent automatically forfeited on time.\n'
-                                            f'Your new rating is {await data.data_manager.get_rating(game.white)} ({white_delta})'))
+                                            f'Your new rating is {await data.data_manager.get_rating(game.white)} ({white_delta})'),
+                                           file=white_file, embed=white_embed)
                     await util2.send_notif(game.black,
                                            ('You automatically forfeited on time.\n'
-                                            f'Your new rating is {await data.data_manager.get_rating(game.black)} ({black_delta})'))
+                                            f'Your new rating is {await data.data_manager.get_rating(game.black)} ({black_delta})'),
+                                           file=black_file, embed=black_embed)
                     await data.data_manager.delete_game(game.player(), chess.WHITE)
 
-    @low_time_warn.before_loop
-    @no_time_check.before_loop
+    @ low_time_warn.before_loop
+    @ no_time_check.before_loop
     async def wait_until_ready(self):
         await self.client.wait_until_ready()
 

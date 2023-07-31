@@ -1,14 +1,14 @@
+import contextlib
+import random
+import sys
+
+import chess
 import discord
 from discord.ext import commands
 
-import chess
-import random
-import sys
-import contextlib
-
+import Chess_Bot.util.Data as data
 from Chess_Bot import constants
 from Chess_Bot.cogs.Profiles import Profile, get_name
-import Chess_Bot.util.Data as data
 from Chess_Bot.util import Images
 from Chess_Bot.util import Utility as util
 
@@ -72,7 +72,8 @@ class AcceptDrawButton(discord.ui.Button):
             return
 
         view = discord.ui.View.from_message(interaction.message)
-        [setattr(component, "disabled", True) for component in view.children if isinstance(component, discord.ui.Button)]
+        [setattr(component, "disabled", True)
+         for component in view.children if isinstance(component, discord.ui.Button)]
 
         await interaction.response.edit_message(view=view)
 
@@ -185,14 +186,16 @@ class Util(commands.Cog):
         if person not in [game.white, game.black]:
             return discord.File(path, filename='board.png'), embed, None
         if game.turn() == chess.WHITE:
-            embed.set_footer(text='White to move')
+            embed.set_footer(text='White to move.')
         else:
-            embed.set_footer(text='Black to move')
+            embed.set_footer(text='Black to move.')
         if person == game.white and game.black_draw:
-            embed.set_footer(text=embed.footer.text + ' Black has offered a draw')
+            embed.set_footer(text=embed.footer.text +
+                             ' Black has offered a draw.')
             return discord.File(path, filename='board.png'), embed, GameViewDraw(self.client, game)
         if person == game.black and game.white_draw:
-            embed.set_footer(text=embed.footer.text + ' White has offered a draw')
+            embed.set_footer(text=embed.footer.text +
+                             ' White has offered a draw.')
             return discord.File(path, filename='board.png'), embed, GameViewDraw(self.client, game)
         return discord.File(path, filename='board.png'), embed, GameView(self.client, game)
 

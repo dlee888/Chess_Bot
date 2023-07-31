@@ -1,18 +1,17 @@
-import discord
-from discord import app_commands
-from discord.ext import commands
-from discord.ext import tasks
-
-import time
 import asyncio
 import logging
-import traceback
 import sys
+import time
+import traceback
+
+import discord
+from discord import app_commands
+from discord.ext import commands, tasks
 
 import Chess_Bot.util.Data as data
 import Chess_Bot.util.Utility as util
-from Chess_Bot.util.CPP_IO import *
 from Chess_Bot.cogs.Profiles import Profile
+from Chess_Bot.util.CPP_IO import *
 
 
 class Engine(commands.Cog):
@@ -163,6 +162,7 @@ class Engine(commands.Cog):
             "cooldown": 3
         }
         '''
+        print(type(ctx), ctx.interaction, type(ctx.interaction))
         util2 = self.client.get_cog('Util')
 
         person = ctx.author.id
@@ -179,23 +179,32 @@ class Engine(commands.Cog):
             await ctx.send('Tip: Trying to resign? You can also use the `$resign` command.')
             return
 
-        move = game.parse_move(move)
-        if move is None:
-            await ctx.send(embed=discord.Embed(title='Illegal move played.',
-                                               description=('Make sure your move is in SAN (standard algebraic notation).\n'
-                                                            'For example, Nxe4, Nge5, c4, Ke2, etc.\n'
-                                                            'More about algebraic notation [here](https://www.chess.com/article/view/chess-notation#algebraic-notation).\n'
-                                                            'You can also enter it in UCI (universal chess interface) notation.\n'
-                                                            'For example, e4e5, g1f3, e1e2, etc.\n'
-                                                            'For promotions, specify the piece you want to promote to.\n'
-                                                            'For example, `a1=Q`, `b8=R`, `f1=Q`, etc.'),
-                                               color=0xff5555))
+        ucimove = game.parse_move(move)
+        if ucimove is None:
+            embed = discord.Embed(title='Illegal move played.',
+                                  description=(f'{move} is not a valid move. Use /view to see the board.\n'
+                                               'Make sure your move is in SAN (standard algebraic notation).\n'
+                                               'For example, Nxe4, Nge5, c4, Ke2, etc.\n'
+                                               'More about algebraic notation [here](https://www.chess.com/article/view/chess-notation#algebraic-notation).\n'
+                                               'You can also enter it in UCI (universal chess interface) notation.\n'
+                                               'For example, e4e5, g1f3, e1e2, etc.\n'
+                                               'For promotions, specify the piece you want to promote to.\n'
+                                               'For example, `a1=Q`, `b8=R`, `f1=Q`, etc.'),
+                                  color=0xff5555)
+            if ctx.interaction is None:
+                await ctx.send(embed=embed)
+            else:
+                await ctx.send(embed=embed, ephemeral=True)
             return
 
-        await self.make_move(game, move)
+        await self.make_move(game, ucimove)
         if await data.data_manager.get_game(person) is not None:
-            file, embed, _ = await util2.make_embed(person, title=f'Your game with {await util2.get_name(game.to_move())}', description='You have moved.')
-            await ctx.send(file=file, embed=embed)
+            file, embed, _ = await util2.make_embed(person, title=f'Your game with {await util2.get_name(game.to_move())}',
+                                                    description=f'You have moved: {move}.')
+            if ctx.interaction is None:
+                await ctx.send(file=file, embed=embed)
+            else:
+                await ctx.send(file=file, embed=embed, ephemeral=True)
 
     @commands.hybrid_command(name='resign', description='Resigns your current game')
     @commands.cooldown(1, 3, commands.BucketType.user)
