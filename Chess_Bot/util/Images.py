@@ -86,7 +86,7 @@ async def get_image2(person, pov=None):
         square += '-light.png' if (x + y) % 2 == 0 else '-dark.png'
         square_img = Image.open(os.path.join(
             constants.THEMES_DIR, theme, square))
-        square_img = square_img.resize((50, 50), Image.ANTIALIAS)
+        square_img = square_img.resize((50, 50), Image.LANCZOS)
 
         x *= 50
         y *= 50
